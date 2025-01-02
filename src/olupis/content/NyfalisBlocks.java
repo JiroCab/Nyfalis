@@ -1822,7 +1822,7 @@ public class NyfalisBlocks {
 
         //endregion
         //region Wall
-        rustyWall = new Wall("rusty-wall"){{
+        rustyWall = new CorrodingWall("rusty-wall"){{
             floating = true;
             size = 1;
             health =  350;
