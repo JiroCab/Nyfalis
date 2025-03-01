@@ -39,6 +39,7 @@ public class NyfalisMain extends Mod{
     public void loadContent(){
         incompatible = !(Version.number == 7 && Objects.equals(Version.type, "official"));
 
+        NyfUnitMapper.load();
         NyfalisShaders.LoadShaders();
         NyfalisShaders.LoadCacheLayer(); //idk when to load this so it 1st -Rushie
         NyfalisItemsLiquid.LoadItems();
@@ -135,6 +136,7 @@ public class NyfalisMain extends Mod{
                 //Vars.renderer.maxZoom  = 100; //just going to leave this here so aligning, screenshot are easier
                 //if(control.saves.getSaveSlots().first() != null) ui.load.runLoadSave(control.saves.getSaveSlots().first());
                 //ui.planet.debugSelect = true;
+                //ui.content.show(NyfalisUnits.resolute);
             }
 
             /*For those people who don't like the name/icon or overwrites in general*/

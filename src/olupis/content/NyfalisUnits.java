@@ -27,6 +27,7 @@ import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
 import olupis.input.*;
 import olupis.world.ai.*;
+import olupis.world.entities.*;
 import olupis.world.entities.abilities.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.parts.*;
@@ -1313,6 +1314,30 @@ public class NyfalisUnits {
 
         // resolute -> Constuct ablity, mini figther-bombers that need to reload at the ship, dis >= ability rebuild = sucide bombers
         //              -> has payload, takes a bunch of t3 and bellow and  lets them shoot out of them, cnc:ra2 battle fortress / cnc:Zh battle bus
+        resolute = new DuckyTubeTankUnitType("resolute"){{
+            constructor = LeggedPayloadUnitClass::create; //Legged so it doesnt slow down in deep water
+            pathCost = NyfalisPathfind.costPreferNaval;
+            groundSpeed = 0.6f;
+            navalSpeed = 1f;
+
+            armor = 6f;
+            hitSize = 12f;
+            health = 850;
+            itemCapacity = 0;
+            legCount = 0;
+            rotateSpeed = 3.5f;
+            payloadCapacity = Mathf.pow(3.5f, 2f) * 64;
+            researchCostMultiplier = 0f;
+            legMoveSpace = 0;
+
+            immunities.add(StatusEffects.wet);
+            rotateMoveFirst = canDeploy = naval = hovering = true;
+            canDrown = ammoDepletesOverTime = killOnAmmoDepletion = omniMovementGround = omniMovementNaval = legPhysicsLayer = allowLegStep = pickupBlocks = false;
+
+            payloadUnitsUpdate = true;
+        }};
+
+
         // nimitz -> Flag ship, boost, payload, Hex sheild when landed, prop/unit booster when flying
 
 

@@ -1090,15 +1090,16 @@ public class NyfalisTurrets {
 
         porcupine = new NyfalisLiquidTurret("porcupine"){{
             //TODO: check for clear path to unit
-            targetAir = false;
+            targetAir = displayAmmoMultiplier = false;
             emitLight = true;
 
             size = 3;
             armor = 5;
-            reload = 90f;
+            reload = 80f;
             range = 8*80;
             health = 750;
-            shootCone =inaccuracy= 25f;
+            shootCone = 25f;
+            inaccuracy= 10f;
             lightRadius = 200;
             rotateSpeed = 0.5f;
             coolantMultiplier = 6f;
@@ -1173,44 +1174,74 @@ public class NyfalisTurrets {
             }};
 
             ammo(
-                    heavyOil, new BarrelBulletType(4f, 300){{
-                        bounceOnEnemyWalls = collidesTiles = true;
-                        max = 30;
-                        height = 8f;
-                        width = 16f;
-                        lifetime = 400f;
-                        knockback= 8f;
-                        homingDelay = bounceDelay = 15;
-                        homingPower = 0.3f;
-                        homingRange = 50f;
-                        buildingDamageMultiplier = 0.4f;
-                        ammoMultiplier = 2;
-                        trailInterval = trailParam = 1.5f;
-                        shootEffect = smokeEffect = Fx.none;
-                        frontColor = new Color().set(Pal.bulletYellowBack).lerp(heavyOil.color, 0.3f);
-                        backColor = new Color().set(Pal.bulletYellow).lerp(heavyOil.color, 0.3f);
-                        fragBullets = 1;
-                        fragBullet = new FirePuddleBulletType(50,30){{
-                            splashDelay = 10;
-                            splashAmount = 16;
-                        }};
-                    }},
-                    lubricant, new BarrelBulletType(4, 150){{
+                steam, new BarrelBulletType(6f, 100){{
+                    collidesTiles = hitFires = true;
+                    max = 30;
+                    height = 8f;
+                    width = 16f;
+                    lifetime = 400f;
+                    knockback= 13f;
+                    inaccuracy= 10f;
+                    homingDelay = bounceDelay = 15;
+                    homingPower = 0.3f;
+                    homingRange = 50f;
+                    buildingDamageMultiplier = 0.4f;
+                    ammoMultiplier = 0.065f;
+                    trailInterval = trailParam = 1.5f;
+                    shootEffect = smokeEffect = Fx.none;
+                    frontColor = new Color().set(Pal.bulletYellowBack).lerp(steam.color, 0.3f).a(1);
+                    backColor = new Color().set(Pal.bulletYellow).lerp(steam.color, 0.3f).a(1);
+                    fragBullets = 1;
+                    fragBullet = new FirePuddleBulletType(50,30, true){{
+                        knockback = 2f;
+                        splashDelay = 3;
+                        splashAmount = 2;
+                        applySound = Sounds.none;
+                        frontColor = backColor =  steam.color;
+                        particleColor = steam.color;
+                        particleEffect = Fx.hitLiquid;
+                    }};
+                }},
+                heavyOil, new BarrelBulletType(4f, 300){{
+                    bounceOnEnemyWalls = collidesTiles = true;
+                    max = 30;
+                    height = 8f;
+                    width = 16f;
+                    lifetime = 400f;
+                    knockback= 8f;
+                    inaccuracy= 10f;
+                    homingDelay = bounceDelay = 15;
+                    homingPower = 0.3f;
+                    homingRange = 50f;
+                    buildingDamageMultiplier = 0.4f;
+                    ammoMultiplier = 0.065f;
+                    trailInterval = trailParam = 1.5f;
+                    shootEffect = smokeEffect = Fx.none;
+                    frontColor = new Color().set(Pal.bulletYellowBack).lerp(heavyOil.color, 0.3f).a(1);
+                    backColor = new Color().set(Pal.bulletYellow).lerp(heavyOil.color, 0.3f).a(1);
+                    fragBullets = 1;
+                    fragBullet = new FirePuddleBulletType(50,30){{
+                        splashDelay = 10;
+                        splashAmount = 16;
+                    }};
+                }},
+                lubricant, new BarrelBulletType(4, 150){{
                         collidesTiles = true;
                         maxBounces = 5;
                         height = 8f;
                         width = 16f;
                         lifetime = 200f;
                         knockback= 2f;
+                        inaccuracy= 10f;
                         homingDelay = bounceDelay = 15;
                         trailInterval = trailParam = 1.5f;
                         homingPower = 0.3f;
                         homingRange = 50f;
                         buildingDamageMultiplier = 0.8f;
-                        ammoMultiplier = 2;
+                        ammoMultiplier = 0.065f;
                         shootEffect = smokeEffect = Fx.none;
-                        frontColor = new Color().set(Pal.bulletYellowBack).lerp(lubricant.color, 0.3f);
-                        backColor = new Color().set(Pal.bulletYellow).lerp(lubricant.color, 0.3f);
+                        frontColor = new Color().set(Pal.bulletYellowBack).lerp(lubricant.color, 0.3f).a(1);
+                        backColor = new Color().set(Pal.bulletYellow).lerp(lubricant.color, 0.3f).a(1);
                         fragBullets = 1;
                         fragBullet = new FirePuddleBulletType(50,60){{
                             splashDelay = 5;

@@ -1,22 +1,28 @@
 package olupis.world.entities.bullets;
 
-import arc.math.Mathf;
-import arc.util.noise.Simplex;
-import mindustry.Vars;
-import mindustry.content.Fx;
-import mindustry.entities.Fires;
-import mindustry.entities.Puddles;
-import mindustry.gen.Bullet;
-import mindustry.gen.Sounds;
-import mindustry.world.Tile;
+import arc.util.noise.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.gen.*;
+import mindustry.world.*;
 
 public class FirePuddleBulletType extends MultiShockBulletType{
+    boolean removeInstead = false;
+
     public FirePuddleBulletType(float splashDamage, float radius) {
         super(splashDamage, radius);
         applySound = Sounds.none;
         particleEffect = Fx.none;
         drawBlast = false;
     }
+
+    public FirePuddleBulletType(float splashDamage, float radius, boolean removeInstead) {
+        super(splashDamage, radius);
+        this.removeInstead = removeInstead;
+
+    }
+
     public void update(Bullet b) {
         super.update(b);
         int tx = b.tileX();
@@ -29,7 +35,8 @@ public class FirePuddleBulletType extends MultiShockBulletType{
                 if ((float) (x * x + y * y) <= (float) (rad * rad) - Simplex.noise2d(0, 2.0, 0.5, (double) (1.0F / 5), (double) (x + tx), (double) (y + ty)) * realNoise * realNoise) {
                     Tile tile = Vars.world.tile(tx + x, ty + y);
                     if (tile != null) {
-                        Fires.create(tile);
+                        if(removeInstead) Fires.extinguish(tile, 100f);
+                        else Fires.create(tile);
                     }
                 }
             }

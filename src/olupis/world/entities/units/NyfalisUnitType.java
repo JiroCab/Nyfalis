@@ -12,6 +12,7 @@ import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.abilities.*;
+import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -19,6 +20,7 @@ import mindustry.type.*;
 import mindustry.type.ammo.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.meta.*;
@@ -30,6 +32,10 @@ import olupis.world.blocks.defence.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.entities.*;
 import olupis.world.entities.parts.*;
+
+import java.util.AbstractMap.*;
+import java.util.*;
+import java.util.Map.*;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;
@@ -56,11 +62,16 @@ public class NyfalisUnitType extends UnitType {
     public Seq<UnlockableContent> displayFactory = new Seq<>();
     /*secondary light  parameters*/
     public boolean emitSecondaryLight = false,
-                            generateDisplayFacotry = true;
+                            generateDisplayFactory = true,
+                            payloadUnitsUpdate = false,
+                            pickupBlocks = true; //Only used in LeggedPayloadUnit
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
     public float secondaryLightRadius = lightRadius  * 2;
 
     public TextureRegion bossRegion;
+
+    //TODO: This is a mess, mostly a proof of concept please replace
+    public Map<Unit, Entry<Seq<Payload>, Seq<Weapon>>> weaponTracker = new HashMap<>();
 
     public NyfalisUnitType(String name){
         super(name);
@@ -95,7 +106,7 @@ public class NyfalisUnitType extends UnitType {
             if (canBoost && alwaysBoosts) cmds.remove(UnitCommand.boostCommand);
         commands = cmds.toArray();
 
-        if(generateDisplayFacotry){
+        if(generateDisplayFactory){
             var pwr = (PowerUnitTurret) Vars.content.blocks().find(b -> b instanceof PowerUnitTurret c && c.allUnitTypes().contains(this));
             if(pwr  != null)displayFactory.add(pwr);
 
@@ -270,6 +281,8 @@ public class NyfalisUnitType extends UnitType {
         if(alwaysBoostOnSolid && canBoost && (unit.controller() instanceof CommandAI c && c.command != UnitCommand.boostCommand)){
             unit.updateBoosting(unit.onSolid());
         }
+
+        if(payloadUnitsUpdate) updatePayload(unit);
     }
 
     public void updatePrams(Unit unit){
@@ -282,5 +295,80 @@ public class NyfalisUnitType extends UnitType {
 
     public boolean onDeepWater(Unit unit){
         return onWater(unit) && unit.floorOn().drownTime > 0;
+    }
+
+    public void updatePayload(Unit unit){
+        //AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+        if(unit.dead) weaponTracker.remove(unit);
+        if(!(unit instanceof Payloadc c)) return;
+        else if(c.payloads().isEmpty()){
+            weaponTracker.remove(unit);
+            return;
+        }
+
+        if(!weaponTracker.containsKey(unit))weaponTracker.put(unit, new SimpleEntry<>(c.payloads().copy(), new Seq<>()));
+
+        Seq<Payload> load = weaponTracker.get(unit).getKey();
+        Seq<Weapon> wep = weaponTracker.get(unit).getValue();
+
+        //Prevents crash for alternating weapons (ie dagger style weapons)
+        if(!c.payloads().allMatch(load::contains) || wep.size == 0){
+            wep.clear();
+            load.set(c.payloads().copy());
+
+            for(Payload p : c.payloads()){
+                if(!(p instanceof UnitPayload up) || !up.unit.hasWeapons()) continue;
+                Unit u = up.unit;
+                if(u.mounts().length >= 1){
+                    WeaponMount[] mounts = u.mounts();
+                    for(WeaponMount mount : mounts){
+                        Weapon w = mount.weapon.copy();
+                        if(w.bullet.killShooter) continue; //DONOT
+
+                        //compensate for them not needing to alternate
+                        if(w.alternate){
+                            w.reload = w.reload * 1.5f;
+                            if(mount.side) w.shoot.firstShotDelay = w.reload * 0.5f;
+                        }
+                        w.rotateSpeed = Math.max(w.rotateSpeed, 20);
+                        w.rotate = true;
+                        w.alternate = false;
+
+                        //TODO: Fireports?
+                        w.shootX =  w.x = w.shootY = w.y = 0;
+
+                        wep.add(w);
+                    }
+                }
+            }
+            Log.err(!c.payloads().allMatch(load::contains) + " " + wep.toString());
+        }
+
+        for(Payload p : load){
+            if(p instanceof UnitPayload up && up.unit.hasWeapons()){
+                //we update the unit as well so we can update ability
+                Unit u = up.unit;
+                u.isShooting(true);
+                u.x(unit.x);
+                u.y(unit.y);
+                u.type.update(u);
+
+                if(u.mounts().length >= 1){
+                    WeaponMount[] mounts = u.mounts();
+
+                    for(int i = 0; i < mounts.length; i++){
+                        WeaponMount mount = mounts[i];
+
+                        if(mount.target != null){
+                            mount.rotation = mount.targetRotation;
+                            mount.shoot = true;
+                        }
+                        wep.get(i).update(unit, mount);
+                    }
+                }
+                u.update();
+            }
+        }
     }
 }
