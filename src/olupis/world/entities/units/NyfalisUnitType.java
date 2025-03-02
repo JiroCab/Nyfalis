@@ -313,38 +313,37 @@ public class NyfalisUnitType extends UnitType {
         Seq<Weapon> wep = weaponTracker.get(unit).getValue();
 
         //Prevents crash for alternating weapons (ie dagger style weapons)
-        if(!c.payloads().allMatch(load::contains) || wep.size == 0){
-            wep.clear();
+        if(!load.containsAll(c.payloads(), false) || load.size != c.payloads().size || wep.size == 0){
             load.set(c.payloads().copy());
+            wep.clear();
 
             for(Payload p : c.payloads()){
                 if(!(p instanceof UnitPayload up) || !up.unit.hasWeapons()) continue;
                 Unit u = up.unit;
                 if(u.mounts().length >= 1){
-                    WeaponMount[] mounts = u.mounts();
-                    for(WeaponMount mount : mounts){
+                    for(WeaponMount mount : u.mounts()){
+                        if(mount.weapon.bullet.killShooter) continue; //DONOT
                         Weapon w = mount.weapon.copy();
-                        if(w.bullet.killShooter) continue; //DONOT
+
+                        //Flat reload nerf since we can go beyond the unit cap and this is to "help" w/ balancing
+                        w.reload *=2f;
 
                         //compensate for them not needing to alternate
-                        if(w.alternate){
-                            w.reload = w.reload * 1.5f;
-                            if(mount.side) w.shoot.firstShotDelay = w.reload * 0.5f;
-                        }
+                        if(w.alternate &&mount.side) w.shoot.firstShotDelay = Math.max(w.shoot.firstShotDelay, 1) * (w.reload * 0.5f);
                         w.rotateSpeed = Math.max(w.rotateSpeed, 20);
                         w.rotate = true;
                         w.alternate = false;
 
                         //TODO: Fireports?
                         w.shootX =  w.x = w.shootY = w.y = 0;
-
                         wep.add(w);
                     }
                 }
             }
-            Log.err(!c.payloads().allMatch(load::contains) + " " + wep.toString());
+
         }
 
+        int[] m ={-1};
         for(Payload p : load){
             if(p instanceof UnitPayload up && up.unit.hasWeapons()){
                 //we update the unit as well so we can update ability
@@ -353,18 +352,19 @@ public class NyfalisUnitType extends UnitType {
                 u.x(unit.x);
                 u.y(unit.y);
                 u.type.update(u);
+                u.rotation(unit.rotation);
 
                 if(u.mounts().length >= 1){
                     WeaponMount[] mounts = u.mounts();
 
-                    for(int i = 0; i < mounts.length; i++){
-                        WeaponMount mount = mounts[i];
-
+                    for(WeaponMount mount : mounts){
                         if(mount.target != null){
                             mount.rotation = mount.targetRotation;
                             mount.shoot = true;
                         }
-                        wep.get(i).update(unit, mount);
+
+                        m[0]++;
+                        wep.get(m[0]).update(unit, mount);
                     }
                 }
                 u.update();

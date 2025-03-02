@@ -1321,7 +1321,7 @@ public class NyfalisUnits {
             navalSpeed = 1f;
 
             armor = 6f;
-            hitSize = 12f;
+            hitSize = 20f;
             health = 850;
             itemCapacity = 0;
             legCount = 0;
@@ -1335,6 +1335,31 @@ public class NyfalisUnits {
             canDrown = ammoDepletesOverTime = killOnAmmoDepletion = omniMovementGround = omniMovementNaval = legPhysicsLayer = allowLegStep = pickupBlocks = false;
 
             payloadUnitsUpdate = true;
+
+            weapons.add(new LaserPointerPointDefenceWeapon("olupis-lexington-point-defense"){{
+                x = 5;
+                y = -5f;
+                reload = 6f;
+                minWarmup = 0.9f;
+                soundVol = 0.7f;
+                soundPitchMin = 0.65f;
+                soundPitchMax = 0.8f;
+                targetInterval = targetSwitchInterval = 12f;
+                shootSound = NyfalisSounds.cncZhAvengerPdl;
+
+                hitAoeEffect = new MultiEffect( NyfalisFxs.miniPointHit);
+                bullet = new BulletType(){{
+                    shootEffect = Fx.shootSmokeSquare;
+                    aoeBeamEffect = NyfalisFxs.getMiniPointHit;
+                    hitEffect = Fx.pointHit;
+                    maxRange = 350f;
+                    damage = 60f;
+                }};
+            }});
+            abilities.addAll(
+            new CarrierResupplyAblity(4)
+            //new UnitRallySpawnAblity(district, 60f * 15f, 0, 6.5f)
+            );
         }};
 
 
@@ -2056,6 +2081,39 @@ public class NyfalisUnits {
                 }};
             }});
         }};
+
+        /*For testing for now, dont ship, TODO consider this as for bigger scout bois or just keep it carriers*/
+//        weevil = new NyfalisUnitType("weevil"){{
+//            hitSize = 9f;
+//            health = 50;
+//            speed = 3.6f;
+//            engineSize = 3f;
+//            lightRadius = 30;
+//            itemCapacity = 0;
+//            engineOffset = 7f;
+//            rotateSpeed = 30f;
+//            drag = accel = 0.08f;
+//            secondaryLightRadius = 250;
+//            payloadCapacity = Mathf.pow(3f, 2f) * 64;
+//            constructor = PayloadUnit::create;
+//            range = 32;
+//            flying = canDeploy = canCharge = emitSecondaryLight = true;
+//            useUnitCap = false;
+//            fogRadius = 35;
+//            parts.addAll(
+//                    new RegionPart("-radar"){{
+//                        mirror = false;
+//                        under = false;
+//                        layerOffset = 2;
+//
+//                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
+//                        heatColor = Color.valueOf("3ed09a");
+//                        y = -3.5f;
+//                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+//                    }}
+//            );
+//            payloadUnitsUpdate = true;
+//        }};
         //endregion
         //region Nyfalis Core Units
         gnat = new NyfalisUnitType("gnat"){{
