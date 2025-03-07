@@ -80,7 +80,8 @@ public class NyfalisUnits {
         lootbug
     ;
 
-    public  static BatHelperUnitType pteropusAir, acerodonAir, nyctalusAir, mirimiriAir , vampyrumAir;
+    public static BatHelperUnitType pteropusAir, acerodonAir, nyctalusAir, mirimiriAir , vampyrumAir;
+    public static HashMap<UnitType, Weapon[]> payloadWeaponIndex;
 
     public static AmmoLifeTimeUnitType
         mite, tick, flea, lice,
@@ -1336,28 +1337,55 @@ public class NyfalisUnits {
 
             payloadUnitsUpdate = true;
 
-            weapons.add(new LaserPointerPointDefenceWeapon("olupis-lexington-point-defense"){{
-                x = 5;
-                y = -5f;
-                reload = 6f;
-                minWarmup = 0.9f;
-                soundVol = 0.7f;
-                soundPitchMin = 0.65f;
-                soundPitchMax = 0.8f;
-                targetInterval = targetSwitchInterval = 12f;
-                shootSound = NyfalisSounds.cncZhAvengerPdl;
+            weapons.addAll(
+                new Weapon("olupis-dark-pew"){{
+                    x = 0;
+                    y = 5f;
+                    reload = 30f;
+                    rotate = true;
+                    top = alternate = mirror = false;
+                    ejectEffect = Fx.casing1;
+                    parts.addAll(
+                    );
+                    bullet = new BasicBulletType(5f, 8){{
+                        width = 5f;
+                        height = 7f;
+                        lifetime = 45;
+                    }};
+            }},
+                new LaserPointerPointDefenceWeapon("olupis-lexington-point-defense"){{
+                    x = 5;
+                    y = -5f;
+                    reload = 6f;
+                    minWarmup = 0.9f;
+                    soundVol = 0.7f;
+                    soundPitchMin = 0.65f;
+                    soundPitchMax = 0.8f;
+                    targetInterval = targetSwitchInterval = 12f;
+                    shootSound = NyfalisSounds.cncZhAvengerPdl;
 
-                hitAoeEffect = new MultiEffect( NyfalisFxs.miniPointHit);
-                bullet = new BulletType(){{
-                    shootEffect = Fx.shootSmokeSquare;
-                    aoeBeamEffect = NyfalisFxs.getMiniPointHit;
-                    hitEffect = Fx.pointHit;
-                    maxRange = 350f;
-                    damage = 60f;
-                }};
-            }});
+                    hitAoeEffect = new MultiEffect( NyfalisFxs.miniPointHit);
+                    bullet = new BulletType(){{
+                        shootEffect = Fx.shootSmokeSquare;
+                        aoeBeamEffect = NyfalisFxs.getMiniPointHit;
+                        hitEffect = Fx.pointHit;
+                        maxRange = 350f;
+                        damage = 60f;
+                    }};
+                }})
+            ;
             abilities.addAll(
-            new CarrierResupplyAblity(4)
+                new CarrierResupplyAblity(4),
+                new ShieldArcAbility(){{
+                    radius = 36f;
+                    angle = 82f;
+                    regen = 0.6f;
+                    cooldown = 60f * 8f;
+                    max = 2000f;
+                    y = -20f;
+                    width = 6f;
+                    whenShooting = false;
+                }}
             //new UnitRallySpawnAblity(district, 60f * 15f, 0, 6.5f)
             );
         }};
@@ -2681,6 +2709,36 @@ public class NyfalisUnits {
 
             }
         };
+    }
+
+    public static void GenerateWeapons(){
+        payloadWeaponIndex = new HashMap<>();
+        for(UnitType u : Vars.content.units()){
+            if(u.weapons.isEmpty()) continue;
+
+            Seq<Weapon> buffer = new Seq<>();
+            for(Weapon ow : u.weapons){
+                Weapon w = ow.copy();
+                //Flat reload nerf since we can go beyond the unit cap and this is to "help" w/ balancing
+                w.reload *=2f;
+                w.rotate = true;
+                //TODO: Fireports?
+                w.shootX =  w.x = w.shootY = w.y = 0;
+                w.rotationLimit = 361f;
+                w.rotateSpeed = Math.max(w.rotateSpeed, 20);
+                if(w.alternate){
+                    w.alternate = false;
+                    Weapon ws = w.copy();
+                    ws.shoot.firstShotDelay = Math.max(w.shoot.firstShotDelay, 1) * (ws.reload * 0.5f);
+                    buffer.add(ws);
+                };
+                buffer.add(w);
+            }
+
+            Weapon[] out = new Weapon[buffer.size];
+            for(int i = 0; i < buffer.size; i++) out[i] = buffer.get(i);
+            payloadWeaponIndex.put(u, out);
+        }
     }
 
     public static void PostLoadUnits(){

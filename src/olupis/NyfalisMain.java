@@ -119,6 +119,7 @@ public class NyfalisMain extends Mod{
         Events.on(EventType.SectorCaptureEvent.class, event -> unlockPlanets());
 
         Events.on(ClientLoadEvent.class, e -> {
+            globalLoadEvent();
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
             NyfalisStartUpUis.saveDisclaimerDialog();
@@ -146,8 +147,14 @@ public class NyfalisMain extends Mod{
             if(Core.settings.getBool("nyfalis-blue-icon")) Team.green.name = "";
             if(Core.settings.getBool("nyfalis-blue-name")) Team.green.name = "nyfalis-blue";*/
         });
+
+        Events.on(ServerLoadEvent.class, e-> globalLoadEvent());
     }
 
+
+    public static void  globalLoadEvent(){
+        NyfalisUnits.GenerateWeapons();
+    }
 
     public static void sectorPostTurn(){
         Seq<String> lostSectors = new Seq<>();

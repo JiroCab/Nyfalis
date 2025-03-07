@@ -15,7 +15,7 @@ public class BarrelBulletType extends RollBulletType{
     HashMap<Integer, Float> currentHp = new HashMap<>();
     HashMap<Integer, Boolean> justBounced = new HashMap<>();
     public float bounceDelay = 20;
-    public boolean bounceOnWalls = true, bounceOnEnemyWalls = false, hitFires = false;
+    public boolean bounceOnWalls = true, bounceOnEnemyWalls = false, hitFires = false, hitProjectiles = true;
 
     public BarrelBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage);
@@ -78,18 +78,21 @@ public class BarrelBulletType extends RollBulletType{
         updateTrailEffects(b);
         updateBulletInterval(b);
 
-        Groups.bullet.each(bb -> {
-            if (bb.team != b.team) {
-                float d = Mathf.dst(bb.x, bb.y, b.x, b.y);
-                if (d < b.hitSize*3) {
-                    currentHp.replace(b.id,currentHp.get(b.id) - bb.damage);
-                    bb.remove();
+        if(hitProjectiles){
+            Groups.bullet.each(bb -> {
+                if (bb.team != b.team) {
+                    float d = Mathf.dst(bb.x, bb.y, b.x, b.y);
+                    if (d < b.hitSize*3) {
+                        currentHp.replace(b.id,currentHp.get(b.id) - bb.damage);
+                        bb.remove();
+                    }
+                    if (currentHp.get(b.id) <= 0){
+                        b.remove();
+                    }
                 }
-                if (currentHp.get(b.id) <= 0){
-                    b.remove();
-                }
-            }
-        });
+            });
+        }
+
 
         if(artilleryTrail) updateArtilleryTrail(b);
     }

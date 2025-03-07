@@ -523,7 +523,7 @@ public class NyfalisTurrets {
                     frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.3f);
                 }},
                 graphite, new BarrelBulletType(5f, 70, "bullet"){{
-                    artilleryTrail = false;
+                    artilleryTrail = hitProjectiles = false;
                     status = StatusEffects.slow;
                     width = 35f;
                     height = 16f;

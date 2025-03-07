@@ -33,10 +33,6 @@ import olupis.world.blocks.unit.*;
 import olupis.world.entities.*;
 import olupis.world.entities.parts.*;
 
-import java.util.AbstractMap.*;
-import java.util.*;
-import java.util.Map.*;
-
 import static arc.Core.settings;
 import static mindustry.Vars.*;
 
@@ -65,13 +61,14 @@ public class NyfalisUnitType extends UnitType {
                             generateDisplayFactory = true,
                             payloadUnitsUpdate = false,
                             pickupBlocks = true; //Only used in LeggedPayloadUnit
+    /*Used by `payloadUnitsUpdate` as dummy to copy target to other mounts  */
+    public int mountPointer = 0;
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
     public float secondaryLightRadius = lightRadius  * 2;
 
     public TextureRegion bossRegion;
 
     //TODO: This is a mess, mostly a proof of concept please replace
-    public Map<Unit, Entry<Seq<Payload>, Seq<Weapon>>> weaponTracker = new HashMap<>();
 
     public NyfalisUnitType(String name){
         super(name);
@@ -300,71 +297,33 @@ public class NyfalisUnitType extends UnitType {
     public void updatePayload(Unit unit){
         //AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
-        if(unit.dead) weaponTracker.remove(unit);
         if(!(unit instanceof Payloadc c)) return;
-        else if(c.payloads().isEmpty()){
-            weaponTracker.remove(unit);
-            return;
-        }
-
-        if(!weaponTracker.containsKey(unit))weaponTracker.put(unit, new SimpleEntry<>(c.payloads().copy(), new Seq<>()));
-
-        Seq<Payload> load = weaponTracker.get(unit).getKey();
-        Seq<Weapon> wep = weaponTracker.get(unit).getValue();
-
-        //Prevents crash for alternating weapons (ie dagger style weapons)
-        if(!load.containsAll(c.payloads(), false) || load.size != c.payloads().size || wep.size == 0){
-            load.set(c.payloads().copy());
-            wep.clear();
-
-            for(Payload p : c.payloads()){
-                if(!(p instanceof UnitPayload up) || !up.unit.hasWeapons()) continue;
-                Unit u = up.unit;
-                if(u.mounts().length >= 1){
-                    for(WeaponMount mount : u.mounts()){
-                        if(mount.weapon.bullet.killShooter) continue; //DONOT
-                        Weapon w = mount.weapon.copy();
-
-                        //Flat reload nerf since we can go beyond the unit cap and this is to "help" w/ balancing
-                        w.reload *=2f;
-
-                        //compensate for them not needing to alternate
-                        if(w.alternate &&mount.side) w.shoot.firstShotDelay = Math.max(w.shoot.firstShotDelay, 1) * (w.reload * 0.5f);
-                        w.rotateSpeed = Math.max(w.rotateSpeed, 20);
-                        w.rotate = true;
-                        w.alternate = false;
-
-                        //TODO: Fireports?
-                        w.shootX =  w.x = w.shootY = w.y = 0;
-                        wep.add(w);
-                    }
-                }
-            }
-
-        }
-
+        if(c.payloads().isEmpty()) return;
         int[] m ={-1};
-        for(Payload p : load){
+        for(Payload p : c.payloads()){
             if(p instanceof UnitPayload up && up.unit.hasWeapons()){
                 //we update the unit as well so we can update ability
                 Unit u = up.unit;
-                u.isShooting(true);
-                u.x(unit.x);
-                u.y(unit.y);
                 u.type.update(u);
                 u.rotation(unit.rotation);
 
+                m[0] = -1 ;
+                WeaponMount parent = unit.mounts[mountPointer];
+                for(Ability ability : u.abilities){
+                    ability.update(unit);
+                }
                 if(u.mounts().length >= 1){
                     WeaponMount[] mounts = u.mounts();
 
                     for(WeaponMount mount : mounts){
-                        if(mount.target != null){
-                            mount.rotation = mount.targetRotation;
-                            mount.shoot = true;
-                        }
+                        mount.aimX = parent.aimX;
+                        mount.aimY = parent.aimY;
+                        mount.shoot = parent.shoot;
+                        mount.targetRotation = parent.targetRotation;
+                        mount.rotation = mount.targetRotation;
 
                         m[0]++;
-                        wep.get(m[0]).update(unit, mount);
+                        NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0]].update(unit, mount);
                     }
                 }
                 u.update();
