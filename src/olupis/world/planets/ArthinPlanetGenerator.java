@@ -75,6 +75,8 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         ObjectSet<UnlockableContent> content = new ObjectSet<>();
 
         for(Tile tile : world.tiles){
+            if(tile == null )continue;
+            
             if(world.getDarkness(tile.x, tile.y) >= 3){
                 continue;
             }

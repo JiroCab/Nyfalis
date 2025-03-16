@@ -1213,7 +1213,7 @@ public class NyfalisUnits {
 
             abilities.addAll(
                 new CarrierResupplyAblity(1),
-                new UnitRallySpawnAblity(zoner, 60f * 15f, 0, 2.5f)
+                new UnitRallySpawnAblity(zoner, 60f * 15f, 0, 3.5f)
             );
         }};
 
@@ -1231,7 +1231,7 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
             abilities.addAll(
                 new CarrierResupplyAblity(2),
-                new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 6.5f)
+                new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 0f, 0, -10f)
             );
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-essex-point-defense"){{
                 x = 0;
@@ -1295,7 +1295,10 @@ public class NyfalisUnits {
             }});
             abilities.addAll(
                 new CarrierResupplyAblity(3),
-                new UnitRallySpawnAblity(district, 60f * 15f, 0, 6.5f)
+                new UnitRallySpawnAblity(district, 60f * 30f, 5.5f, 0,0, 15f, true){{
+                    displayBars = false;
+                }},
+                new UnitRallySpawnAblity(district, 60f * 30f, -5.5f, 0, 0, 15f, true)
             );
             parts.addAll(
                     new FloaterTreadsPart("-treads"){{
