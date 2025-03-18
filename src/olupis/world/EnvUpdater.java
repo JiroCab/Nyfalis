@@ -14,21 +14,25 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.production.*;
 import olupis.world.blocks.environment.*;
 
-import java.util.Arrays;
-
 import static mindustry.Vars.*;
 
 public class EnvUpdater{
     public static class OreUpdateEvent{};
 
+    public static final Seq<Block> spreadingFloors = content.blocks().select(b -> b instanceof SpreadingFloor);
     public static final ObjectSet<Block> generated = new ObjectSet<>();
     public static final int iterations = 4;
     public static int completed = 0;
 
-    private static final Seq<Tile> tiles = new Seq<>(), sims = new Seq<>(), dormantTiles = new Seq<>();
     public static final ObjectMap<Tile, ObjectIntMap<Integer>> data = new ObjectMap<>(), replaced = new ObjectMap<>();
+    public static final ObjectIntMap<Block> propCount = new ObjectIntMap<>();
+
+    private static final Seq<Tile> tiles = new Seq<>(), sims = new Seq<>(), dormantTiles = new Seq<>();
     private static Timer.Task validator, simulator;
-    private static int timer;
+    private static int timer, spaceFree;
+
+    // just a dummy map used as a default value for some stuff, do not touch plz
+    private static final ObjectIntMap<Integer> dummy = new ObjectIntMap<>(iterations * 2, 0.75f);
 
     public static void load(){
         Log.info("EnvUpdater loaded");
@@ -49,13 +53,16 @@ public class EnvUpdater{
 
             world.tiles.eachTile(t -> {
                 if(!data.containsKey(t))
-                    data.put(t, new ObjectIntMap<>(EnvUpdater.iterations, 1));
+                    data.put(t, new ObjectIntMap<>(iterations * 2, 0.75f));
                 if(!replaced.containsKey(t))
-                    replaced.put(t, new ObjectIntMap<>(EnvUpdater.iterations, 1));
+                    replaced.put(t, new ObjectIntMap<>(iterations * 2, 0.75f));
             });
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
+            for(Block b : spreadingFloors)
+                propCount.put(b, 0);
+
             data.clear();
             replaced.clear();
             tiles.clear();
@@ -68,12 +75,16 @@ public class EnvUpdater{
 
             if(!net.client()){
                 Log.info("Creating world snapshot");
+                Time.mark();
 
                 timer = 0;
+                spaceFree = 0;
                 world.tiles.eachTile(t -> {
                     var floor = t.floor() instanceof SpreadingFloor f ? f : t.overlay() instanceof SpreadingFloor f ? f : null;
                     var ore = t.overlay() instanceof SpreadingOre f ? f : null;
                     var wall = t.block() instanceof GrowingWall w ? w : null;
+
+                    if(t.block() == Blocks.air) ++spaceFree;
 
                     if(floor != null || ore != null || wall != null){
                         tiles.add(t);
@@ -91,11 +102,11 @@ public class EnvUpdater{
                 });
 
                 tiles.each(t ->{
-                    data.put(t, new ObjectIntMap<>(iterations, 1));
-                    replaced.put(t, new ObjectIntMap<>(iterations, 1));
+                    data.put(t, new ObjectIntMap<>(iterations * 2, 0.75f));
+                    replaced.put(t, new ObjectIntMap<>(iterations * 2, 0.75f));
                 });
 
-                Log.info("Snapshot created, " + (tiles.size) + " tiles to update");
+                Log.info(Strings.format("Snapshot created in @ms, found @ tiles to update", Mathf.round(Time.elapsed()), tiles.size));
             }
 
             if(validator == null || !validator.isScheduled())
@@ -146,13 +157,23 @@ public class EnvUpdater{
             ++iter;
             var ore = tile.overlay() instanceof SpreadingOre f ? f : null;
             if(ore != null && ((ore.set != null && tile.floor() != ore.set) || ore.next != null || canSpread(tile, ore.parent.spreadOffset, ore.parent.blacklist))){
+                int tries;
+
+                // this is here only to avoid rare crashes
+                try{
+                    tries = data.get(tile).get(iter);
+                }catch(NullPointerException e){
+                    recreate(tile);
+                    tries = data.get(tile).get(iter);
+                }
+
                 if(Mathf.chance(ore.parent.spreadChance)) data.get(tile).increment(iter);
 
-                if(data.get(tile).get(iter) >= ore.parent.spreadTries){
+                if(tries >= ore.parent.spreadTries){
                     data.get(tile).put(iter, 0);
 
                     if(replaced.get(tile).get(iter, -1) <= 0)
-                        replaced.get(tile).put(iter, tile.overlay().id);
+                        replaced.get(tile).put(iter, tile.overlayID());
                     if(ore.next != null)
                         tile.setFloorNet(tile.floor(), ore.next);
                     if(ore.set != null)
@@ -171,9 +192,19 @@ public class EnvUpdater{
             ++iter;
             var wall = tile.block() instanceof GrowingWall w ? w : null;
             if(wall != null){
+                int tries;
+
+                // this is here only to avoid rare crashes
+                try{
+                    tries = data.get(tile).get(iter);
+                }catch(NullPointerException e){
+                    recreate(tile);
+                    tries = data.get(tile).get(iter);
+                }
+
                 if(Mathf.chance(wall.growChance)) data.get(tile).increment(iter);
 
-                if(data.get(tile).get(iter) >= wall.growTries){
+                if(tries >= wall.growTries){
                     data.get(tile).put(iter, 0);
 
                     if(wall.growEffect != null)
@@ -243,10 +274,29 @@ public class EnvUpdater{
 
     private static boolean updateStatus(SpreadingFloor var, Tile tile, int iter){
         if(var != null && (canGrow(var, tile) || canSpread(tile, var.spreadOffset, var.blacklist))){
+            int tries;
+
+            // this is here only to avoid rare crashes
+            try{
+                tries = data.get(tile).get(iter);
+            }catch(NullPointerException e){
+                recreate(tile);
+                tries = data.get(tile).get(iter);
+            }
+
             if(Mathf.chance(var.spreadChance)) data.get(tile).increment(iter);
 
-            if(data.get(tile).get(iter) >= var.spreadTries){
+            if(tries >= var.spreadTries){
                 data.get(tile).put(iter, 0);
+
+                if(var.props.size > 0 && propCount.get(var) < (var.propLimit + (var.dynamicLimit * spaceFree)) && Mathf.chance(var.spawnChance)){
+                    Block prop = var.props.random();
+                    if(prop instanceof GrowingWall)
+                        data.get(tile).put(3, 0);
+                    tile.setNet(prop);
+
+                    propCount.increment(var);
+                }
 
                 if(var.next != null){
                     if(var.upgradeEffect != null)
@@ -276,6 +326,56 @@ public class EnvUpdater{
         return true;
     }
 
+    /** Removes the given tile from any EnvUpdater map without editing actual world terrain */
+    public static void removeTile(int x, int y){
+        removeTile(world.tile(x, y));
+    }
+
+    /** Removes the given tile from any EnvUpdater map without editing actual world terrain */
+    public static void removeTile(Tile tile){
+        tiles.remove(tile);
+        dormantTiles.remove(tile);
+        data.remove(tile);
+        replaced.remove(tile);
+    }
+
+    /** Attempts to restore the given tile to what it was before any changes made by EnvUpdater */
+    public static void resetTile(int x, int y, boolean floor, boolean overlay, boolean walls){
+        resetTile(world.tile(x, y), floor, overlay, walls);
+    }
+
+    /** Attempts to restore the given tile to what it was before any changes made by EnvUpdater */
+    public static void resetTile(Tile tile, boolean floor, boolean overlay, boolean walls){
+        if(tile == null) return;
+
+        var dat = replaced.get(tile, dummy);
+
+        Block flr = tile.floor();
+        if(floor){
+            flr = content.block(dat.get(0, tile.floorID()));
+            dat.put(0, -1);
+        }
+
+        Block ovr = tile.overlay();
+        if(overlay){
+            int id = tile.overlay() instanceof SpreadingOre ? 2 : 1;
+            ovr = content.block(dat.get(id, tile.overlayID()));
+            dat.put(id, -1);
+        }
+
+        if(flr != tile.floor() || ovr != tile.overlay())
+            tile.setFloorNet(flr, ovr);
+
+        if(walls){
+            Block replacement = content.block(dat.get(3, tile.blockID()));
+            tile.setNet(replacement);
+            dat.put(3, -1);
+        }
+
+        if(floor && overlay && walls)
+            removeTile(tile);
+    }
+
     private static void spreadFloor(SpreadingFloor floor, Tile tile, int iter){
         if(floor.spreadEffect != null)
             Call.effect(floor.spreadEffect, tile.worldx(), tile.worldy(), 0, Color.clear);
@@ -283,14 +383,19 @@ public class EnvUpdater{
             Call.soundAt(floor.spreadSound, tile.worldx(), tile.worldy(), 0.6f, 1f);
 
         Core.app.post(() -> tiles.addUnique(tile));
-        if(replaced.get(tile).get(iter, -1) <= 0)
-            replaced.get(tile).put(iter, iter == 0 ? tile.floor().id : tile.overlay().id);
+        try{
+            if(replaced.get(tile).get(iter, -1) <= 0)
+                replaced.get(tile).put(iter, iter == 0 ? tile.floorID() : tile.overlayID());
+        }catch(NullPointerException e){
+            recreate(tile);
+            replaced.get(tile).put(iter, iter == 0 ? tile.floorID() : tile.overlayID());
+        }
 
         if(iter == 0) tile.setFloorNet(floor.replacements.containsKey(tile.floor()) ? floor.replacements.get(tile.floor()) : floor.set, floor.replacements.containsKey(tile.overlay()) ? floor.replacements.get(tile.overlay()) : tile.overlay());
         else tile.setOverlayNet(floor.replacements.containsKey(tile.overlay()) ? floor.replacements.get(tile.overlay()) : floor.set);
         if(floor.replacements.containsKey(tile.block())){
             if(replaced.get(tile).get(3, -1) <= 0)
-                replaced.get(tile).put(iter, tile.block().id);
+                replaced.get(tile).put(iter, tile.blockID());
             tile.setNet(floor.replacements.get(tile.block()));
         }
     }
@@ -303,13 +408,18 @@ public class EnvUpdater{
                 Call.soundAt(ore.parent.spreadSound, tile.worldx(), tile.worldy(), 0.6f, 1f);
 
             Core.app.post(() -> tiles.addUnique(tile));
-            if(replaced.get(tile).get(iter, -1) <= 0)
-                replaced.get(tile).put(iter, tile.overlay().id);
+            try{
+                if(replaced.get(tile).get(iter, -1) <= 0)
+                    replaced.get(tile).put(iter, tile.overlayID());
+            }catch(NullPointerException e){
+                recreate(tile);
+                replaced.get(tile).put(iter, tile.overlayID());
+            }
 
             tile.setOverlayNet(ore.parent.replacements.get(tile.overlay()));
             if(ore.parent.replacements.containsKey(tile.block())){
                 if(replaced.get(tile).get(3, -1) <= 0)
-                    replaced.get(tile).put(iter, tile.block().id);
+                    replaced.get(tile).put(iter, tile.blockID());
                 tile.setNet(ore.parent.replacements.get(tile.block()));
             }
         }else spreadFloor(ore.parent, tile, ore.parent.overlay ? 1 : 0);
@@ -342,5 +452,14 @@ public class EnvUpdater{
             });
 
         return ret;
+    }
+
+    private static void recreate(Tile tile){
+        Log.warn(Strings.format("Couldn't fetch data for @, recreating entries...", tile));
+
+        if(!data.containsKey(tile))
+            data.put(tile, new ObjectIntMap<>(iterations * 2, 0.75f));
+        if(!replaced.containsKey(tile))
+            replaced.put(tile, new ObjectIntMap<>(iterations * 2, 0.75f));
     }
 }
