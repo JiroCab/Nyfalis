@@ -1,4 +1,4 @@
-package olupis.world.entities.packets;
+package olupis.world.entities.parts;
 
 import arc.*;
 import arc.graphics.g2d.*;

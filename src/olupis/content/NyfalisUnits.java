@@ -62,7 +62,7 @@ public class NyfalisUnits {
 
         /*naval*/
         //support
-        porter, essex, lexington, resolute, nimitz,
+        porter, essex, lexington, resolute, nimitz, sovereign,
         //naval glass cannons
         bay, blitz, crusader, torrent, vanguard,
 

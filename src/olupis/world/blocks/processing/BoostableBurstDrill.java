@@ -1,17 +1,24 @@
 package olupis.world.blocks.processing;
 
 import arc.Core;
-import arc.math.Mathf;
-import arc.util.Strings;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.util.*;
 import mindustry.content.Liquids;
 import mindustry.entities.Effect;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.BurstDrill;
 
 public class BoostableBurstDrill extends BurstDrill {
     public Liquid boostLiquid = Liquids.water;
+    public int topVariant = 0;
+    public TextureRegion[] topRegions, topInvertedRegions;
+
+
     public BoostableBurstDrill(String name)
     {
         super(name);
@@ -28,8 +35,25 @@ public class BoostableBurstDrill extends BurstDrill {
         });
     }
 
-    public class BoostableBurstDrillBuild extends BurstDrillBuild
-    {
+    @Override
+    public void load(){
+        super.load();
+
+        if(variants != 0){
+            variantRegions = new TextureRegion[variants];
+            for(int i = 0; i < variants; i++) variantRegions[i] = Core.atlas.find(name + (i + 1));
+        }
+
+        if(topVariant != 0){
+            topRegions = new TextureRegion[topVariant];
+            for(int i = 0; i < variants; i++) topRegions[i] = Core.atlas.find(name +"-top"+ (i + 1));
+
+            topInvertedRegions = new TextureRegion[topVariant];
+            for(int i = 0; i < topVariant; i++) topInvertedRegions[i] = Core.atlas.find(name + "-top-invert"+ (i + 1));
+        }
+    }
+
+    public class BoostableBurstDrillBuild extends BurstDrillBuild{
 
         @Override
         public void updateTile(){
@@ -76,6 +100,62 @@ public class BoostableBurstDrill extends BurstDrill {
                     drillSound.at(x, y, 1f + Mathf.range(drillSoundPitchRand), drillSoundVolume);
                     drillEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), dominantItem.color);
                 }
+            }
+        }
+
+        @Override
+        public void draw(){
+            if(variants <= 0)Draw.rect(region, x, y);
+            else Draw.rect(variantRegions[Mathf.randomSeed(Point2.pack((int)x, (int)y), 0,variants-1)], x, y);
+            drawDefaultCracks();
+
+
+            if(topVariant <= 0)Draw.rect(topRegion, x, y);
+            else Draw.rect(topRegions[Mathf.randomSeed(Point2.pack((int)x, (int)y), 0, topVariant -1)], x, y);
+
+            if(invertTime > 0 && (topInvertRegion.found() || topInvertedRegions.length >= 1)){
+                Draw.alpha(Interp.pow3Out.apply(invertTime));
+
+                if(topVariant <= 0)Draw.rect(topInvertRegion, x, y);
+                else Draw.rect(topInvertedRegions[Mathf.randomSeed(Point2.pack((int)x, (int)y), 0,topVariant-1)], x, y);
+
+                Draw.color();
+            }
+
+            if(dominantItem != null && drawMineItem){
+                Draw.color(dominantItem.color);
+                Draw.rect(itemRegion, x, y);
+                Draw.color();
+            }
+
+            float fract = smoothProgress;
+            Draw.color(arrowColor);
+            for(int i = 0; i < 4; i++){
+                for(int j = 0; j < arrows; j++){
+                    float arrowFract = (arrows - 1 - j);
+                    float a = Mathf.clamp(fract * arrows - arrowFract);
+                    Tmp.v1.trns(i * 90 + 45, j * arrowSpacing + arrowOffset);
+
+                    //TODO maybe just use arrow alpha and draw gray on the base?
+                    Draw.z(Layer.block);
+                    Draw.color(baseArrowColor, arrowColor, a);
+                    Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+
+                    Draw.color(arrowColor);
+
+                    if(arrowBlurRegion.found()){
+                        Draw.z(Layer.blockAdditive);
+                        Draw.blend(Blending.additive);
+                        Draw.alpha(Mathf.pow(a, 10f));
+                        Draw.rect(arrowBlurRegion, x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+                        Draw.blend();
+                    }
+                }
+            }
+            Draw.color();
+
+            if(glowRegion.found()){
+                Drawf.additive(glowRegion, Tmp.c2.set(glowColor).a(Mathf.pow(fract, 3f) * glowColor.a), x, y);
             }
         }
     }

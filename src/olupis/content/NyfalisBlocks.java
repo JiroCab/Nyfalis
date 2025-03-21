@@ -892,6 +892,7 @@ public class NyfalisBlocks {
 
             tier = 1;
             size = 3;
+            topVariant = variants = 3;
             drillTime = 60f * 8.5f;
 
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
@@ -1222,7 +1223,7 @@ public class NyfalisBlocks {
             consumeItems(with(lead, 2, rustyIron, 2));
             researchCost = with(rustyIron, 50, lead, 50);
             requirements(Category.crafting, with(rustyIron, 15, lead, 30));
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawDefault());
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new VariantableDrawRegion(4));
         }};
 
         rustEngraver = new BoostableGenericCrafter("rust-engraver"){{
