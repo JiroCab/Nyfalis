@@ -384,7 +384,7 @@ public class NyfalisTurrets {
                             mirror = false;
                             under = true;
                             progress = PartProgress.warmup;
-                            y = 4;
+                            y = 6;
                             moveY = 8;
                             moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
                         }}
