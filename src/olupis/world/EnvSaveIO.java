@@ -21,10 +21,8 @@ public class EnvSaveIO implements CustomChunk{
 
             for(Tile t : world.tiles){
                 for(int i = 0; i < EnvUpdater.iterations; i++){
-                    var data = EnvUpdater.data.get(t);
-                    stream.writeShort(data == null ? 0 : data.get(i, 0));
-                    var replaced = EnvUpdater.replaced.get(t);
-                    stream.writeShort(replaced == null ? -1 : replaced.get(i, -1));
+                    stream.writeShort(EnvUpdater.fetch(EnvUpdater.data, t, i));
+                    stream.writeShort(EnvUpdater.fetch(EnvUpdater.replaced, t, i));
                 }
             }
         }catch(Exception e){
@@ -47,10 +45,10 @@ public class EnvSaveIO implements CustomChunk{
             }
 
             for(Tile t : world.tiles){
-                ObjectIntMap<Integer> dsave = new ObjectIntMap<>(EnvUpdater.iterations * 2, 0.75f), rsave = new ObjectIntMap<>(EnvUpdater.iterations * 2, 0.75f);
+                int[] dsave = new int[4], rsave = new int[4];
                 for(int i = 0; i < EnvUpdater.iterations; i++){
-                    dsave.put(i, stream.readShort());
-                    rsave.put(i, stream.readShort());
+                    dsave[i] = stream.readShort();
+                    rsave[i] = stream.readShort();
                 }
 
                 save.post(() ->{
