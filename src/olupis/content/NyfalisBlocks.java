@@ -78,6 +78,11 @@ public class NyfalisBlocks {
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, dirtVent,
         redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
+<<<<<<< Updated upstream
+=======
+        beachSandFloor, gypsumFloor, pumiceFloor, galenaFLoor, rustyFloor, rustFloor,
+        forestGrass,
+>>>>>>> Stashed changes
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop, slopDeep, lubricantPool,
@@ -311,6 +316,10 @@ public class NyfalisBlocks {
 
         crackedIce = new Floor("cracked-ice"){{
             attributes.set(Attribute.water, 0.3f);
+            variants = 3;
+        }};
+        forestGrass = new Floor("forest-grass"){{
+            attributes.set(Attribute.water, 0.1f);
             variants = 3;
         }};
 
@@ -670,6 +679,7 @@ public class NyfalisBlocks {
         mossDeadTree = new TreeBlock("moss-dead-tree"){{
             variants = 2;
         }};
+
 
         //endregion
         //region Spreading & related floor
