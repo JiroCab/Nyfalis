@@ -78,11 +78,9 @@ public class NyfalisBlocks {
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, dirtVent,
         redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
-<<<<<<< Updated upstream
-=======
+
         beachSandFloor, gypsumFloor, pumiceFloor, galenaFLoor, rustyFloor, rustFloor,
         forestGrass,
->>>>>>> Stashed changes
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop, slopDeep, lubricantPool,

@@ -63,6 +63,8 @@ public class NyfalisMain extends Mod{
     }
 
     public NyfalisMain(){
+        Core.settings.put("extremity-unitdex-olupis", "olupis-germanica=olupis-supella:olupis-acerodon=olupis-pteropus:olupis-striker=olupis-aero:olupis-serpent=olupis-venom:olupis-blitz=olupis-bay:olupis-essex=olupis-porter:olupis-pedicia=olupis-gnat:olupis-phorid=olupis-pedicia:olupis-diptera=olupis-phorid");
+
         EnvUpdater.load();
 
         //Load sounds once they're added to the file tree
