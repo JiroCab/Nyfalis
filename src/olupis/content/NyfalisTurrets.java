@@ -412,6 +412,142 @@ public class NyfalisTurrets {
             }
         };
 
+        cutboi = new NyfalisPowerTurret("cutboi"){{
+            reload = 30;
+            recoilTime = 5;
+            shootY = 0;
+            inaccuracy = 0.5f;
+            rotateSpeed = 3f;
+            minWarmup = 0.9f;
+            smokeEffect = shootEffect =  Fx.none;
+            shootType = new LaserBulletType(){{
+                lifetime = 4f;
+                length = 80;
+                width = 0;
+                damage = 10;
+                trailEffect = laserEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+            }};
+            drawer = new DrawTurret("iron-"){{
+                targetAir = false;
+                emitLight = true;
+
+                size = 2;
+                recoil = 0;
+                armor = 2f;
+                range = 80f;
+                health = 3000;
+                fogRadius = 13;
+                lightRadius = 37;
+                shootCone = 180f;
+                liquidCapacity = 5f;
+                coolantMultiplier = 3f;
+                for(int i = 0; i < 6; i++){
+                    int finalI = i;
+                    boolean isOdd = finalI % 2 != 0;
+                    parts.add(new RegionPart("-truss"){{
+                        progress = PartProgress.warmup;
+                        mirror = true;
+                        under = false;
+                        y = 5;
+                        x = 4;
+                        moveY = 8f * finalI;
+                        moveRot = isOdd ? -45 : 45;
+                        layer = Layer.legUnit + 0.2f;
+                    }});
+                }
+
+                parts.addAll(
+                        new RegionPart("-blade"){{
+                            mirror = true;
+                            under = true;
+                            progress = PartProgress.warmup;
+                            y = 0;
+                            moveY = 53;
+                            moveRot = -45;
+                            moves.add(new PartMove(PartProgress.recoil, 0, 0, 45f));
+                        }}
+                );
+            }};
+            lightColor = turretLightColor;
+            outlineColor = nyfalisBlockOutlineColour;
+            shootSound = NyfalisSounds.snip;
+            coolant = consume(new ConsumeLubricant(15f / 60f));
+            consumePower(0.1f / 60f);
+            researchCost = with(iron, 200, copper, 150);
+            requirements(Category.turret, with(iron, 60, copper, 50));
+
+        }};
+
+        if(Core.settings.getBool("nyfalis-bread-gun")){
+            superextendocutboi = new NyfalisPowerTurret("superextendocutboi"){{
+                reload = 300;
+                recoilTime = 30;
+                shootY = 0;
+                inaccuracy = 0.5f;
+                rotateSpeed = 3f;
+                minWarmup = 0.9f;
+                smokeEffect = shootEffect =  Fx.none;
+
+                shootType = new LaserBulletType(){{
+                    lifetime = 4f; // op cuz funni
+                    length = 800;
+                    width = 0;
+                    damage = 100000;
+                    trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                }};
+                drawer = new DrawTurret("iron-"){{
+                    targetAir = false;
+                    emitLight = true;
+
+                    size = 2;
+                    recoil = 0;
+                    armor = 2f;
+                    range = 800f;
+                    health = 3000;
+                    fogRadius = 13;
+                    lightRadius = 37;
+                    shootCone = 180f;
+                    liquidCapacity = 5f;
+                    coolantMultiplier = 3f;
+
+                    parts.addAll(
+                            new RegionPart("-blade"){{
+                                layer = Layer.legUnit + 0.1f;
+                                mirror = true;
+                                under = true;
+                                progress = PartProgress.warmup;
+                                y = 5;
+                                moveY = 480;
+                                moveRot = -45;
+                                moves.add(new PartMove(PartProgress.recoil, 0, 0, 45f));
+                            }}
+                    );
+                    for(int i = 0; i < 60; i++){
+                        int finalI = i;
+                        boolean isOdd = finalI % 2 != 0;
+                        parts.add(new RegionPart("-truss"){{
+                            progress = PartProgress.warmup;
+                            mirror = true;
+                            under = false;
+                            y = 5;
+                            x = 4;
+                            moveY = 8f * finalI;
+                            moveRot = isOdd ? -45 : 45;
+                            layer = Layer.legUnit + 0.2f;
+                        }});
+                    }
+                }};
+                lightColor = turretLightColor;
+                outlineColor = nyfalisBlockOutlineColour;
+                shootSound = NyfalisSounds.snip;
+                coolant = consume(new ConsumeLubricant(15f / 60f));
+                consumePower(20f / 60f);
+                researchCost = with(iron, 200, copper, 150);
+                requirements(Category.turret, with(iron, 60, copper, 50));
+
+            }};
+        }
+
         shredder = new NyfalisItemTurret("shredder"){{
             //TODO: check for clear path to unit
             targetAir = false;
@@ -1092,7 +1228,7 @@ public class NyfalisTurrets {
             //TODO: check for clear path to unit
             targetAir = displayAmmoMultiplier = false;
             emitLight = true;
-
+            loopSound = Sounds.none;
             size = 3;
             armor = 5;
             reload = 80f;
@@ -1177,7 +1313,7 @@ public class NyfalisTurrets {
                 steam, new BarrelBulletType(6f, 100){{
                     collidesTiles = hitFires = true;
                     max = 30;
-                    height = 8f;
+                    height = 10f;
                     width = 16f;
                     lifetime = 400f;
                     knockback= 13f;
@@ -1205,7 +1341,7 @@ public class NyfalisTurrets {
                 heavyOil, new BarrelBulletType(4f, 300){{
                     bounceOnEnemyWalls = collidesTiles = true;
                     max = 30;
-                    height = 8f;
+                    height = 10f;
                     width = 16f;
                     lifetime = 400f;
                     knockback= 8f;
@@ -1228,7 +1364,7 @@ public class NyfalisTurrets {
                 lubricant, new BarrelBulletType(4, 150){{
                         collidesTiles = true;
                         maxBounces = 5;
-                        height = 8f;
+                        height = 10f;
                         width = 16f;
                         lifetime = 200f;
                         knockback= 2f;

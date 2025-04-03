@@ -19,10 +19,11 @@ public class BarrelBulletType extends RollBulletType{
 
     public BarrelBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage);
-        this.sprite = bulletSprite;
+        sprite = bulletSprite;
         collidesAir = false;
-        this.collides = this.collidesGround = collidesTiles = true;
+        collides = collidesGround = collidesTiles = true;
         layer = Layer.legUnit +1f;
+        shrinkY = 0.0F;
     }
 
     public BarrelBulletType(float speed, float damage){
