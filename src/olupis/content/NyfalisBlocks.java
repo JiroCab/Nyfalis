@@ -78,20 +78,20 @@ public class NyfalisBlocks {
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, dirtVent,
         redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
-
-        beachSandFloor, gypsumFloor, pumiceFloor, galenaFLoor, rustyFloor, rustFloor,
-        forestGrass,
+        beachSandFloor, gypsumFloor, pumiceFloor, galenaFLoor, rustyFloor, rustFloor, forestGrass,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop, slopDeep, lubricantPool,
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly,
+        beachSandBoulder, gypsumBoulder, pumiceBoulder, galenaBoulder, rustyBoulder,
 
         /*walls*/
         redDune, pinkShrubs, lightWall, lumaWall, rustedMetal,
         greenShrubsIrregular, greenShrubsCrooked, yellowShrubs, yellowShrubsIrregular, yellowShrubsCrooked,
         mossyStoneWall, mossierStoneWall, mossiestStoneWall, mossStoneWall, growingWall,
+        beachSandWall, gypsumWall, gypsumRubble, pumiceWall, pumiceRubble, galenaWall,
 
         /*Env Hazzard*/
         boomPuffPassive, boomPuffActive,
@@ -102,7 +102,7 @@ public class NyfalisBlocks {
         //Buildings, sorted by category
 
         heavyMine,fragMine,glitchMine,mossMine,
-        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator, slash,laceration,cutboi,superextendocutboi,strata,porcupine,
+        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator, slash, laceration,strata,porcupine,
 
         rustyDrill, steamDrill, hydroElectricDrill, steamAgitator, garden, fortifiedRadiator,
 
@@ -192,6 +192,28 @@ public class NyfalisBlocks {
 
         //endregion
         // region Floors
+        beachSandFloor = new Floor("beach-sand-floor"){{
+            itemDrop = Items.sand;
+            playerUnmineable = true;
+            variants = 4;
+            attributes.set(Attribute.oil, 0.75f);
+        }};
+        gypsumFloor = new Floor("gypsum-floor"){{
+            variants = 4;
+        }};
+        galenaFLoor = new Floor("galena-floor"){{
+            variants = 4;
+        }};
+        pumiceFloor = new Floor("pumice-floor"){{
+            variants = 4;
+        }};
+        rustyFloor = new Floor("rusty-floor"){{
+            variants = 4;
+            blendGroup = metalFloor;
+        }};
+        rustFloor = new Floor("rust-floor"){{
+            variants = 4;
+        }};
         redSand = new Floor("red-sand-floor"){{
             itemDrop = Items.sand;
             playerUnmineable = true;
@@ -548,7 +570,27 @@ public class NyfalisBlocks {
             mossStone.asFloor().decoration = this;
             mossiestStone.asFloor().decoration = this;
         }};
-
+        beachSandBoulder = new Prop("beach-sand-boulder"){{
+            beachSandFloor.asFloor().decoration = this;
+            variants = 2;
+        }};
+        gypsumBoulder = new Prop("gypsum-boulder"){{
+            gypsumFloor.asFloor().decoration = this;
+            variants = 2;
+        }};
+        galenaBoulder = new Prop("galena-boulder"){{
+            galenaFLoor.asFloor().decoration = this;
+            variants = 2;
+        }};
+        pumiceBoulder = new Prop("pumice-boulder"){{
+            pumiceFloor.asFloor().decoration = this;
+            variants = 2;
+        }};
+        rustyBoulder = new Prop("rusty-boulder"){{
+            rustyFloor.asFloor().decoration = this;
+            rustFloor.asFloor().decoration = this;
+            variants = 2;
+        }};
         infernalBloom = new RotatingProp("infernal-bloom"){{
             variants = 3;
             breakSound = Sounds.plantBreak;
@@ -587,7 +629,24 @@ public class NyfalisBlocks {
 
         //endregion
         //region Walls
-
+        beachSandWall = new StaticWall("beach-wall"){{
+            variants = 3;
+        }};
+        gypsumWall = new StaticWall("gypsum-wall"){{
+            variants = 3;
+        }};
+        gypsumRubble = new TallBlock("gypsum-rubble"){{
+            variants = 2;
+        }};
+        galenaWall = new StaticWall("galena-wall"){{
+            variants = 3;
+        }};
+        pumiceWall = new StaticWall("pumice-wall"){{
+            variants = 3;
+        }};
+        pumiceRubble = new StaticTree("pumice-rubble"){{
+            variants = 2;
+        }};
         redDune = new StaticWall("red-dune-wall"){{
             redSand.asFloor().wall = this;
             attributes.set(Attribute.sand, 2f);
@@ -900,7 +959,6 @@ public class NyfalisBlocks {
 
             tier = 1;
             size = 3;
-            topVariant = variants = 3;
             drillTime = 60f * 8.5f;
 
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
@@ -1231,7 +1289,7 @@ public class NyfalisBlocks {
             consumeItems(with(lead, 2, rustyIron, 2));
             researchCost = with(rustyIron, 50, lead, 50);
             requirements(Category.crafting, with(rustyIron, 15, lead, 30));
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new VariantableDrawRegion(4));
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawDefault());
         }};
 
         rustEngraver = new BoostableGenericCrafter("rust-engraver"){{
