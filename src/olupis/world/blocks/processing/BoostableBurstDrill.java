@@ -53,7 +53,7 @@ public class BoostableBurstDrill extends BurstDrill {
 
 
             if(topRegion == null) topRegion = topRegions[0];
-            if(topInvertedRegion == null) topInvertedRegion = topInvertedRegions[0];
+            if(topInvertedRegions == null) topInvertedRegions = topInvertedRegions[0];
         }
     }
 
