@@ -50,6 +50,10 @@ public class BoostableBurstDrill extends BurstDrill {
 
             topInvertedRegions = new TextureRegion[topVariant];
             for(int i = 0; i < topVariant; i++) topInvertedRegions[i] = Core.atlas.find(name + "-top-invert"+ (i + 1));
+
+
+            if(topRegion == null) topRegion = topRegions[0];
+            if(topInvertedRegion == null) topInvertedRegion = topInvertedRegions[0];
         }
     }
 
