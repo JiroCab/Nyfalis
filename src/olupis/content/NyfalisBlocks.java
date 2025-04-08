@@ -1290,6 +1290,7 @@ public class NyfalisBlocks {
             consumeItems(with(lead, 2, rustyIron, 2));
             researchCost = with(rustyIron, 50, lead, 50);
             requirements(Category.crafting, with(rustyIron, 15, lead, 30));
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new VariantableDrawRegion(4));
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawDefault());
         }};
 
