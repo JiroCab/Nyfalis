@@ -741,9 +741,6 @@ public class NyfalisBlocks {
         //endregion
         //region Spreading & related floor
 
-        /* Note: The last stage of anything from the spreading types should go FIRST,
-        last stage -> middle stage -> first stage, otherwise stuff WILL break */
-
         // TODO: Add Fx (spreadEffect [floors, ores], upgradeEffect [floors], growEffect [walls])
         growingWall = new GrowingWall("walltest", 0){{
             inEditor = false;
@@ -752,9 +749,38 @@ public class NyfalisBlocks {
             growChance = 0.04d;
             next = mossiestStoneWall;
         }};
-        theircelium = new Floor("moss", 3){{
-            mapColor = Color.valueOf("#1e2f0a");
+
+        mycelium = new SpreadingFloor("mossy-overlay", 3){{
+            growSpread = true;
+            overlay = true;
+
+            spreadTries = 5;
+            spreadChance = 0.021d;
+            drillEfficiency = 0.66f;
+
+            replacements.putAll(
+                    stoneWall, growingWall
+            );
+            blacklist.addAll(
+                    coreZone, theircelium
+            );
+
+            mapColor = Color.valueOf("#78bc27");
+            spreadSound = NyfalisSounds.mossSpread;
+        }};
+
+        yourcelium = new SpreadingFloor("mossier-overlay", 3){{
+            // this doesn't spread, but growth is affected by these settings too
+            overlay = true;
             inEditor = false;
+
+            spreadTries = 7;
+            spreadChance = 0.013d;
+
+            ((SpreadingFloor) mycelium).next = this;
+
+            mapColor = Color.valueOf("#5a8d1d");
+            spreadSound = NyfalisSounds.mossSpread;
         }};
 
         ourcelium = new SpreadingFloor("mossiest-overlay", 3){{
@@ -762,45 +788,21 @@ public class NyfalisBlocks {
             overlay = true;
             inEditor = false;
 
-            spreadTries = 6;
+            spreadTries = 10;
             spreadChance = 0.0095d;
 
-            next = theircelium;
+            ((SpreadingFloor) yourcelium).next = this;
 
             mapColor = Color.valueOf("#3c5e14");
             spreadSound = NyfalisSounds.mossSpread;
             blacklist.addAll(coreZone); //doesnt work
         }};
-        yourcelium = new SpreadingFloor("mossier-overlay", 3){{
-            // this doesn't spread, but growth is affected by these settings too
-            overlay = true;
+
+        theircelium = new Floor("moss", 3){{
+            mapColor = Color.valueOf("#1e2f0a");
             inEditor = false;
 
-            spreadTries = 4;
-            spreadChance = 0.013d;
-
-            next = ourcelium;
-
-            mapColor = Color.valueOf("#5a8d1d");
-            spreadSound = NyfalisSounds.mossSpread;
-        }};
-        mycelium = new SpreadingFloor("mossy-overlay", 3){{
-            growSpread = true;
-            overlay = true;
-
-            spreadTries = 3;
-            spreadChance = 0.021d;
-            drillEfficiency = 0.66f;
-
-            replacements.putAll(
-                stoneWall, growingWall
-            );
-            blacklist.addAll(coreZone, theircelium);
-
-            next = yourcelium;
-
-            mapColor = Color.valueOf("#78bc27");
-            spreadSound = NyfalisSounds.mossSpread;
+            ((SpreadingFloor) ourcelium).next = this;
         }};
 
         //endregion

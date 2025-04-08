@@ -80,19 +80,31 @@ public class SpreadingFloor extends RotatingFloor{
         if(fullSpread)
             spreadOffset = 0;
 
-        Vars.content.blocks().each(b -> {
-            if(b instanceof SpreadingFloor
-            || b instanceof SpreadingOre
-            || b.isFloor() && b.asFloor().isLiquid)
-                blacklist.add(b);
+        // share unique blacklist between all blocks of this kind
+        if(next instanceof SpreadingFloor f)
+            f.blacklist.addAll(blacklist);
+
+        Events.on(EnvUpdater.EnvUpdaterInit.class, e -> {
+            Vars.content.blocks().each(b -> {
+                if(b instanceof SpreadingFloor || b instanceof SpreadingOre || b.isFloor() && b.asFloor().isLiquid)
+                    blacklist.add(b);
+            });
+
+            if(next != null){
+                blacklist.add(next);
+
+                if(next instanceof SpreadingFloor f){
+                    ores.each(o -> {
+                        var in = f.ores.find(r -> r.itemDrop == o.itemDrop);
+                        if(in != null)
+                            o.next = in;
+                    });
+                }else ores.each(o -> o.set = next);
+            }
+
+            if(set != null)
+                blacklist.add(set);
         });
-
-        if(next != null)
-            blacklist.add(next);
-        if(set != null)
-            blacklist.add(set);
-
-        handleBlacklist(blacklist);
 
         Events.on(EventType.ClientLoadEvent.class, e -> generate(false));
         Events.on(EventType.ServerLoadEvent.class, e -> generate(true));
@@ -119,37 +131,9 @@ public class SpreadingFloor extends RotatingFloor{
             replacements.put(o, ore);
 
             ores.add(ore);
-            EnvUpdater.generated.add(ore);
         });
 
         Events.fire(new EnvUpdater.OreUpdateEvent());
-    }
-
-    public void addGenerated(ObjectSet<Block> entries){
-        blacklist.addAll(entries);
-
-        if(next instanceof SpreadingFloor f){
-            ores.each(o -> {
-                var in = f.ores.find(r -> r.itemDrop == o.itemDrop);
-                if(in != null)
-                    o.next = in;
-            });
-        }else if(next != null)
-            ores.each(o -> o.set = next);
-    }
-
-    public void handleBlacklist(ObjectSet<Block> list){
-        if(set != this && set instanceof SpreadingFloor t){
-            if(t.growSpread || t.next == null)
-                t.blacklist.addAll(list);
-            else t.handleBlacklist(list);
-        }
-
-        if(next instanceof SpreadingFloor f){
-            if(f.growSpread || f.next == null)
-                f.blacklist.addAll(list);
-            else f.handleBlacklist(list);
-        }
     }
 
     @Override

@@ -18,9 +18,9 @@ import static mindustry.Vars.*;
 
 public class EnvUpdater{
     public static class OreUpdateEvent{};
+    public static class EnvUpdaterInit{};
 
-    public static final Seq<Block> spreadingFloors = content.blocks().select(b -> b instanceof SpreadingFloor);
-    public static final ObjectSet<Block> generated = new ObjectSet<>();
+    public static final Seq<Block> spreadingFloors = new Seq<>();
     public static final int iterations = 4;
     public static int completed = 0;
 
@@ -44,8 +44,10 @@ public class EnvUpdater{
 
         Events.on(OreUpdateEvent.class, e -> {
             var set = content.blocks().select(b -> b instanceof SpreadingFloor);
-            if(++completed >= set.size)
-                set.each(t -> ((SpreadingFloor) t).addGenerated(generated));
+            if(++completed >= set.size){
+                Events.fire(new EnvUpdaterInit());
+                spreadingFloors.addAll(set);
+            }
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
@@ -375,7 +377,7 @@ public class EnvUpdater{
     }
 
     private static boolean canSpread(Tile tile, int radius, ObjectSet<Block> blacklist){
-        return !getNearby(tile, radius, blacklist).isEmpty();
+        return !(getNearby(tile, radius, blacklist).isEmpty());
     }
 
     private static boolean canGrow(SpreadingFloor var, Tile tile){
@@ -386,21 +388,24 @@ public class EnvUpdater{
         Seq<Tile> ret = new Seq<>();
         if(tile.block().isStatic())
             return ret;
-        Tile t = null;
 
         if(radius <= 0)
             for(int i = 0; i <= 3; i++){ // linear
-                t = tile.nearby(i);
-                if(t != null && !(blacklist.contains(t.floor()) || blacklist.contains(t.overlay())))
+                Tile t = tile.nearby(i);
+                if(t != null && allowed(t, blacklist))
                     ret.add(t);
             }
         else
             tile.circle(radius, tmp -> { // random
-                if(tmp != null && !(blacklist.contains(tmp.floor()) || blacklist.contains(tmp.overlay())))
+                if(tmp != null && allowed(tmp, blacklist))
                     ret.add(tmp);
             });
 
         return ret;
+    }
+
+    private static boolean allowed(Tile tile, ObjectSet<Block> blacklist){
+        return !blacklist.contains(tile.block()) && !blacklist.contains(tile.floor()) && !blacklist.contains(tile.overlay());
     }
 
     private static void push(ObjectMap<Tile, int[]> map, Tile tile, int iter, int id){
