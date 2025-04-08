@@ -960,6 +960,7 @@ public class NyfalisBlocks {
             tier = 1;
             size = 3;
             drillTime = 60f * 8.5f;
+            variants = topVariant = 3;
 
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             researchCost = with(rustyIron,50);
