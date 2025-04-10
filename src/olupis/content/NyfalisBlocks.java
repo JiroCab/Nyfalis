@@ -106,7 +106,7 @@ public class NyfalisBlocks {
 
         rustyDrill, steamDrill, hydroElectricDrill, steamAgitator, garden, fortifiedRadiator,
 
-        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader, rustedBridge,
+        rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader, rustedBridge, offloader,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
         steamBoiler, broiler, oilSeparator, lubricantMixer, demulsifier,
@@ -944,12 +944,25 @@ public class NyfalisBlocks {
             solid = false;
             allowCoreUnload = true;
 
-            speed = 4f;
+            speed = 16f;
             health = 120;
             regionRotated1 = 1;
             buildCostMultiplier = 0.3f;
             researchCost = with(lead, 500, graphite, 100, iron, 100);
             requirements(Category.distribution, with(iron, 15, graphite, 15, lead, 30));
+        }};
+
+        offloader = new DirectionalUnloaderRotatable("offloader"){{
+            solid = allowCoreUnload = hasPower = consumesPower = true;
+
+            speed = 8f;
+            health = 250;
+            regionRotated1 = 1;
+            consumePower(10f / 60f); 
+            buildCostMultiplier = 0.3f;
+            //TODO: this should costmore/later
+            researchCost = with(cobalt, 500, graphite, 1500, iron, 1500);
+            requirements(Category.distribution, with(iron, 30, silicon, 30, cobalt, 30));
         }};
 
         //endregion
@@ -1293,7 +1306,6 @@ public class NyfalisBlocks {
             researchCost = with(rustyIron, 50, lead, 50);
             requirements(Category.crafting, with(rustyIron, 15, lead, 30));
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new VariantableDrawRegion(4));
-            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawDefault());
         }};
 
         rustEngraver = new BoostableGenericCrafter("rust-engraver"){{

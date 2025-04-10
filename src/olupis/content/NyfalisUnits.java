@@ -159,7 +159,7 @@ public class NyfalisUnits {
             armor = 4f;
             hitSize = 16f;
             drag = 0.05f;
-            speed = 5.5f;
+            speed = 3.6f;
             accel = 0.07f;
             health = 270f;
             engineSize = 4f;
@@ -812,9 +812,9 @@ public class NyfalisUnits {
         //region Ground - Snek
         venom = new SnekUnitType("venom"){{
             constructor = CrawlUnit::create;
-            armor = 1;
+            armor = 2;
             accel = 2.5f;
-            health = 650;
+            health = 250;
             speed = 2.2f;
             segments = 7;
             segmentScl = 8f;
@@ -1035,7 +1035,7 @@ public class NyfalisUnits {
 
             armor = 2;
             hitSize = 8;
-            health = 200;
+            health = 300;
             speed = 0.65f;
             engineSize = -1;
             rotateSpeed = 1.72f;
