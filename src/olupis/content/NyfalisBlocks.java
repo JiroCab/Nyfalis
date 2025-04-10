@@ -944,7 +944,7 @@ public class NyfalisBlocks {
             solid = false;
             allowCoreUnload = true;
 
-            speed = 16f;
+            speed = 18f;
             health = 120;
             regionRotated1 = 1;
             buildCostMultiplier = 0.3f;
@@ -955,7 +955,7 @@ public class NyfalisBlocks {
         offloader = new DirectionalUnloaderRotatable("offloader"){{
             solid = allowCoreUnload = hasPower = consumesPower = true;
 
-            speed = 8f;
+            speed = 10f;
             health = 250;
             regionRotated1 = 1;
             consumePower(10f / 60f); 
