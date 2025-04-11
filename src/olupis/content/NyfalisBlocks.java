@@ -135,11 +135,11 @@ public class NyfalisBlocks {
             nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
             rainRegrowables = new ObjectSet<>();
 
-    public static void LoadWorldTiles(){
+    public static void LoadWorldTiles() {
         //region Ores / Overlays
         oreIron = new OreBlock("ore-iron", rustyIron);
 
-        oreIronWall = new OreBlock("ore-iron-wall", rustyIron){{
+        oreIronWall = new OreBlock("ore-iron-wall", rustyIron) {{
             wallOre = true;
         }};
 
@@ -149,15 +149,15 @@ public class NyfalisBlocks {
         oreOxidizedCopper = new OreBlock("ore-oxidized-copper", copper);
         oreOxidizedLead = new OreBlock("ore-oxidized-lead", lead);
 
-        oreQuartz = new OreBlock("ore-quartz", quartz){{
+        oreQuartz = new OreBlock("ore-quartz", quartz) {{
             variants = 3;
         }};
 
-        oreAlco = new OreBlock("ore-alco", alcoAlloy){{
+        oreAlco = new OreBlock("ore-alco", alcoAlloy) {{
             variants = 2;
         }};
 
-        glowSprouts = new OverlayFloor("glow-sprout"){{
+        glowSprouts = new OverlayFloor("glow-sprout") {{
             emitLight = true;
             needsSurface = false;
             variants = 1;
@@ -165,232 +165,232 @@ public class NyfalisBlocks {
             //is sad that BlockRenderer.java does not render light from overlays, but ill keep it incase TnT
         }};
 
-        lumaSprouts = new OverlayFloor("luma-sprout"){{
+        lumaSprouts = new OverlayFloor("luma-sprout") {{
             variants = 1;
             needsSurface = false;
         }};
 
-        redCorals = new OverlayFloor("red-corals"){{
+        redCorals = new OverlayFloor("red-corals") {{
             variants = 1;
             needsSurface = false;
         }};
 
-        blueCorals = new OverlayFloor("blue-corals"){{
+        blueCorals = new OverlayFloor("blue-corals") {{
             variants = 1;
             needsSurface = false;
         }};
 
-        greenCorals = new OverlayFloor("green-corals"){{
+        greenCorals = new OverlayFloor("green-corals") {{
             variants = 1;
             needsSurface = false;
         }};
 
-        kelp = new OverlayFloor("kelp"){{
+        kelp = new OverlayFloor("kelp") {{
             variants = 1;
             needsSurface = false;
         }};
 
         //endregion
         // region Floors
-        beachSandFloor = new Floor("beach-sand-floor"){{
+        beachSandFloor = new Floor("beach-sand-floor") {{
             itemDrop = Items.sand;
             playerUnmineable = true;
             variants = 4;
             attributes.set(Attribute.oil, 0.75f);
         }};
-        gypsumFloor = new Floor("gypsum-floor"){{
+        gypsumFloor = new Floor("gypsum-floor") {{
             variants = 4;
         }};
-        galenaFLoor = new Floor("galena-floor"){{
+        galenaFLoor = new Floor("galena-floor") {{
             variants = 4;
         }};
-        pumiceFloor = new Floor("pumice-floor"){{
+        pumiceFloor = new Floor("pumice-floor") {{
             variants = 4;
         }};
-        rustyFloor = new Floor("rusty-floor"){{
+        rustyFloor = new Floor("rusty-floor") {{
             variants = 4;
             blendGroup = metalFloor;
         }};
-        rustFloor = new Floor("rust-floor"){{
+        rustFloor = new Floor("rust-floor") {{
             variants = 4;
         }};
-        redSand = new Floor("red-sand-floor"){{
+        redSand = new Floor("red-sand-floor") {{
             itemDrop = Items.sand;
             playerUnmineable = true;
             attributes.set(Attribute.oil, 1.5f);
         }};
-		riverSand = new Floor("river-sand"){{
+        riverSand = new Floor("river-sand") {{
             itemDrop = Items.sand;
             attributes.set(Attribute.oil, 1.2f);
         }};
 
-        redSandSnow = new Floor("red-sand-snow"){{
+        redSandSnow = new Floor("red-sand-snow") {{
             itemDrop = Items.sand;
             playerUnmineable = true;
             attributes.set(Attribute.oil, 1.5f);
         }};
 
-        lumaGrass = new Floor("luma-grass"){{
+        lumaGrass = new Floor("luma-grass") {{
             variants = 3;
             attributes.set(bio, 0.08f);
             attributes.set(Attribute.water, 0.15f);
         }};
 
-        yellowGrass = new Floor("yellow-grass"){{
+        yellowGrass = new Floor("yellow-grass") {{
             variants = 4;
             attributes.set(bio, 0.08f);
             attributes.set(Attribute.water, 0.15f);
         }};
 
-        pinkGrass = new Floor("pink-grass"){{
+        pinkGrass = new Floor("pink-grass") {{
             variants = 4;
             attributes.set(bio, 0.08f);
             attributes.set(Attribute.water, 0.15f);
         }};
 
-        frozenGrass = new Floor("frozen-grass"){{
+        frozenGrass = new Floor("frozen-grass") {{
             attributes.set(Attribute.water, 0.15f);
             attributes.set(bio, 0.08f);
             wall = shrubs;
         }};
 
-        cinderBloomy = new Floor("cinder-bloomy"){{
+        cinderBloomy = new Floor("cinder-bloomy") {{
             variants = 3;
             attributes.set(bio, 0.03f);
             attributes.set(Attribute.water, -0.15f);
         }};
 
-        cinderBloomier = new Floor("cinder-bloomier"){{
+        cinderBloomier = new Floor("cinder-bloomier") {{
             variants = 3;
             attributes.set(bio, 0.02f);
             attributes.set(Attribute.water, -0.05f);
         }};
 
-        cinderBloomiest = new Floor("cinder-bloomiest"){{
+        cinderBloomiest = new Floor("cinder-bloomiest") {{
             variants = 3;
             attributes.set(bio, 0.01f);
         }};
 
-        cinderBloomGrass = new Floor("cinder-bloom"){{
+        cinderBloomGrass = new Floor("cinder-bloom") {{
             variants = 3;
             attributes.set(bio, 0.06f);
             attributes.set(Attribute.water, 0.25f);
         }};
 
-        mossyStone = new RotatingFloor("mossy-stone"){{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }}  ;
-
-        mossierStone = new RotatingFloor("mossier-stone"){{
+        mossyStone = new RotatingFloor("mossy-stone") {{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        mossiestStone = new RotatingFloor("mossiest-stone"){{
+        mossierStone = new RotatingFloor("mossier-stone") {{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        mossStone = new Floor("moss-stone"){{
+        mossiestStone = new RotatingFloor("mossiest-stone") {{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        mossyDirt = new RotatingFloor("mossy-dirt"){{
+        mossStone = new Floor("moss-stone") {{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        frozenDirt = new Floor("frozen-dirt"){{
+        mossyDirt = new RotatingFloor("mossy-dirt") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+
+        frozenDirt = new Floor("frozen-dirt") {{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.3f);
         }};
 
-        frozenMud = new Floor("frozen-mud"){{
+        frozenMud = new Floor("frozen-mud") {{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.3f);
         }};
 
-        hardenMud = new Floor("harden-mud"){{
+        hardenMud = new Floor("harden-mud") {{
             attributes.set(Attribute.water, 0.1f);
             variants = 3;
         }};
 
-        frozenTar = new Floor("frozen-tar"){{
+        frozenTar = new Floor("frozen-tar") {{
             attributes.set(Attribute.water, 0.3f);
             attributes.set(Attribute.oil, 1.2f);
             variants = 3;
         }};
 
-        frozenSlop = new Floor("frozen-slop"){{
+        frozenSlop = new Floor("frozen-slop") {{
             attributes.set(Attribute.water, 0.6f);
             attributes.set(Attribute.oil, 0.6f);
             variants = 3;
         }};
 
-        snowySand = new Floor("snowy-sand"){{
+        snowySand = new Floor("snowy-sand") {{
             attributes.set(Attribute.water, 0.1f);
             variants = 3;
         }};
 
-        crackedIce = new Floor("cracked-ice"){{
+        crackedIce = new Floor("cracked-ice") {{
             attributes.set(Attribute.water, 0.3f);
             variants = 3;
         }};
-        forestGrass = new Floor("forest-grass"){{
+        forestGrass = new Floor("forest-grass") {{
             attributes.set(Attribute.water, 0.1f);
             variants = 3;
         }};
 
-        mossyhardenMud = new RotatingFloor("mossy-harden-mud"){{
+        mossyhardenMud = new RotatingFloor("mossy-harden-mud") {{
             attributes.set(bio, 0.2f);
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        grassyVent = new SteamVent("grassy-vent"){{
+        grassyVent = new SteamVent("grassy-vent") {{
             effectColor = Color.white;
             parent = blendGroup = grass;
             attributes.set(Attribute.steam, 1f);
         }};
 
-        mossyVent = new SteamVent("mossy-vent"){{
+        mossyVent = new SteamVent("mossy-vent") {{
             effectColor = Color.white;
             parent = blendGroup = mossStone;
             attributes.set(Attribute.steam, 1f);
         }};
 
-        stoneVent = new SteamVent("stone-vent"){{
+        stoneVent = new SteamVent("stone-vent") {{
             effectColor = Color.white;
             parent = blendGroup = stone;
             attributes.set(Attribute.steam, 1f);
         }};
 
-        hardenMuddyVent = new SteamVent("harden-muddy-vent"){{
+        hardenMuddyVent = new SteamVent("harden-muddy-vent") {{
             effectColor = Color.white;
             parent = blendGroup = hardenMud;
             attributes.set(Attribute.steam, 1f);
         }};
 
-        basaltVent = new SteamVent("basalt-vent"){{
+        basaltVent = new SteamVent("basalt-vent") {{
             effectColor = Color.white;
             parent = blendGroup = basalt;
             attributes.set(Attribute.steam, 1f);
         }};
 
-        snowVent = new SteamVent("snow-vent"){{
+        snowVent = new SteamVent("snow-vent") {{
             effectColor = Color.white;
             parent = blendGroup = snow;
             attributes.set(Attribute.steam, 1f);
         }};
 
-        redSandVent = new SteamVent("red-sand-vent"){{
+        redSandVent = new SteamVent("red-sand-vent") {{
             effectColor = Color.white;
             parent = blendGroup = redSand;
             attributes.set(Attribute.steam, 1f);
         }};
 
-        dirtVent = new SteamVent("dirt-vent"){{
+        dirtVent = new SteamVent("dirt-vent") {{
             variants = 3;
             effectColor = Color.white;
             parent = blendGroup = dirt;
@@ -400,7 +400,7 @@ public class NyfalisBlocks {
         //endregion
         //region Liquid floor
 
-        redSandWater = new Floor("red-sand-water"){{
+        redSandWater = new Floor("red-sand-water") {{
             isLiquid = supportsOverlay = true;
 
             variants = 0;
@@ -412,7 +412,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
-        lumaGrassWater = new Floor("luma-grass-water"){{
+        lumaGrassWater = new Floor("luma-grass-water") {{
             isLiquid = supportsOverlay = true;
             liquidDrop = Liquids.water;
             status = StatusEffects.wet;
@@ -423,7 +423,7 @@ public class NyfalisBlocks {
             albedo = 0.9f;
         }};
 
-        brimstoneSlag = new Floor("brimstone-slag"){{
+        brimstoneSlag = new Floor("brimstone-slag") {{
             isLiquid = emitLight = true;
 
             variants = 0;
@@ -439,7 +439,7 @@ public class NyfalisBlocks {
             lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
-        algaeWater = new Floor("mossy-water"){{
+        algaeWater = new Floor("mossy-water") {{
             isLiquid = supportsOverlay = true;
 
             variants = 3;
@@ -451,7 +451,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
-        algaeWaterDeep = new Floor("mossy-water-deep"){{ //Remind rushie to update the bundles thx -past rushie
+        algaeWaterDeep = new Floor("mossy-water-deep") {{ //Remind rushie to update the bundles thx -past rushie
             variants = 3;
             albedo = 0.9f;
             drownTime = 200f;
@@ -464,7 +464,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
-        pinkGrassWater = new Floor("pink-grass-water"){{
+        pinkGrassWater = new Floor("pink-grass-water") {{
             isLiquid = supportsOverlay = true;
 
             statusDuration = 50f;
@@ -476,7 +476,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
-        yellowMossyWater = new Floor("yellow-mossy-water"){{
+        yellowMossyWater = new Floor("yellow-mossy-water") {{
             isLiquid = supportsOverlay = true;
 
             variants = 0;
@@ -488,7 +488,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
-        coralReef = new Floor("coral-reef"){{
+        coralReef = new Floor("coral-reef") {{
             variants = 0;
             albedo = 0.9f;
             drownTime = 200f;
@@ -501,7 +501,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
-        slop = new Floor("slop"){{
+        slop = new Floor("slop") {{
             isLiquid = supportsOverlay = true;
 
             variants = 0;
@@ -514,7 +514,7 @@ public class NyfalisBlocks {
             walkEffect = NyfalisFxs.bubbleSlow;
         }};
 
-        slopDeep = new Floor("slop-deep"){{
+        slopDeep = new Floor("slop-deep") {{
             isLiquid = supportsOverlay = true;
 
             variants = 0;
@@ -528,7 +528,7 @@ public class NyfalisBlocks {
             walkEffect = NyfalisFxs.bubbleSlow;
         }};
 
-        lubricantPool = new Floor("lubricant-pool"){{
+        lubricantPool = new Floor("lubricant-pool") {{
             drownTime = 180f;
             status = NyfalisStatusEffects.lubed;
             statusDuration = 120f;
@@ -541,57 +541,57 @@ public class NyfalisBlocks {
 
         //endregion
         //region Props
-        yellowBush = new Prop("yellow-bush"){{
+        yellowBush = new Prop("yellow-bush") {{
             variants = 2;
             breakSound = Sounds.plantBreak;
             frozenGrass.asFloor().decoration = this;
             yellowGrass.asFloor().decoration = this;
         }};
 
-        lumaFlora = new Prop("luma-flora"){{
+        lumaFlora = new Prop("luma-flora") {{
             variants = 2;
             breakSound = Sounds.plantBreak;
             lumaGrass.asFloor().decoration = this;
             pinkGrass.asFloor().decoration = this;
         }};
 
-        bush = new Prop("bush"){{
+        bush = new Prop("bush") {{
             variants = 2;
             breakSound = Sounds.plantBreak; // Buildable via planty mush
         }};
 
-        mossyBoulder = new Prop("mossy-boulder"){{
+        mossyBoulder = new Prop("mossy-boulder") {{
             variants = 2;
             frozenGrass.asFloor().decoration = this;
             mossierStone.asFloor().decoration = this;
         }};
-        mossBoulder = new Prop("moss-boulder"){{
+        mossBoulder = new Prop("moss-boulder") {{
             variants = 2;
             mossStone.asFloor().decoration = this;
             mossiestStone.asFloor().decoration = this;
         }};
-        beachSandBoulder = new Prop("beach-sand-boulder"){{
+        beachSandBoulder = new Prop("beach-sand-boulder") {{
             beachSandFloor.asFloor().decoration = this;
             variants = 2;
         }};
-        gypsumBoulder = new Prop("gypsum-boulder"){{
+        gypsumBoulder = new Prop("gypsum-boulder") {{
             gypsumFloor.asFloor().decoration = this;
             variants = 2;
         }};
-        galenaBoulder = new Prop("galena-boulder"){{
+        galenaBoulder = new Prop("galena-boulder") {{
             galenaFLoor.asFloor().decoration = this;
             variants = 2;
         }};
-        pumiceBoulder = new Prop("pumice-boulder"){{
+        pumiceBoulder = new Prop("pumice-boulder") {{
             pumiceFloor.asFloor().decoration = this;
             variants = 2;
         }};
-        rustyBoulder = new Prop("rusty-boulder"){{
+        rustyBoulder = new Prop("rusty-boulder") {{
             rustyFloor.asFloor().decoration = this;
             rustFloor.asFloor().decoration = this;
             variants = 2;
         }};
-        infernalBloom = new RotatingProp("infernal-bloom"){{
+        infernalBloom = new RotatingProp("infernal-bloom") {{
             variants = 3;
             breakSound = Sounds.plantBreak;
             cinderBloomGrass.asFloor().decoration = this;
@@ -599,12 +599,12 @@ public class NyfalisBlocks {
             cinderBloomiest.asFloor().decoration = this;
         }};
 
-        redSandBoulder = new Prop("red-sand-boulder"){{
+        redSandBoulder = new Prop("red-sand-boulder") {{
             variants = 2;
             redSand.asFloor().decoration = this;
         }};
 
-        glowBloom = new RotatingProp("glow-bloom"){{
+        glowBloom = new RotatingProp("glow-bloom") {{
             variants = 3;
             lightRadius = 10f;
             emitLight = true;
@@ -612,13 +612,13 @@ public class NyfalisBlocks {
             breakSound = Sounds.plantBreak;
         }};
 
-        deadBush = new RotatingProp("dead-bush"){{
+        deadBush = new RotatingProp("dead-bush") {{
             hasShadow = false;
             variants = 3;
             breakSound = Sounds.plantBreak;
         }};
 
-        glowLilly = new RotatingProp("glow-lilly"){{
+        glowLilly = new RotatingProp("glow-lilly") {{
             variants = 1;
             lightRadius = 8.5f;
             hasShadow = false;
@@ -629,38 +629,40 @@ public class NyfalisBlocks {
 
         //endregion
         //region Walls
-        beachSandWall = new StaticWall("beach-wall"){{
+        beachSandWall = new StaticWall("beach-wall") {{
             variants = 3;
         }};
-        gypsumWall = new StaticWall("gypsum-wall"){{
+        gypsumWall = new StaticWall("gypsum-wall") {{
             variants = 3;
         }};
-        gypsumRubble = new TallBlock("gypsum-rubble"){{
+        gypsumRubble = new TallBlock("gypsum-rubble") {{
             variants = 2;
         }};
-        galenaWall = new StaticWall("galena-wall"){{
+        galenaWall = new StaticWall("galena-wall") {{
             variants = 3;
         }};
-        pumiceWall = new StaticWall("pumice-wall"){{
+        pumiceWall = new StaticWall("pumice-wall") {{
             variants = 3;
         }};
-        pumiceRubble = new StaticTree("pumice-rubble"){{
+        pumiceRubble = new StaticTree("pumice-rubble") {{
             variants = 2;
         }};
-        redDune = new StaticWall("red-dune-wall"){{
+        redDune = new StaticWall("red-dune-wall") {{
             redSand.asFloor().wall = this;
             attributes.set(Attribute.sand, 2f);
         }};
 
-        pinkShrubs = new StaticWall("pink-shrubs"){{
+        pinkShrubs = new StaticWall("pink-shrubs") {{
             variants = 2;
         }};
 
-        lumaWall = new StaticTree("luma-wall"){{
+        lumaWall = new StaticTree("luma-wall") {{
             variants = 2;
         }};
 
-        rustedMetal = new StaticWall("rusted-metal");
+        rustedMetal = new StaticWall("rusted-metal") {{
+            variants = 2;
+        }};
 
         greenShrubsIrregular = new TallBlock("green-shrubs-irregular"){{
             variants = 2;
