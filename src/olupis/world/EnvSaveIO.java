@@ -42,7 +42,7 @@ public class EnvSaveIO implements CustomChunk{
 
             
             for(int i = 0; i < pr; i++){
-                Block b = content.locks().get(stream.readShort());
+                Block b = content.blocks().get(stream.readShort());
                 int val = stream.readShort();
                 if(b != null || val > 0)
                     save.post(() -> EnvUpdater.propCount.put(b, val));
@@ -68,9 +68,7 @@ public class EnvSaveIO implements CustomChunk{
         }
 
         // do not write anything until we're sure that the data is intact
-        save.run(
-            
-        );
+        save.run();
     }
 
     @Override
