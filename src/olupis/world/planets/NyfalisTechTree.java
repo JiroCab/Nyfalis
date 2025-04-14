@@ -218,7 +218,7 @@ public class NyfalisTechTree {
                     node(windMills, () -> {
                         node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder), new Objectives.SectorComplete(sanctuary)), () -> {
                             node(garden, Seq.with(new Objectives.SectorComplete(dyingForest)),()->{
-                                node(bioMatterPress, () ->{
+                                node(biomassGenerator, () ->{
 
                                 });
                             });

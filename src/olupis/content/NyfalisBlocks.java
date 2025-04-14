@@ -111,7 +111,7 @@ public class NyfalisBlocks {
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
         steamBoiler, broiler, oilSeparator, lubricantMixer, demulsifier,
 
-        wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine,
+        wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine, biomassGenerator,
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
@@ -1017,7 +1017,7 @@ public class NyfalisBlocks {
         }};
 
         garden = new AttributeCrafter("garden"){{
-            hasLiquids = hasPower = hasItems = legacyReadWarmup = true;
+            hasLiquids = hasItems = legacyReadWarmup = true;
             size = 3;
             craftTime = 185f;
             maxBoost = 2.5f;
@@ -1032,10 +1032,9 @@ public class NyfalisBlocks {
                     new DrawDefault(),
                     new DrawRegion("-top")
             );
-            consumePower(40f / 60f);
             consumeLiquid(Liquids.water, 18f / 60f);
-            researchCost = with(iron, 700, lead, 1500, rustyIron, 1500);
-            outputItem = new ItemStack(condensedBiomatter, 1);
+            researchCost = with(iron, 600, lead, 1200, rustyIron, 1200);
+            outputItem = new ItemStack(condensedBiomatter, 3);
             requirements(Category.production, ItemStack.with(iron, 30, lead, 60, rustyIron, 60));
         }};
 
@@ -1979,6 +1978,16 @@ public class NyfalisBlocks {
             consumeLiquid(NyfalisItemsLiquid.steam, 24f/60f);
             consumeLiquid(oil, 20f / 60f).boost();
             requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
+        }};
+        biomassGenerator = new ConsumeGenerator("biomass-generator"){{
+            size = 2;
+            powerProduction = 100f/60f;
+            itemDuration = 90f;
+
+            consumeItem(condensedBiomatter,2);
+            consumeLiquid(oil, 20f / 60f).boost();
+            researchCost = with(iron, 500, Items.lead, 1000, quartz, 500);
+            requirements(Category.power, with(iron, 50, lead, 100, quartz, 50));
         }};
         //TODO: Solar receiver & Mirror -> Super structure `Mirror(s)->Redirector->Solar tower+water=steam->steam turbine(s)`
         // Mirror -> SolarTower -> Heat + water-> SteamTurbine -> power
