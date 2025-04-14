@@ -37,12 +37,17 @@ public class EnvSaveIO implements CustomChunk{
 
         Log.info("Updating created snapshot with save data");
         try{
-            for(int i = 0; i < stream.readShort(); i++){
+            int pr = stream.readShort();
+            if(pr >= 1){
+
+            
+            for(int i = 0; i < pr; i++){
                 Block b = content.blocks().get(stream.readShort());
                 int val = stream.readShort();
                 if(b != null || val > 0)
                     save.post(() -> EnvUpdater.propCount.put(b, val));
             }
+        }
 
             for(Tile t : world.tiles){
                 int[] dsave = new int[4], rsave = new int[4];
