@@ -20,7 +20,7 @@ subtitle: "Yet another planet mod, v1.8.0"
 version: 1.8.0
 
 #the minimum game build required to run this mod
-minGameVersion: 136
+minGameVersion: 147
 
 #this is a content mod
 hidden : false

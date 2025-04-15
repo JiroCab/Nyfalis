@@ -617,11 +617,6 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         });
 
 
-        ints.clear();
-        ints.ensureCapacity(width * height / 4);
-
-
-
         for(Tile tile : tiles){
             if(tile.overlay().needsSurface && !tile.floor().hasSurface()){
                 tile.setOverlay(air);

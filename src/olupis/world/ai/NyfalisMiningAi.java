@@ -1,19 +1,17 @@
 package olupis.world.ai;
 
-import arc.math.Mathf;
-import arc.math.geom.Position;
-import arc.struct.Seq;
-import arc.util.Tmp;
-import mindustry.Vars;
-import mindustry.content.Blocks;
-import mindustry.content.Items;
-import mindustry.entities.units.AIController;
-import mindustry.gen.Building;
-import mindustry.gen.Call;
-import mindustry.type.Item;
-import mindustry.world.Tile;
-import olupis.content.NyfalisItemsLiquid;
-import olupis.world.entities.units.AmmoLifeTimeUnitType;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.entities.units.*;
+import mindustry.gen.*;
+import mindustry.type.*;
+import mindustry.world.*;
+import olupis.content.*;
+import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
 
@@ -26,7 +24,7 @@ public class NyfalisMiningAi extends AIController {
     public int mineType = 0;
     public Seq<Item> dynamicMineItems = new Seq<>(), dynamicBlackList = new Seq<>(), priorityMineItems = Seq.with(NyfalisItemsLiquid.rustyIron, Items.lead, Items.copper);
     public float priorityMin = 0.6f;
-    private int lastPathId = 0;
+    private Vec2 lastPathId = new Vec2(0, 0);
     private float lastMoveX, lastMoveY;
 
     public void updateMineItems(Building core){
@@ -149,7 +147,7 @@ public class NyfalisMiningAi extends AIController {
         if (unit.type.flying) circle(target, unit.type.range / 1.8f);
         else {
             if(!Mathf.equal(target.getX(), lastMoveX, 0.1f) || !Mathf.equal(target.getY(), lastMoveY, 0.1f)){
-                lastPathId ++;
+                //lastPathId ++;
                 lastMoveX = target.getX();
                 lastMoveY = target.getY();
             }

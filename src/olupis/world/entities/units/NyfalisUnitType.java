@@ -84,7 +84,7 @@ public class NyfalisUnitType extends UnitType {
         super.init();
 
         if(NyfalisMain.incompatible) return;
-        Seq<UnitCommand> cmds = Seq.with(commands);
+        Seq<UnitCommand> cmds = commands;
             if (customMoveCommand || cantMove){
                 cmds.remove(UnitCommand.moveCommand);
                 if(customMoveCommand)cmds.add(NyfalisUnitCommands.nyfalisMoveCommand);
@@ -101,7 +101,7 @@ public class NyfalisUnitType extends UnitType {
             if (canDash)cmds.add(NyfalisUnitCommands.nyfalisDashCommand);
             if (canCharge) cmds.add(NyfalisUnitCommands.nyfalisChargeCommand);
             if (canBoost && alwaysBoosts) cmds.remove(UnitCommand.boostCommand);
-        commands = cmds.toArray();
+
 
         if(generateDisplayFactory){
             var pwr = (PowerUnitTurret) Vars.content.blocks().find(b -> b instanceof PowerUnitTurret c && c.allUnitTypes().contains(this));
