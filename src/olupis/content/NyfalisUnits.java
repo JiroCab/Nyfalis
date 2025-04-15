@@ -161,7 +161,7 @@ public class NyfalisUnits {
             drag = 0.05f;
             speed = 3.6f;
             accel = 0.07f;
-            health = 270f;
+            health = 300f;
             engineSize = 4f;
             itemCapacity = 30;
             engineOffset = 13.5f;
@@ -179,30 +179,43 @@ public class NyfalisUnits {
                 inaccuracy = 3f;
                 soundPitchMin = 0.2f;
                 soundPitchMax = 0.5f;
-                reload = shootCone = 15f;
+                reload = 20f;
+                shootCone = 15f;
 
                 top = alternate =  mirror = false;
                 alwaysShootWhenMoving = true;
                 shootSound = NyfalisSounds.as2PlasmaShot;
-                bullet = new LightningBulletType(){{
-                    damage = 7;
-                    shootY = 0f;
-                    drawSize = 55;
-                    pierceCap = 5;
-                    lightningLength = 13;
-                    lightningLengthRand = 0;
-                    pierce = true;
-                    shootEffect = Fx.none;
+                bullet = new ArcLightningBulletType(){{
+                    rangeOverride = range = 40f;
+                    damage = 13;
+                    homingPower = 0.1f;
+
+                    status = StatusEffects.none;
+                    hitEffect= shootEffect = Fx.hitLancer;
                     lightningColor = hitColor = Pal.surge;
-                    lightningType = new BulletType(0.0001f, 0f){{
-                        pierceCap = 5;
-                        statusDuration = 10f;
-                        hittable = false;
+                    failLightnighBullet = true;
+                    lightningType = new LightningBulletType(){{
+                        damage = 7;
+                        shootY = 0f;
+                        drawSize = 55;
+                        pierceCap = 3;
+                        lightningLength = 13;
+                        lightningLengthRand = 0;
                         pierce = true;
+                        shootEffect = Fx.none;
+                        lightningColor = hitColor = Pal.surge;
                         hitEffect = Fx.hitLancer;
-                        despawnEffect = Fx.none;
-                        status = StatusEffects.shocked;
-                        lifetime = Fx.lightning.lifetime;
+
+                        lightningType = new BulletType(0.0001f, 0f){{
+                            pierceCap = 2;
+                            statusDuration = 10f;
+                            hittable = false;
+                            pierce = true;
+                            hitEffect = Fx.hitLancer;
+                            despawnEffect = Fx.none;
+                            status = StatusEffects.shocked;
+                            lifetime = Fx.lightning.lifetime;
+                        }};
                     }};
                 }};
             }});
@@ -210,7 +223,7 @@ public class NyfalisUnits {
                 weaponIconString = "olupis-striker-ui-discharge";
                 x = 0f;
                 reload = 30;
-                minShootVelocity = 5f;
+                minShootVelocity = 3f;
                 inaccuracy = shootCone = 180f;
 
                 ejectEffect = Fx.none;
