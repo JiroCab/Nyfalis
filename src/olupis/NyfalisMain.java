@@ -45,6 +45,7 @@ public class NyfalisMain extends Mod{
         NyfalisItemsLiquid.LoadItems();
         NyfalisStatusEffects.loadStatusEffects();
         NyfalisItemsLiquid.LoadLiquids();
+        NyfalisUnitCommands.loadUnitCommands();
         NyfalisUnits.LoadUnits();
         NyfalisBlocks.LoadWorldTiles();
         NyfalisBlocks.LoadBlocks();
@@ -216,9 +217,10 @@ public class NyfalisMain extends Mod{
         if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun){
             anyPlanet = changed = true;
         }
-        if(state.rules.hiddenBuildItems.isEmpty()){
-            anyPlanet = changed = true;
-        }
+
+//        if(state.rules.items.isEmpty()){
+//            anyPlanet = changed = true;
+//        }
 
         if(!changed){
             for (Block c : NyfalisBlocks.nyfalisCores) {

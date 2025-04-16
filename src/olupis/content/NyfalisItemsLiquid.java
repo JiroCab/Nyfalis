@@ -1,11 +1,10 @@
 package olupis.content;
 
-import arc.graphics.Color;
-import arc.struct.Seq;
+import arc.graphics.*;
+import arc.struct.*;
 import mindustry.content.*;
 import mindustry.type.*;
 
-import static mindustry.Vars.content;
 import static mindustry.content.Items.*;
 
 public class NyfalisItemsLiquid {
@@ -56,11 +55,6 @@ public class NyfalisItemsLiquid {
         nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum);
         nyfalisItems.add(nyfalisOnlyItems);
         nyfalisItems.addAll(copper, lead, silicon, graphite, sand, scrap);
-
-        /*.forEach() Crashes mobile*/
-        for (Planet p : content.planets()) {
-            if (!p.name.contains("olupis-")) p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
-        }
     }
 
     public static void LoadLiquids(){
