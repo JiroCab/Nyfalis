@@ -14,7 +14,7 @@ main: "olupis.NyfalisMain"
 #the mod description as seen in the mod dialog
 description: "(\u26A0Work in progress\u26A0)\n Yet another planet mod \nThat does it's best to give the player(s) a bit of something new,\n with a minor hint of what the base game has to offer, focus on RTS controls, and pain on top"
 
-subtitle: "Yet another planet mod, v1.8.0"
+subtitle: "Yet another planet mod, v1.8.0 (v8 REMOVE WHEN NOT IN V8 BRANCH THX)"
 
 #the mod version
 version: 1.8.0

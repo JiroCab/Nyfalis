@@ -45,6 +45,7 @@ public class NyfalisMain extends Mod{
         NyfalisItemsLiquid.LoadItems();
         NyfalisStatusEffects.loadStatusEffects();
         NyfalisItemsLiquid.LoadLiquids();
+        NyfalisUnitCommands.loadUnitCommands();
         NyfalisUnits.LoadUnits();
         NyfalisBlocks.LoadWorldTiles();
         NyfalisBlocks.LoadBlocks();

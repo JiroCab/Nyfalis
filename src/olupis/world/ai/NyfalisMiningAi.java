@@ -24,7 +24,6 @@ public class NyfalisMiningAi extends AIController {
     public int mineType = 0;
     public Seq<Item> dynamicMineItems = new Seq<>(), dynamicBlackList = new Seq<>(), priorityMineItems = Seq.with(NyfalisItemsLiquid.rustyIron, Items.lead, Items.copper);
     public float priorityMin = 0.6f;
-    private Vec2 lastPathId = new Vec2(0, 0);
     private float lastMoveX, lastMoveY;
 
     public void updateMineItems(Building core){
@@ -151,7 +150,7 @@ public class NyfalisMiningAi extends AIController {
                 lastMoveX = target.getX();
                 lastMoveY = target.getY();
             }
-            if (Vars.controlPath.getPathPosition(unit, lastPathId, Tmp.v2.set(target.getX(), target.getY()), Tmp.v1, null)) {
+            if (Vars.controlPath.getPathPosition(unit, Tmp.v2.set(target.getX(), target.getY()), Tmp.v1, null)) {
                 unit.lookAt(Tmp.v1);
                 moveTo(Tmp.v1, 1f, Tmp.v2.epsilonEquals(Tmp.v1, 4.1f) ? 30f : 0f, false, null);
             } else {

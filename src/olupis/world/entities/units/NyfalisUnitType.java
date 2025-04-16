@@ -24,7 +24,6 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.meta.*;
-import olupis.*;
 import olupis.content.*;
 import olupis.input.*;
 import olupis.world.ai.*;
@@ -82,25 +81,23 @@ public class NyfalisUnitType extends UnitType {
     @Override
     public void init(){
         super.init();
-
-        if(NyfalisMain.incompatible) return;
-        Seq<UnitCommand> cmds = commands;
+        
             if (customMoveCommand || cantMove){
-                cmds.remove(UnitCommand.moveCommand);
-                if(customMoveCommand)cmds.add(NyfalisUnitCommands.nyfalisMoveCommand);
+                commands.remove(UnitCommand.moveCommand);
+                if(customMoveCommand)commands.add(NyfalisUnitCommands.nyfalisMoveCommand);
             }
-            if(canDeploy)cmds.add(NyfalisUnitCommands.nyfalisDeployCommand);
-            if(canCircleTarget) cmds.add(NyfalisUnitCommands.circleCommand);
-            if(canHealUnits) cmds.add(NyfalisUnitCommands.healCommand);
-            if(canMend) cmds.add(NyfalisUnitCommands.nyfalisMendCommand);
+            if(canDeploy)commands.add(NyfalisUnitCommands.nyfalisDeployCommand);
+            if(canCircleTarget) commands.add(NyfalisUnitCommands.circleCommand);
+            if(canHealUnits) commands.add(NyfalisUnitCommands.healCommand);
+            if(canMend) commands.add(NyfalisUnitCommands.nyfalisMendCommand);
             if (customMineAi){
-                if(cmds.contains(UnitCommand.mineCommand)) cmds.remove(UnitCommand.mineCommand);
-                cmds.add(NyfalisUnitCommands.nyfalisMineCommand);
+                if(commands.contains(UnitCommand.mineCommand)) commands.remove(UnitCommand.mineCommand);
+                commands.add(NyfalisUnitCommands.nyfalisMineCommand);
             }
-            if (canGuardUnits) cmds.add(NyfalisUnitCommands.nyfalisGuardCommand);
-            if (canDash)cmds.add(NyfalisUnitCommands.nyfalisDashCommand);
-            if (canCharge) cmds.add(NyfalisUnitCommands.nyfalisChargeCommand);
-            if (canBoost && alwaysBoosts) cmds.remove(UnitCommand.boostCommand);
+            if (canGuardUnits) commands.add(NyfalisUnitCommands.nyfalisGuardCommand);
+            if (canDash)commands.add(NyfalisUnitCommands.nyfalisDashCommand);
+            if (canCharge) commands.add(NyfalisUnitCommands.nyfalisChargeCommand);
+            if (canBoost && alwaysBoosts) commands.remove(UnitCommand.boostCommand);
 
 
         if(generateDisplayFactory){
