@@ -1438,8 +1438,8 @@ public class NyfalisBlocks {
             itemCapacity = 20;
 
             results = with(
-                rustyIron, 3,
-                quartz, 1
+                rustyIron, 8,
+                quartz, 3, iron, 1
             );
             consumePower(2f);
             consumeItem(Items.sand, 3);
