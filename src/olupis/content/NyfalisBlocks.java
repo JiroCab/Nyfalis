@@ -813,11 +813,11 @@ public class NyfalisBlocks {
     public static void LoadBlocks(){
         //region Distribution
         rustyIronConveyor = new Conveyor("rusty-iron-conveyor"){{
+            alwaysUnlocked = true;
             health = 45;
             speed = 0.025f;
             displayedSpeed = 3.8f;
             buildCostMultiplier = 1.5f;
-            researchCost = with(rustyIron, 25);
             requirements(Category.distribution, with(rustyIron, 1));
         }};
 
@@ -973,6 +973,7 @@ public class NyfalisBlocks {
             hasPower = true;
             squareSprite = false;
             itemCapacity = 25;
+            alwaysUnlocked = true;
 
             tier = 1;
             size = 3;
@@ -980,7 +981,6 @@ public class NyfalisBlocks {
             variants = topVariant = 3;
 
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
-            researchCost = with(rustyIron,50);
             consumePower(10f/60f);
             consumeLiquid(Liquids.water, 0.05f).boost();
             requirements(Category.production, with(rustyIron, 15    ));
@@ -1085,11 +1085,11 @@ public class NyfalisBlocks {
         //region Liquid
         rustyPump = new Pump("rusty-pump"){{
             squareSprite = false;
+            alwaysUnlocked = true;
             size = 1;
             liquidCapacity = 10f;
             pumpAmount = 0.06f;
             buildCostMultiplier = 1.5f;
-            researchCost = with(lead, 20, rustyIron, 20);
             requirements(Category.liquid, with(rustyIron, 1, lead, 3));
         }};
 
@@ -1130,13 +1130,13 @@ public class NyfalisBlocks {
 
         leadPipe = new Conduit("lead-pipe"){{
             leaks = underBullets = true;
+            alwaysUnlocked = true;
 
             health = 70;
             liquidCapacity = 2f;
             liquidPressure = 1.05f;
             researchCostMultiplier = 0.5f;
             botColor = Color.valueOf("37323C");
-            researchCost = with(rustyIron, 10, lead, 10);
             requirements(Category.liquid, with(lead, 1, rustyIron, 1));
         }};
 
@@ -1979,14 +1979,11 @@ public class NyfalisBlocks {
             consumeLiquid(oil, 20f / 60f).boost();
             requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
         }};
-
-        biomassGenerator = new GenericCrafterWithPower("biomass-generator"){{
+        biomassGenerator = new ConsumeGenerator("biomass-generator"){{
             size = 2;
             powerProduction = 100f/60f;
-            powerProductionBoosted = 200f/60f;
-            craftTime = 90f;
+            itemDuration = 90f;
 
-            outputItem = new ItemStack(Items.sand, 2);
             consumeItem(condensedBiomatter,2);
             consumeLiquid(oil, 20f / 60f).boost();
             researchCost = with(iron, 500, Items.lead, 1000, quartz, 500);
