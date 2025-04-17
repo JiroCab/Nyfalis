@@ -258,9 +258,9 @@ public class NyfalisUnits {
             armor = 5f;
             hitSize = 20f;
             drag = 0.05f;
-            speed = 5.5f;
+            speed = 2.7f;
             accel = 0.07f;
-            health = 480f;
+            health = 1200f;
             range = 170f;
             engineSize = 3f;
             engineOffset = 7f;
@@ -548,8 +548,8 @@ public class NyfalisUnits {
             armor = 5;
             drag = 0.06f;
             accel = 0.08f;
-            health = 700f;
-            speed = 1.7f;
+            health = 1300;
+            speed = 1.8f;
             engineSize = 4f;
             engineOffset = 8f;
             rotateSpeed = 30f;
@@ -576,24 +576,6 @@ public class NyfalisUnits {
                 shootSound = Sounds.missile;
                 weaponIconUseFullString = true;
                 weaponIconString = "olupis-pteropus-ui-front";
-
-                bullet = new BasicBulletType(6.5f, 10, "missile"){{
-                    width = 8f;
-                    height = 19f;
-                    lifetime = 30f;
-                    homingPower = 0.30f;
-                    maxRange = 10f;
-                    collidesGround = false;
-                    shootEffect = Fx.none;
-                    smokeEffect = Fx.shootSmallSmoke;
-                    frontColor = NyfalisColors.rustyBullet;
-                    hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
-                    backColor = NyfalisColors.rustyBulletBack;
-
-                    trailColor = NyfalisColors.rustyBullet;
-                    trailWidth = 1.2f;
-                    trailLength = 3;
-                }};
             }},
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
@@ -632,9 +614,9 @@ public class NyfalisUnits {
                     }}
                     );
 
-                    bullet = new BasicBulletType(2.5f, 37, "large-bomb"){{
+                    bullet = new BasicBulletType(2f, 37, "large-bomb"){{
                         spin = 10f;
-                        lifetime = 80f;
+                        lifetime = 100f;
                         shrinkX = 20f /60;
                         shrinkY = 30f /60;
                         width = height = 17f;
@@ -716,7 +698,6 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             aiController = WaveAiHandler::new;
             lowAltitude = flying = canGuardUnits = waveHunts =true;
-            defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
 
             weapons.add(new Weapon("olupis-regioner-weapon"){{
                 top = alternate = false;
@@ -746,9 +727,9 @@ public class NyfalisUnits {
         //district -> a gun ship, light gun as primary and ammo limited secondary that resupplies from mother ship/maker (resolute)
         district = new AmmoEnabledUnitType("district"){{
             drag = 0.05f;
-            accel = 0.10f;
-            health = 450f;
-            fogRadius = 11f;
+            accel = 0.05f;
+            health = 1000;
+            fogRadius = 10f;
             engineSize = 1.6f;
             rotateSpeed = 19f;
             itemCapacity = 25;
@@ -763,7 +744,6 @@ public class NyfalisUnits {
             ammoType = carrierTypeAmmo;
             faceTarget = false;
             lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = true;
-            defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
 
             weapons.addAll(
                 new NyfalisWeapon("olupis-regioner-weapon"){{
@@ -771,13 +751,13 @@ public class NyfalisUnits {
                     rotate = alwaysUseAmmo = true;
                     x = y = 0;
                     recoil = 0.47f;
-                    reload = 13f;
+                    reload = 30f;
                     shootCone = 65f;
                     baseRotation = -7f;
                     ejectEffect = Fx.none;
 
                     showStatSprite = false;
-                    bullet = new BasicBulletType(3f, 3.5f){{
+                    bullet = new BasicBulletType(3f, 12f){{
                         spin = 30f;
                         lifetime = 30f;
                         width = height = 7f;
@@ -796,7 +776,7 @@ public class NyfalisUnits {
                     rotate = true;
                     x = 0;
                     y = 3;
-                    reload = 13f;
+                    reload = 15f;
                     recoil = 0.47f;
                     shootCone = 65f;
                     layerOffset = 0.05f;
@@ -806,7 +786,7 @@ public class NyfalisUnits {
                     shoot = sht;
 
                     showStatSprite = false;
-                    bullet = new BasicBulletType(4f, 3.5f, "olupis-diamond-bullet"){{
+                    bullet = new BasicBulletType(5f, 4f, "olupis-diamond-bullet"){{
                         width = 4;
                         height = 6f;
                         lifetime = 22f;
@@ -958,7 +938,7 @@ public class NyfalisUnits {
             accel = 3f;
             armor = 5;
             hitSize = 11f;
-            health = 600;
+            health = 1600;
             segments = 3;
             speed = 2.15f;
             segmentScl = 7f;
@@ -1160,7 +1140,7 @@ public class NyfalisUnits {
 
             armor = 3;
             hitSize = Vars.tilesize * 1.7f;
-            health = 700;
+            health = 125;
             speed = 0.60f;
             engineSize = -1;
             rotateSpeed = 1.72f;
@@ -1272,7 +1252,7 @@ public class NyfalisUnits {
 
             armor = 6f;
             hitSize = 12f;
-            health = 850;
+            health = 1150;
             itemCapacity = 0;
             legCount = 0;
             rotateSpeed = 3.5f;
@@ -1330,7 +1310,7 @@ public class NyfalisUnits {
         }};
 
         // resolute -> Constuct ablity, mini figther-bombers that need to reload at the ship, dis >= ability rebuild = sucide bombers
-        //              -> has payload, takes a bunch of t3 and bellow and  lets them shoot out of them, cnc:ra2 battle fortress / cnc:Zh battle bus
+        //              -> Desigantor pointer, pointer that debuffs an unit, all units that hit it gains a atack speed buff
         resolute = new DuckyTubeTankUnitType("resolute"){{
             constructor = LeggedPayloadUnitClass::create; //Legged so it doesnt slow down in deep water
             pathCost = NyfalisPathfind.costPreferNaval;
@@ -1339,11 +1319,10 @@ public class NyfalisUnits {
 
             armor = 6f;
             hitSize = 20f;
-            health = 850;
+            health = 2400;
             itemCapacity = 0;
             legCount = 0;
             rotateSpeed = 3.5f;
-            payloadCapacity = Mathf.pow(3.5f, 2f) * 64;
             researchCostMultiplier = 0f;
             legMoveSpace = 0;
 
@@ -1357,16 +1336,31 @@ public class NyfalisUnits {
                 new Weapon("olupis-dark-pew"){{
                     x = 0;
                     y = 5f;
-                    reload = 30f;
+                    reload = 15f;
                     rotate = true;
                     top = alternate = mirror = false;
                     ejectEffect = Fx.casing1;
                     parts.addAll(
                     );
-                    bullet = new BasicBulletType(5f, 8){{
-                        width = 5f;
-                        height = 7f;
-                        lifetime = 45;
+                    bullet = new TracterBeamBullet(){{
+                        continuous = true;
+                        shake = 0f;
+                        width = 0.3f;
+                        length = 100f;
+                        lifetime = 20;
+                        lightStroke = 10;
+                        damage = 40 / 12f;
+                        statusDuration = 60f;
+                        absMag = absScl = 0f;
+                        statusOnOwner = true;
+                        layer = Layer.groundUnit - 0.01f;
+
+                        status = NyfalisStatusEffects.marked;
+
+                        incendChance = incendSpread = 0f;
+                        smokeEffect = shootEffect = Fx.none;
+                        chargeEffect = hitEffect = NyfalisFxs.hitTracter;
+                        colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Pal.accent};
                     }};
             }},
                 new LaserPointerPointDefenceWeapon("olupis-lexington-point-defense"){{
@@ -1402,13 +1396,13 @@ public class NyfalisUnits {
                     width = 6f;
                     whenShooting = false;
                 }}
-            //new UnitRallySpawnAblity(district, 60f * 15f, 0, 6.5f)
+                //new UnitRallySpawnAblity(district, 60f * 15f, 0, 6.5f)
             );
         }};
 
 
         // nimitz -> Flag ship, boost, payload, Hex sheild when landed, prop/unit booster when flying
-
+//              -> has payload, takes a bunch of t3 and bellow and  lets them shoot out of them, cnc:ra2 battle fortress / cnc:Zh battle bus
 
         //endregion
         //region Naval - Guard
@@ -1566,7 +1560,7 @@ public class NyfalisUnits {
         crusader = new NyfalisUnitType("crusader"){{
             armor = 7f;
             hitSize = 20f;
-            health = 870f;
+            health = 1300;
             trailScl = 1.5f;
             trailLength = 22;
             waveTrailX = 7f;
@@ -2398,7 +2392,6 @@ public class NyfalisUnits {
             mineItems = Seq.with(rustyIron, lead, scrap);
             pathCost = NyfalisPathfind.costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
-            defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             setEnginesMirror(
                     new UnitEngine(26.5f / 4f, 30 / 4f, 2f, 45f), //front
                     new UnitEngine(24 / 4f, -40 / 4f, 2.2f, 315f)
@@ -2492,7 +2485,6 @@ public class NyfalisUnits {
             mineItems = Seq.with(rustyIron, lead, scrap);
             pathCost = NyfalisPathfind.costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
-            defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             setEnginesMirror(
                     new UnitEngine(24.5f / 4f, 18 / 4f, 2f, 45f), //front
                     new UnitEngine(22 / 4f, -20 / 4f, 2.2f, 315f)
@@ -2567,7 +2559,6 @@ public class NyfalisUnits {
         //Why do i exist? no reason, hope u don't cause any bugs even if you are one
         firefly = new NyfalisUnitType("firefly"){{
             constructor = UnitTypes.mono.constructor;
-            defaultCommand = UnitCommand.mineCommand;
             ammoType = new PowerAmmoType(500);
 
             flying = hidden = true;
@@ -2755,6 +2746,11 @@ public class NyfalisUnits {
             for(int i = 0; i < buffer.size; i++) out[i] = buffer.get(i);
             payloadWeaponIndex.put(u, out);
         }
+
+        diptera.defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
+        phorid.defaultCommand =  NyfalisUnitCommands.nyfalisMineCommand;
+        district.defaultCommand =  regioner.defaultCommand = zoner.defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
+        //todo this no work
     }
 
     public static void PostLoadUnits(){
@@ -2765,6 +2761,9 @@ public class NyfalisUnits {
         for (UnitType u : Vars.content.units()) {
             if(u.name.contains("olupis-")){
                 u.envEnabled = Env.terrestrial | NyfalisAttributeWeather.nyfalian;
+
+                if(u instanceof  NyfalisUnitType n && n.customMineAi) u.defaultCommand = NyfalisUnitCommands.nyfalisMoveCommand;
+
             }
         }
 

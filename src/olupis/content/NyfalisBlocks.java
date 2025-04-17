@@ -43,7 +43,7 @@ import olupis.world.blocks.environment.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
-import olupis.world.blocks.turret.UnstablePowerTurret;
+import olupis.world.blocks.turret.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.consumer.ConsumeLubricant;
 import olupis.world.entities.bullets.*;
@@ -60,6 +60,7 @@ import static mindustry.content.Items.*;
 import static mindustry.content.Liquids.oil;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisAttributeWeather.*;
+import static olupis.content.NyfalisColors.turretLightColor;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
 
@@ -120,7 +121,7 @@ public class NyfalisBlocks {
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
-        mendFieldProjector, taurus, ladar,
+        mendFieldProjector, taurus, lamp, ladar,
 
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
 
@@ -2197,6 +2198,80 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(iron, 40, Items.lead, 30));
         }};
 
+
+
+        cutboi = new NyfalisPowerTurret("cutboi"){{
+            reload = 30;
+            recoilTime = 5;
+            shootY = 0;
+            inaccuracy = 0.5f;
+            rotateSpeed = 3f;
+            minWarmup = 0.9f;
+            smokeEffect = shootEffect =  Fx.none;
+            shootType = new LaserBulletType(){{
+                lifetime = 4f;
+                length = 80;
+                width = 0;
+                damage = 10;
+                trailEffect = laserEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+            }};
+            drawer = new DrawTurret("iron-"){{
+                targetAir = false;
+                emitLight = true;
+
+                size = 2;
+                recoil = 0;
+                armor = 2f;
+                range = 80f;
+                health = 3000;
+                fogRadius = 13;
+                lightRadius = 37;
+                shootCone = 180f;
+                liquidCapacity = 5f;
+                coolantMultiplier = 3f;
+                for(int i = 0; i < 6; i++){
+                    int finalI = i;
+                    boolean isOdd = finalI % 2 != 0;
+                    parts.add(new RegionPart("-truss"){{
+                        progress = PartProgress.warmup;
+                        mirror = true;
+                        under = false;
+                        y = 5;
+                        x = 4;
+                        moveY = 8f * finalI;
+                        moveRot = isOdd ? -45 : 45;
+                        layer = Layer.legUnit + 0.2f;
+                    }});
+                }
+
+                parts.addAll(
+                new RegionPart("-blade"){{
+                    mirror = true;
+                    under = true;
+                    progress = PartProgress.warmup;
+                    y = 0;
+                    moveY = 53;
+                    moveRot = -45;
+                    moves.add(new PartMove(PartProgress.recoil, 0, 0, 45f));
+                }}
+                );
+            }};
+            lightColor = turretLightColor;
+            outlineColor = nyfalisBlockOutlineColour;
+            shootSound = NyfalisSounds.snip;
+            coolant = consume(new ConsumeLubricant(15f / 60f));
+            consumePower(0.1f / 60f);
+            researchCost = with(iron, 200, copper, 150);
+            requirements(Category.effect, with(iron, 60, copper, 50));
+
+        }};
+
+        lamp = new LightBlock("lamp"){{
+            requirements(Category.effect, BuildVisibility.lightingOnly, with(iron, 8, Items.lead, 8, copper, 8));
+            brightness = 0.75f;
+            radius = 100f;
+            consumePower(20f / 60f);
+        }};
 
         ladar = new Ladar("ladar"){{
             emitLight = true;
