@@ -22,7 +22,7 @@ import java.util.*;
 import static mindustry.Vars.*;
 
 public class UnitRallySpawnAblity extends UnitSpawnAbility {
-    public float moveSpawnX, moveSpawnY, growX, growY, xScl = 1f, yScl = 1f;
+    public float moveSpawnX, moveSpawnY, growX, growY, xScl = 1f, yScl = 1f, moveRot = 0;
     public Interp growInterp = Interp.linear, moveInterp = Interp.linear;
     public boolean invertGrow = false, invertMove = false, displayBars = true;
 
@@ -58,13 +58,14 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
                 u.command().commandPosition(unit.command().targetPos);
                 if(unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDeployCommand) u.command().command(UnitCommand.moveCommand);
             }
+
             Events.fire(new EventType.UnitCreateEvent(u, null, unit));
-            if(!Vars.net.client()){
-                u.add();
-            }
+
+            if(!Vars.net.client()) u.add();
 
             timer = 0f;
         }
+        timer = Mathf.clamp(timer, 0f, spawnTime);
     }
 
     @Override
@@ -73,13 +74,14 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
             float prog = timer / spawnTime, inv = invertMove ? 1f  :0f ,progf =  inv - moveInterp.apply(prog);
             float sx = spawnX + Mathf.lerp(0, moveSpawnX, progf), sy = spawnY + Mathf.lerp(0, moveSpawnY, progf),
                     invG = invertGrow ? 1f  :0f, sclProg = invG - growInterp.apply(prog), gx = growX * sclProg, gy = growY * sclProg,
-                    x = unit.x + Angles.trnsx(unit.rotation, sy, sx), y = unit.y + Angles.trnsy(unit.rotation, sy, sx);
+                    x = unit.x + Angles.trnsx(unit.rotation, sy, sx), y = unit.y + Angles.trnsy(unit.rotation, sy, sx),
+                    frot = Mathf.lerp(0, moveRot, prog);
 
             Draw.xscl *= xScl + gx;
             Draw.yscl *= yScl + gy;
 
-            if(Units.canCreate(unit.team, this.unit))Drawf.construct(x, y, this.unit.fullIcon, unit.rotation - 90, prog, 1f, timer);
-            else Draw.rect(this.unit.fullIcon, x, y, unit.rotation - 90);
+            if(Units.canCreate(unit.team, this.unit))Drawf.construct(x, y, this.unit.fullIcon, unit.rotation - 90 + frot, prog, 1f, timer);
+            else Draw.rect(this.unit.fullIcon, x, y, unit.rotation - 90 + frot);
         });
     }
 

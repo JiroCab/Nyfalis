@@ -344,6 +344,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             aiController = DeployedAi::new;
             deployEffect = NyfalisStatusEffects.deployed;
+            defaultCommand = NyfalisUnitCommands.nyfalisMoveCommand;
             lowAltitude = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = canCharge = true;
             weapons.addAll(
                 new NyfalisWeapon("", true, false){{
@@ -443,6 +444,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             aiController = DeployedAi::new;
             deployEffect = NyfalisStatusEffects.deployed;
+            defaultCommand = NyfalisUnitCommands.nyfalisMoveCommand;
             lowAltitude  = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = canCharge = inverseLanding = true;
             weapons.addAll(
                 new NyfalisWeapon("", true, false){{
@@ -559,6 +561,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             aiController = DeployedAi::new;
             deployEffect = NyfalisStatusEffects.deployed;
+            defaultCommand = NyfalisUnitCommands.nyfalisMoveCommand;
             lowAltitude  = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = canCharge = true;
             abilities.add(new SationaryBoostAblity());
             weapons.addAll(
@@ -1206,7 +1209,9 @@ public class NyfalisUnits {
 
             abilities.addAll(
                 new CarrierResupplyAblity(1),
-                new UnitRallySpawnAblity(zoner, 60f * 15f, 0, 3.5f)
+                new UnitRallySpawnAblity(zoner, 60f * 15f, 0, 4.5f){{
+                    moveRot = 1800;
+                }}
             );
         }};
 
@@ -1251,7 +1256,7 @@ public class NyfalisUnits {
             navalSpeed = 1f;
 
             armor = 6f;
-            hitSize = 12f;
+            hitSize = 21;
             health = 1150;
             itemCapacity = 0;
             legCount = 0;

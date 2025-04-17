@@ -83,8 +83,8 @@ public class NyfalisUnitType extends UnitType {
         super.init();
         
             if (customMoveCommand || cantMove){
-                commands.remove(UnitCommand.moveCommand);
-                if(customMoveCommand)commands.add(NyfalisUnitCommands.nyfalisMoveCommand);
+                if(customMoveCommand)commands.replace(UnitCommand.moveCommand, NyfalisUnitCommands.nyfalisMoveCommand);
+                else commands.remove(UnitCommand.moveCommand);
             }
             if(canDeploy)commands.add(NyfalisUnitCommands.nyfalisDeployCommand);
             if(canCircleTarget) commands.add(NyfalisUnitCommands.circleCommand);
@@ -208,16 +208,9 @@ public class NyfalisUnitType extends UnitType {
 
     @Override
     public Unit create(Team team){
-        Unit unit = constructor.get();
+        Unit unit =  super.create(team);
 
-        unit.team = team;
-        unit.setType(this);
-        unit.ammo = ammoCapacity; //fill up on ammo upon creation
         unit.elevation = flying || alwaysBoosts ? 1f : 0;
-        unit.heal();
-        if(unit instanceof TimedKillc u){
-            u.lifetime(lifetime);
-        }
         unit.apply(spawnStatus, spawnStatusDuration);
         if(weaponsStartEmpty)unit.apply(NyfalisStatusEffects.unloaded, 60f); //is now a second bc it won't get synced properly
         return unit;

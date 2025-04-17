@@ -57,6 +57,12 @@ public class BoostableBurstDrill extends BurstDrill {
         }
     }
 
+    @Override
+    public TextureRegion[] icons(){
+        if(topVariant != 0) return new TextureRegion[]{region, topRegions[0]};
+        return new TextureRegion[]{region, topRegion};
+    }
+
     public class BoostableBurstDrillBuild extends BurstDrillBuild{
 
         @Override

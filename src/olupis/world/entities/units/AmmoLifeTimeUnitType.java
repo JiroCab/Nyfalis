@@ -145,45 +145,22 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
 
     @Override
     public Unit create(Team team){
-        Unit unit = constructor.get();
-        unit.team = team;
-        unit.setType(this);
-        unit.ammo = ammoCapacity; //fill up on ammo upon creation
-        unit.elevation = flying ? 1f : 0;
-        unit.heal();
-        if(unit instanceof TimedKillc u){
-            u.lifetime(lifetime);
-        }
+        Unit unit = super.create(team);
+
+        unit.ammo(ammoCapacity);
         startTime = Time.time;
-        unit.apply(spawnStatus, spawnStatusDuration);
         startPos = new Vec2(unit.x /8f, unit.y /8f);
         return unit;
     }
 
     public Unit create(Team team, float unitRange, float startX, float startY ){
-        Unit unit = constructor.get();
-        unit.team = team;
-        unit.setType(this);
-        unit.ammo = ammoCapacity; //fill up on ammo upon creation
-        unit.elevation = flying ? 1f : 0;
-        unit.heal();
-        if(unit instanceof TimedKillc u){
-            u.lifetime(lifetime);
-        }
+        Unit unit = super.create(team);
         this.maxRange = unitRange;
         startPos = new Vec2(startX /8f, startY /8f);
 
         startTime = Time.time;
         unit.apply(spawnStatus, spawnStatusDuration);
         return unit;
-    }
-
-    public Unit spawn(Team team, float x, float y, float ammo){
-        Unit out = create(team);
-        out.set(x, y);
-        out.ammo =ammoCapacity * ammo;
-        out.add();
-        return out;
     }
 
     public boolean inRange(Unit unit){
