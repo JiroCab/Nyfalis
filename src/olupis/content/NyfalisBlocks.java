@@ -1980,10 +1980,14 @@ public class NyfalisBlocks {
             consumeLiquid(oil, 20f / 60f).boost();
             requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
         }};
-        biomassGenerator = new ConsumeGenerator("biomass-generator"){{
+
+        biomassGenerator = new GenericCrafterWithPower("biomass-generator"){{
             size = 2;
             powerProduction = 100f/60f;
-            itemDuration = 90f;
+            powerProductionBoosted = 200f/60f;
+            craftTime = 90f;
+
+            outputItem = new ItemStack(ash, 3);
 
             consumeItem(condensedBiomatter,2);
             consumeLiquid(oil, 20f / 60f).boost();
