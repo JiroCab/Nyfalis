@@ -2731,6 +2731,8 @@ public class NyfalisUnits {
             Seq<Weapon> buffer = new Seq<>();
             for(Weapon ow : u.weapons){
                 Weapon w = ow.copy();
+                w.bullet = ow.bullet.copy();
+                w.shoot = ow.shoot.copy();
                 //Flat reload nerf since we can go beyond the unit cap and this is to "help" w/ balancing
                 w.reload *=2f;
                 w.rotate = true;

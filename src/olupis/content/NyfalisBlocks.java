@@ -813,7 +813,8 @@ public class NyfalisBlocks {
 
     public static void LoadBlocks(){
         //region Distribution
-        rustyIronConveyor = new Conveyor("rusty-iron-conveyor"){{
+        rustyIronConveyor = new VaraintConveryor("rusty-iron-conveyor"){{
+            variants = 4;
             alwaysUnlocked = true;
             health = 45;
             speed = 0.025f;
