@@ -28,7 +28,6 @@ public class DeliveryTerminal extends Block{
             table.button(Icon.down, Styles.clearNoneTogglei, 40f, () -> {
                 toggleEffect.at(this);
                 for(Sector s : Vars.state.getSector().near()) s.info.destination = Vars.state.getSector();
-                Vars.state.getSector().near().forEach(s -> {s.info.destination = Vars.state.getSector();});
                 deselect();
                 remove();
             });
