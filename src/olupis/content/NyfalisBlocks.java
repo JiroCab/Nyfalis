@@ -2008,7 +2008,7 @@ public class NyfalisBlocks {
         rustyWall = new Wall("rusty-wall"){{
             floating = true;
             size = 1;
-            variants = 3;
+            variants = 5;
             health =  350;
             buildCostMultiplier = 0.8f;
             researchCost = with(rustyIron, 50);
@@ -2018,7 +2018,7 @@ public class NyfalisBlocks {
         rustyWallLarge = new Wall("rusty-wall-large"){{
             floating = true;
             size = 1;
-            variants = 2;
+            variants = 6;
             health =  1400;
             buildCostMultiplier = 0.7f;
             researchCost = with(rustyIron, 100);
