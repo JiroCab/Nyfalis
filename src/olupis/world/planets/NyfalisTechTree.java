@@ -149,19 +149,19 @@ public class NyfalisTechTree {
                         });
                     });
                 });
-                node(porter, Seq.with(
+                node(sentry, Seq.with(
                         new  Objectives.Research(navalConstruct)
                 ), () -> {
                     node(zoner, () -> {
 
                     });
-                    node(essex, Seq.with(
+                    node(warden, Seq.with(
                             new  Objectives.Research(alternateArticulator)
                     ), () -> {
                         node(regioner, () -> {
 
                         });
-                        node(lexington, Seq.with(
+                        node(guardian, Seq.with(
                         new  Objectives.Research(adaptiveFabricator)
                         ), () -> {
                             node(district, () -> {

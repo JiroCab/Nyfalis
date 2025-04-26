@@ -1,42 +1,38 @@
 package olupis.content;
 
-import arc.Core;
-import arc.graphics.Blending;
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
-import arc.math.Mathf;
-import arc.math.geom.Vec2;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.struct.EnumSet;
-import arc.struct.ObjectSet;
-import arc.util.Time;
-import mindustry.Vars;
+import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
-import mindustry.entities.Effect;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.part.RegionPart;
-import mindustry.gen.Building;
-import mindustry.gen.Sounds;
+import mindustry.entities.effect.*;
+import mindustry.entities.part.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.world.Block;
-import mindustry.world.blocks.defense.ShockMine;
-import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.*;
+import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.legacy.LegacyBlock;
+import mindustry.world.blocks.legacy.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.logic.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
-import mindustry.world.blocks.storage.StorageBlock;
-import mindustry.world.consumers.ConsumePower;
+import mindustry.world.blocks.storage.*;
+import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import olupis.input.NyfalisShaders;
+import olupis.input.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
 import olupis.world.blocks.environment.*;
@@ -45,12 +41,12 @@ import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
 import olupis.world.blocks.turret.*;
 import olupis.world.blocks.unit.*;
-import olupis.world.consumer.ConsumeLubricant;
+import olupis.world.consumer.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.parts.*;
-import olupis.world.entities.pattern.ShootAlternateAlt;
+import olupis.world.entities.pattern.*;
 
-import java.util.Objects;
+import java.util.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -116,12 +112,12 @@ public class NyfalisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter,
+        bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
         coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
-        mendFieldProjector, taurus, lamp, ladar,
+        mendFieldProjector, taurus, lamp, ladar, search,
 
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
 
@@ -1430,6 +1426,15 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
+        compoundCrucible = new HeadacheCrafter("compound-crucible"){{
+            size = 3;
+            plans = Seq.with(
+                new FactoryPlan(60f * 3f, with(Items.copper, 3), with(lead, 3), LiquidStack.with(Liquids.water, 10), LiquidStack.with(NyfalisItemsLiquid.steam, 10)),
+                new FactoryPlan(60f * 3f, with(rustyIron, 3), with(copper, 3))
+            );
+            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, alcoAlloy, 20));
+        }};
+
         ironSieve  = new Separator("iron-sieve"){{
             //not to be confused with iron shiv
             hasPower = hasItems = true;
@@ -1631,12 +1636,12 @@ public class NyfalisBlocks {
                 iron, new SpawnHelperBulletType(){{
                     shootEffect = Fx.smeltsmoke;
                     ammoMultiplier = 2f;
-                    spawnUnit = porter;
+                    spawnUnit = sentry;
                     alternateType = new SpawnHelperBulletType(){{
                         shootEffect = Fx.shootBig;
                         ammoMultiplier = 2f;
                         reloadMultiplier = 0.50f;
-                        spawnUnit = essex;
+                        spawnUnit = warden;
                     }};
                 }}
             );
@@ -1676,7 +1681,7 @@ public class NyfalisBlocks {
 
             upgrades.addAll(
                     new UnitType[]{serpent, reaper},
-                    new UnitType[]{essex, lexington},
+                    new UnitType[]{warden, guardian},
                     new UnitType[]{blitz, crusader},
                     new UnitType[]{striker, falcon},
                     new UnitType[]{germanica, luridiblatta},
@@ -2276,7 +2281,7 @@ public class NyfalisBlocks {
         lamp = new LightBlock("lamp"){{
             requirements(Category.effect, BuildVisibility.lightingOnly, with(iron, 8, Items.lead, 8, copper, 8));
             brightness = 0.75f;
-            radius = 100f;
+            radius = 60f;
             consumePower(20f / 60f);
         }};
 
@@ -2284,13 +2289,27 @@ public class NyfalisBlocks {
             emitLight = true;
             size = 2;
             fogRadius = 64;
-            lightRadius = 200;
+            lightRadius = 130f;
             rotateSpeed = 20f;
             glowMag = glowScl = 0f;
             discoveryTime = 60f * 80f;
             consumePower(240f/60f);
             glowColor = Color.valueOf("00000000");
             requirements(Category.effect, with(Items.lead, 60, Items.graphite, 50, iron, 10));
+        }};
+
+        search = new Ladar("search"){{
+            emitLight = spotlight = true;
+            size = 3;
+            fogRadius = 64;
+            lightRadius = 200;
+            rotateSpeed = 20f;
+            glowMag = glowScl = 0f;
+            discoveryTime = 60f * 80f;
+            spotted = NyfalisStatusEffects.marked;
+            consumePower(400/60f);
+            glowColor = Color.valueOf("00000000");
+            requirements(Category.effect, with(Items.lead, 60, cobalt, 50, iron, 10));
         }};
 
         //Healing turret that has ammo and water to heal better

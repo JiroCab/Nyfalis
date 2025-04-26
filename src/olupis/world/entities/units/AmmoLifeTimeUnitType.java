@@ -47,7 +47,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
     /*Anti-spam to hard, aka setting a diminishing return for the sake of frames */
     public float penaltyMultiplier = 2f;
     /*Time out params */
-    public boolean inoperable = false, inoperableDepletes = true;
+    public boolean inoperable = false, inoperableDepletes = false;
     public Sound timedOutSound = Sounds.explosion;
     public Effect timedOutFx = NyfalisFxs.unitBreakdown;
     public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f, maxRange = -1;
@@ -121,15 +121,14 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
             callTimeOut(unit);
         }
 
-        inoperable = false;
-        boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap));
-        if(inoperableDepletes) inoperable = ((unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null || ai.inoperable) )
-                            || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding()))
+        boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap)), op = false;
+        if(inoperableDepletes) op = ((unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null || ai.inoperable) )
+                            || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding())) //TODO: keep track of building prog and dont dep when no progress
                             || (unit.controller() instanceof SearchAndDestroyFlyingAi ai && ai.inoperable);
 
         boolean shouldDeplete = ( (startTime+ ammoDepletionOffset) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
-        if(inoperable || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
-            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || inoperable ? penaltyMultiplier : 1f));
+        if(!op || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
+            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || !op ? penaltyMultiplier : 1f));
         }
 
         if(miningDepletesAmmo && unit.mining()){

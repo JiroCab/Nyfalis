@@ -1,14 +1,22 @@
 package olupis.world.blocks.defence;
 
-import arc.math.Mathf;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
-import mindustry.world.blocks.defense.Radar;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.util.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.ui.*;
+import mindustry.world.blocks.defense.*;
 
 public class Ladar extends Radar {
-
-   public Ladar(String name){
+    public  boolean spotlight = false;
+    public float spotRadius  = 100f, minProgress = 0.7f, spottedDuration = 4f;
+    public StatusEffect spotted = StatusEffects.none;
+    public Ladar(String name){
        super(name);
    }
 
@@ -18,16 +26,27 @@ public class Ladar extends Radar {
     }
 
     public class LadarBuild extends RadarBuild{
+        public @Nullable Vec2 tar = new Vec2();
+
         @Override
         public void updateTile(){
-           super.updateTile(); //cant be bothered
+            if(spotlight){
+                Unit uf = Units.bestEnemy(team, this.x, this.y, fogRadius * Vars.tilesize, u -> !u.dead, UnitSorts.strongest);
+                if(uf != null){
+                    tar.set(uf.x, uf.y);
+                    if(spotted != StatusEffects.none) uf.apply(spotted, spottedDuration);
+                }else tar.set(-1, -1);
+            }
+            super.updateTile(); //cant be bothered
         }
 
         @Override
-        public void drawLight() {
+        public void drawLight(){
             if(emitLight) Drawf.light(x, y, Mathf.lerp(0, lightRadius, progress), lightColor, lightColor.a);
-            super.drawLight();
+            if(spotlight && tar != null && tar.x != -1 && tar.y != -1 && progress >= minProgress){
+                Drawf.light(tar.x, tar.y, Mathf.lerp(0, spotRadius, progress), team.color, 0.8f);
+                super.drawLight();
+            }
         }
     }
-
 }

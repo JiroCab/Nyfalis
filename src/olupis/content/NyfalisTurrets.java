@@ -765,6 +765,7 @@ public class NyfalisTurrets {
                 }}
                 );
             }};
+            fogRadiusMultiplier = 0.75f;
             ammoPerShot = 24;
             loopSound = Sounds.release;
             outlineColor = nyfalisBlockOutlineColour;
@@ -1173,6 +1174,7 @@ public class NyfalisTurrets {
             lightRadius = 200;
             rotateSpeed = 0.5f;
             coolantMultiplier = 6f;
+            fogRadiusMultiplier = 0.50f;
             ammoUseEffect = Fx.casing1;
             researchCostMultiplier = 0.05f;
             shootY = (Vars.tilesize * size) - 10f;

@@ -61,10 +61,12 @@ public class NyfalisUnits {
         supella, germanica , luridiblatta , vaga , parcoblatta, //smallest cockroaches
 
         /*naval*/
-        //support
-        porter, essex, lexington, resolute, nimitz, sovereign,
+        //carriers-support
+        sentry, warden, guardian, domination, sovereign,
         //naval glass cannons
         bay, blitz, crusader, torrent, vanguard,
+        //transport
+        porter, essex, lexington, resolute, nimitz,
 
         /*core units*/
         gnat, pedicia, phorid, diptera, midges, vespera, //Fruit flies
@@ -262,8 +264,7 @@ public class NyfalisUnits {
             accel = 0.07f;
             health = 1200f;
             range = 170f;
-            engineSize = 3f;
-            engineOffset = 7f;
+            engineSize = -1;
             rotateSpeed = 45f;
             itemCapacity = 15;
             strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
@@ -274,6 +275,9 @@ public class NyfalisUnits {
 
             aiController = WaveAiHandler::new;
             defaultCommand = NyfalisUnitCommands.circleCommand;
+            setEnginesMirror(
+                new UnitEngine(33 / 4f, -67 / 4f, 4.5f, 300f)
+            );
             abilities.add(new OrblessEnergyFieldAbillity(45f, 40f, 200f){{
                 color = new Color().set(NyfalisColors.aeroLaserColours[0]).a(1);
                 damageEffect = NyfalisFxs.chainLightningAlt;
@@ -305,7 +309,8 @@ public class NyfalisUnits {
                     shrinkY = shrinkX = 0.75f;
                     velocityRnd = trailMult = 0;
                     frontColor = backColor = Pal.surge;
-                    collides = collidesAir = collidesGround = collidesTeam = collidesTiles = keepVelocity = false;
+                    collides = collidesAir = collidesGround = collidesTeam = collidesTiles = keepVelocity = hittable = reflectable =false;
+                    absorbable = true;
                     hitEffect = Fx.hitLancer;
                     despawnEffect = trailEffect = Fx.none;
                     hitSound = Sounds.none;
@@ -565,26 +570,11 @@ public class NyfalisUnits {
             lowAltitude  = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = canCharge = true;
             abilities.add(new SationaryBoostAblity());
             weapons.addAll(
-                new NyfalisWeapon("", true, false){{
-                top = false;
-                mirror = alternate= true;
-                y = -3f;
-                x = 0f;
-                reload = 30f;
-                inaccuracy = 0f;
-                baseRotation = 135f;
-                shootCone = 360f;
-                ejectEffect = Fx.casing1;
-
-                shootSound = Sounds.missile;
-                weaponIconUseFullString = true;
-                weaponIconString = "olupis-pteropus-ui-front";
-            }},
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
                     shootY = 5f;
                     recoil = 0.5f;
-                    reload = 100;
+                    reload = 80;
                     recoils = 1;
                     top = alternate = mirror = false;
                     rotate = alwaysRotate = true;
@@ -617,7 +607,7 @@ public class NyfalisUnits {
                     }}
                     );
 
-                    bullet = new BasicBulletType(2f, 37, "large-bomb"){{
+                    bullet = new BasicBulletType(2.2f, 37, "large-bomb"){{
                         spin = 10f;
                         lifetime = 100f;
                         shrinkX = 20f /60;
@@ -982,7 +972,7 @@ public class NyfalisUnits {
                         absMag = absScl = 0f;
                         statusOnOwner = true;
                         layer = Layer.groundUnit - 0.01f;
-                        status = NyfalisStatusEffects.deployed;
+                        status = NyfalisStatusEffects.marked;
                         ownerStatus = StatusEffects.slow;
                         incendChance = incendSpread = 0f;
                         smokeEffect = shootEffect = Fx.none;
@@ -1194,7 +1184,7 @@ public class NyfalisUnits {
         //luridiblatta -> long range shell launcher, only fires at target +/- 5 tiles of max range (has min range)
         //endregion
         //region Naval - Carrier
-        porter = new NyfalisUnitType("porter"){{
+        sentry = new NyfalisUnitType("sentry"){{
             armor = 2f;
             hitSize = 12f;
             health = 350;
@@ -1215,7 +1205,7 @@ public class NyfalisUnits {
             );
         }};
 
-        essex = new NyfalisUnitType("essex"){{
+        warden = new NyfalisUnitType("warden"){{
             armor = 6f;
             hitSize = 12f;
             health = 850;
@@ -1231,7 +1221,7 @@ public class NyfalisUnits {
                 new CarrierResupplyAblity(2),
                 new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 0f, 0, -10f)
             );
-            weapons.add(new LaserPointerPointDefenceWeapon("olupis-essex-point-defense"){{
+            weapons.add(new LaserPointerPointDefenceWeapon("olupis-warden-point-defense"){{
                 x = 0;
                 y = -7f;
                 aoe = 0;
@@ -1250,8 +1240,8 @@ public class NyfalisUnits {
             }});
         }};
 
-        //lexington -> Carrier a long range PDL w/ warm up & laser pointer
-        lexington = new DuckyTubeTankUnitType("lexington"){{
+        //Carrier a long range PDL w/ warm up & laser pointer
+        guardian = new DuckyTubeTankUnitType("guardian"){{
             groundSpeed = 0.6f;
             navalSpeed = 1f;
 
@@ -1270,7 +1260,7 @@ public class NyfalisUnits {
             constructor = LegsUnit::create; //Legged so it doesnt slow down in deep water
             pathCost = NyfalisPathfind.costPreferNaval;
 
-            weapons.add(new LaserPointerPointDefenceWeapon("olupis-lexington-point-defense"){{
+            weapons.add(new LaserPointerPointDefenceWeapon("olupis-Lexington-point-defense"){{
                 x = 0;
                 y = -7f;
                 reload = 6f;
@@ -1316,7 +1306,7 @@ public class NyfalisUnits {
 
         // resolute -> Constuct ablity, mini figther-bombers that need to reload at the ship, dis >= ability rebuild = sucide bombers
         //              -> Desigantor pointer, pointer that debuffs an unit, all units that hit it gains a atack speed buff
-        resolute = new DuckyTubeTankUnitType("resolute"){{
+        domination = new DuckyTubeTankUnitType("domination"){{
             constructor = LeggedPayloadUnitClass::create; //Legged so it doesnt slow down in deep water
             pathCost = NyfalisPathfind.costPreferNaval;
             groundSpeed = 0.6f;
@@ -1368,7 +1358,7 @@ public class NyfalisUnits {
                         colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Pal.accent};
                     }};
             }},
-                new LaserPointerPointDefenceWeapon("olupis-lexington-point-defense"){{
+                new LaserPointerPointDefenceWeapon("olupis-Lexington-point-defense"){{
                     x = 5;
                     y = -5f;
                     reload = 6f;
@@ -1405,9 +1395,9 @@ public class NyfalisUnits {
             );
         }};
 
+        //->Flag ship, boost, payload, Hex sheild when landed, prop/unit booster when flying
+        //-> has payload, takes a bunch of t3 and bellow and  lets them shoot out of them, cnc:ra2 battle fortress / cnc:Zh battle bus
 
-        // nimitz -> Flag ship, boost, payload, Hex sheild when landed, prop/unit booster when flying
-//              -> has payload, takes a bunch of t3 and bellow and  lets them shoot out of them, cnc:ra2 battle fortress / cnc:Zh battle bus
 
         //endregion
         //region Naval - Guard
@@ -1872,7 +1862,7 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = true;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = inoperableDepletes = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
         }};
 
@@ -1928,7 +1918,7 @@ public class NyfalisUnits {
             constructor = LegsUnit::create;
             timedOutSound = Sounds.dullExplosion;
             controller = u -> new NyfalisMiningAi();
-            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = lockLegsOnLiquid= drawAmmo = customShadow = true;
+            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = lockLegsOnLiquid= drawAmmo = customShadow = inoperableDepletes = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = false;
         }};
 
@@ -2028,8 +2018,7 @@ public class NyfalisUnits {
             aiController = RepairAI::new    ;
             constructor = UnitEntity::create;
             timedOutSound = Sounds.dullExplosion;
-            defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = cantMove =  customMineAi = true;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = cantMove =  customMineAi = inoperableDepletes  = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
 
             weapons.add(new Weapon(){{
@@ -2062,6 +2051,8 @@ public class NyfalisUnits {
             hitSize = 9f;
             health = 50;
             speed = 3.6f;
+            range = 32;
+            fogRadius = 35;
             engineSize = 3f;
             lightRadius = 30;
             itemCapacity = 0;
@@ -2070,11 +2061,11 @@ public class NyfalisUnits {
             drag = accel = 0.08f;
             secondaryLightRadius = 250;
             payloadCapacity = (float) ((1.5 * 1.5) * 64);
+
             constructor = PayloadUnit::create;
-            range = 32;
+            aiController = PayloadCarrierAi::new;
+            useUnitCap = faceTarget = false;
             flying = canDeploy = canCharge = emitSecondaryLight = true;
-            useUnitCap = false;
-            fogRadius = 35;
             parts.addAll(
                     new RegionPart("-radar"){{
                         mirror = false;
@@ -2757,6 +2748,7 @@ public class NyfalisUnits {
         diptera.defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
         phorid.defaultCommand =  NyfalisUnitCommands.nyfalisMineCommand;
         district.defaultCommand =  regioner.defaultCommand = zoner.defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
+        shade.defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
         //todo this no work
     }
 
