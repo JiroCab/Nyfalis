@@ -12,6 +12,7 @@ import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.abilities.*;
+import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -19,10 +20,10 @@ import mindustry.type.*;
 import mindustry.type.ammo.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.meta.*;
-import olupis.*;
 import olupis.content.*;
 import olupis.input.*;
 import olupis.world.ai.*;
@@ -56,11 +57,17 @@ public class NyfalisUnitType extends UnitType {
     public Seq<UnlockableContent> displayFactory = new Seq<>();
     /*secondary light  parameters*/
     public boolean emitSecondaryLight = false,
-                            generateDisplayFacotry = true;
+                            generateDisplayFactory = true,
+                            payloadUnitsUpdate = false,
+                            pickupBlocks = true; //Only used in LeggedPayloadUnit
+    /*Used by `payloadUnitsUpdate` as dummy to copy target to other mounts  */
+    public int mountPointer = 0;
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
     public float secondaryLightRadius = lightRadius  * 2;
 
     public TextureRegion bossRegion;
+
+    //TODO: This is a mess, mostly a proof of concept please replace
 
     public NyfalisUnitType(String name){
         super(name);
@@ -74,28 +81,31 @@ public class NyfalisUnitType extends UnitType {
     @Override
     public void init(){
         super.init();
-
-        if(NyfalisMain.incompatible) return;
-        Seq<UnitCommand> cmds = Seq.with(commands);
+        
             if (customMoveCommand || cantMove){
-                cmds.remove(UnitCommand.moveCommand);
-                if(customMoveCommand)cmds.add(NyfalisUnitCommands.nyfalisMoveCommand);
+                if(customMoveCommand)commands.replace(UnitCommand.moveCommand, NyfalisUnitCommands.nyfalisMoveCommand);
+                else commands.remove(UnitCommand.moveCommand);
             }
-            if(canDeploy)cmds.add(NyfalisUnitCommands.nyfalisDeployCommand);
-            if(canCircleTarget) cmds.add(NyfalisUnitCommands.circleCommand);
-            if(canHealUnits) cmds.add(NyfalisUnitCommands.healCommand);
-            if(canMend) cmds.add(NyfalisUnitCommands.nyfalisMendCommand);
+            if(canDeploy)commands.add(NyfalisUnitCommands.nyfalisDeployCommand);
+            if(canCircleTarget) commands.add(NyfalisUnitCommands.circleCommand);
+            if(canHealUnits) commands.add(NyfalisUnitCommands.healCommand);
+            if(canMend) commands.add(NyfalisUnitCommands.nyfalisMendCommand);
             if (customMineAi){
-                if(cmds.contains(UnitCommand.mineCommand)) cmds.remove(UnitCommand.mineCommand);
-                cmds.add(NyfalisUnitCommands.nyfalisMineCommand);
+                if(commands.contains(UnitCommand.mineCommand)) commands.remove(UnitCommand.mineCommand);
+                commands.add(NyfalisUnitCommands.nyfalisMineCommand);
             }
-            if (canGuardUnits) cmds.add(NyfalisUnitCommands.nyfalisGuardCommand);
-            if (canDash)cmds.add(NyfalisUnitCommands.nyfalisDashCommand);
-            if (canCharge) cmds.add(NyfalisUnitCommands.nyfalisChargeCommand);
-            if (canBoost && alwaysBoosts) cmds.remove(UnitCommand.boostCommand);
-        commands = cmds.toArray();
+            if (canGuardUnits) commands.add(NyfalisUnitCommands.nyfalisGuardCommand);
+            if (canDash)commands.add(NyfalisUnitCommands.nyfalisDashCommand);
+            if (canCharge) commands.add(NyfalisUnitCommands.nyfalisChargeCommand);
+            if (canBoost && alwaysBoosts) commands.remove(UnitCommand.boostCommand);
+            //Move it to last
+            if (commands.contains(UnitCommand.enterPayloadCommand)){
+                commands.remove(UnitCommand.enterPayloadCommand);
+                commands.add(UnitCommand.enterPayloadCommand);
+            }
 
-        if(generateDisplayFacotry){
+
+        if(generateDisplayFactory){
             var pwr = (PowerUnitTurret) Vars.content.blocks().find(b -> b instanceof PowerUnitTurret c && c.allUnitTypes().contains(this));
             if(pwr  != null)displayFactory.add(pwr);
 
@@ -203,16 +213,9 @@ public class NyfalisUnitType extends UnitType {
 
     @Override
     public Unit create(Team team){
-        Unit unit = constructor.get();
+        Unit unit =  super.create(team);
 
-        unit.team = team;
-        unit.setType(this);
-        unit.ammo = ammoCapacity; //fill up on ammo upon creation
         unit.elevation = flying || alwaysBoosts ? 1f : 0;
-        unit.heal();
-        if(unit instanceof TimedKillc u){
-            u.lifetime(lifetime);
-        }
         unit.apply(spawnStatus, spawnStatusDuration);
         if(weaponsStartEmpty)unit.apply(NyfalisStatusEffects.unloaded, 60f); //is now a second bc it won't get synced properly
         return unit;
@@ -270,6 +273,8 @@ public class NyfalisUnitType extends UnitType {
         if(alwaysBoostOnSolid && canBoost && (unit.controller() instanceof CommandAI c && c.command != UnitCommand.boostCommand)){
             unit.updateBoosting(unit.onSolid());
         }
+
+        if(payloadUnitsUpdate) updatePayload(unit);
     }
 
     public void updatePrams(Unit unit){
@@ -282,5 +287,42 @@ public class NyfalisUnitType extends UnitType {
 
     public boolean onDeepWater(Unit unit){
         return onWater(unit) && unit.floorOn().drownTime > 0;
+    }
+
+    public void updatePayload(Unit unit){
+        //AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+        if(!(unit instanceof Payloadc c)) return;
+        if(c.payloads().isEmpty()) return;
+        int[] m ={-1};
+        for(Payload p : c.payloads()){
+            if(p instanceof UnitPayload up && up.unit.hasWeapons()){
+                //we update the unit as well so we can update ability
+                Unit u = up.unit;
+                u.type.update(u);
+                u.rotation(unit.rotation);
+
+                m[0] = -1 ;
+                WeaponMount parent = unit.mounts[mountPointer];
+                for(Ability ability : u.abilities){
+                    ability.update(unit);
+                }
+                if(u.mounts().length >= 1){
+                    WeaponMount[] mounts = u.mounts();
+
+                    for(WeaponMount mount : mounts){
+                        mount.aimX = parent.aimX;
+                        mount.aimY = parent.aimY;
+                        mount.shoot = parent.shoot;
+                        mount.targetRotation = parent.targetRotation;
+                        mount.rotation = mount.targetRotation;
+
+                        m[0]++;
+                        NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0]].update(unit, mount);
+                    }
+                }
+                u.update();
+            }
+        }
     }
 }

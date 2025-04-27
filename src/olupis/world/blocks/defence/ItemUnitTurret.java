@@ -91,7 +91,9 @@ public class ItemUnitTurret extends ItemTurret {
 
     public void setBars(){
         super.setBars();
-        addBar("modules", (ItemUnitTurretBuild entity) -> hasAlternate && entity.modules.size <= 0 ? null : new Bar("bar.power", Pal.ammo,() -> Mathf.clamp(entity.moduleEfficiency() / entity.modules.size)));
+        if(hasAlternate ){
+            addBar("modules", (ItemUnitTurretBuild entity) -> entity.modules.size <= 0 ? null : new Bar("bar.power", Pal.ammo,() -> Mathf.clamp(entity.moduleEfficiency() / entity.modules.size)));
+        }
 
         addBar("bar.progress", (ItemUnitTurretBuild entity) -> new Bar("bar.progress", Pal.ammo,() -> entity.reloadCounter / reload));
 
@@ -508,7 +510,7 @@ public class ItemUnitTurret extends ItemTurret {
 
             int trns = this.block.size / 2 + 1;
             Building front = this.nearby(Geometry.d4((direction + 1)).x * trns, Geometry.d4((direction + 1)).y * trns);
-            boolean canDump = front == null || !front.tile().solid(),
+            boolean canDump = front == null || !front.tile.solid(),
                         canMove = front != null && (front.block.outputsPayload || front.block.acceptsPayload);
 
             if(canDump && !canMove) pushOutput(payload, 1f - (payVector.dst(dest) / (size * tilesize / 2f)));
@@ -693,7 +695,7 @@ public class ItemUnitTurret extends ItemTurret {
                 var group = new ButtonGroup<ImageButton>();
                 group.setMinCheckCount(0);
                 int i = 0, columns = 6;
-                if(peekAmmo() != null && peekAmmo().spawnUnit != null && (peekAmmo().spawnUnit instanceof NyfalisUnitType nyf && !nyf.constructHideDefault) && peekAmmo().spawnUnit.commands.length >1 ){
+                if(peekAmmo() != null && peekAmmo().spawnUnit != null && (peekAmmo().spawnUnit instanceof NyfalisUnitType nyf && !nyf.constructHideDefault) && peekAmmo().spawnUnit.commands.size >1 ){
                     var unit = peekAmmo().spawnUnit;
                     var list = unit.commands;
                     t.row();
