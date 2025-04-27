@@ -1,9 +1,8 @@
 package olupis.world.blocks.distribution;
 
-import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.meta.*;
 
-public class PowerConveyor extends Conveyor {
+public class PowerConveyor extends VaraintConveryor {
     public float poweredSpeed = 1f, unpoweredSpeed = 0.5f, displayedSpeedPowered = displayedSpeed;
     /*Minimum threshold of power before we're considered unpowered*/
     public float powerRequired = 20f / 60f;

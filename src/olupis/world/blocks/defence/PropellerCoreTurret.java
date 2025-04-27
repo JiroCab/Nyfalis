@@ -83,7 +83,7 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
                 t.row();
 
                 Table ic = new Table();
-                StatValues.ammo(ObjectMap.of(this, shootType), 0, false).display(ic);
+                StatValues.ammo(ObjectMap.of(this, shootType), false, false).display(ic);
                 Collapser coll = new Collapser(ic, true);
                 coll.setDuration(0.1f);
 

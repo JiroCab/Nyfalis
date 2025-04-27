@@ -251,7 +251,7 @@ public class NyfalisFxs extends Fx {
                 nx = e.x + normx * len + Tmp.v1.x;
                 ny = e.y + normy * len + Tmp.v1.y;
             }
-
+                Drawf.light(nx, ny, Tmp.v1.x + e.x, Tmp.v1.y + e.y, 15f, e.color, 0.15f);
                 Lines.linePoint(nx, ny);
             }
 

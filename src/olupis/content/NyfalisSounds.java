@@ -21,6 +21,8 @@ public class NyfalisSounds {
             cncZhAvengerPdl = new Sound(),
             sawActiveLoop = new Sound(),
             sawCollision = new Sound(),
+            snip = new Sound(),
+
 
             barrelLaunch = new Sound(),
 
@@ -43,6 +45,7 @@ public class NyfalisSounds {
         cncZhAvengerPdl = tree.loadSound("cnc-zh-avenger-pdl");
         sawActiveLoop = tree.loadSound("sawblade-active-loop");
         sawCollision = tree.loadSound("sawblade-collision");
+        snip = tree.loadSound("snip");
         barrelLaunch = tree.loadSound("barrel-launch");
         cascadeDangerWarning = tree.loadSound("cascade-danger-warning");
         rainbow1 = tree.loadSound("rainbow-stat-music1");

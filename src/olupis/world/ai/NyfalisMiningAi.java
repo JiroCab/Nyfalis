@@ -1,19 +1,17 @@
 package olupis.world.ai;
 
-import arc.math.Mathf;
-import arc.math.geom.Position;
-import arc.struct.Seq;
-import arc.util.Tmp;
-import mindustry.Vars;
-import mindustry.content.Blocks;
-import mindustry.content.Items;
-import mindustry.entities.units.AIController;
-import mindustry.gen.Building;
-import mindustry.gen.Call;
-import mindustry.type.Item;
-import mindustry.world.Tile;
-import olupis.content.NyfalisItemsLiquid;
-import olupis.world.entities.units.AmmoLifeTimeUnitType;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.entities.units.*;
+import mindustry.gen.*;
+import mindustry.type.*;
+import mindustry.world.*;
+import olupis.content.*;
+import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
 
@@ -26,7 +24,6 @@ public class NyfalisMiningAi extends AIController {
     public int mineType = 0;
     public Seq<Item> dynamicMineItems = new Seq<>(), dynamicBlackList = new Seq<>(), priorityMineItems = Seq.with(NyfalisItemsLiquid.rustyIron, Items.lead, Items.copper);
     public float priorityMin = 0.6f;
-    private int lastPathId = 0;
     private float lastMoveX, lastMoveY;
 
     public void updateMineItems(Building core){
@@ -54,21 +51,22 @@ public class NyfalisMiningAi extends AIController {
 
         if(dynamicItems)updateMineItems(core);
 
-        if(unit.type instanceof AmmoLifeTimeUnitType al && unit.stack.amount > 0 && al.deathThreshold * unit.mineTimer >= unit.ammo){
-            unit.mineTile = ore = null;
-            if(unit.within(core, unit.type.range)){
-                if(core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
-                    Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
-                }
-
+        if(unit.type instanceof AmmoLifeTimeUnitType al && al.deathThreshold * 2f >= unit.ammo){
+            if(unit.stack.amount > 0 ){
+                unit.mineTile = ore = null;
                 mineType = 1;
-                unit.clearItem();
-                unit.ammo = al.deathThreshold / 2;
                 mining = false;
-            }
+                move(core, true);
 
-            move(core, true);
-            return;
+                if(unit.within(core, unit.type.mineRange)){
+                    if(core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
+                        Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
+                    } else unit.clearItem();
+                }
+                return;
+            }else{
+                al.callTimeOut(unit);
+            }
         }
 
         if(unit.mineTile != null && !unit.mineTile.within(unit, unit.type.mineRange)){
@@ -90,8 +88,12 @@ public class NyfalisMiningAi extends AIController {
                 return;
             }
 
-            //if inventory is full, drop it off.
-            if(unit.stack.amount >= unit.type.itemCapacity || (targetItem != null && !unit.acceptsItem(targetItem))){
+            if(unit.type instanceof AmmoLifeTimeUnitType al && al.deathThreshold * 1.5f >= unit.ammo){
+                mining = false;
+                unit.mineTile(null);
+                ore = null;
+            }//if inventory is full, drop it off.
+            else if(unit.stack.amount >= unit.type.itemCapacity || (targetItem != null && !unit.acceptsItem(targetItem))){
                 mining = false;
             }else{
                 if(timer.get(timerTarget3, 60) && targetItem != null){
@@ -149,11 +151,11 @@ public class NyfalisMiningAi extends AIController {
         if (unit.type.flying) circle(target, unit.type.range / 1.8f);
         else {
             if(!Mathf.equal(target.getX(), lastMoveX, 0.1f) || !Mathf.equal(target.getY(), lastMoveY, 0.1f)){
-                lastPathId ++;
+                //lastPathId ++;
                 lastMoveX = target.getX();
                 lastMoveY = target.getY();
             }
-            if (Vars.controlPath.getPathPosition(unit, lastPathId, Tmp.v2.set(target.getX(), target.getY()), Tmp.v1, null)) {
+            if (Vars.controlPath.getPathPosition(unit, Tmp.v2.set(target.getX(), target.getY()), Tmp.v1, null)) {
                 unit.lookAt(Tmp.v1);
                 moveTo(Tmp.v1, 1f, Tmp.v2.epsilonEquals(Tmp.v1, 4.1f) ? 30f : 0f, false, null);
             } else {

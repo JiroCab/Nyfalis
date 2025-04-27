@@ -82,7 +82,7 @@ public class UnstablePowerTurret extends PowerTurret {
         public void updateTile(){
             AtomicInteger copies = new AtomicInteger(0);
             Units.nearbyBuildings(this.x,this.y,range,b -> {
-                        if (b.block == this.block() && b.team == this.team && b != this){
+                        if (b.block == this.block && b.team == this.team && b != this){
                             copies.incrementAndGet();
                         };
                     });

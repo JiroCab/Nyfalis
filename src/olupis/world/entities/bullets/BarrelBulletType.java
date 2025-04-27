@@ -15,14 +15,15 @@ public class BarrelBulletType extends RollBulletType{
     HashMap<Integer, Float> currentHp = new HashMap<>();
     HashMap<Integer, Boolean> justBounced = new HashMap<>();
     public float bounceDelay = 20;
-    public boolean bounceOnWalls = true, bounceOnEnemyWalls = false;
+    public boolean bounceOnWalls = true, bounceOnEnemyWalls = false, hitFires = false, hitProjectiles = true;
 
     public BarrelBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage);
-        this.sprite = bulletSprite;
+        sprite = bulletSprite;
         collidesAir = false;
-        this.collides = this.collidesGround = collidesTiles = true;
+        collides = collidesGround = collidesTiles = true;
         layer = Layer.legUnit +1f;
+        shrinkY = 0.0F;
     }
 
     public BarrelBulletType(float speed, float damage){
@@ -64,6 +65,10 @@ public class BarrelBulletType extends RollBulletType{
             });
         } else justBounced.replace(b.id, false);
 
+        if(hitFires && Fires.has(b.tileX(), b.tileY() )){
+            b.remove();
+        }
+
         float[] tarSize ={b.hitSize};
         Teamc tar = findTarget(b, tarSize);
 
@@ -74,18 +79,21 @@ public class BarrelBulletType extends RollBulletType{
         updateTrailEffects(b);
         updateBulletInterval(b);
 
-        Groups.bullet.each(bb -> {
-            if (bb.team != b.team) {
-                float d = Mathf.dst(bb.x, bb.y, b.x, b.y);
-                if (d < b.hitSize*3) {
-                    currentHp.replace(b.id,currentHp.get(b.id) - bb.damage);
-                    bb.remove();
+        if(hitProjectiles){
+            Groups.bullet.each(bb -> {
+                if (bb.team != b.team) {
+                    float d = Mathf.dst(bb.x, bb.y, b.x, b.y);
+                    if (d < b.hitSize*3) {
+                        currentHp.replace(b.id,currentHp.get(b.id) - bb.damage);
+                        bb.remove();
+                    }
+                    if (currentHp.get(b.id) <= 0){
+                        b.remove();
+                    }
                 }
-                if (currentHp.get(b.id) <= 0){
-                    b.remove();
-                }
-            }
-        });
+            });
+        }
+
 
         if(artilleryTrail) updateArtilleryTrail(b);
     }

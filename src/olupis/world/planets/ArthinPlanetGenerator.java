@@ -1,21 +1,18 @@
 package olupis.world.planets;
 
-import arc.graphics.Color;
+import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.noise.Ridged;
-import arc.util.noise.Simplex;
-import mindustry.ai.Astar;
+import arc.util.noise.*;
+import mindustry.ai.*;
 import mindustry.content.*;
-import mindustry.ctype.UnlockableContent;
 import mindustry.game.*;
-import mindustry.maps.generators.BaseGenerator;
-import mindustry.maps.generators.PlanetGenerator;
+import mindustry.maps.generators.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.environment.Floor;
+import mindustry.world.blocks.environment.*;
 import olupis.content.*;
 
 import static mindustry.Vars.*;
@@ -66,66 +63,6 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
     public int getSectorSize(Sector sector){
         int res = (int)(sector.rect.radius * 800);
         return res % 2 == 0 ? res : res + 1;
-    }
-
-    public void addWeather(Sector sector, Rules rules){
-
-        //apply weather based on terrain
-        ObjectIntMap<Block> floorc = new ObjectIntMap<>();
-        ObjectSet<UnlockableContent> content = new ObjectSet<>();
-
-        for(Tile tile : world.tiles){
-            if(world.getDarkness(tile.x, tile.y) >= 3){
-                continue;
-            }
-
-            Liquid liquid = tile.floor().liquidDrop;
-            if(tile.floor().itemDrop != null) content.add(tile.floor().itemDrop);
-            if(tile.overlay().itemDrop != null) content.add(tile.overlay().itemDrop);
-            if(liquid != null) content.add(liquid);
-
-            if(!tile.block().isStatic()){
-                floorc.increment(tile.floor());
-                if(tile.overlay() != air){
-                    floorc.increment(tile.overlay());
-                }
-            }
-        }
-
-        //sort counts in descending order
-        Seq<ObjectIntMap.Entry<Block>> entries = floorc.entries().toArray();
-        entries.sort(e -> -e.value);
-        //remove all blocks occurring < 30 times - unimportant
-        entries.removeAll(e -> e.value < 30);
-
-        Block[] floors = new Block[entries.size];
-        for(int i = 0; i < entries.size; i++){
-            floors[i] = entries.get(i).key;
-        }
-
-        //bad contains() code, but will likely never be fixed
-        boolean hasSnow = floors.length > 0 && (floors[0].name.contains("ice") || floors[0].name.contains("snow"));
-        boolean hasRain = floors.length > 0 && !hasSnow && content.contains(Liquids.water) && !floors[0].name.contains("sand");
-        boolean hasDesert = floors.length > 0 && !hasSnow && !hasRain && floors[0] == sand;
-        boolean hasMoss =  floors[0].name.contains("moss") || floors[0].name.contains("slop");
-
-        if(hasSnow){
-            rules.weather.add(new Weather.WeatherEntry(Weathers.snow));
-        }
-
-        if(hasRain){
-            rules.weather.add(new Weather.WeatherEntry(Weathers.rain));
-            rules.weather.add(new Weather.WeatherEntry(Weathers.fog));
-        }
-
-        if(hasDesert){
-            rules.weather.add(new Weather.WeatherEntry(Weathers.sandstorm));
-        }
-
-        if(hasMoss){
-            rules.weather.add(new Weather.WeatherEntry(NyfalisAttributeWeather.mossMist));
-        }
-        rules.weather.add(new Weather.WeatherEntry(NyfalisAttributeWeather.cloudShadow));
     }
 
     float water = 1.8f / arr[0].length;
@@ -613,11 +550,6 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
             }
 
         });
-
-
-        ints.clear();
-        ints.ensureCapacity(width * height / 4);
-
 
 
         for(Tile tile : tiles){

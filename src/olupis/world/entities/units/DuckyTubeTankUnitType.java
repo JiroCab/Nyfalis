@@ -81,7 +81,6 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
     public void drawTrailCustom(Unit unit){
         if(unit.isFlying()) return;
 
-        Log.err((Math.round(treadTracker.get(unit)) % 10 == 0) + " "+ treadTracker.get(unit));
         if(!onWater(unit))for(int i : Mathf.signs){
             Tmp.v1.set(waveTrailX * i, waveTrailY).rotate(unit.rotation - 90);
             Effect.floorDustAngle(treadEffect, Tmp.v1.x + unit.x, Tmp.v1.y + unit.y, unit.rotation + 180f);

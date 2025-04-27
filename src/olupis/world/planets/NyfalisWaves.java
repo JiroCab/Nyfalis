@@ -104,7 +104,7 @@ public class NyfalisWaves {
                 {aero, regioner, falcon},
                 {zoner, regioner, district},
                 {pteropus, acerodon, nyctalus},
-                {porter, essex, lexington},
+                {sentry, warden, guardian},
                 {bay, blitz, crusader}
         };
 
@@ -196,6 +196,24 @@ public class NyfalisWaves {
         int bossSpacing = (int)(rand.random(25, 40) * Mathf.lerp(1f, 0.5f, difficulty));
 
         int bossTier = 1; //difficulty < 0.6 ? 3 : 4;
+
+        //Scrab AirDrops
+        out.add(new SpawnGroup(scarab){{
+            max = 65;
+            begin = 10;
+            spacing = 10;
+            shieldScaling = 5;
+            unitScaling = 4f;
+            payloads = Seq.with(venom);
+        }});
+        out.add(new SpawnGroup(scarab){{
+            max = 65;
+            begin = 5;
+            spacing = 5;
+            shieldScaling = 3;
+            unitScaling = 3f;
+            payloads = Seq.with(supella);
+        }});
 
         //main boss progression
         out.add(new SpawnGroup(Structs.random(rand, species)[bossTier]){{
