@@ -1891,6 +1891,7 @@ public class NyfalisUnits {
                 }};
             }});
 
+            ammoType = lifeTimeSupport;
             constructor = UnitEntity::create;
             aiController = UnitHealerAi::new;
             defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
@@ -1930,35 +1931,37 @@ public class NyfalisUnits {
             ammoCapacity = 2500;
 
             weapons.add(new BuildWeapon("build-weapon"){{
-                rotate = useAmmo = true;
-                rotateSpeed = 7f;
-                x = 14/4f;
-                y = 15/4f;
-                layerOffset = -0.001f;
-                shootY = 3f;
-            }
-
-            Interval timer = new Interval(4);
-            float lastProgress;
-
-            @Override
-            public void update(Unit unit, WeaponMount mount){
-                Queue<Teams.BlockPlan> blocks = unit.team.data().plans;
-
-                if(unit.buildPlan() != null && lastProgress == unit.buildPlan().progress && timer.get(3, 40) && !blocks.isEmpty()){
-                    blocks.addLast(blocks.removeFirst());
-                    lastProgress = unit.buildPlan().progress;
+                    rotate = useAmmo = true;
+                    rotateSpeed = 7f;
+                    x = 14/4f;
+                    y = 15/4f;
+                    layerOffset = -0.001f;
+                    shootY = 3f;
                 }
 
-                if(unit.activelyBuilding() && useAmmo ){ //TODO: AMMO SHOULDN'T USE WHEN TRYING TO BUILD W/O ITEMS FOR IT
-                    //Since it isn't really shooting, ammo isn't used properly handled
-                    unit.ammo--;
-                    if(unit.ammo < 0) unit.ammo = 0;
+
+                Interval timer = new Interval(4);
+                float lastProgress;
+
+                @Override
+                public void update(Unit unit, WeaponMount mount){
+                    Queue<Teams.BlockPlan> blocks = unit.team.data().plans;
+
+                    if(unit.buildPlan() != null && lastProgress == unit.buildPlan().progress && timer.get(3, 40) && !blocks.isEmpty()){
+                        blocks.addLast(blocks.removeFirst());
+                        lastProgress = unit.buildPlan().progress;
+                    }
+
+                    if(unit.activelyBuilding() && useAmmo ){ //TODO: AMMO SHOULDN'T USE WHEN TRYING TO BUILD W/O ITEMS FOR IT
+                        //Since it isn't really shooting, ammo isn't used properly handled
+                        unit.ammo--;
+                        if(unit.ammo < 0) unit.ammo = 0;
+                    }
+                    super.update(unit, mount);
                 }
-                super.update(unit, mount);
-            }
             });
 
+            ammoType = lifeTimeSupport;
             constructor = UnitEntity::create;
             aiController = BuilderAI::new;
             defaultCommand = UnitCommand.rebuildCommand;
@@ -2009,9 +2012,9 @@ public class NyfalisUnits {
             itemOffsetY = 5f;
             fogRadius = 6;
             mineSpeed = 3.5f;
-            itemCapacity = 25;
-            ammoCapacity = 450;
-            passiveAmmoDepletion = 0.1f;
+            itemCapacity = 10;
+            ammoCapacity = 150;
+            passiveAmmoDepletion = 0.07f;
             ammoDepletionAmount = 0.15f;
 
             ammoType = lifeTimeDrill;
@@ -2021,12 +2024,13 @@ public class NyfalisUnits {
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = cantMove =  customMineAi = inoperableDepletes  = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
 
-            weapons.add(new Weapon(){{
-                top = mirror = alternate = useAmmo= false;
+            weapons.add(new NyfalisWeapon(){{
+                top = mirror = alternate = false;
                 x = y = 0f;
                 recoil = 2f;
                 shootY = 4f;
                 reload = 24f;
+
 
                 ejectEffect = Fx.none;
                 shootSound = Sounds.lasershoot;
@@ -2036,7 +2040,9 @@ public class NyfalisUnits {
                     lifetime = 15;
                     healPercent = 3f;
                     lightOpacity = 0.6f;
-                    homingPower = 0.1f;
+                    homingPower = 0.3f;
+                    homingRange = 20f;
+                    rangeOverride = 7.4f * Vars.tilesize;
                     collidesTeam = true;
                     frontColor = Color.white;
                     hittable = reflectable = false;

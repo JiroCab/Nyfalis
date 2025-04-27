@@ -80,7 +80,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
         bars.row();
 
         if(state.rules.unitAmmo || killOnAmmoDepletion){
-            bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo - deathThreshold ) / (ammoCapacity - deathThreshold) ));
+            bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> Mathf.clamp((unit.ammo - deathThreshold ) / (ammoCapacity - deathThreshold) )));
             bars.row();
         }
 
@@ -104,13 +104,36 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
 
     @Override
     public Color ammoColor(Unit unit){
-        float f = Mathf.clamp(unit.ammof());
+        float f = Mathf.clamp((unit.ammo - deathThreshold) / (unit.type.ammoCapacity - deathThreshold));
         if(ammoDepletesInRange && !inRange(unit)) return Color.black;
-        return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, Math.max(f * 2.5f, 1f), 1));
+        return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, Math.max(f * 2.5f, 1f), 1f - f));
     }
 
     @Override
     public void update(Unit unit){
+
+        boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap)), op = false;
+        if(inoperableDepletes) op = (( unit.ammo >= deathThreshold && unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.inoperable) )
+                            || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding())) //TODO: keep track of building prog and dont dep when no progress
+                            || (unit.controller() instanceof SearchAndDestroyFlyingAi ai && ai.inoperable);
+
+        boolean shouldDeplete = ( (startTime+ ammoDepletionOffset) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
+        if(op || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
+            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || op ? penaltyMultiplier : 1f));
+        }
+
+        if(miningDepletesAmmo && unit.mining()){
+            unit.ammo = unit.ammo - (ammoDepletionAmount * (multiplier ? penaltyMultiplier : 1f));
+            if(unit.ammo <= deathThreshold){
+                unit.mineTile = null;
+                unit.ammo = deathThreshold * 1.5f;
+            }
+        }
+
+        if(unit.isPlayer() && depleteOnInteraction && unit.ammo >= deathThreshold +0.05f ){
+            unit.ammo = unit.ammo - (ammoDepletionAmount * (multiplier ? penaltyMultiplier : 1f));
+        }
+
         if (unit.ammo <= deathThreshold && killOnAmmoDepletion){
             for(WeaponMount mount : unit.mounts){
                 if(mount.weapon instanceof  NyfalisWeapon w && w.fireOnTimeOut ){
@@ -119,24 +142,6 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
                 }
             }
             callTimeOut(unit);
-        }
-
-        boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap)), op = false;
-        if(inoperableDepletes) op = ((unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null || ai.inoperable) )
-                            || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding())) //TODO: keep track of building prog and dont dep when no progress
-                            || (unit.controller() instanceof SearchAndDestroyFlyingAi ai && ai.inoperable);
-
-        boolean shouldDeplete = ( (startTime+ ammoDepletionOffset) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
-        if(!op || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
-            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || !op ? penaltyMultiplier : 1f));
-        }
-
-        if(miningDepletesAmmo && unit.mining()){
-            unit.ammo = unit.ammo - (ammoDepletionAmount * (multiplier ? penaltyMultiplier : 1f));
-        }
-
-        if(unit.isPlayer() && depleteOnInteraction && unit.ammo >= deathThreshold +0.05f ){
-            unit.ammo = unit.ammo - (ammoDepletionAmount * (multiplier ? penaltyMultiplier : 1f));
         }
 
         super.update(unit);

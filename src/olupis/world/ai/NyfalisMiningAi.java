@@ -51,21 +51,22 @@ public class NyfalisMiningAi extends AIController {
 
         if(dynamicItems)updateMineItems(core);
 
-        if(unit.type instanceof AmmoLifeTimeUnitType al && unit.stack.amount > 0 && al.deathThreshold * unit.mineTimer >= unit.ammo){
-            unit.mineTile = ore = null;
-            if(unit.within(core, unit.type.range)){
-                if(core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
-                    Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
-                }
-
+        if(unit.type instanceof AmmoLifeTimeUnitType al && al.deathThreshold * 2f >= unit.ammo){
+            if(unit.stack.amount > 0 ){
+                unit.mineTile = ore = null;
                 mineType = 1;
-                unit.clearItem();
-                unit.ammo = al.deathThreshold / 2;
                 mining = false;
-            }
+                move(core, true);
 
-            move(core, true);
-            return;
+                if(unit.within(core, unit.type.mineRange)){
+                    if(core.acceptStack(unit.stack.item, unit.stack.amount, unit) > 0){
+                        Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
+                    } else unit.clearItem();
+                }
+                return;
+            }else{
+                al.callTimeOut(unit);
+            }
         }
 
         if(unit.mineTile != null && !unit.mineTile.within(unit, unit.type.mineRange)){
@@ -87,8 +88,12 @@ public class NyfalisMiningAi extends AIController {
                 return;
             }
 
-            //if inventory is full, drop it off.
-            if(unit.stack.amount >= unit.type.itemCapacity || (targetItem != null && !unit.acceptsItem(targetItem))){
+            if(unit.type instanceof AmmoLifeTimeUnitType al && al.deathThreshold * 1.5f >= unit.ammo){
+                mining = false;
+                unit.mineTile(null);
+                ore = null;
+            }//if inventory is full, drop it off.
+            else if(unit.stack.amount >= unit.type.itemCapacity || (targetItem != null && !unit.acceptsItem(targetItem))){
                 mining = false;
             }else{
                 if(timer.get(timerTarget3, 60) && targetItem != null){

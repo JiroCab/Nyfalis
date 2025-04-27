@@ -91,7 +91,9 @@ public class ItemUnitTurret extends ItemTurret {
 
     public void setBars(){
         super.setBars();
-        addBar("modules", (ItemUnitTurretBuild entity) -> hasAlternate && entity.modules.size <= 0 ? null : new Bar("bar.power", Pal.ammo,() -> Mathf.clamp(entity.moduleEfficiency() / entity.modules.size)));
+        if(hasAlternate ){
+            addBar("modules", (ItemUnitTurretBuild entity) -> entity.modules.size <= 0 ? null : new Bar("bar.power", Pal.ammo,() -> Mathf.clamp(entity.moduleEfficiency() / entity.modules.size)));
+        }
 
         addBar("bar.progress", (ItemUnitTurretBuild entity) -> new Bar("bar.progress", Pal.ammo,() -> entity.reloadCounter / reload));
 

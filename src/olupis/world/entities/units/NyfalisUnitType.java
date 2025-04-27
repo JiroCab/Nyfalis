@@ -98,6 +98,11 @@ public class NyfalisUnitType extends UnitType {
             if (canDash)commands.add(NyfalisUnitCommands.nyfalisDashCommand);
             if (canCharge) commands.add(NyfalisUnitCommands.nyfalisChargeCommand);
             if (canBoost && alwaysBoosts) commands.remove(UnitCommand.boostCommand);
+            //Move it to last
+            if (commands.contains(UnitCommand.enterPayloadCommand)){
+                commands.remove(UnitCommand.enterPayloadCommand);
+                commands.add(UnitCommand.enterPayloadCommand);
+            }
 
 
         if(generateDisplayFactory){

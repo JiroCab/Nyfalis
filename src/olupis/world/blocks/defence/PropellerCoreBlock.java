@@ -12,14 +12,17 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
+import mindustry.ai.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.io.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.storage.*;
+import mindustry.world.meta.*;
 import olupis.content.*;
 
 import static mindustry.Vars.*;
@@ -54,6 +57,7 @@ public class PropellerCoreBlock extends CoreBlock  {
             if(build.currentMode == i) return;
             build.currentMode = i < 0 || i > modes.size ? 0 : i;
         });
+        config(UnitCommand.class, (PropellerCoreBuild build, UnitCommand command) -> build.command = command);
 
         configClear((PropellerCoreBuild build) -> build.currentMode = 0);
     }
@@ -71,6 +75,37 @@ public class PropellerCoreBlock extends CoreBlock  {
         addBar("bar.progress", (PropellerCoreBuild entity) -> entity.currentMode().stats[0] ? new Bar("bar.progress", Pal.ammo,() -> entity.unitProg / unitTimer) : null);
     }
 
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.remove(Stat.unitType);
+        stats.add(Stat.unitType, table -> {
+            table.row();
+            table.table(Styles.grayPanel, b -> {
+                b.image(unitType.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                b.table(info -> {
+                    info.add(unitType.localizedName).left();
+                    if(Core.settings.getBool("console")){
+                        info.row();
+                        info.add(unitType.name).left().color(Color.lightGray);
+                    }
+                });
+                b.button("?", Styles.flatBordert, () -> ui.content.show(unitType)).size(40f).pad(10).right().grow().visible(() -> unitType.unlockedNow());
+            }).growX().pad(5).padBottom(0).row();
+            table.table(Styles.grayPanel, b -> {
+                b.image(spawns.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                b.table(info -> {
+                    info.add(spawns.localizedName).left();
+                    if(Core.settings.getBool("console")){
+                        info.row();
+                        info.add(spawns.name).left().color(Color.lightGray);
+                    }
+                });
+                b.button("?", Styles.flatBordert, () -> ui.content.show(spawns)).size(40f).pad(10).right().grow().visible(() -> spawns.unlockedNow());
+            }).growX().pad(5).row();
+        });
+    }
 
     protected void drawProps(float x, float y, float rotation, float frame, float scl){
         if(!blur.found()) return;
@@ -103,6 +138,7 @@ public class PropellerCoreBlock extends CoreBlock  {
     }
 
     public class PropellerCoreBuild extends CoreBuild {
+        public @Nullable UnitCommand command;
         public int currentMode = 0;
         public float unitProg = 0;
 
@@ -244,6 +280,7 @@ public class PropellerCoreBlock extends CoreBlock  {
                         if(Units.canCreate(team, spawns) && !net.client()){
                             Unit unit = spawns.spawn(team, fx, fy);
                             unit.rotation = Angles.angle(fx, fy, x, y);
+                            unit.command().command(command == null && unit.type.defaultCommand != null ? unit.type.defaultCommand : command);
                             Fx.spawn.at(unit);
                             Events.fire(new EventType.UnitCreateEvent(unit, this));
                             consume();
@@ -257,26 +294,48 @@ public class PropellerCoreBlock extends CoreBlock  {
 
         @Override
         public void buildConfiguration(Table table){
-            table.table(t -> {
-                t.background(Styles.black6);
-                var group = new ButtonGroup<ImageButton>();
-                group.setMinCheckCount(0);
-                int i = 0, columns = 6;
-                t.row();
-                for(var item : modes){
-                    ImageButton button = t.button(icons[modes.indexOf(item)], Styles.clearNoneTogglei, 45f, () -> {
-                        currentMode = modes.indexOf(item);
-                        configure(modes.indexOf(item));
-                        deselect();
-                    }).group(group).get();
+            table.table(par -> {
+                par.table(t -> {
+                    t.background(Styles.black6);
+                    var group = new ButtonGroup<ImageButton>();
+                    group.setMinCheckCount(0);
+                    int i = 0, columns = 6;
+                    t.row();
+                    for(var item : modes){
+                        ImageButton button = t.button(icons[modes.indexOf(item)], Styles.clearNoneTogglei, 45f, () -> {
+                            currentMode = modes.indexOf(item);
+                            configure(modes.indexOf(item));
+                            deselect();
+                        }).group(group).get();
 
-                    button.update(() -> button.setChecked(item == currentMode()));
+                        button.update(() -> button.setChecked(item == currentMode()));
 
-                    if(++i % columns == 0){
-                        t.row();
+                        if(++i % columns == 0){
+                            t.row();
+                        }
                     }
+                }).row();
+                par.collapser(ta -> {
+                    ta.table( t ->{
+                        ta.background(Styles.black6);
+                        var cmd = new ButtonGroup<ImageButton>();
+                        cmd.setMinCheckCount(0);
+                        int ic = 0, columnsC = 6;
+                        t.row();
+                        for(var item : spawns.commands){
+                            ImageButton button = ta.button(item.getIcon(), Styles.clearNoneTogglei, 40f, () -> {
+                                configure(item);
+                                deselect();
+                            }).tooltip(item.localized()).group(cmd).get();
 
-                }
+                            button.update(() -> button.setChecked(command == item || (command == null && spawns.defaultCommand == item)));
+
+                            if(++ic % columnsC == 0){
+                                t.row();
+                            }
+                        }
+                    });
+                },() -> currentMode().stats[0]);
             });
         }
 
@@ -298,7 +357,7 @@ public class PropellerCoreBlock extends CoreBlock  {
 
         @Override
         public byte version() {
-            return 1;
+            return 2;
         }
 
         @Override
@@ -306,6 +365,7 @@ public class PropellerCoreBlock extends CoreBlock  {
             super.write(write);
             write.i(currentMode);
             write.f(unitProg);
+            TypeIO.writeCommand(write, command);
         }
 
         @Override
@@ -314,6 +374,9 @@ public class PropellerCoreBlock extends CoreBlock  {
             if(revision >= 1){
                 currentMode = read.i();
                 unitProg = read.f();
+            }
+            if(revision >=2){
+                command = TypeIO.readCommand(read);
             }
         }
 

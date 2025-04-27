@@ -31,7 +31,7 @@ public class AmmoEnabledUnitType extends  NyfalisUnitType{
     }
 
     public Color ammoColor(Unit unit){
-        float f = Mathf.clamp(unit.ammof());
+        float f = Mathf.clamp(unit.ammo / unit.type.ammoCapacity);
         return Tmp.c1.set(Color.black).lerp(unit.team.color, f);
     }
 
