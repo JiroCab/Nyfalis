@@ -39,13 +39,11 @@ public class NyfalisMain extends Mod{
     public void loadContent(){
         incompatible = !(Version.number == 7 && Objects.equals(Version.type, "official"));
 
-        NyfUnitMapper.load();
         NyfalisShaders.LoadShaders();
         NyfalisShaders.LoadCacheLayer(); //idk when to load this so it 1st -Rushie
         NyfalisItemsLiquid.LoadItems();
         NyfalisStatusEffects.loadStatusEffects();
         NyfalisItemsLiquid.LoadLiquids();
-        NyfalisUnitCommands.loadUnitCommands();
         NyfalisUnits.LoadUnits();
         NyfalisBlocks.LoadWorldTiles();
         NyfalisBlocks.LoadBlocks();
@@ -64,8 +62,6 @@ public class NyfalisMain extends Mod{
     }
 
     public NyfalisMain(){
-        Core.settings.put("extremity-unitdex-olupis", "olupis-germanica=olupis-supella:olupis-acerodon=olupis-pteropus:olupis-striker=olupis-aero:olupis-serpent=olupis-venom:olupis-blitz=olupis-bay:olupis-warden=olupis-sentry:olupis-pedicia=olupis-gnat:olupis-phorid=olupis-pedicia:olupis-diptera=olupis-phorid");
-
         EnvUpdater.load();
 
         //Load sounds once they're added to the file tree
@@ -122,7 +118,6 @@ public class NyfalisMain extends Mod{
         Events.on(EventType.SectorCaptureEvent.class, event -> unlockPlanets());
 
         Events.on(ClientLoadEvent.class, e -> {
-            globalLoadEvent();
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
             NyfalisStartUpUis.saveDisclaimerDialog();
@@ -140,7 +135,6 @@ public class NyfalisMain extends Mod{
                 //Vars.renderer.maxZoom  = 100; //just going to leave this here so aligning, screenshot are easier
                 //if(control.saves.getSaveSlots().first() != null) ui.load.runLoadSave(control.saves.getSaveSlots().first());
                 //ui.planet.debugSelect = true;
-                //ui.content.show(NyfalisUnits.resolute);
             }
 
             /*For those people who don't like the name/icon or overwrites in general*/
@@ -150,14 +144,8 @@ public class NyfalisMain extends Mod{
             if(Core.settings.getBool("nyfalis-blue-icon")) Team.green.name = "";
             if(Core.settings.getBool("nyfalis-blue-name")) Team.green.name = "nyfalis-blue";*/
         });
-
-        Events.on(ServerLoadEvent.class, e-> globalLoadEvent());
     }
 
-
-    public static void  globalLoadEvent(){
-        NyfalisUnits.GenerateWeapons();
-    }
 
     public static void sectorPostTurn(){
         Seq<String> lostSectors = new Seq<>();
@@ -217,10 +205,9 @@ public class NyfalisMain extends Mod{
         if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun){
             anyPlanet = changed = true;
         }
-
-//        if(state.rules.items.isEmpty()){
-//            anyPlanet = changed = true;
-//        }
+        if(state.rules.hiddenBuildItems.isEmpty()){
+            anyPlanet = changed = true;
+        }
 
         if(!changed){
             for (Block c : NyfalisBlocks.nyfalisCores) {

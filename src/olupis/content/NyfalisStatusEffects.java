@@ -15,7 +15,7 @@ import mindustry.world.meta.*;
 import java.util.*;
 
 public class NyfalisStatusEffects {
-    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated;
+    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained;
 
     public static void loadStatusEffects(){
 
@@ -193,35 +193,5 @@ public class NyfalisStatusEffects {
             color = Color.valueOf("A258A3");
             speedMultiplier = healthMultiplier = 0.9f;
         }};
-
-        marked = new StatusEffect("marked"){{
-            color = Color.valueOf("6b675f");
-        }
-
-            public final HashMap<Unit, Integer> list = new HashMap<>();
-
-            @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
-                if(Math.round(time % 5) ==  0){
-                    Log.err(list.get(unit) +"");
-                    list.put(unit, 0);
-                }
-            }
-
-            @Override
-            public void applied(Unit unit, float time, boolean extend){
-                super.applied(unit, time, extend);
-
-                list.put(unit, list.getOrDefault(unit, 0) + 1);
-                //Log.err(list.getOrDefault(unit, 0) + "");
-            }
-        };
-
-        concentrated = new StatusEffect("concentrated"){{
-            reloadMultiplier = damageMultiplier = 1.25f;
-        }};
-
-
     }
 }

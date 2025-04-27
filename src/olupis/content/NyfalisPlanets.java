@@ -1,17 +1,21 @@
 package olupis.content;
 
-import arc.func.*;
-import arc.graphics.*;
-import arc.struct.*;
+import arc.func.Cons;
+import arc.graphics.Color;
+import arc.struct.Seq;
 import arc.util.*;
-import mindustry.content.*;
-import mindustry.game.*;
-import mindustry.graphics.*;
+import mindustry.content.Planets;
+import mindustry.game.Rules;
+import mindustry.game.Team;
+import mindustry.graphics.Pal;
 import mindustry.graphics.g3d.*;
-import mindustry.maps.planet.*;
-import mindustry.type.*;
-import mindustry.world.meta.*;
+import mindustry.maps.planet.AsteroidGenerator;
+import mindustry.type.Planet;
+import mindustry.type.Sector;
+import mindustry.world.meta.Env;
 import olupis.world.planets.*;
+
+import static mindustry.Vars.content;
 
 public class NyfalisPlanets {
     public static Planet nyfalis, arthin, spelta, system;
@@ -68,6 +72,7 @@ public class NyfalisPlanets {
             atmosphereColor = Color.valueOf("87CEEB");
             landCloudColor = new Color().set(Color.valueOf("C7E7F1").cpy().lerp(Color.valueOf("D7F5DC"), 0.55f));
             unlockedOnLand.addAll(NyfalisBlocks.coreRemnant, NyfalisItemsLiquid.rustyIron);
+            hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
             meshLoader = () -> new HexMesh(this, 7);
             cloudMeshLoader = () -> new MultiMesh(
                     new HexSkyMesh(this, 11, 0.7f, 0.13f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.9f, 0.38f),
@@ -91,6 +96,7 @@ public class NyfalisPlanets {
             defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             iconColor = NyfalisItemsLiquid.condensedBiomatter.color;
             meshLoader = () -> new HexMesh(this, 5);
+            hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
 
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
@@ -107,9 +113,11 @@ public class NyfalisPlanets {
             iconColor = NyfalisBlocks.pinkTree.mapColor;
             defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             meshLoader = () -> new HexMesh(this, 5);
+            hiddenItems.addAll(content.items()).removeAll(NyfalisItemsLiquid.nyfalisItems);
         }};
 
         //TODO: rework the planets generators
+        //TODO: Caves, capture 1, get 2 sectors!
         //TODO: LUMA THEMED ASTEROID
     }
 

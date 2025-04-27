@@ -115,7 +115,7 @@ public class BurstPump extends Pump {
                 float pumpTime = getPumpTime(liquidDrop);
                 smoothProgress = Mathf.lerpDelta(smoothProgress, progress/(pumpTime - 20f), 0.1f);
 
-                if(liquids.currentAmount() < liquidCapacity && efficiency > 0 ){
+                if(liquids().currentAmount() < liquidCapacity && efficiency > 0 ){
                     warmup = Mathf.approachDelta(warmup, progress/pumpTime, 0.01f);
                     float speed = efficiency;
 
@@ -126,7 +126,7 @@ public class BurstPump extends Pump {
                     warmup = Mathf.approachDelta(warmup, 0f, 0.01f);
                     return;
                 }
-                if (liquids.currentAmount() < liquidCapacity){
+                if (liquids().currentAmount() < liquidCapacity){
                     if(progress >= pumpTime ){
                         float emptySpaceLiquid = liquidCapacity - liquids.get(liquidDrop);
                         //float maxPump = Math.min(liquidCapacity - liquids.get(liquidDrop) + (liquidCapacity / 2.5f), amount * pumpAmount * edelta());

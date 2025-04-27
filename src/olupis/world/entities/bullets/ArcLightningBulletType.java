@@ -11,9 +11,7 @@ public class ArcLightningBulletType extends BulletType{
     public int maxTargets = 3;
     public boolean hitAir = true,
                             hitGround = true,
-                            hitBuilding = true,
-                            failLightnighBullet =  false
-    ;
+                            hitBuilding = true;
     public Effect chainEffect = NyfalisFxs.chainLightningAlt;
 
     public ArcLightningBulletType(){
@@ -60,12 +58,7 @@ public class ArcLightningBulletType extends BulletType{
     }
 
     public void handleDamage(Seq<Healthc> all, Bullet b){
-        if(all.size < 1) {
-            if(failLightnighBullet){
-                lightningType.create(b.owner, b.team, b.x, b.y, 0);
-            }
-            return;
-        };
+        if(all.size < 1) return;
 
         for(int i = 0; i < maxTargets; i++){
             Healthc tar = all.random();

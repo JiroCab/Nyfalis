@@ -6,7 +6,6 @@ import mindustry.world.ItemBuffer;
 import mindustry.world.blocks.distribution.BufferedItemBridge;
 
 public class PoweredBufferItemBridge extends BufferedItemBridge {
-    public boolean nodesSharePower = false;
 
     public PoweredBufferItemBridge(String name){
         super(name);
@@ -18,12 +17,10 @@ public class PoweredBufferItemBridge extends BufferedItemBridge {
 
         @Override
         public void updateTransport(Building other){
-            if(nodesSharePower){
-                power.links.addUnique(other.pos());
-                other.power.links.addUnique(pos());
+            power.links.addUnique(other.pos());
+            other.power.links.addUnique(pos());
 
-                power.graph.addGraph(other.power.graph);
-            }
+            power.graph.addGraph(other.power.graph);
 
             if(efficiency <= 0.7) return; //To lazy to make this dynamic so hard cut off it is -rushie
             if(buffer.accepts() && items.total() > 0){

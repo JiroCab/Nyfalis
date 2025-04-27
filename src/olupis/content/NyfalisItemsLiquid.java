@@ -1,15 +1,16 @@
 package olupis.content;
 
-import arc.graphics.*;
-import arc.struct.*;
+import arc.graphics.Color;
+import arc.struct.Seq;
 import mindustry.content.*;
 import mindustry.type.*;
 
+import static mindustry.Vars.content;
 import static mindustry.content.Items.*;
 
 public class NyfalisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, ash, cryoRods, steel, silicatePowder, powerAmmoItem;
+    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, cryoRods, steel, silicatePowder, powerAmmoItem;
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam, lubricant, emulsiveSlop;
 
@@ -50,13 +51,16 @@ public class NyfalisItemsLiquid {
             hidden = true;
             charge = 1f;
         }};
-        ash = new Item("ash", Color.valueOf("4B4B4B")){{
-            flammability = 1f;
-        }};
+
 
         nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum);
         nyfalisItems.add(nyfalisOnlyItems);
         nyfalisItems.addAll(copper, lead, silicon, graphite, sand, scrap);
+
+        /*.forEach() Crashes mobile*/
+        for (Planet p : content.planets()) {
+            if (!p.name.contains("olupis-")) p.hiddenItems.addAll(NyfalisItemsLiquid.nyfalisOnlyItems);
+        }
     }
 
     public static void LoadLiquids(){

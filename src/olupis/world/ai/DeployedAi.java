@@ -71,7 +71,7 @@ public class DeployedAi extends FlyingAI {
     }
 
     public boolean shouldLand(Teamc target){
-        boolean out = (target instanceof Unitc f && f.isFlying());
+        boolean out = (target instanceof Flyingc f && f.isFlying()) || (target instanceof Mechc m && m.isFlying());
         if(inverseLanding()) out = !out;
         return out;
     }

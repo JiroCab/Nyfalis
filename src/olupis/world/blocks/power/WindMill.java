@@ -1,15 +1,15 @@
 package olupis.world.blocks.power;
 
-import arc.*;
-import arc.math.*;
-import arc.struct.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.world.*;
-import mindustry.world.blocks.power.*;
+import arc.Core;
+import arc.math.Mathf;
+import arc.struct.EnumSet;
+import mindustry.content.Fx;
+import mindustry.content.Liquids;
+import mindustry.entities.Effect;
+import mindustry.world.Block;
+import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import olupis.world.entities.parts.*;
 
 public class WindMill extends PowerGenerator {
     //ThermalGenerator but Attribute multiples a base number and doesn't require the attribute tiles
@@ -27,9 +27,9 @@ public class WindMill extends PowerGenerator {
         group = BlockGroup.power;
 
         drawer = new DrawMulti(
-            new VariantableDrawRegion(2, "-bottom"),
+            new DrawRegion("-bottom"),
             new DrawLiquidTile(Liquids.oil, 2f){{alpha = 0.8f;}},
-            new VariantableDrawRegion(5),
+            new DrawDefault(),
             new DrawBlurSpin("-rotator", 0.6f * 9f){{blurThresh =  0.01f;}}
         );
     }

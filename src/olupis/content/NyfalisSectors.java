@@ -11,7 +11,7 @@ import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisSectors {
-    public static final float sectorVersion = 1.2f;
+    public static final float sectorVersion = 1.1f;
 
     public static SectorPreset
         /*Arthin / Seredris*/
