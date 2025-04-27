@@ -2,15 +2,6 @@
 https://github.com/JiroCab/Olupis
 Last updated on 02/19/2025 (+8utc) by Jirocab/RushieWashie
 
-= Version 1-8-0 () =
-    + Sprited variants added: rustElectrolyzer, windMill
-    + Added: offloader
-    ~ Balance: Venom hp is now in line with other t1
-    ~ Balance: Supella hp incrased to be more competative to venom
-    ~ Balance: Striker, speed reduced, other stats increased to compesate (TODO)
-    ~ Balance: Nerfed iron unlader
-
-
 = Version 1-7-9 () =
     + Added: Core Database Sprites for aero & striker
     + Added: Command to see state of the Spreading moss on net clients

@@ -61,7 +61,7 @@ public class MineBulletType extends BulletType{
         Tile tile = world.tile((int)b.x/8, (int)b.y/8);
         //just in case
         if(tile == null) return;
-        boolean occupied = Groups.unit.intersect(b.x, b.y, 1, 1).contains(Unitc::isGrounded)
+        boolean occupied = Groups.unit.intersect(b.x, b.y, 1, 1).contains(Flyingc::isGrounded)
                 || !Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false) ;  //Dont spawn mines at the enemy core!
 
         if (createChance){

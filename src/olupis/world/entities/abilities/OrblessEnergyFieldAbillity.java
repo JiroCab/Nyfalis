@@ -9,13 +9,13 @@ import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 
 import static mindustry.Vars.state;
 
 public class OrblessEnergyFieldAbillity extends EnergyFieldAbility{
     private static final Seq<Healthc> all = new Seq<>();
     public boolean orb = false, displayRange  = false, parentizeEffects = true;
-    public float orbLightRadius = 10f;
 
     public OrblessEnergyFieldAbillity(float damage, float reload, float range){
         super(damage, reload, range );
@@ -50,6 +50,8 @@ public class OrblessEnergyFieldAbillity extends EnergyFieldAbility{
                 Lines.arc(rx, ry, range, sectorRad, rot);
             }
         }
+
+        Drawf.light(rx, ry, range * 1.5f, color, curStroke * 0.8f);
 
         Draw.reset();
     }

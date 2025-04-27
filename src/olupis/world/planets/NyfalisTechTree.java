@@ -149,19 +149,19 @@ public class NyfalisTechTree {
                         });
                     });
                 });
-                node(sentry, Seq.with(
+                node(porter, Seq.with(
                         new  Objectives.Research(navalConstruct)
                 ), () -> {
                     node(zoner, () -> {
 
                     });
-                    node(warden, Seq.with(
+                    node(essex, Seq.with(
                             new  Objectives.Research(alternateArticulator)
                     ), () -> {
                         node(regioner, () -> {
 
                         });
-                        node(guardian, Seq.with(
+                        node(lexington, Seq.with(
                         new  Objectives.Research(adaptiveFabricator)
                         ), () -> {
                             node(district, () -> {
@@ -218,7 +218,7 @@ public class NyfalisTechTree {
                     node(windMills, () -> {
                         node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder), new Objectives.SectorComplete(sanctuary)), () -> {
                             node(garden, Seq.with(new Objectives.SectorComplete(dyingForest)),()->{
-                                node(biomassGenerator, () ->{
+                                node(bioMatterPress, () ->{
 
                                 });
                             });

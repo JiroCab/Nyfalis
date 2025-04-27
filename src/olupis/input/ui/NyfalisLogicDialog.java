@@ -10,10 +10,11 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
+import mindustry.ctype.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
-import mindustry.logic.LExecutor.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 
@@ -21,7 +22,6 @@ import java.util.*;
 
 import static mindustry.Vars.*;
 import static mindustry.logic.LCanvas.tooltip;
-import static mindustry.logic.LogicDialog.*;
 
 public class NyfalisLogicDialog extends BaseDialog {
     /*Credits: https://github.com/TeamViscott/ModProjectViscott/blob/master/src/viscott/world/ui/PvLogicDialog.java*/
@@ -55,6 +55,33 @@ public class NyfalisLogicDialog extends BaseDialog {
         row();
 
         add(buttons).growX().name("Pcanvas");
+    }
+
+    private Color typeColor(LExecutor.Var s, Color color){
+        return color.set(
+                !s.isobj ? Pal.place :
+                        s.objval == null ? Color.darkGray :
+                                s.objval instanceof String ? Pal.ammo :
+                                        s.objval instanceof Content ? Pal.logicOperations :
+                                                s.objval instanceof Building ? Pal.logicBlocks :
+                                                        s.objval instanceof Unit ? Pal.logicUnits :
+                                                                s.objval instanceof Team ? Pal.logicUnits :
+                                                                        s.objval instanceof Enum<?> ? Pal.logicIo :
+                                                                                Color.white
+        );
+    }
+
+    private String typeName(LExecutor.Var s){
+        return
+                !s.isobj ? "number" :
+                        s.objval == null ? "null" :
+                                s.objval instanceof String ? "string" :
+                                        s.objval instanceof Content ? "content" :
+                                                s.objval instanceof Building ? "building" :
+                                                        s.objval instanceof Team ? "team" :
+                                                                s.objval instanceof Unit ? "unit" :
+                                                                        s.objval instanceof Enum<?> ? "enum" :
+                                                                                "unknown";
     }
 
     private void setup(){
@@ -262,7 +289,7 @@ public class NyfalisLogicDialog extends BaseDialog {
         @Override
         public void load(String asm){
             setDialog();
-            NyfalisLogicParser.jumps.clear();
+            jumps.clear();
 
             Seq<LStatement> statements = NyfalisAssembler.NyfalisRead(asm, false);
             statements.truncate(LExecutor.maxInstructions);
@@ -294,7 +321,7 @@ public class NyfalisLogicDialog extends BaseDialog {
 
             Seq<LStatement> st = new NyfalisLogicParser(data,allStatement).parse();
 
-            asm.instructions = st.map(l -> l.build(asm)).retainAll(Objects::nonNull).toArray(LInstruction.class);
+            asm.instructions = st.map(l -> l.build(asm)).filter(l -> l != null).toArray(LExecutor.LInstruction.class);
             return asm;
         }
 

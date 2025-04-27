@@ -491,7 +491,6 @@ public class SpeltaPlanetGenerator extends PlanetGenerator{
         });
 
         float difficulty = sector.threat;
-        IntSeq ints = new IntSeq(width * height / 4);
         ints.clear();
         ints.ensureCapacity(width * height / 4);
 
@@ -534,7 +533,22 @@ public class SpeltaPlanetGenerator extends PlanetGenerator{
                 }else if(rand.chance(0.05)){ //ore-less parts are less likely to occur.
                     part = bases.parts.getFrac(range);
                 }
-                {
+
+                //actually place the part
+                if(part != null && BaseGenerator.tryPlace(part, x, y, Team.derelict, (cx, cy) -> {
+                    Tile other = tiles.getn(cx, cy);
+                    if(other.floor().hasSurface()){
+                        other.setOverlay(Blocks.oreScrap);
+                        for(int j = 1; j <= 2; j++){
+                            for(Point2 p : Geometry.d8){
+                                Tile t = tiles.get(cx + p.x*j, cy + p.y*j);
+                                if(t != null && t.floor().hasSurface() && rand.chance(j == 1 ? 0.4 : 0.2)){
+                                    t.setOverlay(Blocks.oreScrap);
+                                }
+                            }
+                        }
+                    }
+                })){
                     placed ++;
 
                     int debrisRadius = Math.max(part.schematic.width, part.schematic.height)/2 + 3;

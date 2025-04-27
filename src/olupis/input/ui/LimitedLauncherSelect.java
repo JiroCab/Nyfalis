@@ -490,11 +490,11 @@ public class LimitedLauncherSelect extends BaseDialog implements PlanetRenderer.
 
                     if(selected != null && selected != sec && selected.hasBase()){
                         //imports
-                        if(sec.info.destination == selected && sec.info.anyExports()){
+                        if(sec.info.getRealDestination() == selected && sec.info.anyExports()){
                             planets.drawArc(planet, sec.tile.v, selected.tile.v, Color.gray.write(Tmp.c2).a(state.uiAlpha), Pal.accent.write(Tmp.c3).a(state.uiAlpha), 0.4f, 90f, 25);
                         }
                         //exports
-                        if(selected.info.destination == sec && selected.info.anyExports()){
+                        if(selected.info.getRealDestination() == sec && selected.info.anyExports()){
                             planets.drawArc(planet, selected.tile.v, sec.tile.v, Pal.place.write(Tmp.c2).a(state.uiAlpha), Pal.accent.write(Tmp.c3).a(state.uiAlpha), 0.4f, 90f, 25);
                         }
                     }
@@ -1265,8 +1265,23 @@ public class LimitedLauncherSelect extends BaseDialog implements PlanetRenderer.
                         //hide immediately so launch sector is visible
                         hide();
 
-                        //We dont need to handle launches
+                        //allow planet dialog to finish hiding before actually launching
+                        Time.runTask(5f, () -> {
+                            Runnable doLaunch = () -> {
+                                renderer.showLaunch(schemCore);
+                                //run with less delay, as the loading animation is delayed by several frames
+                                Time.runTask(coreLandDuration - 8f, () -> control.playSector(from, sector));
+                            };
 
+                            //load launchFrom sector right before launching so animation is correct
+                            if(!from.isBeingPlayed()){
+                                //run *after* the loading animation is done
+                                Time.runTask(9f, doLaunch);
+                                control.playSector(from);
+                            }else{
+                                doLaunch.run();
+                            }
+                        });
                     }
                 });
             }

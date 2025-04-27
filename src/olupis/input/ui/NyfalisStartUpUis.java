@@ -44,6 +44,7 @@ public class NyfalisStartUpUis {
             Label header = new Label("@nyfalis-disclaimer.header");
             Label body = new Label("@nyfalis-disclaimer.body");
             Label funny = new Label("@nyfalis-disclaimer.funny");
+            Label leg = new Label("@nyfalis-disclaimer.leg");
             header.setAlignment(Align.center);
             header.setWrap(true);
             body.setWrap(true);
@@ -62,6 +63,13 @@ public class NyfalisStartUpUis {
                 /*Very convoluted way to load the mod icon, because I'm not bright to think of any other way*/
                 @Nullable TextureRegion icon = new TextureRegion(mods.list().find(a -> Objects.equals(a.name, "olupis")).iconTexture);
                 t.table(a -> a.image(icon).scaling(Scaling.bounded).row()).tooltip("Art By RushieWashie").maxSize(700).margin(14).pad(3).center().row();
+            }
+
+            if(NyfalisMain.incompatible){
+                t.table(z -> {
+                    z.add(leg).fontScale(1.7f).center();
+                }).row();
+
             }
             t.add(body).row();
 
@@ -111,13 +119,6 @@ public class NyfalisStartUpUis {
             body.setWrap(true);
             body.setAlignment(Align.center);
             t.add(body).row();
-
-            if(lVer <= 1.1f ){ //v7
-                Label seven = new Label(Core.bundle.get("nyfalis-disclaimer.youretoooldman"));
-                seven.setWrap(true);
-                seven.setAlignment(Align.center);
-                t.add(seven).fontScale(1.25f).padTop(0).row();
-            }
 
 
         }).growX().growY().center().top().row();
