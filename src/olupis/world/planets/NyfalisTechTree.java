@@ -183,9 +183,9 @@ public class NyfalisTechTree {
                         });
                     });
                 });
-                node(pedicia, Seq.with(new Objectives.Research(coreVestige)), () ->{
+                node(pedicia, Seq.with(new Objectives.Research(coreEmergent)), () ->{
                     node(phorid, Seq.with(
-                            new Objectives.SectorComplete(sanctuary), new  Objectives.Research(coreRelic)
+                            new Objectives.SectorComplete(sanctuary), new  Objectives.Research(corePrime)
                     ), () -> {
                         node(diptera, () -> {
 
@@ -204,10 +204,10 @@ public class NyfalisTechTree {
 
             node(mossyBoulder, ()-> {
 
-                node(coreVestige, () ->{
-                    node(coreRelic, () -> {
-                        node(coreShrine, () -> {
-                            node(coreTemple, () -> {
+                node(coreEmergent, () ->{
+                    node(corePrime, () -> {
+                        node(coreApex, () -> {
+                            node(coreAscendant, () -> {
 
                             });
                         });

@@ -1,10 +1,10 @@
 package olupis.input;
 
-import mindustry.ai.UnitCommand;
-import mindustry.ai.types.CommandAI;
-import mindustry.entities.units.AIController;
+import mindustry.ai.*;
+import mindustry.ai.types.*;
+import mindustry.entities.units.*;
 import olupis.world.ai.*;
-import olupis.world.entities.units.NyfalisUnitType;
+import olupis.world.entities.units.*;
 
 public class NyfalisUnitCommands {
 
@@ -27,7 +27,12 @@ public class NyfalisUnitCommands {
                 drawTarget = true;
             }};
             healCommand = new UnitCommand("nyfalis-heal", "units", u -> new UnitHealerAi());
-            nyfalisMineCommand = new UnitCommand("mine", "production", u -> new NyfalisMiningAi());
+            nyfalisMineCommand = new UnitCommand("mine", "production", u -> new NyfalisMiningAi()){
+                @Override
+                public String localized(){
+                    return mineCommand.localized();
+                }
+            };
             nyfalisGuardCommand = new UnitCommand("nyfalis-guard", "units", u -> new ArmDefenderAi());
             nyfalisMendCommand = new UnitCommand("nyfalis-mend", "add", u -> {
                 //No other better word for this
@@ -52,9 +57,14 @@ public class NyfalisUnitCommands {
                         }
                     }
                 };
-            }){{
-                switchToMove = resetTarget = false;
-                drawTarget = true;
+            }){
+                @Override
+                public String localized(){
+                    return moveCommand.localized();
+                }
+                {
+                    switchToMove = resetTarget = false;
+                    drawTarget = true;
             }};
             nyfalisChargeCommand = new UnitCommand("nyfalis-charge", "commandAttack", u -> {
                 if(u.type instanceof NyfalisUnitType nyf && nyf.alwaysBoosts){

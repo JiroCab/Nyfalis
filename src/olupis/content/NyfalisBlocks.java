@@ -116,7 +116,7 @@ public class NyfalisBlocks {
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
-        coreRemnant, coreVestige, coreRelic, coreShrine, coreTemple, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
+        coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant, coreParagon, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
         mendFieldProjector, taurus, lamp, ladar, search,
 
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
@@ -2355,7 +2355,7 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300));
         }};
 
-        coreVestige = new PropellerCoreBlock("core-vestige"){{
+        coreEmergent = new PropellerCoreBlock("core-emergent"){{
 
             offset = 17.5f;
             itemCapacity = 3000;
@@ -2370,7 +2370,7 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 1300, lead, 1300, iron, 1000, copper, 1300));
         }};
 
-        coreRelic = new PropellerCoreTurret("core-relic"){{
+        corePrime= new PropellerCoreTurret("core-prime"){{
             offset = 25f;
             reload = 80f;
             itemCapacity = 4500;
@@ -2414,12 +2414,12 @@ public class NyfalisBlocks {
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
             requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500, graphite, 500));
-            shootType = new ArtilleryBulletType(3f, 10){{
+            shootType = new ArtilleryBulletType(3f, 50){{
                 lifetime = 80f;
-                knockback = 0.8f;
+                knockback = 1f;
                 homingRange = 50f;
                 width = height = 9f;
-                splashDamage = 10f;
+                splashDamage = 25f;
                 homingPower = 0.08f;
                 reloadMultiplier = 1.2f;
                 buildCostMultiplier = 0.5f;
@@ -2432,7 +2432,7 @@ public class NyfalisBlocks {
             }};
         }};
 
-        coreShrine = new PropellerCoreTurret("core-shrine"){{
+        coreApex = new PropellerCoreTurret("core-apex"){{
             reload = 55f;
             itemCapacity = 6000;
             shootX = shootY = 0f;
@@ -2449,7 +2449,7 @@ public class NyfalisBlocks {
             shootSound = Sounds.bigshot;
             requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500));
             shootType = new SapBulletType(){{
-                damage = 25f;
+                damage = 150f;
                 width = 0.8f;
                 lifetime = 20f;
                 sapStrength = 0f;
@@ -2462,7 +2462,7 @@ public class NyfalisBlocks {
             }};
         }};
 
-        coreTemple = new PropellerCoreTurret("core-temple"){{
+        coreAscendant = new PropellerCoreTurret("core-ascendant"){{
             reload = 35f;
             itemCapacity = 7500;
             shootX = shootY = 0f;
@@ -2480,7 +2480,7 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 4500, silicon, 4500, graphite, 4500, quartz, 2500, cobalt, 2500));
             shootType = new RailBulletType(){{
                 length = 255f;
-                damage = 48f;
+                damage = 500;
                 pierceDamageFactor = 0.5f;
                 hitColor = iron.color;
                 hitEffect = endEffect = Fx.hitBulletColor.wrap(iron.color);
@@ -2501,6 +2501,8 @@ public class NyfalisBlocks {
                 });
             }};
         }};
+
+        //Todo: paragon, comstant beam style like reaper
 
         deliveryCannon = new LimitedLaunchPad("delivery-cannon"){{
             size = 4;
@@ -2623,7 +2625,7 @@ public class NyfalisBlocks {
             }
         });
 
-        nyfalisCores.addAll(coreRemnant, coreRelic, coreShrine, coreTemple, coreVestige);
+        nyfalisCores.addAll(coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant);
 
         for (Planet p : Vars.content.planets()) {
             if (Objects.equals(p.name, "serpulo")) p.techTree.each(n -> {
