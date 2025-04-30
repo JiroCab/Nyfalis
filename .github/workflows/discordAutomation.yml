@@ -20,15 +20,27 @@ jobs:
           workflow: deploy.yml
           branch: experimental
 
-      - name: send message
+      - name: get commit msgs
+        uses: rlespinasse/git-commit-data-action@v1
+
+      - name: message discord the file & commit title
         uses: appleboy/discord-action@master
         with:
           webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
-          message: "> ${{github.event.workflow_run.head_commit.message}}"
+          message: "> ${{env.GIT_COMMIT_MESSAGE_SUBJECT}}"
           file: "${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar"
+
+      - name: message discord the commit body
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
+          webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
+          color: "#3ED09A"
+          username: "${{github.actor}}"
+          message: "${{env.GIT_COMMIT_MESSAGE_BODY}}"
 
 
   on-failure:
