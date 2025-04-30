@@ -13,6 +13,8 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      - uses: actions/checkout@v3
+
       - name: 'Download artifact'
         id: download-artifact
         uses: dawidd6/action-download-artifact@v6
@@ -22,7 +24,6 @@ jobs:
 
       - name: Git Commit Data
         uses: rlespinasse/git-commit-data-action@v1.5.0
-        id: out
 
       - name: message discord the file & commit title
         uses: appleboy/discord-action@master
@@ -31,7 +32,7 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
-          message: "> ${{ steps.out.GIT_COMMIT_MESSAGE_SUBJECT }}"
+          message: "> ${{ env.GIT_COMMIT_MESSAGE_SUBJECT }}""
           file: "${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar"
 
       - name: message discord the commit body
@@ -41,7 +42,7 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
-          message: ":3 \n${{steps.out.GIT_COMMIT_MESSAGE_BODY}}"
+          message: ":3 \n${{ env.GIT_COMMIT_MESSAGE_BODY }}"
 
 
   on-failure:
