@@ -20,8 +20,8 @@ jobs:
           workflow: deploy.yml
           branch: experimental
 
-      - name: get commit msgs
-        uses: rlespinasse/git-commit-data-action@v1
+      - name: Git Commit Data
+        uses: rlespinasse/git-commit-data-action@v1.5.0
 
       - name: message discord the file & commit title
         uses: appleboy/discord-action@master
@@ -30,7 +30,7 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
-          message: "> ${{env.GIT_COMMIT_MESSAGE_SUBJECT}}"
+          message: "> ${{ env.GIT_COMMIT_MESSAGE_SUBJECT }}"
           file: "${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar"
 
       - name: message discord the commit body
@@ -40,7 +40,7 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
-          message: "${{env.GIT_COMMIT_MESSAGE_BODY}}"
+          message: ":3 \n${{env.GIT_COMMIT_MESSAGE_BODY}}"
 
 
   on-failure:
