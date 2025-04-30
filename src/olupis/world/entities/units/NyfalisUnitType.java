@@ -59,7 +59,8 @@ public class NyfalisUnitType extends UnitType {
     public boolean emitSecondaryLight = false,
                             generateDisplayFactory = true,
                             payloadUnitsUpdate = false,
-                            pickupBlocks = true; //Only used in LeggedPayloadUnit
+                            pickupBlocks = true,  //Only used in LeggedPayloadUnit
+                            payloadDisarms = false;
     /*Used by `payloadUnitsUpdate` as dummy to copy target to other mounts  */
     public int mountPointer = 0;
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
@@ -275,13 +276,25 @@ public class NyfalisUnitType extends UnitType {
         }
 
         if(payloadUnitsUpdate) updatePayload(unit);
+        if(payloadDisarms && unit instanceof  Payloadc p && p.hasPayload()){
+            unit.apply(StatusEffects.disarmed, Time.toSeconds);
+        }
     }
 
     public void updatePrams(Unit unit){
-        NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), partAmmo(unit));
+        NyfPartParms.nyfparams.set(
+            unit.healthf(),
+            unit.team.id,
+            unit.elevation(),
+            partAmmo(unit),
+            onWater(unit) ? 1 : 0,
+            0,
+            unit instanceof Payloadc p ? p.payloads().size : 0
+        );
+
     }
 
-    public boolean onWater(Unit unit){
+    public static boolean onWater(Unit unit){
         return unit.floorOn().isLiquid;
     }
 

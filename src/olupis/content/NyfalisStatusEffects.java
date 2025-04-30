@@ -196,30 +196,39 @@ public class NyfalisStatusEffects {
 
         marked = new StatusEffect("marked"){{
             color = Color.valueOf("6b675f");
+            show = true;
         }
-
-            public final HashMap<Unit, Integer> list = new HashMap<>();
-
             @Override
             public void update(Unit unit, float time){
                 super.update(unit, time);
-                if(Math.round(time % 5) ==  0){
-                    Log.err(list.get(unit) +"");
-                    list.put(unit, 0);
-                }
+                Groups.bullet.each(bb -> {
+                    if (bb.team == unit.team && bb.owner instanceof Statusc s && !s.hasEffect(concentrated) && bb.owner != unit){
+                        float d = Mathf.dst(bb.x, bb.y, unit.x(), unit.y());
+                        if(d <= unit.hitSize * 3f ){
+                            s.apply(concentrated, 3 * 60f);
+                            //Log.err("owo");
+                        }
+                    }
+                });
             }
 
             @Override
-            public void applied(Unit unit, float time, boolean extend){
-                super.applied(unit, time, extend);
+            public void draw(Unit unit){
+                super.draw(unit);
+                Draw.z((unit.isFlying() ? Layer.flyingUnitLow : Layer.groundUnit) - 0.05f);
 
-                list.put(unit, list.getOrDefault(unit, 0) + 1);
-                //Log.err(list.getOrDefault(unit, 0) + "");
+                Lines.stroke(1.5f);
+                float rad = unit.hitSize * 0.5f;
+                Draw.color(unit.team.color, 0.8f);
+                Lines.circle(unit.x,  unit.y, rad);
+                Lines.spikes(unit.x, unit.y, 3f/7f * rad, 6f/8f * rad, 4, Time.time * 1.5f);
+                Draw.reset();
             }
         };
 
         concentrated = new StatusEffect("concentrated"){{
             reloadMultiplier = damageMultiplier = 1.25f;
+            show = true;
         }};
 
 

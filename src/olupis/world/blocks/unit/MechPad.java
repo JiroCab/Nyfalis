@@ -77,7 +77,6 @@ public class MechPad extends Block {
             if (slave != null){
                 if(efficiency < unPowerThreshold) slave.apply(unPowerStatus, 1 * Time.toSeconds);
                 else if(efficiency < lowPowerThreshold) slave.apply(lowPowerStatus, 1 * Time.toSeconds);
-                if(slave instanceof  Payloadc p && p.hasPayload()) slave.apply(StatusEffects.disarmed);
             }
         }
 

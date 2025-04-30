@@ -1,4 +1,4 @@
-package olupis.world.entities;
+package olupis.world.entities.entities;
 
 import arc.*;
 import arc.math.*;

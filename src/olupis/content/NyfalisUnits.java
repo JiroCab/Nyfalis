@@ -4,8 +4,8 @@ import arc.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.Queue;
 import arc.struct.*;
+import arc.struct.Queue;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ai.*;
@@ -27,9 +27,9 @@ import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
 import olupis.input.*;
 import olupis.world.ai.*;
-import olupis.world.entities.*;
 import olupis.world.entities.abilities.*;
 import olupis.world.entities.bullets.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.parts.*;
 import olupis.world.entities.units.*;
 import olupis.world.entities.weapons.*;
@@ -2066,12 +2066,12 @@ public class NyfalisUnits {
             rotateSpeed = 30f;
             drag = accel = 0.08f;
             secondaryLightRadius = 250;
-            payloadCapacity = (float) ((1.5 * 1.5) * 64);
+            payloadCapacity = (float) ((2.6 * 2.6) * 64);
 
-            constructor = PayloadUnit::create;
+            constructor = OnePayloadUnitClass::create;
             aiController = PayloadCarrierAi::new;
             useUnitCap = faceTarget = false;
-            flying = canDeploy = canCharge = emitSecondaryLight = true;
+            flying = canDeploy = canCharge = emitSecondaryLight = payloadDisarms =  true;
             parts.addAll(
                     new RegionPart("-radar"){{
                         mirror = false;

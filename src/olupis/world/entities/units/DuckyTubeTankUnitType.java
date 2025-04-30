@@ -103,12 +103,13 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
     @Override
     public void updatePrams (Unit unit){
         NyfPartParms.nyfparams.set(
-            unit.healthf(),
-            unit.team.id,
-            unit.elevation(),
-            partAmmo(unit),
-            floatingTracker.getOrDefault(unit, 0f),
-            treadTracker.getOrDefault(unit, 0f)
+        unit.healthf(),
+        unit.team.id,
+        unit.elevation(),
+        partAmmo(unit),
+        onWater(unit) ? 1 : 0,
+        treadTracker.getOrDefault(unit, 0f),
+        unit instanceof Payloadc p ? p.payloads().size : 0
         );
     }
 

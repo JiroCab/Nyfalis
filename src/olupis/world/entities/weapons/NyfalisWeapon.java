@@ -11,8 +11,7 @@ import mindustry.audio.SoundLoop;
 import mindustry.entities.Predict;
 import mindustry.entities.Sized;
 import mindustry.entities.units.WeaponMount;
-import mindustry.gen.Sounds;
-import mindustry.gen.Unit;
+import mindustry.gen.*;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.meta.Stat;
@@ -72,7 +71,15 @@ public  class NyfalisWeapon extends Weapon {
             if(unit.type instanceof  NyfalisUnitType nyf){
                 ammop = nyf.partAmmo(unit);
             }
-            NyfPartParms.nyfparams.set(unit.healthf(), unit.team.id, unit.elevation(), ammop);
+            NyfPartParms.nyfparams.set(
+                unit.healthf(),
+                unit.team.id,
+                unit.elevation(),
+                ammop,
+                 NyfalisUnitType.onWater(unit) ? 1 : 0,
+                0,
+                unit instanceof Payloadc p ? p.payloads().size : 0
+            );
         }
         super.draw(unit, mount);
     }
