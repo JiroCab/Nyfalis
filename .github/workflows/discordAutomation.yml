@@ -31,7 +31,7 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
-          message: "> ${{ out.GIT_COMMIT_MESSAGE_SUBJECT }}"
+          message: "> ${{ steps.out.GIT_COMMIT_MESSAGE_SUBJECT }}"
           file: "${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar"
 
       - name: message discord the commit body
@@ -41,7 +41,7 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
-          message: ":3 \n${{out.GIT_COMMIT_MESSAGE_BODY}}"
+          message: ":3 \n${{steps.out.GIT_COMMIT_MESSAGE_BODY}}"
 
 
   on-failure:
