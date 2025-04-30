@@ -32,7 +32,7 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
-          message: "> ${{ env.GIT_COMMIT_MESSAGE_SUBJECT }}""
+          message: "> ${{ env.GIT_COMMIT_MESSAGE_SUBJECT }}"
           file: "${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar"
 
       - name: message discord the commit body
