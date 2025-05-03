@@ -832,9 +832,9 @@ public class NyfalisBlocks {
             unpoweredSpeed = 0.025f;
             displayedSpeedPowered = 7f;
 
-            researchCost = with(iron, 10, rustyIron, 20);
+            researchCost = with(iron, 500, rustyIron, 1000, graphite, 200);
             consumePower (2f/60).boost();
-            requirements(Category.distribution, with(iron, 1, rustyIron, 5 ));
+            requirements(Category.distribution, with(iron, 2, rustyIron, 5, graphite, 1));
         }};
 
         cobaltConveyor = new PowerConveyor("cobalt-conveyor"){{
@@ -851,8 +851,8 @@ public class NyfalisBlocks {
             buildCostMultiplier = 2f;
 
             consumePower (5f/60);
-            researchCost = with(cobalt, 500, lead, 500);
-            requirements(Category.distribution, with(cobalt, 1, lead, 5 ));
+            researchCost = with(cobalt, 500, lead, 500, quartz, 500);
+            requirements(Category.distribution, with(cobalt, 1, lead, 5, quartz, 3 ));
         }};
 
         ironRouter = new Router("iron-router"){{

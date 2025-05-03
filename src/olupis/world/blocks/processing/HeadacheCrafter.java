@@ -46,7 +46,7 @@ public class HeadacheCrafter  extends GenericCrafter{
         @Override
         public void updateTile(){
             if(plans.size <= 0) return;
-            if(planSelected <= -1) planSelected = 1;
+            if(planSelected <= -1 || planSelected > plans.size) planSelected = 1;
             FactoryPlan plan = plans.get(planSelected);
 
             if(efficiency > 0){

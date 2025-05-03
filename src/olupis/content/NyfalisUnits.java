@@ -1720,7 +1720,7 @@ public class NyfalisUnits {
             maxRange = 15f * Vars.tilesize;
             ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
-            flying = targetGround = targetAir = drawAmmo = true;
+            flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
             playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
             constructor = UnitEntity::create;
             controller = u -> new SearchAndDestroyFlyingAi();
@@ -1766,7 +1766,7 @@ public class NyfalisUnits {
             penaltyMultiplier = 1f;
             ammoDepletionAmount = hiveDepletionRate;
 
-            flying = targetGround = targetAir = drawAmmo = true;
+            flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
             playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
             constructor = UnitEntity::create;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
@@ -1816,7 +1816,7 @@ public class NyfalisUnits {
             ammoDepletionAmount = hiveDepletionRate;
             ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
-            flying = targetGround = targetAir = drawAmmo = true;
+            flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
             playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
             constructor = UnitEntity::create;
             controller = u -> new SearchAndDestroyFlyingAi(true);
@@ -1868,7 +1868,7 @@ public class NyfalisUnits {
             ammoDepletionAmount = hiveDepletionRate;
             ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
-            flying = targetGround = targetAir = drawAmmo = true;
+            flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
             playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
             constructor = UnitEntity::create;
             controller = u -> new SearchAndDestroyFlyingAi(true);
