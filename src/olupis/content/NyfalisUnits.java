@@ -1133,7 +1133,7 @@ public class NyfalisUnits {
 
             armor = 3;
             hitSize = Vars.tilesize * 1.7f;
-            health = 125;
+            health = 1250;
             speed = 0.60f;
             engineSize = -1;
             rotateSpeed = 1.72f;
@@ -1182,6 +1182,64 @@ public class NyfalisUnits {
 
         }};
         //luridiblatta -> long range shell launcher, only fires at target +/- 5 tiles of max range (has min range)
+
+
+        parcoblatta = new NyfalisUnitType("parcoblatta"){{
+            constructor = MechUnit::create;
+
+            canBoost = lowAltitude = true;
+            boostMultiplier = 0.81f;
+
+            armor = 3;
+            hitSize =UnitTypes.reign.hitSize;
+            health = 125;
+            speed = 0.60f;
+            engineSize = -1;
+            rotateSpeed = 1.72f;
+            weapons.add(
+            new NyfalisWeapon("olupis-obliterator", false, true){{
+                x = 20;
+                y = 3f;
+                reload = 200;
+                shake = 0.76f;
+                recoil = 10f;
+                shootY = 10f;
+                shootCone = 55f;
+                rotateSpeed = 10f;
+                rotationLimit = 45f;
+                rotate = true;
+                mirror = top = false;
+                shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
+                bullet = new BasicBulletType(2.5f, 20){{
+                    width = 10f;
+                    height = 13f;
+                    lifetime = 150;
+                    trailWidth = 3f;
+                    trailLength = 4;
+                    weaveScale = 1;
+                    weaveMag = 1.5f;
+                    shrinkX = -0.70f;
+                    shrinkY = -0.57f;
+                    frontColor = NyfalisColors.ironBullet;
+                    backColor = NyfalisColors.ironBulletBack;
+                    trailColor = NyfalisColors.rustyBulletBack;
+                    hitEffect = despawnEffect = Fx.flakExplosion;
+
+                    fragBullets = 1;
+                    fragBullet = new DistanceScalingBulletType(90, 45){{
+                        trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                        maxDst = 30 * Vars.tilesize;
+                        killShooter = collidesAir = false;
+                        fragBullets = 8;
+                        fragSpread = 360;
+                        fragRandomSpread = 0;
+                        minDst = Vars.tilesize * 10;
+                        minDmgMul = 0.3f;
+                    }};
+                }};
+            }});
+            setEnginesMirror(new UnitEngine(29 / 4f, 1 / 4f, 2f, 5f));
+        }};
         //endregion
         //region Naval - Carrier
         sentry = new NyfalisUnitType("sentry"){{

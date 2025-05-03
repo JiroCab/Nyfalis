@@ -90,7 +90,7 @@ public class LimitedLauncherSelect extends BaseDialog implements PlanetRenderer.
         addListener(new InputListener(){
             @Override
             public boolean keyDown(InputEvent event, KeyCode key){
-                if(event.targetActor == LimitedLauncherSelect.this && (key == KeyCode.escape || key == KeyCode.back || key == Core.keybinds.get(Binding.planet_map).key)){
+                if(event.targetActor == LimitedLauncherSelect.this && (key == KeyCode.escape || key == KeyCode.back || key == Binding.planetMap.value.key)){
                     if(showing() && newPresets.size > 1){
                         //clear all except first, which is the last sector.
                         newPresets.truncate(1);

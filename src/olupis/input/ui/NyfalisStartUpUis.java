@@ -197,10 +197,10 @@ public class NyfalisStartUpUis {
             public String text() {return Core.bundle.get("hint.nyflais-command.text");}
 
             @Override
-            public boolean complete() {return Core.keybinds.get(Binding.command_mode).key != Core.keybinds.get(Binding.boost).key;}
+            public boolean complete() {return Binding.commandMode.value.key != Binding.boost.value.key;}
 
             @Override
-            public boolean show() {return Core.keybinds.get(Binding.command_mode).key == Core.keybinds.get(Binding.boost).key;}
+            public boolean show() {return Binding.commandMode.value.key == Binding.boost.value.key;}
 
             @Override
             public int order() {return 5;}
