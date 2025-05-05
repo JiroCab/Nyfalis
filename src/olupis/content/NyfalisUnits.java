@@ -2798,6 +2798,7 @@ public class NyfalisUnits {
                 if(w.alternate){
                     w.alternate = false;
                     Weapon ws = w.copy();
+                    ws.shoot = w.shoot.copy();
                     ws.shoot.firstShotDelay = Math.max(w.shoot.firstShotDelay, 1) * (ws.reload * 0.5f);
                     buffer.add(ws);
                 };

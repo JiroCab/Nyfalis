@@ -18,7 +18,9 @@ import olupis.content.*;
 import olupis.input.*;
 import olupis.input.ui.*;
 import olupis.world.*;
+import olupis.world.blocks.processing.HeadacheCrafter.*;
 import olupis.world.blocks.unit.*;
+import olupis.world.data.*;
 import olupis.world.entities.packets.*;
 import olupis.world.planets.*;
 
@@ -34,6 +36,7 @@ public class NyfalisMain extends Mod{
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
     public static boolean shownWarning = false, incompatible = false;
+    public static Seq<FactoryPlan> researchedPlans = new Seq<>();
 
     @Override
     public void loadContent(){
@@ -59,6 +62,7 @@ public class NyfalisMain extends Mod{
         NyfalisTechTree.load();
         NyfalisAttributeWeather.AddAttributes();
         NyfalisUnits.PostLoadUnits();
+        CraftingPlansSaveIO.refreshCraftingPlans();
 
         Log.info("OwO, Nyfalis (Olupis) content Loaded! Hope you enjoy nya~");
     }
@@ -118,7 +122,11 @@ public class NyfalisMain extends Mod{
                     NyfalisFxs.replicatorDie.at(r.x, r.y, 0, b.team.color, r.getReplacement());
                 }
         });
-        Events.on(EventType.UnlockEvent.class, event -> unlockPlanets());
+        Events.on(EventType.UnlockEvent.class, event ->{
+            unlockPlanets();
+            CraftingPlansSaveIO.saveCraftingPlans();
+        });
+
         Events.on(EventType.SectorCaptureEvent.class, event -> unlockPlanets());
 
         Events.on(ClientLoadEvent.class, e -> {
@@ -126,6 +134,7 @@ public class NyfalisMain extends Mod{
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
             NyfalisStartUpUis.saveDisclaimerDialog();
+            CraftingPlansSaveIO.saveCraftingPlans();
 
             Vars.ui.planet.shown(() -> {
                 if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.spaces.random(), Core.settings.getInt("ambientvol", 100) / 100f, 1, 0, false);

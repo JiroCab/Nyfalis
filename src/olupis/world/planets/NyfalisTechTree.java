@@ -251,10 +251,14 @@ public class NyfalisTechTree {
                             });
                         });
                         node(taurus ,Seq.with(new Objectives.Research(sanctuary)), ()->{
-                            node(ladar, Seq.with(
-                                    new  Objectives.Research(hydrochloricGraphitePress)
-                            ), () -> {
+                            node(lamp, () ->{
+                                node(ladar, Seq.with(
+                                new  Objectives.Research(hydrochloricGraphitePress)
+                                ), () -> {
+                                    node(search, () ->{
 
+                                    });
+                                });
                             });
                         });
                     });
@@ -289,7 +293,9 @@ public class NyfalisTechTree {
                                     });
                                 });
                                 node(demulsifier, Seq.with(new Objectives.OnSector(dyingForest), new Objectives.Produce(emulsiveSlop)),()->{
+                                    node(compoundCrucible, () ->{
 
+                                    });
                                 });
                                 node(broiler, Seq.with(new Objectives.Research(graphite), new Objectives.Research(siliconArcSmelter)),()->{
 
@@ -318,16 +324,15 @@ public class NyfalisTechTree {
 
                             });
                         });
-                        node(ironConveyor, ()->{
-                            node(cobaltConveyor, ()->{
+                        node(ironDistributor, ()->{
+                            node(ironConveyor, ()->{
+                                node(cobaltConveyor, ()->{
 
+                                });
                             });
+                            node(ironUnderflow, () -> {
+                                node(ironOverflow, () -> {
 
-                            node(ironOverflow, () ->{
-                                node(ironUnderflow, () -> {
-                                    node(ironDistributor, () -> {
-
-                                    });
                                 });
                             });
 
@@ -354,6 +359,9 @@ public class NyfalisTechTree {
                 ), () ->{
                     node(fortifiedContainer, () ->{
                         node(fortifiedVault, () ->{
+                            node(offloader, () ->{
+
+                            });
                             node(deliveryCannon, () ->{
                                 node(deliveryTerminal, () ->{
 
@@ -514,9 +522,10 @@ public class NyfalisTechTree {
             });
 
         });
-        arthin.techTree = nyfalis.techTree;
-        spelta.techTree = nyfalis.techTree;
-        system.techTree = nyfalis.techTree;
+
+        nyfalis.techTree.addPlanet(arthin);
+        nyfalis.techTree.addPlanet(system);
+        nyfalis.techTree.addPlanet(spelta);
 
     }
 }

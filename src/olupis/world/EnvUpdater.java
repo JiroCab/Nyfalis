@@ -13,6 +13,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.production.*;
 import olupis.world.blocks.environment.*;
+import olupis.world.data.*;
 
 import static mindustry.Vars.*;
 

@@ -6,6 +6,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -13,6 +14,8 @@ import mindustry.ui.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
+import olupis.*;
+import olupis.world.data.*;
 
 
 public class HeadacheCrafter  extends GenericCrafter{
@@ -99,9 +102,12 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         @Override
         public void buildConfiguration(Table table){
-            Seq<UnlockableContent> units = Seq.with(plans).map(u -> u.getDisplayed());
+            Seq <FactoryPlan> pla = plans.copy();
+            if(Vars.state.isCampaign()) pla.retainAll( p-> NyfalisMain.researchedPlans.contains(p));
+            Seq<UnlockableContent> units = Seq.with(pla).map(u -> u.getDisplayed());
 
-            if(plans.size >= 1){
+
+            if(pla.size >= 1){
                 ItemSelection.buildTable(HeadacheCrafter.this,
                 table,
                 units,
@@ -153,19 +159,22 @@ public class HeadacheCrafter  extends GenericCrafter{
 
     public static class FactoryPlan{
         public float time;
+        public String name;
         public @Nullable ItemStack[] input, output;
         public @Nullable LiquidStack[] outputLiquid, inputLiquid;
 
-        public FactoryPlan(float time, ItemStack[] input, ItemStack[] output, LiquidStack[] inputLiquid, LiquidStack[] outputLiquid){
+        public FactoryPlan(String name, float time, ItemStack[] input, ItemStack[] output, LiquidStack[] inputLiquid, LiquidStack[] outputLiquid){
+            this.name = name;
             this.time = time;
             this.input = input;
             this.output = output;
             this.inputLiquid = inputLiquid;
             this.outputLiquid = outputLiquid;
+            CraftingPlansSaveIO.allPlans.add(this);
         }
 
-        public FactoryPlan(float time, ItemStack[] input, ItemStack[] output){
-            this(time,input, output, null, null);
+        public FactoryPlan(String name, float time, ItemStack[] input, ItemStack[] output){
+            this(name, time,input, output, null, null);
         }
 
         public float time(){
@@ -175,6 +184,10 @@ public class HeadacheCrafter  extends GenericCrafter{
         public UnlockableContent getDisplayed(){
             if(this.output != null) return  this.output[0].item;
             else return  this.outputLiquid[0].liquid;
+        }
+
+        public String getName(){
+            return name;
         }
     }
 

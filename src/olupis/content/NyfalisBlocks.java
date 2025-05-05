@@ -1429,8 +1429,8 @@ public class NyfalisBlocks {
         compoundCrucible = new HeadacheCrafter("compound-crucible"){{
             size = 3;
             plans = Seq.with(
-                new FactoryPlan(60f * 3f, with(Items.copper, 3), with(lead, 3), LiquidStack.with(Liquids.water, 10), LiquidStack.with(NyfalisItemsLiquid.steam, 10)),
-                new FactoryPlan(60f * 3f, with(rustyIron, 3), with(copper, 3))
+                new FactoryPlan("placeholder1 ",60f * 3f, with(Items.copper, 3), with(lead, 3), LiquidStack.with(Liquids.water, 10), LiquidStack.with(NyfalisItemsLiquid.steam, 10)),
+                new FactoryPlan("placeholder2", 60f * 3f, with(rustyIron, 3), with(copper, 3))
             );
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, alcoAlloy, 20));
         }};
