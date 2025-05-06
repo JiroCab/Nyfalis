@@ -126,11 +126,14 @@ public class NyfalisBlocks {
     ; //endregion
     public static UnstablePowerTurret cascade;
     public static Replicator unitReplicator, unitReplicatorSmall;
+    public static FactoryPlan ph1, ph2;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
     public static ObjectSet<Block>
             nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
-            rainRegrowables = new ObjectSet<>();
+            rainRegrowables = new ObjectSet<>(),
+            factoryPlans = new ObjectSet<>()
+    ;
 
     public static void LoadWorldTiles() {
         //region Ores / Overlays
@@ -1426,12 +1429,12 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
+        ph1 = new FactoryPlan("placeholder1 ",60f * 3f, with(Items.copper, 3), with(lead, 3), LiquidStack.with(Liquids.water, 10), LiquidStack.with(NyfalisItemsLiquid.steam, 10));
+        ph2 = new FactoryPlan("placeholder2", 60f * 3f, with(rustyIron, 3), with(copper, 3));
+
         compoundCrucible = new HeadacheCrafter("compound-crucible"){{
             size = 3;
-            plans = Seq.with(
-                new FactoryPlan("placeholder1 ",60f * 3f, with(Items.copper, 3), with(lead, 3), LiquidStack.with(Liquids.water, 10), LiquidStack.with(NyfalisItemsLiquid.steam, 10)),
-                new FactoryPlan("placeholder2", 60f * 3f, with(rustyIron, 3), with(copper, 3))
-            );
+            plans = Seq.with(ph1, ph2);
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, alcoAlloy, 20));
         }};
 
@@ -2619,6 +2622,7 @@ public class NyfalisBlocks {
 
         Vars.content.blocks().each(b->{
             if(b.name.startsWith("olupis-")){
+                if(b instanceof  FactoryPlan) factoryPlans.add(b);
                 if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 allNyfalisBlocks.add(b);
                 b.envEnabled = NyfalisAttributeWeather.nyfalian;

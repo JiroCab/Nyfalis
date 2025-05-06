@@ -1,25 +1,30 @@
 package olupis.world.blocks.processing;
 
+import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.blocks.*;
+import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
-import olupis.*;
-import olupis.world.data.*;
+
+import static mindustry.Vars.*;
 
 
 public class HeadacheCrafter  extends GenericCrafter{
-    public Seq<FactoryPlan> plans = new Seq<>(4);
+    public Seq<FactoryPlan> plans = new Seq<>();
+    private static TextField search;
+    private static int rowCount;
 
     public HeadacheCrafter(String name){
         super(name);
@@ -102,18 +107,17 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         @Override
         public void buildConfiguration(Table table){
-            Seq <FactoryPlan> pla = plans.copy();
-            if(Vars.state.isCampaign()) pla.retainAll( p-> NyfalisMain.researchedPlans.contains(p));
-            Seq<UnlockableContent> units = Seq.with(pla).map(u -> u.getDisplayed());
+            Seq<UnlockableContent> units = Seq.with(plans).map(u -> u);
+            if(state.isCampaign()) units.retainAll(y -> y.unlockedNowHost());
+            else if(!state.isEditor()) units.retainAll(y -> state.rules.researched.contains(y));
 
-
-            if(pla.size >= 1){
-                ItemSelection.buildTable(HeadacheCrafter.this,
+            if(units.size >= 1){
+                buildTable(HeadacheCrafter.this,
                 table,
                 units,
-                () -> plans.get(planSelected).getDisplayed(),
+                () -> plans.get(planSelected),
                 p -> {
-                    int i  = plans.indexOf(f -> f.getDisplayed() == p);
+                    int i  = plans.indexOf(f -> f  == p);
                    configure(i);
                    planSelected = i;
 
@@ -157,38 +161,72 @@ public class HeadacheCrafter  extends GenericCrafter{
     }
 
 
-    public static class FactoryPlan{
-        public float time;
-        public String name;
-        public @Nullable ItemStack[] input, output;
-        public @Nullable LiquidStack[] outputLiquid, inputLiquid;
+    public static <T extends UnlockableContent> void buildTable(Block block, Table table, Seq<T> items, Prov<T> holder, Cons<T> consumer, int rows, int columns){
+        buildTable(block, table, items, holder, consumer, true, rows, columns);
+    }
 
-        public FactoryPlan(String name, float time, ItemStack[] input, ItemStack[] output, LiquidStack[] inputLiquid, LiquidStack[] outputLiquid){
-            this.name = name;
-            this.time = time;
-            this.input = input;
-            this.output = output;
-            this.inputLiquid = inputLiquid;
-            this.outputLiquid = outputLiquid;
-            CraftingPlansSaveIO.allPlans.add(this);
+    public static <T extends UnlockableContent> void buildTable(@Nullable Block block, Table table, Seq<T> items, Prov<T> holder, Cons<T> consumer, boolean closeSelect, int rows, int columns){
+        ButtonGroup<ImageButton> group = new ButtonGroup<>();
+        group.setMinCheckCount(0);
+        Table cont = new Table().top();
+        cont.defaults().size(40);
+
+        if(search != null) search.clearText();
+
+        Runnable rebuild = () -> {
+            group.clear();
+            cont.clearChildren();
+
+            var text = search != null ? search.getText() : "";
+            int i = 0;
+            rowCount = 0;
+
+            Seq<T> list = items.select(u -> (text.isEmpty() || u.localizedName.toLowerCase().contains(text.toLowerCase())));
+            for(T item : list){
+                //No checks here
+                ImageButton button = cont.button(Tex.whiteui, Styles.clearNoneTogglei, Mathf.clamp(item.selectionSize, 0f, 40f), () -> {
+                    if(closeSelect) control.input.config.hideConfig();
+                }).tooltip(item.localizedName).group(group).get();
+                button.changed(() -> consumer.get(button.isChecked() ? item : null));
+                button.getStyle().imageUp = new TextureRegionDrawable(item.uiIcon);
+                button.update(() -> button.setChecked(holder.get() == item));
+
+                if(i++ % columns == (columns - 1)){
+                    cont.row();
+                    rowCount++;
+                }
+            }
+        };
+
+        rebuild.run();
+
+        Table main = new Table().background(Styles.black6);
+        if(rowCount > rows * 1.5f){
+            main.table(s -> {
+                s.image(Icon.zoom).padLeft(4f);
+                search = s.field(null, text -> rebuild.run()).padBottom(4).left().growX().get();
+                search.setMessageText("@players.search");
+            }).fillX().row();
         }
 
-        public FactoryPlan(String name, float time, ItemStack[] input, ItemStack[] output){
-            this(name, time,input, output, null, null);
+        ScrollPane pane = new ScrollPane(cont, Styles.smallPane);
+        pane.setScrollingDisabled(true, false);
+        pane.exited(() -> {
+            if(pane.hasScroll()){
+                Core.scene.setScrollFocus(null);
+            }
+        });
+
+        if(block != null){
+            pane.setScrollYForce(block.selectScroll);
+            pane.update(() -> {
+                block.selectScroll = pane.getScrollY();
+            });
         }
 
-        public float time(){
-            return time;
-        }
-
-        public UnlockableContent getDisplayed(){
-            if(this.output != null) return  this.output[0].item;
-            else return  this.outputLiquid[0].liquid;
-        }
-
-        public String getName(){
-            return name;
-        }
+        pane.setOverscroll(false, false);
+        main.add(pane).maxHeight(40 * rows);
+        table.top().add(main);
     }
 
 }

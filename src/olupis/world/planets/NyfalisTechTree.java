@@ -15,7 +15,7 @@ import static olupis.content.NyfalisUnits.*;
 public class NyfalisTechTree {
 
     public static void load(){
-        nyfalis.techTree = nodeRoot("olupis", coreRemnant, () -> {
+        system.techTree = nodeRoot("olupis", coreRemnant, () -> {
             node(system, () -> {
                 node(arthin, () ->{
                     node(sanctuary, () -> {
@@ -294,7 +294,12 @@ public class NyfalisTechTree {
                                 });
                                 node(demulsifier, Seq.with(new Objectives.OnSector(dyingForest), new Objectives.Produce(emulsiveSlop)),()->{
                                     node(compoundCrucible, () ->{
+                                        node(ph1, () ->{
 
+                                        });
+                                        node(ph2, () ->{
+
+                                        });
                                     });
                                 });
                                 node(broiler, Seq.with(new Objectives.Research(graphite), new Objectives.Research(siliconArcSmelter)),()->{
@@ -523,9 +528,6 @@ public class NyfalisTechTree {
 
         });
 
-        nyfalis.techTree.addPlanet(arthin);
-        nyfalis.techTree.addPlanet(system);
-        nyfalis.techTree.addPlanet(spelta);
-
+        arthin.techTree = nyfalis.techTree = spelta.techTree = system.techTree;
     }
 }

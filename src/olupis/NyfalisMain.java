@@ -18,9 +18,7 @@ import olupis.content.*;
 import olupis.input.*;
 import olupis.input.ui.*;
 import olupis.world.*;
-import olupis.world.blocks.processing.HeadacheCrafter.*;
 import olupis.world.blocks.unit.*;
-import olupis.world.data.*;
 import olupis.world.entities.packets.*;
 import olupis.world.planets.*;
 
@@ -36,7 +34,6 @@ public class NyfalisMain extends Mod{
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
     public static boolean shownWarning = false, incompatible = false;
-    public static Seq<FactoryPlan> researchedPlans = new Seq<>();
 
     @Override
     public void loadContent(){
@@ -62,7 +59,7 @@ public class NyfalisMain extends Mod{
         NyfalisTechTree.load();
         NyfalisAttributeWeather.AddAttributes();
         NyfalisUnits.PostLoadUnits();
-        CraftingPlansSaveIO.refreshCraftingPlans();
+
 
         Log.info("OwO, Nyfalis (Olupis) content Loaded! Hope you enjoy nya~");
     }
@@ -124,7 +121,6 @@ public class NyfalisMain extends Mod{
         });
         Events.on(EventType.UnlockEvent.class, event ->{
             unlockPlanets();
-            CraftingPlansSaveIO.saveCraftingPlans();
         });
 
         Events.on(EventType.SectorCaptureEvent.class, event -> unlockPlanets());
@@ -134,7 +130,6 @@ public class NyfalisMain extends Mod{
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
             NyfalisStartUpUis.saveDisclaimerDialog();
-            CraftingPlansSaveIO.saveCraftingPlans();
 
             Vars.ui.planet.shown(() -> {
                 if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.spaces.random(), Core.settings.getInt("ambientvol", 100) / 100f, 1, 0, false);
@@ -168,6 +163,12 @@ public class NyfalisMain extends Mod{
                 s.apply(NyfalisStatusEffects.concentrated);
                 Log.err("Nfyalis concentrated");
             }
+        });
+
+        Events.run(Trigger.newGame, () -> {
+           state.rules.researched.addAll(factoryPlans);
+           //identifier that we didi this
+           state.rules.researched.addAll(mossDeadTree);
         });
     }
 
@@ -218,6 +219,13 @@ public class NyfalisMain extends Mod{
         if(NyfalisMain.incompatible) return;
         if(!state.isPlaying()) return;
         if(net.client())return;
+
+        if(!state.rules.researched.contains(mossDeadTree)){
+            state.rules.researched.addAll(factoryPlans);
+            //identifier that we didi this
+            state.rules.researched.addAll(mossDeadTree);
+        }
+
         if(!Core.settings.getBool("nyfalis-auto-ban") && auto) return;
         boolean changed = false, anyPlanet = false;
         int prevEnv = state.rules.env;
