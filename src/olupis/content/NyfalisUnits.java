@@ -1211,11 +1211,11 @@ public class NyfalisUnits {
                 mirror = top = false;
                 shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
                 bullet = new BasicBulletType(2.5f, 20){{
-                    width = 10f;
-                    height = 13f;
+                    width = 15f;
+                    height = 20f;
                     lifetime = 150;
-                    trailWidth = 3f;
-                    trailLength = 4;
+                    trailWidth = 6f;
+                    trailLength = 10;
                     weaveScale = 1;
                     weaveMag = 1.5f;
                     shrinkX = -0.70f;
@@ -1223,10 +1223,10 @@ public class NyfalisUnits {
                     frontColor = NyfalisColors.ironBullet;
                     backColor = NyfalisColors.ironBulletBack;
                     trailColor = NyfalisColors.rustyBulletBack;
-                    hitEffect = despawnEffect = Fx.flakExplosion;
+                    hitEffect = despawnEffect = Fx.flakExplosionBig;
 
                     fragBullets = 1;
-                    fragBullet = new DistanceScalingBulletType(90, 45){{
+                    fragBullet = new DistanceScalingBulletType(90, 70){{
                         trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                         maxDst = 30 * Vars.tilesize;
                         killShooter = collidesAir = false;

@@ -11,6 +11,8 @@ import mindustry.world.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
 
+import java.util.*;
+
 import static mindustry.type.ItemStack.with;
 
 public class FactoryPlan extends Block{
@@ -48,7 +50,10 @@ public class FactoryPlan extends Block{
         TextureRegion out = Core.atlas.find(name);
         if(!Core.atlas.isFound(out)) out = getDisplayed().uiIcon;
         fullIcon = uiIcon = out;
-        if(region == null) region = fullIcon;
+        if(!Core.atlas.isFound(region)) region = fullIcon;
+
+        description = Core.bundle.get("block.olupis-factory-plan-description");
+        if(Objects.equals(localizedName, name))localizedName = localizedName.replace("olupis-", Iconc.crafting + " ");
     }
 
     public UnlockableContent getDisplayed(){
