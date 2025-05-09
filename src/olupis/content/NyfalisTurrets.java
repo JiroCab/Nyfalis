@@ -1268,6 +1268,7 @@ public class NyfalisTurrets {
                         knockback = 2f;
                         splashDelay = 3;
                         splashAmount = 2;
+                        specialEffect = Fx.fireSmoke;
                         applySound = Sounds.none;
                         frontColor = backColor =  steam.color;
                         particleColor = steam.color;
@@ -1295,6 +1296,7 @@ public class NyfalisTurrets {
                     fragBullet = new FirePuddleBulletType(50,30){{
                         splashDelay = 10;
                         splashAmount = 16;
+                        specialEffect = NyfalisFxs.OilyFlame;
                     }};
                 }},
                 lubricant, new BarrelBulletType(4, 150){{
@@ -1318,6 +1320,7 @@ public class NyfalisTurrets {
                         fragBullet = new FirePuddleBulletType(50,60){{
                             splashDelay = 5;
                             splashAmount = 8;
+                            specialEffect = NyfalisFxs.LubeFlame;
                         }};
                     }}
             );

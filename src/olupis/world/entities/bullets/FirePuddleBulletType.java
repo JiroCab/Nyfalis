@@ -9,6 +9,7 @@ import mindustry.world.*;
 
 public class FirePuddleBulletType extends MultiShockBulletType{
     boolean removeInstead = false;
+    public Effect specialEffect = Fx.none;
 
     public FirePuddleBulletType(float splashDamage, float radius) {
         super(splashDamage, radius);
@@ -34,6 +35,7 @@ public class FirePuddleBulletType extends MultiShockBulletType{
             for (int y = -rad; y <= rad; ++y) {
                 if ((float) (x * x + y * y) <= (float) (rad * rad) - Simplex.noise2d(0, 2.0, 0.5, (double) (1.0F / 5), (double) (x + tx), (double) (y + ty)) * realNoise * realNoise) {
                     Tile tile = Vars.world.tile(tx + x, ty + y);
+                    specialEffect.at(tile);
                     if (tile != null) {
                         if(removeInstead) Fires.extinguish(tile, 100f);
                         else Fires.create(tile);
@@ -43,3 +45,4 @@ public class FirePuddleBulletType extends MultiShockBulletType{
         }
     }
 }
+

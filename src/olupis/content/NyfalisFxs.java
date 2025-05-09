@@ -24,6 +24,31 @@ public class NyfalisFxs extends Fx {
     BounceOut bounceOutTwo = new BounceOut(2);
 
     public static final Effect
+        OilyFlame = new Effect(10f, e -> {
+            color(Color.valueOf("912a13"), Pal.darkFlame, e.fin());
+
+            randLenVectors(e.id, 3, 5f + e.fin() * 5f, (x, y) -> {
+                Fill.circle(e.x + x, e.y + y, 0.6f + e.fslope() * 3f);
+            });
+
+            color();
+
+            Drawf.light(e.x, e.y, 40f * e.fslope(), Color.valueOf("806f2c"), 2f);
+        }),
+
+        LubeFlame = new Effect(10f, e -> {
+            color(Color.valueOf("806f2c"), Pal.lightFlame, e.fin());
+
+            randLenVectors(e.id, 8, 3f + e.fin() * 4f, (x, y) -> {
+                Fill.circle(e.x + x, e.y + y, 0.5f + e.fslope() * 3f);
+            });
+
+            color();
+
+            Drawf.light(e.x, e.y, 40f * e.fslope(), Color.valueOf("ffb547"), 2f);
+        }),
+
+
         hollowPointHit =  new Effect(30f, e -> {
             color(Pal.lightOrange, Color.lightGray, Pal.lightishGray, e.fin());
             alpha(e.fout(0.5f));
