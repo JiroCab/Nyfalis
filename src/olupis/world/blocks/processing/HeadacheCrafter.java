@@ -109,7 +109,7 @@ public class HeadacheCrafter  extends GenericCrafter{
         public void buildConfiguration(Table table){
             Seq<UnlockableContent> units = Seq.with(plans).map(u -> u);
             if(state.isCampaign()) units.retainAll(y -> y.unlockedNowHost());
-            else if(!state.isEditor()) units.retainAll(y -> state.rules.researched.contains(y));
+            else if(!state.isEditor()) units.retainAll(y -> !state.rules.isBanned((Block)y));
 
             if(units.size >= 1){
                 buildTable(HeadacheCrafter.this,

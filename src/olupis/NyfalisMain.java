@@ -164,12 +164,6 @@ public class NyfalisMain extends Mod{
                 Log.err("Nfyalis concentrated");
             }
         });
-
-        Events.run(Trigger.newGame, () -> {
-           state.rules.researched.addAll(factoryPlans);
-           //identifier that we didi this
-           state.rules.researched.addAll(mossDeadTree);
-        });
     }
 
 
@@ -219,12 +213,6 @@ public class NyfalisMain extends Mod{
         if(NyfalisMain.incompatible) return;
         if(!state.isPlaying()) return;
         if(net.client())return;
-
-        if(!state.rules.researched.contains(mossDeadTree)){
-            state.rules.researched.addAll(factoryPlans);
-            //identifier that we didi this
-            state.rules.researched.addAll(mossDeadTree);
-        }
 
         if(!Core.settings.getBool("nyfalis-auto-ban") && auto) return;
         boolean changed = false, anyPlanet = false;

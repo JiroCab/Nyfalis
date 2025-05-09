@@ -43,15 +43,11 @@ public class FactoryPlan extends Block{
 
 
     @Override
-    public void loadIcon(){
-        TextureRegion out = Core.atlas.find(name);
-        if(out == null) out = getDisplayed().fullIcon;
-        fullIcon = uiIcon = out;
-    }
-
-    @Override
     public void load(){
         super.load();
+        TextureRegion out = Core.atlas.find(name);
+        if(!Core.atlas.isFound(out)) out = getDisplayed().uiIcon;
+        fullIcon = uiIcon = out;
         if(region == null) region = fullIcon;
     }
 
@@ -75,8 +71,8 @@ public class FactoryPlan extends Block{
         @Override
         public void killed() {
             if(!Vars.net.client()) {
-                if(Vars.state.rules.researched.contains(this.block))Vars.state.rules.researched.remove(block);
-                else Vars.state.rules.researched.add(this.block);
+                if(Vars.state.rules.isBanned(block)) Vars.state.rules.bannedBlocks.remove(block);
+                else Vars.state.rules.bannedBlocks.add(block);
             }
 
             super.killed();
