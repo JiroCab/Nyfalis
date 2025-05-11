@@ -17,6 +17,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
@@ -172,6 +173,12 @@ public class HeadacheCrafter  extends GenericCrafter{
         public void read(Reads read, byte revision){
             super.read(read, revision);
             if(revision >= 2)planSelected =read.i();
+        }
+
+        @Override
+        public BlockStatus status(){
+            if(planSelected <= -1) return BlockStatus.noOutput;
+            return super.status();
         }
     }
 
