@@ -126,7 +126,7 @@ public class NyfalisBlocks {
     ; //endregion
     public static UnstablePowerTurret cascade;
     public static Replicator unitReplicator, unitReplicatorSmall;
-    public static FactoryPlan ph1, ph2;
+    public static FactoryPlan emptyPlan, ph1, ph2;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
     public static ObjectSet<Block>
@@ -1429,6 +1429,7 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
+        emptyPlan = new  FactoryPlan("empty");
         ph1 = new FactoryPlan("placeholder1 ",60f * 3f, with(Items.copper, 3), with(lead, 3), LiquidStack.with(Liquids.water, 10), LiquidStack.with(NyfalisItemsLiquid.steam, 10));
         ph2 = new FactoryPlan("placeholder2", 60f * 3f, with(rustyIron, 3), with(copper, 3));
 

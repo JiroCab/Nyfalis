@@ -39,6 +39,11 @@ public class FactoryPlan extends Block{
         this(name, time,input, output, null, null);
     }
 
+    public FactoryPlan(String name){
+        super(name);
+        this.time = -Float.MAX_VALUE;
+    }
+
     public float time(){
         return time;
     }
@@ -47,13 +52,16 @@ public class FactoryPlan extends Block{
     @Override
     public void load(){
         super.load();
+
+        description = Core.bundle.get("block.olupis-factory-plan-description");
+        if(Objects.equals(localizedName, name))localizedName = localizedName.replace("olupis-", Iconc.crafting + " ");
+
+        if(time == -Float.MAX_VALUE) return;
         TextureRegion out = Core.atlas.find(name);
         if(!Core.atlas.isFound(out)) out = getDisplayed().uiIcon;
         fullIcon = uiIcon = out;
         if(!Core.atlas.isFound(region)) region = fullIcon;
 
-        description = Core.bundle.get("block.olupis-factory-plan-description");
-        if(Objects.equals(localizedName, name))localizedName = localizedName.replace("olupis-", Iconc.crafting + " ");
     }
 
     public UnlockableContent getDisplayed(){

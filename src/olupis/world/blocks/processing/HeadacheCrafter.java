@@ -33,29 +33,33 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         config(Integer.class, (HeadacheCrafterBuild build, Integer i) -> {
             if(!configurable) return;
+
             if(i >= plans.size || i <= -1){
-                build.planSelected = 0;
+                build.planSelected = plans.get(0).unlockedNowHost() ? 0 : -1;
                 return;
             }
-            build.planSelected = i;
+            build.planSelected = plans.get(i).unlockedNowHost() ? i : -1;
         });
 
 
         configClear((HeadacheCrafterBuild build) -> build.planSelected = 0);
 
-        consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(Math.min(e.planSelected, plans.size - 1)).input : ItemStack.empty));
+        consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).input : ItemStack.empty));
         //consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(Math.min(e.planSelected, plans.size - 1)).inputLiquid : LiquidStack.empty));
     }
 
 
     public class HeadacheCrafterBuild extends GenericCrafterBuild{
-        public int planSelected;
+        public int planSelected = -1;
 
         @Override
         public void updateTile(){
-            if(plans.size <= 0) return;
-            if(planSelected <= -1 || planSelected > plans.size) planSelected = 1;
+            if(plans.size <= 0 || planSelected == -1) return;
+            if(planSelected > plans.size) planSelected = 0;
+
             FactoryPlan plan = plans.get(planSelected);
+            if(!plan.unlockedNowHost()) planSelected = -1;
+            if(planSelected <= -1) return;
 
             if(efficiency > 0){
                 progress += getProgressIncrease(plan.time);
@@ -107,15 +111,12 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         @Override
         public void buildConfiguration(Table table){
-            Seq<UnlockableContent> units = Seq.with(plans).map(u -> u);
-            if(state.isCampaign()) units.retainAll(y -> y.unlockedNowHost());
-            else if(!state.isEditor()) units.retainAll(y -> !state.rules.isBanned((Block)y));
 
-            if(units.size >= 1){
+            if(getLivePlans().size >= 1){
                 buildTable(HeadacheCrafter.this,
                 table,
-                units,
-                () -> plans.get(planSelected),
+                getLivePlans(),
+                () -> planSelected <= -1 ? null: plans.get(planSelected),
                 p -> {
                     int i  = plans.indexOf(f -> f  == p);
                    configure(i);
@@ -131,6 +132,13 @@ public class HeadacheCrafter  extends GenericCrafter{
             }
         }
 
+        public Seq<FactoryPlan> getLivePlans(){
+            Seq<FactoryPlan> livePlans = Seq.with(plans).map(u -> u);
+            if(state.isCampaign()) livePlans.retainAll(UnlockableContent::unlockedNowHost);
+            else if(!state.isEditor()) livePlans.retainAll(y -> !state.rules.isBanned(y));
+            return livePlans;
+        }
+
         @Override
         public boolean acceptItem(Building source, Item item){
             return planSelected != -1 && items.get(item) < getMaximumAccepted(item) &&
@@ -139,7 +147,14 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         @Override
         public Object config(){
-            return plans.get(planSelected);
+            return planSelected >= 0 ? plans.get(planSelected) : null;
+        }
+
+        @Override
+        public void placed(){
+            super.placed();
+
+            planSelected = plans.indexOf(getLivePlans().first());
         }
 
         @Override
