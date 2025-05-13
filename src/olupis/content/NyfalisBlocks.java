@@ -2222,6 +2222,7 @@ public class NyfalisBlocks {
             inaccuracy = 0.5f;
             rotateSpeed = 3f;
             minWarmup = 0.9f;
+            minRange = 30f;
             smokeEffect = shootEffect =  Fx.none;
             shootType = new LaserBulletType(){{
                 lifetime = 4f;

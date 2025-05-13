@@ -337,7 +337,7 @@ public class NyfalisTurrets {
             }
         };
 
-        slash = new NyfalisPowerTurret("slash"){{
+        slash = new NyfalisPowerCutter("slash"){{
             reload = 6;
             shootY = 11;
             inaccuracy = 0.5f;

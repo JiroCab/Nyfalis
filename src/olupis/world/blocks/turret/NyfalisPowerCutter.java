@@ -13,6 +13,7 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
 
     public NyfalisPowerCutter(String name){
         super(name);
+        drawMinRange = true;
     }
 
 
@@ -23,7 +24,7 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
             super.updateTile();
 
             if(target == null){
-                Tile t = EnvUpdater.closestSpread(x, y, range * 8);
+                Tile t = EnvUpdater.closestSpread(x, y, range * 8, f -> f.within(this, minRange));
                 if(t == null) return;
 
                 targetPos.set(t);
@@ -33,7 +34,7 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
                     turnToTarget(targetRot);
                 }
 
-                if(Angles.angleDist(rotation, targetRot) < shootCone){
+                if(Angles.angleDist(rotation, targetRot) < Math.max(shootCone /2, 4f)){
                     wasShooting = true;
                     updateReload();
                     updateShooting();
@@ -44,13 +45,18 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
         @Override
         protected void shoot(BulletType type){
             Tile t = Vars.world.tiles.getc(Math.round((targetPos.x + snipSize) /8), Math.round(targetPos.y /8));
-            if(t != null && t.within(this, range + 8)){
+            if(t != null && t.within(this, range + 8) && !t.within(this, minRange)){
                 Log.err(t.x + ", " + t.y);
                 EnvUpdater.restoreTile(t, snipSize);
 
             }
 
             super.shoot(type);
+        }
+
+        @Override
+        public void drawSelect(){
+            super.drawSelect();
         }
 
         @Override

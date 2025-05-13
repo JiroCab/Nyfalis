@@ -1,6 +1,7 @@
 package olupis.world;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.struct.*;
@@ -443,6 +444,12 @@ public class EnvUpdater{
         common.addAll(tiles);
         common.removeAll(t -> t == null  || !t.within(x, y , range / 8));
         return common;
+    }
+
+    public static Tile closestSpread(float x, float y, float range, Boolf<Tile> prov){
+        Seq<Tile> common = closestSpreadSeq(x, y, range);
+        common.removeAll(prov::get);
+        return common.size >= 1 ? common.first() : null;
     }
 
     public static Tile closestSpread(float x, float y, float range){
