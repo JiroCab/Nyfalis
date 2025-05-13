@@ -2020,7 +2020,7 @@ public class NyfalisBlocks {
 
         rustyWallLarge = new Wall("rusty-wall-large"){{
             floating = true;
-            size = 1;
+            size = 2;
             variants = 6;
             health =  1400;
             buildCostMultiplier = 0.7f;

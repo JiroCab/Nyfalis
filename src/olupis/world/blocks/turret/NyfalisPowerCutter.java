@@ -8,7 +8,8 @@ import mindustry.world.*;
 import olupis.world.*;
 
 public class NyfalisPowerCutter extends NyfalisPowerTurret{
-    public int snipSize = 0;
+    //Snip size should be 1 unless you can figure out cutting for tiles w/ even blocks
+    public int snipSize = 0, snipRand = 2;
 
     public NyfalisPowerCutter(String name){
         super(name);
@@ -22,13 +23,11 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
             super.updateTile();
 
             if(target == null){
-                Tile t = EnvUpdater.closestSpread(x, y, range /8);
+                Tile t = EnvUpdater.closestSpread(x, y, range * 8);
                 if(t == null) return;
 
                 targetPos.set(t);
                 float targetRot = angleTo(t);
-
-                Log.err(range +  " "  + t.x + " "+ t.y);
 
                 if(shouldTurn() && !isControlled() && !logicControlled()){
                     turnToTarget(targetRot);
@@ -44,9 +43,11 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
 
         @Override
         protected void shoot(BulletType type){
-            Tile t = Vars.world.tile(Math.round(targetPos.x /8) , Math.round(targetPos.y /8));
+            Tile t = Vars.world.tiles.getc(Math.round((targetPos.x + snipSize) /8), Math.round(targetPos.y /8));
             if(t != null && t.within(this, range + 8)){
+                Log.err(t.x + ", " + t.y);
                 EnvUpdater.restoreTile(t, snipSize);
+
             }
 
             super.shoot(type);
@@ -59,7 +60,7 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
 
         @Override
         public boolean isShooting(){
-            return alwaysShooting || (isControlled() ? unit.isShooting() : logicControlled() ? logicShooting : target != null) || targetPos != null;
+            return alwaysShooting || (isControlled() ? unit.isShooting() : logicControlled() ? logicShooting : target != null) || (targetPos != null && wasShooting);
         }
     }
 

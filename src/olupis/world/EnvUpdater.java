@@ -3,7 +3,6 @@ package olupis.world;
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.Timer.*;
@@ -341,7 +340,7 @@ public class EnvUpdater{
             dat[3] = -1;
         }
 
-        if(floor && overlay && walls)
+        if(floor && overlay && (walls || tile.build != null || tile.block() == Blocks.air) )
             removeTile(tile);
     }
 
@@ -438,26 +437,41 @@ public class EnvUpdater{
             replaced.put(tile, new int[iterations]);
     }
 
-    public static Tile closestSpread(float x, float y, float range){
+    public static Seq<Tile> closestSpreadSeq(float x, float y, float range){
         Seq<Tile> common = new Seq<>();
         common.addAll(dormantTiles);
         common.addAll(tiles);
-        common.retainAll(t -> t != null  && t.within(x - Math.round(range/2), y - Math.round(range/2), range * 2));
-        Tile t = null;
-        if(common.size >=1)t = common.first();
-        return t;
+        common.removeAll(t -> t == null  || !t.within(x, y , range / 8));
+        return common;
     }
 
-    /*Used by targetting, is scuffed pls replace better thx*/
-    public static Vec2 closestSpreadP(float x, float y, float range){
-        Tile c = closestSpread(x, y, range);
-        if(c == null )return null;
-        return Tmp.v1.set(c.x, c.y).cpy();
+    public static Tile closestSpread(float x, float y, float range){
+        Seq<Tile> common = closestSpreadSeq(x, y, range);
+        return common.size >= 1 ? common.first() : null;
     }
+
+    //TODO: Some randomness so turrets don't target the same tiles
+    public static Tile closestSpread(float x, float y, float range, float randRng){
+        Seq<Tile> common = closestSpreadSeq(x, y, range);
+        common.retainAll(ta -> ta.within(common.first().x, common.first().y , randRng / 8));
+        return common.size >= 1 ? common.random() : null;
+    }
+
+
 
     public static void restoreTile(Tile tile){
-        resetTile(tile, true, true, false);
-        removeTile(tile);
+        boolean wa = tile.block() instanceof GrowingWall;
+        //these are edge cases bc me dumb
+        //Also todo, this dies when block is only partailly in range
+        if(tile.block().isMultiblock() && (tile.block().size == 2)){
+            for(int x = 0; x < tile.block().size; x++){
+                for(int y = 0; y < tile.block().size; y++){
+                    resetTile(world.tile(tile.build.tileX() + x, tile.build.tileY() + y), true, true, wa);
+                }
+            }
+        }
+        else resetTile(tile, true, true, wa);
+
     }
 
     public static void restoreTile(Tile tile, int size){
@@ -465,10 +479,10 @@ public class EnvUpdater{
             restoreTile(tile);
             return;
         }
-        int x = tile.x, y = tile.y;
+        int x = tile.centerX(), y = tile.centerY();
         for(int ix = -size; ix < size; ix++){
             for(int iy = -size; iy < size; iy++){
-                restoreTile(world.tile(x + ix, y + iy));
+                restoreTile(world.tiles.getc(x + ix, y + iy));
             }
         }
     }
