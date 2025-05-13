@@ -1,12 +1,10 @@
 package olupis.world.entities.packets;
 
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.entities.Units;
-import mindustry.gen.Unit;
-import mindustry.io.TypeIO;
-import mindustry.net.Packet;
-import olupis.world.entities.units.AmmoLifeTimeUnitType;
+import arc.util.io.*;
+import mindustry.gen.*;
+import mindustry.io.*;
+import mindustry.net.*;
+import olupis.world.entities.units.*;
 
 public class NyfalisUnitTimedOutPacket extends Packet {
     private byte[] DATA;
@@ -31,6 +29,6 @@ public class NyfalisUnitTimedOutPacket extends Packet {
 
     public void handleClient() {
         if(this.unit.type instanceof AmmoLifeTimeUnitType u) u.timedOut(this.unit);
-        else Units.unitDespawn(this.unit);
+        else AmmoLifeTimeUnitType.timedOut(unit);
     }
 }

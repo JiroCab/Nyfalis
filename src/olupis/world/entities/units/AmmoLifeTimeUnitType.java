@@ -173,7 +173,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
         return unit.within(startPos.x * 8, startPos.y * 8, maxRange);
     }
 
-    public void callTimeOut(Unit unit){
+    public static void callTimeOut(Unit unit){
         if (!net.active() || Vars.net.server()) {
             NyfalisUnitTimedOutPacket packet = new NyfalisUnitTimedOutPacket();
             packet.unit = unit;
@@ -183,7 +183,15 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
 
     }
 
-    public void timedOut(Unit unit){
+    public static void timedOut(Unit unit){
+        if(unit.type instanceof  AmmoLifeTimeUnitType a) a.timedOutTyped(unit);
+        else {
+            NyfalisFxs.unitBreakdown.at(unit.x, unit.y, unit.rotation, unit);
+            unit.remove();
+        }
+    }
+
+    public void timedOutTyped(Unit unit){
         timedOutFx.at(unit.x, unit.y, unit.rotation, unit);
         timedOutSound.at(unit.x, unit.y, timedOutSoundPitch, timedOutSoundVolume);
         unit.remove();

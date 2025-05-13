@@ -3,6 +3,7 @@ package olupis.world.entities.units;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -11,6 +12,7 @@ import mindustry.ai.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
@@ -59,12 +61,14 @@ public class NyfalisUnitType extends UnitType {
     public boolean emitSecondaryLight = false,
                             generateDisplayFactory = true,
                             payloadUnitsUpdate = false,
+                            payloadUpdateRequiresStatus = false,
                             pickupBlocks = true,  //Only used in LeggedPayloadUnit
                             payloadDisarms = false;
     /*Used by `payloadUnitsUpdate` as dummy to copy target to other mounts  */
     public int mountPointer = 0;
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
     public float secondaryLightRadius = lightRadius  * 2;
+    public StatusEffect payloadUpdateSE = StatusEffects.none, payloadDisarmSE = StatusEffects.disarmed;
 
     public TextureRegion bossRegion;
 
@@ -275,9 +279,9 @@ public class NyfalisUnitType extends UnitType {
             unit.updateBoosting(unit.onSolid());
         }
 
-        if(payloadUnitsUpdate) updatePayload(unit);
+        if(payloadUnitsUpdate || (payloadUpdateRequiresStatus && unit.hasEffect(payloadUpdateSE))) updatePayload(unit);
         if(payloadDisarms && unit instanceof  Payloadc p && p.hasPayload()){
-            unit.apply(StatusEffects.disarmed, Time.toSeconds);
+            unit.apply(payloadDisarmSE, Time.toSeconds);
         }
     }
 
@@ -308,6 +312,8 @@ public class NyfalisUnitType extends UnitType {
         if(!(unit instanceof Payloadc c)) return;
         if(c.payloads().isEmpty()) return;
         int[] m ={-1};
+        WeaponMount parent = unit.mounts[mountPointer];
+
         for(Payload p : c.payloads()){
             if(p instanceof UnitPayload up && up.unit.hasWeapons()){
                 //we update the unit as well so we can update ability
@@ -315,23 +321,33 @@ public class NyfalisUnitType extends UnitType {
                 u.type.update(u);
                 u.rotation(unit.rotation);
 
-                m[0] = -1 ;
-                WeaponMount parent = unit.mounts[mountPointer];
+
+                Teamc target = Units.closestEnemy(unit.team, unit.x, unit.y, u.range(), a -> a.team != unit.team);
+                boolean shoot = target != null || unit.isShooting, schk = unit.isShooting || target == null;
+                float aimX = schk ? unit.aimX : target.x(), aimY = schk ? unit.aimY() : target.y(),
+                rot = schk? parent.rotation : Angles.angle(unit.x, unit.y, target.x(), target.y());
+
+                m[0] = 0;
+
                 for(Ability ability : u.abilities){
                     ability.update(unit);
                 }
-                if(u.mounts().length >= 1){
+
+                if(u.type.weapons.size >= 1){
                     WeaponMount[] mounts = u.mounts();
-
                     for(WeaponMount mount : mounts){
-                        mount.aimX = parent.aimX;
-                        mount.aimY = parent.aimY;
-                        mount.shoot = parent.shoot;
-                        mount.targetRotation = parent.targetRotation;
-                        mount.rotation = mount.targetRotation;
+                        mount.aimX = aimX;
+                        mount.aimY = aimY;
+                        mount.shoot = shoot;
+                        mount.targetRotation = mount.rotation = rot;
 
+                        Weapon w = NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0]];
+                        w.update(unit, mount);
+                        if(w.flipSprite){
+                            NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0] + 1].update(unit, mount);
+                            m[0]++;
+                        }
                         m[0]++;
-                        NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0]].update(unit, mount);
                     }
                 }
                 u.update();

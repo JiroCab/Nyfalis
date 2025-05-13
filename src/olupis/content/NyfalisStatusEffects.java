@@ -15,7 +15,7 @@ import mindustry.world.meta.*;
 import java.util.*;
 
 public class NyfalisStatusEffects {
-    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated;
+    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate;
 
     public static void loadStatusEffects(){
 
@@ -231,6 +231,11 @@ public class NyfalisStatusEffects {
             show = true;
         }};
 
-
+        alternate = new StatusEffect("alternate"){{
+            speedMultiplier = 0.95f;
+            color = Color.valueOf("6b675f");
+            show = true;
+            effect = Fx.pickup;
+        }};
     }
 }

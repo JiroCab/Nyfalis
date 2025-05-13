@@ -3,10 +3,12 @@ package olupis.world;
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.Timer.*;
 import mindustry.content.*;
-import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.io.*;
 import mindustry.world.*;
@@ -29,7 +31,7 @@ public class EnvUpdater{
     public static final ObjectIntMap<Block> propCount = new ObjectIntMap<>();
 
     private static final Seq<Tile> tiles = new Seq<>(), sims = new Seq<>(), dormantTiles = new Seq<>();
-    private static Timer.Task validator, simulator;
+    private static Task validator, simulator;
     private static int timer, spaceFree;
 
     // just a dummy map used as a default value for some stuff, do not touch plz
@@ -51,7 +53,7 @@ public class EnvUpdater{
             }
         });
 
-        Events.on(EventType.WorldLoadEvent.class, e -> {
+        Events.on(WorldLoadEvent.class, e -> {
             for(Block b : spreadingFloors)
                 propCount.put(b, 0);
 
@@ -301,8 +303,9 @@ public class EnvUpdater{
     public static void removeTile(Tile tile){
         tiles.remove(tile);
         dormantTiles.remove(tile);
-        data.remove(tile);
-        replaced.remove(tile);
+        //check otherwise crashu
+        if(data.containsValue(tile, false))data.remove(tile);
+        if(replaced.containsValue(tile, false))replaced.remove(tile);
     }
 
     /** Attempts to restore the given tile to what it was before any changes made by EnvUpdater */
@@ -433,5 +436,40 @@ public class EnvUpdater{
             data.put(tile, new int[iterations]);
         if(!replaced.containsKey(tile))
             replaced.put(tile, new int[iterations]);
+    }
+
+    public static Tile closestSpread(float x, float y, float range){
+        Seq<Tile> common = new Seq<>();
+        common.addAll(dormantTiles);
+        common.addAll(tiles);
+        common.retainAll(t -> t != null  && t.within(x - Math.round(range/2), y - Math.round(range/2), range * 2));
+        Tile t = null;
+        if(common.size >=1)t = common.first();
+        return t;
+    }
+
+    /*Used by targetting, is scuffed pls replace better thx*/
+    public static Vec2 closestSpreadP(float x, float y, float range){
+        Tile c = closestSpread(x, y, range);
+        if(c == null )return null;
+        return Tmp.v1.set(c.x, c.y).cpy();
+    }
+
+    public static void restoreTile(Tile tile){
+        resetTile(tile, true, true, false);
+        removeTile(tile);
+    }
+
+    public static void restoreTile(Tile tile, int size){
+        if(size <= 0){
+            restoreTile(tile);
+            return;
+        }
+        int x = tile.x, y = tile.y;
+        for(int ix = -size; ix < size; ix++){
+            for(int iy = -size; iy < size; iy++){
+                restoreTile(world.tile(x + ix, y + iy));
+            }
+        }
     }
 }

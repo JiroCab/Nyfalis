@@ -131,7 +131,7 @@ public class NyfalisBlocks {
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
     public static ObjectSet<Block>
             nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
-            rainRegrowables = new ObjectSet<>(),
+            rainRegrowables = new ObjectSet<>(), spreadingTiles = new ObjectSet<>(),
             factoryPlans = new ObjectSet<>()
     ;
 
@@ -1429,7 +1429,6 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
-        emptyPlan = new  FactoryPlan("empty");
         ph1 = new FactoryPlan("placeholder1 ",60f * 3f, with(Items.copper, 3), with(lead, 3), LiquidStack.with(Liquids.water, 10), LiquidStack.with(NyfalisItemsLiquid.steam, 10));
         ph2 = new FactoryPlan("placeholder2", 60f * 3f, with(rustyIron, 3), with(copper, 3));
 
@@ -2216,7 +2215,7 @@ public class NyfalisBlocks {
 
 
 
-        cutboi = new NyfalisPowerTurret("cutboi"){{
+        cutboi = new NyfalisPowerCutter("cutboi"){{
             reload = 30;
             recoilTime = 5;
             shootY = 0;
@@ -2245,10 +2244,12 @@ public class NyfalisBlocks {
                 shootCone = 180f;
                 liquidCapacity = 5f;
                 coolantMultiplier = 3f;
+                turretLayer = Layer.legUnit +0.3f;
                 for(int i = 0; i < 6; i++){
                     int finalI = i;
                     boolean isOdd = finalI % 2 != 0;
                     parts.add(new RegionPart("-truss"){{
+                        //todo: make a progress that scales how far the target pos is
                         progress = PartProgress.warmup;
                         mirror = true;
                         under = false;
@@ -2276,7 +2277,7 @@ public class NyfalisBlocks {
             outlineColor = nyfalisBlockOutlineColour;
             shootSound = NyfalisSounds.snip;
             coolant = consume(new ConsumeLubricant(15f / 60f));
-            consumePower(0.1f / 60f);
+            consumePower(30f / 60f);
             researchCost = with(iron, 200, copper, 150);
             requirements(Category.effect, with(iron, 60, copper, 50));
 
@@ -2639,7 +2640,7 @@ public class NyfalisBlocks {
         }
 
         rainRegrowables.addAll(grass, moss, mossierStone, mossyStone, yellowGrass, cinderBloomGrass, cinderBloomiest, cinderBloomiest, mossyDirt, frozenDirt, frozenGrass, frozenSlop);
-
+        spreadingTiles.addAll(mycelium, yourcelium, ourcelium, theircelium);
 
         unitReplicator.replacement = NyfalisBlocks.rustyScrapWallHumongous;
         unitReplicatorSmall.replacement = NyfalisBlocks.rustyScrapWallGigantic;

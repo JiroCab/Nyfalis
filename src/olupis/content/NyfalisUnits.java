@@ -2128,8 +2128,11 @@ public class NyfalisUnits {
 
             constructor = OnePayloadUnitClass::create;
             aiController = PayloadCarrierAi::new;
+            payloadUpdateSE = NyfalisStatusEffects.alternate;
+            //used this instead of disarm so weapons "works" allowing to be aimed and used by payload
+            payloadDisarmSE = NyfalisStatusEffects.unloaded;
             useUnitCap = faceTarget = false;
-            flying = canDeploy = canCharge = emitSecondaryLight = payloadDisarms =  true;
+            flying = canDeploy = canCharge = emitSecondaryLight = payloadDisarms =  payloadUpdateRequiresStatus = true;
             parts.addAll(
                     new RegionPart("-radar"){{
                         mirror = false;
@@ -2794,6 +2797,7 @@ public class NyfalisUnits {
                 //TODO: Fireports?
                 w.shootX =  w.x = w.shootY = w.y = 0;
                 w.rotationLimit = 361f;
+                w.shootCone = 360f;
                 w.rotateSpeed = Math.max(w.rotateSpeed, 20);
                 if(w.alternate){
                     w.alternate = false;
@@ -2801,6 +2805,7 @@ public class NyfalisUnits {
                     ws.shoot = w.shoot.copy();
                     ws.shoot.firstShotDelay = Math.max(w.shoot.firstShotDelay, 1) * (ws.reload * 0.5f);
                     buffer.add(ws);
+                    w.flipSprite = true; //identifer that this weapon has a twin
                 };
                 buffer.add(w);
             }
