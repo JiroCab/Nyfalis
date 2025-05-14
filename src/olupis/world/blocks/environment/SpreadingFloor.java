@@ -11,6 +11,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.world.*;
@@ -67,6 +68,9 @@ public class SpreadingFloor extends RotatingFloor{
         this.variants = variants;
         this.orePrefix = Core.bundle.get(getContentType() + "." + this.name + ".ore-prefix", this.name);
     }
+
+    /*Debuff for unit*/
+    public StatusEffect statusEffect = StatusEffects.none;
 
     @Override
     public void init(){

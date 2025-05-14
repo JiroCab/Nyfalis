@@ -798,6 +798,7 @@ public class NyfalisBlocks {
             mapColor = Color.valueOf("#3c5e14");
             spreadSound = NyfalisSounds.mossSpread;
             blacklist.addAll(coreZone); //doesnt work
+            statusEffect = status = StatusEffects.corroded;
         }};
 
         theircelium = new Floor("moss", 3){{
@@ -805,6 +806,7 @@ public class NyfalisBlocks {
             inEditor = false;
 
             ((SpreadingFloor) ourcelium).next = this;
+            status = StatusEffects.corroded;
         }};
 
         //endregion

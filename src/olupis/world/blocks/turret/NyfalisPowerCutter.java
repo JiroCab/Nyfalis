@@ -1,7 +1,6 @@
 package olupis.world.blocks.turret;
 
 import arc.math.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.entities.bullet.*;
 import mindustry.world.*;
@@ -46,7 +45,7 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
         protected void shoot(BulletType type){
             Tile t = Vars.world.tiles.getc(Math.round((targetPos.x + snipSize) /8), Math.round(targetPos.y /8));
             if(t != null && t.within(this, range + 8) && !t.within(this, minRange)){
-                Log.err(t.x + ", " + t.y);
+
                 EnvUpdater.restoreTile(t, snipSize);
 
             }

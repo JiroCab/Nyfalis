@@ -2,6 +2,8 @@ package olupis.world.blocks.environment;
 
 import arc.graphics.g2d.*;
 import arc.math.*;
+import mindustry.content.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
@@ -13,6 +15,7 @@ public class SpreadingOre extends OreBlock{
     public Block set = null;
     public int overlayVariants = 0;
     public TextureRegion[] overlayRegions = new TextureRegion[overlayVariants];
+    public StatusEffect statusEffect = StatusEffects.none;
 
     public SpreadingOre(String name){
         super(name);

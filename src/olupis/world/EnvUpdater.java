@@ -119,6 +119,7 @@ public class EnvUpdater{
                     if(!state.isGame() || state.isEditor() || state.isPaused()) return;
 
                     sims.each(EnvUpdater::simulateSlowdown);
+                    debuffUnits();
                 }, 0, 1f/20f);
         });
     }
@@ -239,6 +240,16 @@ public class EnvUpdater{
     public static void simulateSlowdown(Tile t){
         if(t != null && t.overlay() instanceof SpreadingOre ore && ore.parent.drillEfficiency < 1f && t.build instanceof Drill.DrillBuild drill){
             drill.applySlowdown(ore.parent.drillEfficiency, 120f);
+        }
+    }
+
+    public static void debuffUnits(){
+        for(Unit unit : Groups.unit){
+            if(unit.tileOn().overlay() instanceof  SpreadingFloor s && s.statusEffect != StatusEffects.none ){
+                unit.apply(s.statusEffect, Time.toSeconds);
+            }else if(unit.tileOn().overlay() instanceof  SpreadingOre s && s.statusEffect != StatusEffects.none){
+                unit.apply(s.statusEffect, Time.toSeconds);
+            }
         }
     }
 
