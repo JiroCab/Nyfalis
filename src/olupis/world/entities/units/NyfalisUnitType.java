@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -316,32 +317,35 @@ public class NyfalisUnitType extends UnitType {
 
         for(Payload p : c.payloads()){
             if(p instanceof UnitPayload up && up.unit.hasWeapons()){
-                //we update the unit as well so we can update ability
                 Unit u = up.unit;
-                u.type.update(u);
                 u.rotation(unit.rotation);
-
 
                 Teamc target = Units.closestEnemy(unit.team, unit.x, unit.y, u.range(), a -> a.team != unit.team);
                 boolean shoot = target != null || unit.isShooting, schk = unit.isShooting || target == null;
                 float aimX = schk ? unit.aimX : target.x(), aimY = schk ? unit.aimY() : target.y(),
-                rot = schk? parent.rotation : Angles.angle(unit.x, unit.y, target.x(), target.y());
+                rot =  Angles.angle(unit.x, unit.y, aimX, aimY) - unit.rotation;
 
-                m[0] = 0;
 
                 for(Ability ability : u.abilities){
-                    ability.update(unit);
+                    ability.update(u);
                 }
 
+                m[0] = 0;
                 if(u.type.weapons.size >= 1){
                     WeaponMount[] mounts = u.mounts();
                     for(WeaponMount mount : mounts){
-                        mount.aimX = aimX;
-                        mount.aimY = aimY;
                         mount.shoot = shoot;
                         mount.targetRotation = mount.rotation = rot;
 
                         Weapon w = NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0]];
+                        if(w.predictTarget && target != null){
+                            Vec2 to = Predict.intercept(unit, target, w.bullet.speed);
+                            aimX = to.x;
+                            aimY = to.y;
+                        }
+
+                        mount.aimX = aimX;
+                        mount.aimY = aimY;
                         w.update(unit, mount);
                         if(w.flipSprite){
                             NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0] + 1].update(unit, mount);

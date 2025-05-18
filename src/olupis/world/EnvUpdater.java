@@ -245,6 +245,10 @@ public class EnvUpdater{
 
     public static void debuffUnits(){
         for(Unit unit : Groups.unit){
+            if(unit.tileOn() == null) return;
+            if(!unit.isGrounded()) return;
+            if(unit.type.hovering) return;
+
             if(unit.tileOn().overlay() instanceof  SpreadingFloor s && s.statusEffect != StatusEffects.none ){
                 unit.apply(s.statusEffect, Time.toSeconds);
             }else if(unit.tileOn().overlay() instanceof  SpreadingOre s && s.statusEffect != StatusEffects.none){

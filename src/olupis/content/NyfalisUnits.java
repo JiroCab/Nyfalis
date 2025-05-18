@@ -2792,20 +2792,19 @@ public class NyfalisUnits {
                 w.bullet = ow.bullet.copy();
                 w.shoot = ow.shoot.copy();
                 //Flat reload nerf since we can go beyond the unit cap and this is to "help" w/ balancing
-                w.reload *=2f;
-                w.rotate = true;
+                w.reload *=2.5f;
+                w.rotate = w.ignoreRotation = true;
+                w.mirror = false;
                 //TODO: Fireports?
-                w.shootX =  w.x = w.shootY = w.y = 0;
-                w.rotationLimit = 361f;
+
                 w.shootCone = 360f;
                 w.rotateSpeed = Math.max(w.rotateSpeed, 20);
                 if(w.alternate){
                     w.alternate = false;
                     Weapon ws = w.copy();
                     ws.shoot = w.shoot.copy();
-                    ws.shoot.firstShotDelay = Math.max(w.shoot.firstShotDelay, 1) * (ws.reload * 0.5f);
                     buffer.add(ws);
-                    w.flipSprite = true; //identifer that this weapon has a twin
+                    w.flipSprite = true; //identifier that this weapon has a twin
                 };
                 buffer.add(w);
             }
