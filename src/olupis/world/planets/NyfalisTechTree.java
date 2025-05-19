@@ -1,6 +1,7 @@
 package olupis.world.planets;
 
 import arc.struct.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
 

@@ -1461,6 +1461,100 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 100, aluminum, 40, silicon, 40, copper, 40));
         }};
 
+        duality = new DuelLiquidTurret("duality"){{
+            targetAir = emitLight = true;
+            size = 5;
+
+            recoil = 1;
+            shootY = 7f;
+            range = 15 * 8f;
+            health = 750;
+            fogRadius = 13;
+            shootCone = 50f;
+            inaccuracy = 8.5f;
+            rotateSpeed = 3f;
+            lightRadius = 150;
+            coolantMultiplier = 2.5f;
+            liquidCapacity = reload = 5f;
+
+            ammo(
+                Liquids.water, new LiquidBulletType(Liquids.water){{
+                    status = StatusEffects.corroded;
+                    layer = Layer.bullet -2f;
+                    trailColor = hitColor;
+
+                    speed = 5.5f;
+                    drag = 0.008f;
+                    damage = 10f;
+                    pierceCap = 1;
+                    lifetime = 9999f;
+                    rangeChange = 15f;
+                    ammoMultiplier = 1.5f;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.5f;
+
+                    statusDuration = 60f * 2;
+                }},
+                steam, new NoBoilLiquidBulletType(steam){{
+                    evaporatePuddles = pierce = true;
+                    status = StatusEffects.corroded;
+                    trailColor = hitColor;
+
+                    speed = 8f;
+                    drag = 0.009f;
+                    lifetime = 9999f;
+                    damage = 15f;
+                    pierceCap = 3;
+                    ammoMultiplier = 2.5f;
+                    statusDuration = 60f * 5;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.5f;
+                }},
+                Liquids.slag, new LiquidBulletType(Liquids.slag){{
+                    speed = 5.8f;
+                    damage = 17;
+                    pierceCap = 1;
+                    drag = 0.0009f;
+                    lifetime = 9999f;
+                    rangeChange = 20f;
+                    ammoMultiplier = 3f;
+                    statusDuration = 60f * 2;
+                    layer = Layer.bullet -2f;
+                    hitSize = puddleSize = 7f;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.4f;
+
+                    trailColor = hitColor;
+                    status = StatusEffects.melting;
+                }},
+                emulsiveSlop, new LiquidBulletType(emulsiveSlop){{
+                    speed = 5.8f;
+                    damage = 13;
+                    pierceCap = 1;
+                    drag = 0.0009f;
+                    lifetime = 9999f;
+                    rangeChange = 20f;
+                    ammoMultiplier = 3f;
+                    statusDuration = 60f * 2;
+                    layer = Layer.bullet -2f;
+                    hitSize = puddleSize = 7f;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.4f;
+
+                    trailColor = hitColor;
+                    status = NyfalisStatusEffects.sloppy;
+                }}
+            );
+            limitRange(0.5f);
+            loopSound = Sounds.steam;
+            consumePower(1f);
+            lightColor = turretLightColor;
+            outlineColor = nyfalisBlockOutlineColour;
+            researchCost = with(rustyIron, 100, lead, 100);
+            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
+            requirements(Category.turret, with(iron, 100, aluminum, 40, silicon, 40, quartz, 40, graphite, 40, cobalt, 40));
+        }};
+
         cascade = new UnstablePowerTurret("cascade"){{
             String visName = (Core.settings.getBool("nyfalis-bread-gun") ? "PH-cascade" : "cascade");
             localizedName = Core.bundle.get(getContentType() + ".olupis-" + visName + ".name");

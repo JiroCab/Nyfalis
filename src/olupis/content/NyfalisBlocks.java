@@ -102,7 +102,7 @@ public class NyfalisBlocks {
         fracture,  shredder,
         slash, strata, laceration, hive,
         avenger, aegis,
-        corroder,  duality, porcupine,
+        corroder, porcupine,  duality,
         //leftover legacy
         dissolver, obliterator,
 
