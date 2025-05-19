@@ -17,6 +17,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.legacy.*;
+import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.world.blocks.defence.*;
@@ -43,130 +44,82 @@ public class NyfalisTurrets {
     public static void LoadTurrets(){
 
         //region Turrets
-        corroder = new NyfalisLiquidTurret("corroder"){{ //architronito
-                targetAir = emitLight = true;
+        fracture = new NyfalisItemTurret("fracture"){{
+            ammo(
+                rustyIron,  new CappedIntervalBullet(2.5f, 9){{
+                    width = 7f;
+                    height = 9f;
+                    lifetime = 60f;
 
-                size = 2;
-                recoil = 1;
-                shootY = 7f;
-                range = 15 * 8f;
-                health = 750;
-                fogRadius = 13;
-                shootCone = 50f;
-                inaccuracy = 8.5f;
-                rotateSpeed = 3f;
-                lightRadius = 150;
-                coolantMultiplier = 2.5f;
-                liquidCapacity = reload = 5f;
+                    hitEffect = despawnEffect = Fx.hitBulletColor;
+                    hitColor = backColor = trailColor = rustyBulletBack;
+                    frontColor =  rustyIron.color;
+                    intervalRandomSpread = 10f;
+                    intervalSpread = 5f;
+                    bulletInterval = 1f;
+                    IntervalCap = 4;
+                    reloadMultiplier = 0.8f;
+                    intervalBullet = new BasicBulletType(2.5f, 9){{
+                        width = 7f;
+                        height = 9f;
+                        lifetime = 58f;
 
-                ammo(
-                    Liquids.water, new LiquidBulletType(Liquids.water){{
-                        status = StatusEffects.corroded;
-                        layer = Layer.bullet -2f;
-                        trailColor = hitColor;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = rustyBulletBack;
+                        frontColor = rustyIron.color;
+                    }};
+                }},
+                iron,  new BasicBulletType(4f, 10){{
+                    pierce = pierceBuilding = true;
 
-                        speed = 5.5f;
-                        drag = 0.008f;
-                        damage = 10f;
-                        pierceCap = 1;
-                        lifetime = 9999f;
-                        rangeChange = 15f;
-                        ammoMultiplier = 1.5f;
-                        trailInterval = trailParam = 1.5f;
-                        buildingDamageMultiplier = 0.5f;
+                    width = height = 7f;
+                    lifetime = 60f;
+                    ammoMultiplier = pierceCap = 2;
 
-                        statusDuration = 60f * 2;
-                    }},
-                    steam, new NoBoilLiquidBulletType(steam){{
-                            evaporatePuddles = pierce = true;
-                            status = StatusEffects.corroded;
-                            trailColor = hitColor;
+                    hitEffect = despawnEffect = Fx.hitBulletColor;
+                    hitColor = backColor = trailColor = ironBulletBack;
+                    frontColor = iron.color;
+                }}
+            );
 
-                            speed = 8f;
-                            drag = 0.009f;
-                            lifetime = 9999f;
-                            damage = 15f;
-                            pierceCap = 3;
-                            ammoMultiplier = 2.5f;
-                            statusDuration = 60f * 5;
-                            trailInterval = trailParam = 1.5f;
-                            buildingDamageMultiplier = 0.5f;
-                    }},
-                    Liquids.slag, new LiquidBulletType(Liquids.slag){{
-                        speed = 5.8f;
-                        damage = 17;
-                        pierceCap = 1;
-                        drag = 0.0009f;
-                        lifetime = 9999f;
-                        rangeChange = 20f;
-                        ammoMultiplier = 3f;
-                        statusDuration = 60f * 2;
-                        layer = Layer.bullet -2f;
-                        hitSize = puddleSize = 7f;
-                        trailInterval = trailParam = 1.5f;
-                        buildingDamageMultiplier = 0.4f;
-
-                        trailColor = hitColor;
-                        status = StatusEffects.melting;
-                    }},
-                    emulsiveSlop, new LiquidBulletType(emulsiveSlop){{
-                        speed = 5.8f;
-                        damage = 13;
-                        pierceCap = 1;
-                        drag = 0.0009f;
-                        lifetime = 9999f;
-                        rangeChange = 20f;
-                        ammoMultiplier = 3f;
-                        statusDuration = 60f * 2;
-                        layer = Layer.bullet -2f;
-                        hitSize = puddleSize = 7f;
-                        trailInterval = trailParam = 1.5f;
-                        buildingDamageMultiplier = 0.4f;
-
-                        trailColor = hitColor;
-                        status = NyfalisStatusEffects.sloppy;
-                    }}
+            size = 2;
+            recoil = 0.5f;
+            shootY = 3f;
+            reload = 50f;
+            range = 160;
+            shootCone = 10f;
+            ammoUseEffect = Fx.casing1;
+            health = 250;
+            inaccuracy = 2f;
+            rotateSpeed = 10f;
+            researchCostMultiplier = 0.05f;
+            drawer = new DrawTurret("iron-"){{
+                parts.addAll(
+                new RegionPart("-barrel"){{
+                    mirror = false;
+                    under = true;
+                    progress = PartProgress.recoil;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                }},  new RegionPart("-front-wing"){{
+                    mirror = true;
+                    under = true;
+                    layerOffset = -0.1f;
+                    progress = PartProgress.warmup;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, 0, -12f));
+                }}, new RegionPart("-back-wing"){{
+                    mirror = true;
+                    under = true;
+                    layerOffset = -0.1f;
+                    progress = PartProgress.smoothReload;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, -1f, 12f));
+                }}
                 );
-                drawer = new DrawTurret("iron-"){{
-                    parts.addAll(
-                        new RegionPart("-barrel"){{
-                            mirror = false;
-                            under = true;
-                            progress = PartProgress.recoil;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
-                        }},  new RegionPart("-front-wing"){{
-                            mirror = true;
-                            under = true;
-                            layerOffset = -0.1f;
-                            progress = PartProgress.warmup;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, 0, -12f));
-                        }}, new RegionPart("-back-wing"){{
-                            mirror = true;
-                            under = true;
-                            layerOffset = -0.1f;
-                            progress = PartProgress.smoothReload;
-                            moves.add(new PartMove(PartProgress.recoil, 0f, -1f, 12f));
-                        }}
-                    );
-                }};
-                limitRange(0.5f);
-                loopSound = Sounds.steam;
-                consumePower(1f);
-                lightColor = turretLightColor;
-                outlineColor = nyfalisBlockOutlineColour;
-                researchCost = with(rustyIron, 100, lead, 100);
-                flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
-                requirements(Category.turret, with(rustyIron, 40, lead, 20));
-
-            }
-
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
-            }
-        };
+            }};
+            limitRange(5f);
+            coolant = consume(new ConsumeLiquid(steam, 30f / 60f));
+            consume(new ConsumePressureAgent(30/60f));
+            requirements(Category.turret, with(rustyIron, 40, lead, 20));
+        }};
 
         avenger = new AirPriorityItemTurret("avenger"){
             {
@@ -612,6 +565,131 @@ public class NyfalisTurrets {
                 }}
             );
             limitRange();
+        }
+
+            @Override
+            public void setStats() {
+                super.setStats();
+                stats.remove(Stat.ammo);
+                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
+            }
+        };
+
+        corroder = new NyfalisLiquidTurret("corroder"){{ //architronito
+            targetAir = emitLight = true;
+
+            size = 2;
+            recoil = 1;
+            shootY = 7f;
+            range = 15 * 8f;
+            health = 750;
+            fogRadius = 13;
+            shootCone = 50f;
+            inaccuracy = 8.5f;
+            rotateSpeed = 3f;
+            lightRadius = 150;
+            coolantMultiplier = 2.5f;
+            liquidCapacity = reload = 5f;
+
+            ammo(
+                Liquids.water, new LiquidBulletType(Liquids.water){{
+                    status = StatusEffects.corroded;
+                    layer = Layer.bullet -2f;
+                    trailColor = hitColor;
+
+                    speed = 5.5f;
+                    drag = 0.008f;
+                    damage = 10f;
+                    pierceCap = 1;
+                    lifetime = 9999f;
+                    rangeChange = 15f;
+                    ammoMultiplier = 1.5f;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.5f;
+
+                    statusDuration = 60f * 2;
+                }},
+                steam, new NoBoilLiquidBulletType(steam){{
+                    evaporatePuddles = pierce = true;
+                    status = StatusEffects.corroded;
+                    trailColor = hitColor;
+
+                    speed = 8f;
+                    drag = 0.009f;
+                    lifetime = 9999f;
+                    damage = 15f;
+                    pierceCap = 3;
+                    ammoMultiplier = 2.5f;
+                    statusDuration = 60f * 5;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.5f;
+                }},
+                Liquids.slag, new LiquidBulletType(Liquids.slag){{
+                    speed = 5.8f;
+                    damage = 17;
+                    pierceCap = 1;
+                    drag = 0.0009f;
+                    lifetime = 9999f;
+                    rangeChange = 20f;
+                    ammoMultiplier = 3f;
+                    statusDuration = 60f * 2;
+                    layer = Layer.bullet -2f;
+                    hitSize = puddleSize = 7f;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.4f;
+
+                    trailColor = hitColor;
+                    status = StatusEffects.melting;
+                }},
+                emulsiveSlop, new LiquidBulletType(emulsiveSlop){{
+                    speed = 5.8f;
+                    damage = 13;
+                    pierceCap = 1;
+                    drag = 0.0009f;
+                    lifetime = 9999f;
+                    rangeChange = 20f;
+                    ammoMultiplier = 3f;
+                    statusDuration = 60f * 2;
+                    layer = Layer.bullet -2f;
+                    hitSize = puddleSize = 7f;
+                    trailInterval = trailParam = 1.5f;
+                    buildingDamageMultiplier = 0.4f;
+
+                    trailColor = hitColor;
+                    status = NyfalisStatusEffects.sloppy;
+                }}
+            );
+            drawer = new DrawTurret("iron-"){{
+                parts.addAll(
+                new RegionPart("-barrel"){{
+                    mirror = false;
+                    under = true;
+                    progress = PartProgress.recoil;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, -3f, 0f));
+                }},  new RegionPart("-front-wing"){{
+                    mirror = true;
+                    under = true;
+                    layerOffset = -0.1f;
+                    progress = PartProgress.warmup;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, 0, -12f));
+                }}, new RegionPart("-back-wing"){{
+                    mirror = true;
+                    under = true;
+                    layerOffset = -0.1f;
+                    progress = PartProgress.smoothReload;
+                    moves.add(new PartMove(PartProgress.recoil, 0f, -1f, 12f));
+                }}
+                );
+            }};
+            limitRange(0.5f);
+            loopSound = Sounds.steam;
+            consumePower(1f);
+            lightColor = turretLightColor;
+            outlineColor = nyfalisBlockOutlineColour;
+            researchCost = with(rustyIron, 100, lead, 100);
+            flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
+            requirements(Category.turret, with(quartz, 25, iron, 30));
+
         }
 
             @Override

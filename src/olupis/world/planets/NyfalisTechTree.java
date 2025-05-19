@@ -216,7 +216,7 @@ public class NyfalisTechTree {
 
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
-                        node(rustElectrolyzer, Seq.with(new Objectives.Research(corroder), new Objectives.SectorComplete(sanctuary)), () -> {
+                        node(rustElectrolyzer, Seq.with(new Objectives.Research(fracture), new Objectives.SectorComplete(sanctuary)), () -> {
                             node(garden, Seq.with(new Objectives.SectorComplete(dyingForest)),()->{
                                 node(biomassGenerator, () ->{
 
@@ -376,7 +376,7 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(corroder, Seq.with(new Objectives.Research(rustyPump)), ()-> {
+                node(fracture, Seq.with(new Objectives.Research(rustyPump)), ()-> {
                     node(avenger, () -> {
                         node(strata, ()->{
                             node(mossMine, ()->{
@@ -389,9 +389,11 @@ public class NyfalisTechTree {
                                 });
                             });
                         });
-                        node(aegis, ()->{
-                            node(cascade, ()->{
+                        node(corroder, ()->{
+                            node(aegis, ()->{
+                                node(cascade, ()->{
 
+                                });
                             });
                         });
                     });

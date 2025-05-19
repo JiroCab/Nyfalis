@@ -98,8 +98,13 @@ public class NyfalisBlocks {
 
         //Buildings, sorted by category
 
-        heavyMine,fragMine,glitchMine,mossMine,
-        corroder, dissolver, shredder, hive, escalation, shatter, avenger, aegis, obliterator, slash, laceration,strata,porcupine, cutboi, superextendocutboi,
+        //turret "trees"
+        fracture,  shredder,
+        slash, strata, laceration, hive,
+        avenger, aegis,
+        corroder,  duality, porcupine,
+        //leftover legacy
+        dissolver, obliterator,
 
         rustyDrill, steamDrill, hydroElectricDrill, steamAgitator, garden, fortifiedRadiator,
 
@@ -116,8 +121,10 @@ public class NyfalisBlocks {
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
+        heavyMine,fragMine,glitchMine,mossMine,
         coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant, coreParagon, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
         mendFieldProjector, taurus, lamp, ladar, search,
+        cutboi, superextendocutboi,
 
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
 
