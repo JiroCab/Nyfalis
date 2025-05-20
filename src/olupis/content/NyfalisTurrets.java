@@ -46,7 +46,7 @@ public class NyfalisTurrets {
         //region Turrets
         fracture = new NyfalisItemTurret("fracture"){{
             ammo(
-                rustyIron,  new CappedIntervalBullet(2.5f, 9){{
+                rustyIron,  new CappedIntervalBullet(4f, 14){{
                     width = 7f;
                     height = 9f;
                     lifetime = 60f;
@@ -57,9 +57,9 @@ public class NyfalisTurrets {
                     intervalRandomSpread = 10f;
                     intervalSpread = 5f;
                     bulletInterval = 1f;
-                    IntervalCap = 4;
+                    IntervalCap = 2;
                     reloadMultiplier = 0.8f;
-                    intervalBullet = new BasicBulletType(2.5f, 9){{
+                    intervalBullet = new BasicBulletType(4f, 14){{
                         width = 7f;
                         height = 9f;
                         lifetime = 58f;
@@ -69,30 +69,44 @@ public class NyfalisTurrets {
                         frontColor = rustyIron.color;
                     }};
                 }},
-                iron,  new BasicBulletType(4f, 10){{
+                iron,  new CappedIntervalBullet(4f, 23){{
                     pierce = pierceBuilding = true;
 
                     width = height = 7f;
                     lifetime = 60f;
                     ammoMultiplier = pierceCap = 2;
 
+                    intervalRandomSpread = 10f;
+                    intervalSpread = 5f;
+                    bulletInterval = 1f;
+                    IntervalCap = 1;
+
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = ironBulletBack;
                     frontColor = iron.color;
+                    intervalBullet = new BasicBulletType(4f, 23){{
+                        width =  height = 7f;
+                        lifetime = 58f;
+
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = ironBulletBack;
+                        frontColor = iron.color;
+                    }};
                 }}
             );
 
             size = 2;
-            recoil = 0.5f;
+            recoil = 0.75f;
             shootY = 3f;
-            reload = 50f;
+            reload = 25f;
             range = 160;
             shootCone = 10f;
             ammoUseEffect = Fx.casing1;
             health = 250;
-            inaccuracy = 2f;
-            rotateSpeed = 10f;
+            inaccuracy = 4f;
+            rotateSpeed = 15f;
             researchCostMultiplier = 0.05f;
+            coolantMultiplier = 3f;
             drawer = new DrawTurret("iron-"){{
                 parts.addAll(
                 new RegionPart("-barrel"){{
@@ -115,7 +129,7 @@ public class NyfalisTurrets {
                 }}
                 );
             }};
-            limitRange(5f);
+            limitRangeI(5f);
             coolant = consume(new ConsumeLiquid(steam, 30f / 60f));
             consume(new ConsumePressureAgent(30/60f));
             requirements(Category.turret, with(rustyIron, 40, lead, 20));

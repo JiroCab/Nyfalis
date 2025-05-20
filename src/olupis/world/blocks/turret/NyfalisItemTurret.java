@@ -3,12 +3,28 @@ package olupis.world.blocks.turret;
 import arc.math.Mathf;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.meta.*;
+import olupis.world.entities.*;
 
 public class NyfalisItemTurret extends ItemTurret {
     public float illuminateTime = 30f;
 
     public  NyfalisItemTurret(String name){
         super(name);
+    }
+
+    public void limitRangeI(float margin){
+        for(var entry : ammoTypes.entries()){
+            limitRange(entry.value, margin);
+            limitRange(entry.value.intervalBullet, margin);
+        }
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.remove(Stat.ammo);
+        stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
     }
 
     public class NyfalisItemTurretBuild extends ItemTurretBuild{

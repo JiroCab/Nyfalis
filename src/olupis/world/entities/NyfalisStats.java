@@ -195,7 +195,9 @@ public class NyfalisStats extends StatValues {
                             }else if( type instanceof  DistanceScalingBulletType st){
                                 bt.add(Core.bundle.format("bullet.damage", (type.damage * st.minDmgMul) + "-" + type.damage * st.maxDmgMul ));
                             }else {
-                                bt.add(Core.bundle.format("bullet.damage", type.damage));
+                                String owo = type.damage + "";
+                                if(type instanceof  CappedIntervalBullet c) owo = " x" +c.IntervalCap + " ";
+                                bt.add(Core.bundle.format("bullet.damage",  type.damage + owo));
                             }
                         }
 
@@ -284,7 +286,7 @@ public class NyfalisStats extends StatValues {
                             sep(bt,"@stat.olupis-unloaded");
                         }
 
-                        if (type.intervalBullet != null) {
+                        if (type.intervalBullet != null && !(type instanceof  CappedIntervalBullet)) {
                             bt.row();
 
                             Table ic = new Table();

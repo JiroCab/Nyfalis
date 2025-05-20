@@ -3,6 +3,8 @@ package olupis.world.blocks.turret;
 import arc.math.Mathf;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
+import mindustry.world.meta.*;
+import olupis.world.entities.*;
 
 public class NyfalisLiquidTurret  extends LiquidTurret {
     public float illuminateTime = 30f;
@@ -16,6 +18,13 @@ public class NyfalisLiquidTurret  extends LiquidTurret {
         for(var entry : ammoTypes.entries()){
             limitRange(entry.value, margin);
         }
+    }
+
+    @Override
+    public void setStats() {
+        super.setStats();
+        stats.remove(Stat.ammo);
+        stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
     }
 
     public class NyfalisLiquidTurretBuild extends LiquidTurretBuild{
