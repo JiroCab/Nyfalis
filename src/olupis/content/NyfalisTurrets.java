@@ -45,12 +45,14 @@ public class NyfalisTurrets {
 
         //region Turrets
         fracture = new NyfalisItemTurret("fracture"){{
+            targetAir = false;
             ammo(
                 rustyIron,  new CappedIntervalBullet(4f, 14){{
                     width = 7f;
                     height = 9f;
                     lifetime = 60f;
 
+                    collidesAir = false;
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = rustyBulletBack;
                     frontColor =  rustyIron.color;
@@ -59,6 +61,7 @@ public class NyfalisTurrets {
                     bulletInterval = 1f;
                     IntervalCap = 2;
                     reloadMultiplier = 0.8f;
+                    ammoMultiplier = 1f;
                     intervalBullet = new BasicBulletType(4f, 14){{
                         width = 7f;
                         height = 9f;
@@ -67,14 +70,17 @@ public class NyfalisTurrets {
                         hitEffect = despawnEffect = Fx.hitBulletColor;
                         hitColor = backColor = trailColor = rustyBulletBack;
                         frontColor = rustyIron.color;
+                        collidesAir = false;
                     }};
                 }},
                 iron,  new CappedIntervalBullet(4f, 23){{
                     pierce = pierceBuilding = true;
+                    collidesAir = false;
 
                     width = height = 7f;
                     lifetime = 60f;
-                    ammoMultiplier = pierceCap = 2;
+                    ammoMultiplier = 1.5f;
+                    pierceCap = 2;
 
                     intervalRandomSpread = 10f;
                     intervalSpread = 5f;
@@ -85,6 +91,8 @@ public class NyfalisTurrets {
                     hitColor = backColor = trailColor = ironBulletBack;
                     frontColor = iron.color;
                     intervalBullet = new BasicBulletType(4f, 23){{
+                        pierce = pierceBuilding = true;
+                        collidesAir = false;
                         width =  height = 7f;
                         lifetime = 58f;
 
@@ -96,14 +104,14 @@ public class NyfalisTurrets {
             );
 
             size = 2;
-            recoil = 0.75f;
+            recoil = 1f;
             shootY = 3f;
-            reload = 25f;
-            range = 160;
-            shootCone = 10f;
+            reload = 20f;
+            range = 150;
+            shootCone = 5f;
             ammoUseEffect = Fx.casing1;
             health = 250;
-            inaccuracy = 4f;
+            inaccuracy = 5f;
             rotateSpeed = 15f;
             researchCostMultiplier = 0.05f;
             coolantMultiplier = 3f;
@@ -130,9 +138,9 @@ public class NyfalisTurrets {
                 );
             }};
             limitRangeI(5f);
-            coolant = consume(new ConsumeLiquid(steam, 30f / 60f));
-            consume(new ConsumePressureAgent(30/60f));
-            requirements(Category.turret, with(rustyIron, 40, lead, 20));
+            coolant = consume(new ConsumeLiquid(steam, 5 / 60f));
+            consume(new ConsumePressureAgent(35f / 60f));
+            requirements(Category.turret, with(rustyIron, 50, lead, 25));
         }};
 
         avenger = new AirPriorityItemTurret("avenger"){
@@ -1489,7 +1497,8 @@ public class NyfalisTurrets {
             rotateSpeed = 3f;
             lightRadius = 150;
             coolantMultiplier = 2.5f;
-            liquidCapacity = reload = 5f;
+            liquidCapacity = 20f;
+            reload = 4.5f;
 
             ammo(
                 Liquids.water, new LiquidBulletType(Liquids.water){{
@@ -1559,6 +1568,9 @@ public class NyfalisTurrets {
                     status = NyfalisStatusEffects.sloppy;
                 }}
             );
+
+            shoot.shots = 2;
+
             limitRange(0.5f);
             loopSound = Sounds.steam;
             consumePower(1f);

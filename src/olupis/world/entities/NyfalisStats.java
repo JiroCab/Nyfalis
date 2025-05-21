@@ -195,7 +195,7 @@ public class NyfalisStats extends StatValues {
                             }else if( type instanceof  DistanceScalingBulletType st){
                                 bt.add(Core.bundle.format("bullet.damage", (type.damage * st.minDmgMul) + "-" + type.damage * st.maxDmgMul ));
                             }else {
-                                String owo = type.damage + "";
+                                String owo = "";
                                 if(type instanceof  CappedIntervalBullet c) owo = " x" +c.IntervalCap + " ";
                                 bt.add(Core.bundle.format("bullet.damage",  type.damage + owo));
                             }
