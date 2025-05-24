@@ -133,7 +133,7 @@ public class NyfalisBlocks {
     ; //endregion
     public static UnstablePowerTurret cascade;
     public static Replicator unitReplicator, unitReplicatorSmall;
-    public static FactoryPlan emptyPlan, ph1, ph2;
+    public static FactoryPlan emptyPlan, ph1, ph2, graphitePlan;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
     public static ObjectSet<Block>
@@ -2222,9 +2222,7 @@ public class NyfalisBlocks {
             requirements(Category.effect, with(iron, 40, Items.lead, 30));
         }};
 
-
-
-        cutboi = new NyfalisPowerCutter("cutboi"){{
+        cutboi = new NyfalisPowerCutter("shear"){{
             reload = 30;
             recoilTime = 5;
             shootY = 0;
@@ -2239,7 +2237,13 @@ public class NyfalisBlocks {
                 width = 0;
                 damage = 10;
                 trailEffect = laserEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
-            }};
+            }
+
+                @Override
+                public void draw(Bullet b){
+                     //dont
+                }
+            };
             drawer = new DrawTurret("iron-"){{
                 targetAir = false;
                 emitLight = true;

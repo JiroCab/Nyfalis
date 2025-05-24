@@ -1573,6 +1573,7 @@ public class NyfalisTurrets {
 
             limitRange(0.5f);
             loopSound = Sounds.steam;
+            loopSoundVolume = 0.35f;
             consumePower(1f);
             lightColor = turretLightColor;
             outlineColor = nyfalisBlockOutlineColour;
