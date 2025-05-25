@@ -654,9 +654,10 @@ public class NyfalisBlocks {
         pumiceRubble = new StaticTree("pumice-rubble") {{
             variants = 2;
         }};
-        redDune = new StaticWall("red-dune-wall") {{
+        redDune = new VeryStaticWall("red-dune-wall") {{
             redSand.asFloor().wall = this;
             attributes.set(Attribute.sand, 2f);
+            largeVariants = 2;
         }};
 
         pinkShrubs = new StaticWall("pink-shrubs") {{
