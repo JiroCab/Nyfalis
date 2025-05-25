@@ -107,7 +107,7 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
         unit.team.id,
         unit.elevation(),
         partAmmo(unit),
-        onWater(unit) ? 1 : 0,
+        floatingTracker.get(unit),
         treadTracker.getOrDefault(unit, 0f),
         unit instanceof Payloadc p ? p.payloads().size : 0
         );

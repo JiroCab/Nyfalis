@@ -1281,7 +1281,7 @@ public class NyfalisUnits {
             );
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-warden-point-defense"){{
                 x = 0;
-                y = -7f;
+                y = -10f;
                 aoe = 0;
                 reload = 6f;
                 soundVol = 0.7f;
@@ -1318,9 +1318,9 @@ public class NyfalisUnits {
             constructor = LegsUnit::create; //Legged so it doesnt slow down in deep water
             pathCost = NyfalisPathfind.costPreferNaval;
 
-            weapons.add(new LaserPointerPointDefenceWeapon("olupis-Lexington-point-defense"){{
+            weapons.add(new LaserPointerPointDefenceWeapon("olupis-guardian-point-defense"){{
                 x = 0;
-                y = -7f;
+                y = 10f;
                 reload = 6f;
                 minWarmup = 0.9f;
                 soundVol = 0.7f;
@@ -1348,11 +1348,11 @@ public class NyfalisUnits {
             );
             parts.addAll(
                     new FloaterTreadsPart("-treads"){{
-                        mirror = under = true;
+                        mirror = under =true;
                         drawRegion  = false;
-                        x = 4;
+                        x = 8.75f;
                         y = 0;
-                        moveX = 4;
+                        moveX = 3;
                         treadPullOffset = 4;
                         layerOffset = -0.001f;
                         treadRects = new Rect[]{new Rect(-14f, -65, 28, 130)};
