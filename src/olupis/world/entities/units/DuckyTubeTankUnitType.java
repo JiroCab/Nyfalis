@@ -35,7 +35,6 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
 
     @Override
     public void update(Unit unit){
-        super.update(unit);
         if (unit.dead()){
             floatingTracker.remove(unit);
             treadTracker.remove(unit);
@@ -45,6 +44,8 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
         if(!floatingTracker.containsKey(unit)) floatingTracker.put(unit, onWater(unit) ? 1f : 0f);
         if(!treadTracker.containsKey(unit) || treadTracker.get(unit) >= Float.MAX_VALUE -5f) treadTracker.put(unit, 0f);
         if(!onSolidTracker.containsKey(unit)) onSolidTracker.put(unit, 0f);
+        
+        super.update(unit);
 
         float prev = floatingTracker.get(unit), tar = onWater(unit) ? 1 : -1;
         floatingTracker.replace(unit, Mathf.clamp(prev + (tar * floatRate)));
@@ -107,10 +108,15 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
         unit.team.id,
         unit.elevation(),
         partAmmo(unit),
-        floatingTracker.get(unit),
+        fetchFloating(unit),
         treadTracker.getOrDefault(unit, 0f),
         unit instanceof Payloadc p ? p.payloads().size : 0
         );
+    }
+
+    public float fetchFloating(Unit unit){
+        if(floatingTracker.containsKey(unit)) return floatingTracker.get(unit);
+        return onWater(unit) ? 1f : 0f;
     }
 
 

@@ -13,6 +13,7 @@ public class VeryStaticWall extends StaticWall{
     public TextureRegion[] larges;
     public TextureRegion[][][] largeSplits;
     public int largeVariants = 1;
+    public float threshold = 0.4f;
 
     public VeryStaticWall(String name){
         super(name);
@@ -23,7 +24,7 @@ public class VeryStaticWall extends StaticWall{
         int rx = tile.x / 2 * 2;
         int ry = tile.y / 2 * 2;
 
-        if(largeVariants > 0 && Mathf.randomSeed(Point2.pack(rx, ry)) < 0.5 && eq(rx, ry)){
+        if(largeVariants > 0 && Mathf.randomSeed(Point2.pack(rx, ry)) < threshold && eq(rx, ry)){
             int sV = Mathf.randomSeed(Point2.pack(rx, ry), 0, Math.max(0, larges.length - 1));
             Draw.rect(largeSplits[sV][tile.x % 2][1 - tile.y % 2], tile.worldx(), tile.worldy());
         }else if(variants > 0){
