@@ -118,7 +118,7 @@ public class NyfalisUnitType extends UnitType {
             var cons = (ItemUnitTurret) Vars.content.blocks().find(b -> b instanceof ItemUnitTurret c && c.allUnitTypes().contains(this));
             if(cons != null && pwr == null){
                 displayFactory.add(cons);
-                if(cons.statArticulator != null && cons.possibleUnitTypes(false).contains(this)) displayFactory.add(cons.statArticulator);
+                if(cons.statArticulator != null && cons.possibleUnitTypes(true).contains(this)) displayFactory.add(cons.statArticulator);
             }
 
             var rec = (Reconstructor)content.blocks().find(b -> b instanceof Reconstructor re && re.upgrades.contains(u -> u[1] == this));
@@ -148,16 +148,25 @@ public class NyfalisUnitType extends UnitType {
 
        if(cons != null){
            boolean alt = cons.possibleUnitTypes(false).contains(this);
-           if(prevReturn != null &&cons.possibleUnitTypes(true).contains(this)){
-               //prevReturn[0] = rec.upgrades.find(u -> u[1] == this)[0];
-           }
            if(timeReturn != null){
                float mul = cons.ammoTypes.values().toSeq().find(b -> b.spawnUnit == this).reloadMultiplier;
                timeReturn[0] = cons.reload * mul;
            }
 
-           //can't be bothered to add the modifier item - rushie
-           return alt  ? cons.requiredItems : cons.requiredAlternate;
+           //idk
+           Item modifier = cons.unitTypeToAmmo(this);
+           if(!modifier.isHidden()){
+               ItemStack[] cost = alt  ? cons.requiredItems : cons.requiredAlternate;
+               ItemStack[] out = new ItemStack[cost.length + 1];
+               for(int i = 0; i < cost.length; i++){
+                   out[i] = cost[i];
+               }
+
+               out[cost.length] = new ItemStack(modifier, 1);
+               return out;
+           } else  return  alt  ? cons.requiredItems : cons.requiredAlternate;
+
+
        }
 
        return super.getRequirements(prevReturn, timeReturn);

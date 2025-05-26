@@ -305,6 +305,16 @@ public class ItemUnitTurret extends ItemTurret {
         return out;
     }
 
+    public Item unitTypeToAmmo(UnitType t){
+        for(Entry<Item, BulletType> b : ammoTypes){
+            if(b.value instanceof SpawnHelperBulletType s){
+                if(s.spawnUnit == t) return b.key;
+                if(s.alternateType != null && s.alternateType.spawnUnit == t) return b.key;
+            }
+        }
+        return NyfalisItemsLiquid.powerAmmoItem;
+    }
+
     public class ItemUnitTurretBuild<T extends UnitPayload> extends ItemTurretBuild{
         public @Nullable Vec2 commandPos;
         public float time, speedScl;
