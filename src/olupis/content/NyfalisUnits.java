@@ -39,6 +39,7 @@ import java.util.*;
 import static mindustry.Vars.tilePayload;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisItemsLiquid.*;
+import static olupis.world.ai.NyfalisPathfind.costLeggedNaval;
 
 public class NyfalisUnits {
 
@@ -1508,8 +1509,8 @@ public class NyfalisUnits {
                 mirror = controllable = false;
                 weaponIconString = "olupis-bay-ui-front";
                 bullet = new BasicBulletType(2.5f, 10){{
-                    width = 5f;
-                    height = 6f;
+                    width = 4f;
+                    height = 20f;
                     lifetime = 60f;
                     collidesAir = false;
                     frontColor = NyfalisColors.rustyBullet;
@@ -1596,13 +1597,14 @@ public class NyfalisUnits {
                             moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
                     }}); }
 
-                    bullet = new BasicBulletType(2.5f, 8){{
+                    bullet = new BasicBulletType(2.5f, 8, "olupis-diamond-bullet"){{
                         width = 5f;
-                        height = 6f;
+                        height = 17f;
                         lifetime = 78f;
                         collidesAir = false;
-                        frontColor = NyfalisColors.rustyBullet;
-                        backColor = NyfalisColors.rustyBulletBack;
+                        frontColor = NyfalisColors.ironBullet;
+                        backColor = NyfalisColors.ironBulletBack;
+
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                         shootEffect = Fx.shootSmallSmoke;
                     }};
@@ -2243,7 +2245,7 @@ public class NyfalisUnits {
             legPhysicsLayer = false;
             canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi = weaponsStartEmpty = true;
             constructor = LegsUnit::create;
-            pathCost = NyfalisPathfind.costLeggedNaval;
+            pathCost = costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
 
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
@@ -2338,7 +2340,7 @@ public class NyfalisUnits {
             legPhysicsLayer = false;
             canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi =  weaponsStartEmpty = true;
             constructor = LegsUnit::create;
-            pathCost = NyfalisPathfind.costLeggedNaval;
+            pathCost = costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
 
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
@@ -2453,7 +2455,7 @@ public class NyfalisUnits {
             canBoost = allowLegStep = hovering = alwaysBoostOnSolid = customMineAi = weaponsStartEmpty =  true;
             constructor = LegsUnit::create;
             mineItems = Seq.with(rustyIron, lead, scrap);
-            pathCost = NyfalisPathfind.costLeggedNaval;
+            pathCost = costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
             setEnginesMirror(
                     new UnitEngine(26.5f / 4f, 30 / 4f, 2f, 45f), //front
@@ -2546,7 +2548,7 @@ public class NyfalisUnits {
             flying = customMineAi = weaponsStartEmpty =  true;
             constructor = UnitEntity::create;
             mineItems = Seq.with(rustyIron, lead, scrap);
-            pathCost = NyfalisPathfind.costLeggedNaval;
+            pathCost = costLeggedNaval;
             ammoType = new PowerAmmoType(1000);
             setEnginesMirror(
                     new UnitEngine(24.5f / 4f, 18 / 4f, 2f, 45f), //front

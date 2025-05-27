@@ -42,10 +42,12 @@ public class Fabricator extends Reconstructor {
 //    }
 
     public class FabricatorBuild extends ReconstructorBuild{
+        boolean constructing;
+
 
         @Override
         public void updateTile(){
-
+            constructing = constructing();
             float lubeMul = updateLube();
 
 
@@ -108,6 +110,10 @@ public class Fabricator extends Reconstructor {
             return out;
         }
 
+        @Override
+        public boolean shouldConsume(){
+            return constructing && enabled;
+        }
 
     }
 }

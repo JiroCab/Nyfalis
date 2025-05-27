@@ -5,6 +5,7 @@ import arc.scene.style.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.ai.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.game.*;
@@ -18,6 +19,7 @@ import olupis.content.*;
 import olupis.input.*;
 import olupis.input.ui.*;
 import olupis.world.*;
+import olupis.world.ai.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.entities.packets.*;
 import olupis.world.planets.*;
@@ -46,6 +48,7 @@ public class NyfalisMain extends Mod{
         NyfalisStatusEffects.loadStatusEffects();
         NyfalisItemsLiquid.LoadLiquids();
         NyfalisUnitCommands.loadUnitCommands();
+        ControlPathfinder.costTypes.addAll(NyfalisPathfind.nyfCostTypes);
         NyfalisUnits.LoadUnits();
         NyfalisBlocks.LoadWorldTiles();
         NyfalisBlocks.LoadBlocks();
@@ -59,6 +62,7 @@ public class NyfalisMain extends Mod{
         NyfalisTechTree.load();
         NyfalisAttributeWeather.AddAttributes();
         NyfalisUnits.PostLoadUnits();
+
 
 
         Log.info("OwO, Nyfalis (Olupis) content Loaded! Hope you enjoy nya~");

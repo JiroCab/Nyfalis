@@ -48,14 +48,14 @@ public class NyfalisTurrets {
             targetAir = false;
             ammo(
                 rustyIron,  new CappedIntervalBullet(4f, 14){{
-                    width = 7f;
-                    height = 9f;
+                    width = 4f;
+                    height = 20f;
                     lifetime = 60f;
 
                     collidesAir = false;
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = rustyBulletBack;
-                    frontColor =  rustyIron.color;
+                    frontColor =  rustyBullet;
                     intervalRandomSpread = 10f;
                     intervalSpread = 5f;
                     bulletInterval = 1f;
@@ -63,13 +63,13 @@ public class NyfalisTurrets {
                     reloadMultiplier = 0.8f;
                     ammoMultiplier = 1f;
                     intervalBullet = new BasicBulletType(4f, 14){{
-                        width = 7f;
-                        height = 9f;
+                        width = 4f;
+                        height = 20f;
                         lifetime = 58f;
 
                         hitEffect = despawnEffect = Fx.hitBulletColor;
                         hitColor = backColor = trailColor = rustyBulletBack;
-                        frontColor = rustyIron.color;
+                        frontColor = rustyBullet;
                         collidesAir = false;
                     }};
                 }},

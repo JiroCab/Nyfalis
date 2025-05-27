@@ -155,7 +155,7 @@ public class HeadacheCrafter  extends GenericCrafter{
         public void placed(){
             super.placed();
 
-            planSelected = plans.indexOf(getLivePlans().first());
+            if(plans.size >= 1) planSelected = plans.indexOf(getLivePlans().first());
         }
 
         @Override
