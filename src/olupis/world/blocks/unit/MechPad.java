@@ -78,10 +78,15 @@ public class MechPad extends Block {
             }
 
             if (slave != null){
-                /*if(efficiency >=  lowPowerThreshold)*/ slave.apply(alternateStatus, 1 * Time.toSeconds);
+                if(efficiency >=  lowPowerThreshold &&hasUpgrade()) slave.apply(alternateStatus, 1 * Time.toSeconds);
                 if(efficiency < unPowerThreshold) slave.apply(unPowerStatus, 1 * Time.toSeconds);
                 else if(efficiency < lowPowerThreshold) slave.apply(lowPowerStatus, 1 * Time.toSeconds);
             }
+        }
+
+        public boolean hasUpgrade(){
+            //todo
+            return false;
         }
 
         @Override

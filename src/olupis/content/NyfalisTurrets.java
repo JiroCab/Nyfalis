@@ -1602,7 +1602,7 @@ public class NyfalisTurrets {
             explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
             consumePower(17f * (cascadeAlt ? 4f : 1f));
             
-            shootType = new BasicBulletType(3f, 20f) {{
+            shootType = new BasicBulletType(2.8f, 20f) {{
                 sprite = "large-orb";
                 width = 10f;
                 height = 20f;

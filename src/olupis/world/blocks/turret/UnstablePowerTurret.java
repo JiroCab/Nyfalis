@@ -1,33 +1,29 @@
 package olupis.world.blocks.turret;
 
-import arc.Core;
-import arc.Events;
-import arc.audio.Sound;
-import arc.graphics.Color;
-import arc.math.Mathf;
-import arc.struct.ObjectMap;
-import arc.util.Tmp;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.content.Fx;
+import arc.*;
+import arc.audio.*;
+import arc.graphics.*;
+import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.io.*;
+import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.game.EventType.Trigger;
-import mindustry.gen.Sounds;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
-import mindustry.logic.LAccess;
-import mindustry.type.Liquid;
-import mindustry.ui.Bar;
-import mindustry.world.Tile;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatValues;
-import olupis.content.NyfalisSounds;
-import olupis.world.entities.parts.DrawUnstableTurret;
+import mindustry.game.EventType.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.logic.*;
+import mindustry.type.*;
+import mindustry.ui.*;
+import mindustry.world.*;
+import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.meta.*;
+import olupis.content.*;
+import olupis.world.entities.parts.*;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.world;
 
 public class UnstablePowerTurret extends PowerTurret {
 

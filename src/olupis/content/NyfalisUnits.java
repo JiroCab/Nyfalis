@@ -844,19 +844,19 @@ public class NyfalisUnits {
         serpent = new SnekUnitType("serpent"){{
             constructor = CrawlUnit::create;
             accel = 3f;
-            armor = 6;
+            armor = 7;
             hitSize = 12f;
-            health = 650;
+            health = 550;
             segments = 8;
-            speed = 1.85f;
+            speed = 1.70f;
             segmentScl = 7f;
             rotateSpeed = 15f;
             legMoveSpace = 1.2f;
             crushDamage = 0.35f;
             segmentMaxRot = 80f;
-            crawlSlowdown = 0.4f;
+            crawlSlowdown = 0.6f;
             segmentRotSpeed = 5f;
-            crawlSlowdownFrac = 1f;
+            crawlSlowdownFrac = 0.75f;
             drownTimeMultiplier = 4f;
             omniMovement = drawBody =  false;
             allowLegStep = canDash = canCharge = true;
@@ -1317,7 +1317,7 @@ public class NyfalisUnits {
             rotateMoveFirst = canDeploy = naval = hovering = true;
             canDrown = ammoDepletesOverTime = killOnAmmoDepletion = omniMovementGround = omniMovementNaval = legPhysicsLayer = allowLegStep = false;
             constructor = LegsUnit::create; //Legged so it doesnt slow down in deep water
-            pathCost = NyfalisPathfind.costPreferNaval;
+            pathCost = NyfalisPathfind.costPreferTrackedNaval;
 
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-guardian-point-defense"){{
                 x = 0;
@@ -1367,7 +1367,7 @@ public class NyfalisUnits {
         //              -> Desigantor pointer, pointer that debuffs an unit, all units that hit it gains a atack speed buff
         domination = new DuckyTubeTankUnitType("domination"){{
             constructor = LeggedPayloadUnitClass::create; //Legged so it doesnt slow down in deep water
-            pathCost = NyfalisPathfind.costPreferNaval;
+            pathCost = NyfalisPathfind.costPreferTrackedNaval;
             groundSpeed = 0.6f;
             navalSpeed = 1f;
 

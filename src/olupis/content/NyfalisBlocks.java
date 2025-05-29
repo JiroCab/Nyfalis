@@ -1111,7 +1111,7 @@ public class NyfalisBlocks {
             pumpAmount = 0.08f;
             buildCostMultiplier = 2.1f;
             researchCost = with(lead, 500, iron, 100, copper, 500);
-            requirements(Category.liquid, with(iron, 20, lead, 20, copper, 20));
+            requirements(Category.liquid, with(iron, 20, lead, 30, copper, 30));
         }};
 
         displacementPump = new BurstPump("displacement-pump"){{
@@ -1134,7 +1134,7 @@ public class NyfalisBlocks {
             pumpTime = 320;
             pumpAmount = 200f;
             liquidCapacity = 400f;
-            consumePower(0.6f);
+            consumePower(70f/60f);
             researchCost = with(iron, 500, lead, 1000, graphite, 250, silicon, 250);
             requirements(Category.liquid, with(iron, 30, graphite, 30, lead, 75, silicon, 30));
         }};
@@ -1674,7 +1674,7 @@ public class NyfalisBlocks {
 
 
             hasPower = consumesPower = conductivePower = true;
-            consumePower(2.55f);
+            consumePower(160/60f);
             requirements(Category.units, with(aluminum, 100, rustyIron, 150, copper, 150, iron, 100));
 
             drawer = new DrawMulti(
@@ -1688,6 +1688,7 @@ public class NyfalisBlocks {
 
         adaptiveFabricator = new Fabricator("adaptive-fabricator"){{
             size = 6;
+            liquidCapacity = 90;
             consumePower(5f);
             consumeItems(with(aluminum, 50, Items.silicon, 50, copper, 100));
             consume(new ConsumeLubricant(45f / 60f));
@@ -1727,6 +1728,7 @@ public class NyfalisBlocks {
             repairSpeed = 10f;
             repairRadius = 110;
             powerUse =100f / 60f;
+            liquidCapacity = 40;
 
             length = 100f;
             acceptCoolant = true;
@@ -1970,7 +1972,7 @@ public class NyfalisBlocks {
 
             size = 5;
             effectChance = 0.011f;
-            powerProduction = 23f/60f;
+            powerProduction = 35f/60f;
             ambientSoundVolume = 0.06f;
 
             attribute = hydro;
@@ -1988,12 +1990,13 @@ public class NyfalisBlocks {
             baseExplosiveness = 1f;
             consumePowerBuffered(1000f);
             researchCost = with(quartz, 500, lead, 500, silicon, 500);
-            requirements(Category.power, with(quartz, 50, lead, 50, silicon, 50));
+            requirements(Category.power, with(quartz, 100, lead, 100, silicon, 100));
         }};
 
         steamTurbine = new ConsumeGenerator("steam-turbine"){{
             size = 6;
-            powerProduction = 145f/60f;
+            powerProduction = 300f/60f;
+            liquidCapacity = 40;
 
             consumeLiquid(NyfalisItemsLiquid.steam, 24f/60f);
             consumeLiquid(oil, 20f / 60f).boost();
@@ -2175,6 +2178,7 @@ public class NyfalisBlocks {
             shootCone = 12f;
             coolantMultiplier = 1.6f;
             shootY = (size * tilesize / 2f) -2f;
+            liquidCapacity = 50;
 
             hasPower = targetHealing = true;
             targetAir = targetGround  = false;

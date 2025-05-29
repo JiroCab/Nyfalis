@@ -89,7 +89,10 @@ public class NyfalisUnitType extends UnitType {
         super.init();
         
             if (customMoveCommand || cantMove){
-                if(customMoveCommand)commands.replace(UnitCommand.moveCommand, NyfalisUnitCommands.nyfalisMoveCommand);
+                if(customMoveCommand){
+                    commands.replace(UnitCommand.moveCommand, NyfalisUnitCommands.nyfalisMoveCommand);
+                    if(defaultCommand == UnitCommand.moveCommand) defaultCommand = NyfalisUnitCommands.nyfalisMoveCommand;
+                }
                 else commands.remove(UnitCommand.moveCommand);
             }
             if(canDeploy)commands.add(NyfalisUnitCommands.nyfalisDeployCommand);
@@ -109,6 +112,7 @@ public class NyfalisUnitType extends UnitType {
                 commands.remove(UnitCommand.enterPayloadCommand);
                 commands.add(UnitCommand.enterPayloadCommand);
             }
+
 
 
         if(generateDisplayFactory){
