@@ -1593,17 +1593,17 @@ public class NyfalisTurrets {
             size = 4;
             shootY = 2;
             shootX = 0f;
-            reload = 120;
+            reload = 115;
             lightRadius = 450;
             minWarmup = 0.8f;
             fogRadiusMultiplier = 0.75f;
             shootWarmupSpeed = 0.05f;
             range = (50f * 8f) * (cascadeAlt ? 4f : 1f);
-            explosionRadius = 25 * (cascadeAlt ? 4f : 1f);
-            explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
+            explosionRadius = 160 * (cascadeAlt ? 4f : 1f);
+            explosionDamage = 2000 * (cascadeAlt ? 4f : 1f);
             consumePower(17f * (cascadeAlt ? 4f : 1f));
             
-            shootType = new ConditionalIntervalBulletType(2.8f, 20f) {{
+            shootType = new ConditionalIntervalBulletType(2.8f, 50f) {{
                 sprite = "large-orb";
                 width = 10f;
                 height = 20f;
@@ -1643,7 +1643,7 @@ public class NyfalisTurrets {
                 intervalSpread = -30;
                 intervalRandomSpread = 0;
                 bulletInterval = 6;
-                intervalBullet = new ConditionalIntervalBulletType(3f, 6f) {{
+                intervalBullet = new ConditionalIntervalBulletType(3f, 4f) {{
                     sprite = "large-orb";
 
                     width = 5f;
@@ -1684,14 +1684,14 @@ public class NyfalisTurrets {
                     intervalSpread = -30;
                     intervalRandomSpread = 0;
                     bulletInterval = 4;
-                    intervalBullet = new ConditionalIntervalBulletType(3f, 15f) {{
+                    intervalBullet = new ConditionalIntervalBulletType(3f, 12f) {{
                         intervalCheck  = (b)-> cascadeAlt;
                         sprite = "large-orb";
                         width = 2.5f;
                         height = 5f;
                         hitSize = 2f;
                         homingPower = 0.4f;
-                        homingRange = 38;
+                        homingRange = 24;
 
                         shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
                             colorFrom = colorTo = cascadeColor;

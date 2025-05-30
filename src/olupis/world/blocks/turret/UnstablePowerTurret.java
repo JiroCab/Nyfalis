@@ -7,9 +7,12 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.effect.MultiEffect;
 import mindustry.game.EventType.*;
+import mindustry.game.Gamemode;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -27,11 +30,11 @@ import static mindustry.Vars.world;
 
 public class UnstablePowerTurret extends PowerTurret {
 
-    public Effect explodeEffect = Fx.titanExplosion;
+    public Effect explodeEffect = new MultiEffect(NyfalisFxs.CascadeSun, NyfalisFxs.CascadeSmoke);
     public Sound explodeSound = Sounds.boom;
     public Sound warningSound = NyfalisSounds.cascadeDangerWarning;
 
-    public float explosionDamage = 200, explosionRadius = 80;
+    public float explosionDamage = 60, explosionRadius = 40;
     public Liquid explosionPuddleLiquid = null;
     public int explosionPuddles = 4;
     public float explosionShake = 3, explosionShakeDuration = 30;
@@ -40,7 +43,7 @@ public class UnstablePowerTurret extends PowerTurret {
     public float coolantPower = 0.05f;
     public float heatTime = 5f * 60f;
     public float minimumHeatTime = 10;
-    public int maxCopies = 4;
+    public int maxCopies = 3;
     public Color coolColor = new Color(1, 1, 1, 0f);
     public Color hotColor = Color.red;
     public Color flashColor1 = Color.red, flashColor2 = Color.yellow;
@@ -69,6 +72,11 @@ public class UnstablePowerTurret extends PowerTurret {
         this.stats.add(Stat.input, StatValues.boosters(this.reload, this.coolant.amount, this.coolantMultiplier, false, this::consumesLiquid));
     }
 
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
+        super.drawPlace(x, y, rotation, valid);
+        Drawf.dashCircle(x, y, explosionRadius, Color.red);
+    }
+
     public class UnstablePowerTurretBuild extends PowerTurretBuild{
         public float progressLight;
         public float heatT;
@@ -79,7 +87,11 @@ public class UnstablePowerTurret extends PowerTurret {
             AtomicInteger copies = new AtomicInteger(0);
             Units.nearbyBuildings(this.x,this.y,range,b -> {
                         if (b.block == this.block && b.team == this.team && b != this){
-                            copies.incrementAndGet();
+                            if(Core.settings.getBool("nyfalis-sandbox-super-weapon-cap") && Vars.state.rules.mode() == Gamemode.sandbox){
+
+                            } else {
+                                copies.incrementAndGet();
+                            }
                         };
                     });
             unit.ammo(power.status * (float)unit.type().ammoCapacity);
@@ -175,6 +187,11 @@ public class UnstablePowerTurret extends PowerTurret {
                 if(progressLight >= 0)Drawf.light(x, y, progressLight, lightColor, lightColor.a);
             }
             super.drawLight();
+        }
+        @Override
+        public void drawSelect() {
+            super.drawSelect();
+            Drawf.dashCircle(x, y, explosionRadius*8, Color.red);
         }
 
         @Override

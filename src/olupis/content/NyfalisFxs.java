@@ -24,7 +24,52 @@ public class NyfalisFxs extends Fx {
     BounceOut bounceOutTwo = new BounceOut(2);
 
     public static final Effect
-        OilyFlame = new Effect(10f, e -> {
+    CascadeSmoke = new Effect(275f, e -> {
+        float z = Draw.z();
+        Draw.z(Layer.blockOver);
+        Draw.color(Color.blue.cpy().add(Color.gray),0.45f);
+        Angles.randLenVectors((long)e.id, 80, 90.0F, (x, y) -> Fill.circle(e.x + x, e.y + y, 12.0F * Mathf.clamp(e.fin() / 0.1F) * Mathf.clamp(e.fout() / 0.1F)));
+        float size = 1.0F + e.fout() * 5.0F;
+        Draw.color(Color.purple.cpy().add(Color.lightGray), Color.blue.cpy().add(Color.gray), e.fin());
+        Fill.circle(e.x, e.y, size / 2.0F);
+        Draw.z(z);
+    }),
+
+    CascadeSun = new Effect(250f, e -> {
+        float z = Draw.z();
+        Draw.z(Layer.blockOver + 4);
+
+        Draw.color(Color.blue.cpy().add(Color.gray));
+        Lines.stroke(e.fout() * 3.0F);
+        float circleRad1 = 6.0F + e.finpow() * 110.0F;
+        Lines.circle(e.x, e.y, circleRad1);
+        rand.setSeed((long)e.id);
+
+        for(int i = 0; i < 21; ++i) {
+            float angle = rand.random(360.0F);
+            float lenRand = rand.random(0.5F, 1.0F);
+            Lines.lineAngle(e.x, e.y, angle, e.foutpow() * 50.0F * rand.random(1.0F, 0.6F) + 2.0F, e.finpow() * 100.0F * lenRand + 6.0F);
+        }
+
+        Draw.color(Color.blue.cpy().add(Color.purple));
+        Lines.stroke(e.fout() * 2.0F);
+        float circleRad = 6.0F + e.finpow() * 80.0F;
+        Lines.circle(e.x, e.y, circleRad);
+        rand.setSeed((long)e.id);
+
+        for(int i = 0; i < 8; ++i) {
+            float angle = rand.random(360.0F);
+            float lenRand = rand.random(0.5F, 1.0F);
+            Tmp.v1.trns(angle, circleRad);
+
+            for(int s : Mathf.signs) {
+                Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.foutpow() * 15.0F, e.fout() * 20.0F * lenRand + 6.0F, angle + 90.0F + (float)s * 90.0F);
+            }
+        }
+        Draw.z(z);
+    }),
+
+    OilyFlame = new Effect(10f, e -> {
             color(Color.valueOf("912a13"), Pal.darkFlame, e.fin());
 
             randLenVectors(e.id, 3, 5f + e.fin() * 5f, (x, y) -> {
@@ -47,6 +92,7 @@ public class NyfalisFxs extends Fx {
 
             Drawf.light(e.x, e.y, 40f * e.fslope(), Color.valueOf("ffb547"), 2f);
         }),
+
 
 
         hollowPointHit =  new Effect(30f, e -> {

@@ -52,6 +52,7 @@ public class NyfalisSettingsDialog {
                     b.hidden = !val;
                 }
             });
+            table.checkPref("nyfalis-sandbox-super-weapon-cap", false);
             table.checkPref("nyfalis-rainbow-music", false);
             table.checkPref("nyfalis-auto-ban", true);
             table.checkPref("nyfalis-bread-gun", false);
