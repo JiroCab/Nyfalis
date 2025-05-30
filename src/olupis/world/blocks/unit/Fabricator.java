@@ -19,6 +19,8 @@ public class Fabricator extends Reconstructor {
     public float lubeMultiplier = 3f;
     public @Nullable ConsumeLiquidBase lubrication;
 
+
+    //TODO t4 module logic (payload input & block attach menats)
     public Fabricator(String name){
         super(name);
     }

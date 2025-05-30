@@ -1435,6 +1435,7 @@ public class NyfalisTurrets {
             }
         };
 
+        //alternateAmalgamator connected give this :full map range" (always fireing) but range still the same & spawns are not in frog of war targeting only
         hive = new ItemUnitTurret("hive"){{
             size = 4;
             shootY = 0f;
@@ -1602,7 +1603,7 @@ public class NyfalisTurrets {
             explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
             consumePower(17f * (cascadeAlt ? 4f : 1f));
             
-            shootType = new BasicBulletType(2.8f, 20f) {{
+            shootType = new ConditionalIntervalBulletType(2.8f, 20f) {{
                 sprite = "large-orb";
                 width = 10f;
                 height = 20f;
@@ -1634,6 +1635,7 @@ public class NyfalisTurrets {
                 trailEffect = Fx.disperseTrail;
                 trailInterval = 6f;
                 lifetime = 75f;
+                intervalCheck = b -> b.fin() <= 0.8f && !cascadeAlt;
                 knockback = 0.8f;
                 collidesAir = collidesGround = true;
                 buildingDamageMultiplier = 0.1f;
@@ -1641,7 +1643,7 @@ public class NyfalisTurrets {
                 intervalSpread = -30;
                 intervalRandomSpread = 0;
                 bulletInterval = 6;
-                intervalBullet = new BasicBulletType(3f, 5f) {{
+                intervalBullet = new ConditionalIntervalBulletType(3f, 6f) {{
                     sprite = "large-orb";
 
                     width = 5f;
@@ -1673,6 +1675,7 @@ public class NyfalisTurrets {
                     trailRotation = true;
                     trailEffect = Fx.disperseTrail;
                     trailInterval = 4f;
+                    intervalCheck = b -> b.fin() <= 0.8f && !cascadeAlt;
                     lifetime = 40f;
                     knockback = 0.6f;
                     collidesAir = collidesGround = true;
@@ -1688,7 +1691,7 @@ public class NyfalisTurrets {
                         height = 5f;
                         hitSize = 2f;
                         homingPower = 0.4f;
-                        homingRange = 150f;
+                        homingRange = 38;
 
                         shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
                             colorFrom = colorTo = cascadeColor;
@@ -1716,6 +1719,7 @@ public class NyfalisTurrets {
                         trailEffect = Fx.disperseTrail;
                         trailInterval = 6f;
                         lifetime = 15f;
+
                         knockback = 0.6f;
                         collidesAir = collidesGround = true;
                         buildingDamageMultiplier = 0.1f;
@@ -1724,7 +1728,7 @@ public class NyfalisTurrets {
                         intervalRandomSpread = 0;
                         bulletInterval = 6;
 
-                        intervalBullet = new BasicBulletType(3f, 10f, "large-orb") {{
+                        intervalBullet = new ConditionalIntervalBulletType(3f, 10f, "large-orb") {{
                             width = 5f;
                             height = 10f;
                             hitSize = 4f;
@@ -1762,12 +1766,12 @@ public class NyfalisTurrets {
                             intervalSpread = -30;
                             intervalRandomSpread = 0;
                             bulletInterval = 8;
-                            intervalBullet = new BasicBulletType(3f, 15f, "large-orb") {{
+                            intervalBullet = new ConditionalIntervalBulletType(3f, 15f, "large-orb") {{
                                 width = 2.5f;
                                 height = 5f;
                                 hitSize = 2f;
                                 homingPower = 0.4f;
-                                homingRange = 150f;
+                                homingRange = 38;
 
                                 shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
                                     colorFrom = colorTo = cascadeColor;
@@ -1802,12 +1806,12 @@ public class NyfalisTurrets {
                                 intervalSpread = -30;
                                 intervalRandomSpread = 0;
                                 bulletInterval = 8;
-                                intervalBullet = new BasicBulletType(3f, 30f, "large-orb") {{
+                                intervalBullet = new ConditionalIntervalBulletType(3f, 30f, "large-orb") {{
                                     width = 2.5f;
                                     height = 5f;
                                     hitSize = 2f;
                                     homingPower = 0.4f;
-                                    homingRange = 150f;
+                                    homingRange = 38;
 
                                     shootEffect = new MultiEffect(Fx.shootTitan, Fx.colorSparkBig, new WaveEffect(){{
                                         colorFrom = colorTo = cascadeColor;

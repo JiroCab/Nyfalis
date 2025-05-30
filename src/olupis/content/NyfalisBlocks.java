@@ -119,7 +119,7 @@ public class NyfalisBlocks {
 
         bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible,
 
-        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
+        construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator, alternateAmalgamator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
         heavyMine,fragMine,glitchMine,mossMine,
         coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant, coreParagon, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
@@ -133,7 +133,7 @@ public class NyfalisBlocks {
     ; //endregion
     public static UnstablePowerTurret cascade;
     public static Replicator unitReplicator, unitReplicatorSmall;
-    public static FactoryPlan emptyPlan, ph1, ph2, graphitePlan;
+    public static FactoryPlan emptyPlan, graphitePlan, siliconPlan;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
     public static ObjectSet<Block>
@@ -1439,12 +1439,12 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
-        ph1 = new FactoryPlan("placeholder1 ",60f * 3f, with(Items.copper, 3), with(lead, 3), LiquidStack.with(Liquids.water, 10), LiquidStack.with(NyfalisItemsLiquid.steam, 10));
-        ph2 = new FactoryPlan("placeholder2", 60f * 3f, with(rustyIron, 3), with(copper, 3));
+        siliconPlan = new FactoryPlan("silicon-plan", 60f * 3f, with(ash, 2, quartz, 2), with(silicon, 2), LiquidStack.with(Liquids.oil, 20), null);
+        graphitePlan = new FactoryPlan("graphite-plan", 60f * 3f, with(ash, 3), with(graphite, 3), LiquidStack.with(Liquids.oil, 25), null);
 
         compoundCrucible = new HeadacheCrafter("compound-crucible"){{
             size = 3;
-            plans = Seq.with(ph1, ph2);
+            plans = Seq.with(graphitePlan, siliconPlan);
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, alcoAlloy, 20));
         }};
 
@@ -1708,11 +1708,12 @@ public class NyfalisBlocks {
         }};
 
         //Unit Tree: t1 = construct
-        // T2 = construct + Articulator
-        // t3 = t1 + reconstructor
-        // t4 = t2 + t3 reconstructor + Articulator
+        // T2 = construct + alternateArticulator
+        // t3 = t2 + reconstructor
+        // t4 = t2 + t3 reconstructor + alternateAmalgamator
         // t5 = t1-t4 at assembler
 
+        //alternateAmalgamator allows scarab to have payloa to fire/update
         scoutPad = new MechPad("scout-pad"){{
             hasPower = consumesPower = solid = true;
             consumePower(100f / 60f);
@@ -2005,8 +2006,8 @@ public class NyfalisBlocks {
 
         biomassGenerator = new GenericCrafterWithPower("biomass-generator"){{
             size = 2;
-            powerProduction = 100f/60f;
-            powerProductionBoosted = 200f/60f;
+            powerProduction = 75f/60f;
+            powerProductionBoosted = 155f/60f;
             craftTime = 90f;
 
             outputItem = new ItemStack(ash, 3);

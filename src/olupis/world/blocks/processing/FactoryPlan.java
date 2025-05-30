@@ -20,7 +20,7 @@ public class FactoryPlan extends Block{
     public @Nullable ItemStack[] input, output;
     public @Nullable LiquidStack[] outputLiquid, inputLiquid;
 
-    public FactoryPlan(String name, float time, ItemStack[] input, ItemStack[] output, LiquidStack[] inputLiquid, LiquidStack[] outputLiquid){
+    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid){
         super(name);
         this.time = time;
         this.input = input;
@@ -35,7 +35,7 @@ public class FactoryPlan extends Block{
         researchCost = with(NyfalisItemsLiquid.powerAmmoItem, 69);
     }
 
-    public FactoryPlan(String name, float time, ItemStack[] input, ItemStack[] output){
+    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output){
         this(name, time,input, output, null, null);
     }
 

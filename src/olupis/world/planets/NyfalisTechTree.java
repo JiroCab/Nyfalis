@@ -1,7 +1,6 @@
 package olupis.world.planets;
 
 import arc.struct.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
 
@@ -295,10 +294,10 @@ public class NyfalisTechTree {
                                 });
                                 node(demulsifier, Seq.with(new Objectives.OnSector(dyingForest), new Objectives.Produce(emulsiveSlop)),()->{
                                     node(compoundCrucible, () ->{
-                                        node(ph1, () ->{
+                                        node(siliconPlan, Seq.with(new Objectives.OnSector(conservatorium), new Objectives.Research(siliconArcSmelter)), () ->{
 
                                         });
-                                        node(ph2, () ->{
+                                        node(graphitePlan, () ->{
 
                                         });
                                     });
