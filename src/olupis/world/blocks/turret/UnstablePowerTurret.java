@@ -3,16 +3,15 @@ package olupis.world.blocks.turret;
 import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.effect.*;
 import mindustry.game.EventType.*;
-import mindustry.game.Gamemode;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
@@ -23,8 +22,6 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.world.entities.parts.*;
-
-import java.util.concurrent.atomic.*;
 
 import static mindustry.Vars.world;
 
@@ -84,13 +81,11 @@ public class UnstablePowerTurret extends PowerTurret {
         public float flash;
         @Override
         public void updateTile(){
-            AtomicInteger copies = new AtomicInteger(0);
+            int[] copies= {0};
             Units.nearbyBuildings(this.x,this.y,range,b -> {
                         if (b.block == this.block && b.team == this.team && b != this){
-                            if(Core.settings.getBool("nyfalis-sandbox-super-weapon-cap") && Vars.state.rules.mode() == Gamemode.sandbox){
-
-                            } else {
-                                copies.incrementAndGet();
+                            if(!Core.settings.getBool("nyfalis-sandbox-super-weapon-cap")){
+                                copies[0]++;
                             }
                         };
                     });
@@ -109,10 +104,10 @@ public class UnstablePowerTurret extends PowerTurret {
 
             if(isShooting() && power.status > 0){
                 heatT = Mathf.clamp(heatT);
-                if (heatTime - (60*copies.get()) <= minimumHeatTime){
+                if (heatTime - (60* copies[0]) <= minimumHeatTime){
                     heatT += edelta() / minimumHeatTime;
                 }else{
-                    heatT += edelta() / (heatTime - (60*copies.get()));
+                    heatT += edelta() / (heatTime - (60*copies[0]));
                 }
                 heatT = Mathf.clamp(heatT);
             }
@@ -120,11 +115,11 @@ public class UnstablePowerTurret extends PowerTurret {
             //So logic cant cheese it
             if(heatT > 0 &&  liquids.currentAmount() > 0.5f){
                 float maxUsed = Math.min(liquids.currentAmount(), heatT / coolantPower);
-                if(copies.get() <= maxCopies){
+                if( copies[0] <= maxCopies){
                     //for some reason, heat doesn't accumulate after the water hits zero this way, so I added this if
                     heatT -= maxUsed * coolantPower;
                 }
-                liquids.remove(liquids.current(), maxUsed + (20*copies.get()));
+                liquids.remove(liquids.current(), maxUsed + (20* copies[0]));
                 if(!isShooting() && liquids.currentAmount() <= 0){
                     heatT = Mathf.clamp(heatT - 0.0005f);
                 }
@@ -188,11 +183,34 @@ public class UnstablePowerTurret extends PowerTurret {
             }
             super.drawLight();
         }
+
         @Override
         public void drawSelect() {
             super.drawSelect();
             Drawf.dashCircle(x, y, explosionRadius*8, Color.red);
+
+            int[] c = {0};
+            Units.nearbyBuildings(this.x,this.y,range,b -> {
+                float rad = b.block.size * 6f;
+                if (b.block == this.block && b.team == this.team && b != this){
+                    if(!Core.settings.getBool("nyfalis-sandbox-super-weapon-cap")){
+                        Tmp.c1.set(c[0] < maxCopies ? Pal.placing : Color.red);
+                        Fill.lightInner(b.x, b.y, 6,
+                            Math.max(0f, rad * 0.8f),
+                            rad,
+                            0f,
+                            Tmp.c3.set(Tmp.c1).a(0f),
+                            Tmp.c2.set(Tmp.c1).a(0.7f)
+                        );
+                        c[0]++;
+                        Lines.stroke(1f);
+                        Draw.color(Tmp.c1);
+                        Lines.poly(b.x, b.y, 6, rad + 0.5f);
+                    }
+                }
+            });
         }
+
 
         @Override
         public double sense(LAccess sensor){

@@ -1,6 +1,5 @@
 package olupis.content;
 
-import arc.func.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
@@ -18,18 +17,6 @@ public class NyfalisPlanets {
     private static final Seq<Sector> systemSector = new Seq<>();
     public static final Seq<Planet> planetList = new Seq<>();
 
-    public static Cons<Rules> commonRules = r ->{
-        r.unitCrashDamageMultiplier = 0.25f;
-
-        r.bannedBlocks.clear();
-        r.waveTeam = Team.green;
-
-        r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
-        r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = r.hideBannedBlocks = true;
-
-        r.env =  Env.oxygen | NyfalisAttributeWeather.nyfalian;
-    };
-
     public  static void LoadPlanets(){
         /*I Exist so Tech Tree's Item pool is shared among the 3 planets*/
         system = new Planet("system", Planets.sun, 0.4f){{
@@ -45,6 +32,8 @@ public class NyfalisPlanets {
             sectors.set(systemSector);
             generator = new AsteroidGenerator();
             meshLoader = () -> new HexMesh(this, 3);
+            campaignRuleDefaults = new NyfCampaignRules();
+            campaignRules = new NyfCampaignRules();
         }};
 
         nyfalis = new Planet("olupis", Planets.sun, 1.1f, 3){{
@@ -58,8 +47,8 @@ public class NyfalisPlanets {
             sectorSeed = 2;
             launchCapacityMultiplier = 0.4f;
 
+            setDefRules(this);
             systemSector.add(sectors);
-            ruleSetter = commonRules;
             system.position = this.position;
             defaultCore = NyfalisBlocks.coreRemnant;
             generator = new NyfalisPlanetGenerator() ;
@@ -84,7 +73,7 @@ public class NyfalisPlanets {
             lightDstFrom = 0f;
             enemyBuildSpeedMultiplier = 0.4f;
             icon = "effect";
-            ruleSetter = commonRules;
+            setDefRules(this);
             systemSector.add(sectors);
             defaultCore = NyfalisBlocks.coreRemnant;
             generator = new ArthinPlanetGenerator();
@@ -95,12 +84,12 @@ public class NyfalisPlanets {
 
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
-            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= allowWaveSimulation = true;
+            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= allowWaveSimulation = allowCampaignRules = true;
 
             startSector = 1;
             enemyBuildSpeedMultiplier = 0.4f;
             icon = "effect";
-            ruleSetter = commonRules;
+            setDefRules(this);
             systemSector.add(sectors);
             generator = new SpeltaPlanetGenerator();
             defaultCore = NyfalisBlocks.coreRemnant;
@@ -111,6 +100,31 @@ public class NyfalisPlanets {
 
         //TODO: rework the planets generators
         //TODO: LUMA THEMED ASTEROID
+    }
+
+    public static void  setDefRules(Planet planet){
+        planet.allowCampaignRules = true;
+
+        planet.ruleSetter = r ->{
+            r.unitCrashDamageMultiplier = 0.25f;
+
+            r.bannedBlocks.clear();
+            r.waveTeam = Team.green;
+
+            r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
+            r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = r.hideBannedBlocks = true;
+
+            r.env =  Env.oxygen | NyfalisAttributeWeather.nyfalian;
+        };
+
+        planet.campaignRuleDefaults = new NyfCampaignRules();
+        planet.campaignRules = new NyfCampaignRules();
+        
+        planet.campaignRuleDefaults.fog = true;
+        planet.campaignRuleDefaults.showSpawns= true;
+        planet.showRtsAIRule = true;
+        planet.campaignRuleDefaults.legacyLaunchPads = true;
+
     }
 
     public  static void PostLoadPlanet(){

@@ -139,6 +139,10 @@ public class NyfalisMain extends Mod{
                 if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.spaces.random(), Core.settings.getInt("ambientvol", 100) / 100f, 1, 0, false);
             });
 
+            for(Planet planet : planetList){
+                setDefRules(planet);
+            }
+
             arthin.uiIcon = bush.fullIcon;
             nyfalis.uiIcon = redSandBoulder.fullIcon;
             spelta.uiIcon = pinkTree.fullIcon;

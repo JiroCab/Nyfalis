@@ -27,6 +27,8 @@ public class HeadacheCrafter  extends GenericCrafter{
     private static TextField search;
     private static int rowCount;
 
+    //TODO Stats to display each plan
+
     public HeadacheCrafter(String name){
         super(name);
         configurable = true;
@@ -46,7 +48,7 @@ public class HeadacheCrafter  extends GenericCrafter{
         configClear((HeadacheCrafterBuild build) -> build.planSelected = 0);
 
         consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).input : ItemStack.empty));
-        //consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(Math.min(e.planSelected, plans.size - 1)).inputLiquid : LiquidStack.empty));
+        consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).inputLiquid : LiquidStack.empty));
     }
 
 

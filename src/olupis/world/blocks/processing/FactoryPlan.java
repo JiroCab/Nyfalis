@@ -33,6 +33,8 @@ public class FactoryPlan extends Block{
         rebuildable = false;
         requirements(Category.logic, BuildVisibility.worldProcessorOnly, with());
         researchCost = with(NyfalisItemsLiquid.powerAmmoItem, 69);
+        if(this.outputLiquid == null)this.outputLiquid = LiquidStack.empty;
+        if(this.output == null)this.output = ItemStack.empty;
     }
 
     public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output){
