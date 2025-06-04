@@ -113,6 +113,7 @@ public class DuelLiquidTurret extends NyfalisLiquidTurret {
                 Drawf.dashCircle(x, y, minRange(), team.color);
             }
 
+            if(peekAmmo() == null) return;
             if(peekAmmoAlt() == null || peekAmmo().rangeChange == peekAmmoAlt().rangeChange){
                 Drawf.dashCircle(x, y, range + peekAmmo().rangeChange, team.color);
                 return;

@@ -1509,7 +1509,7 @@ public class NyfalisUnits {
                 mirror = controllable = false;
                 weaponIconString = "olupis-bay-ui-front";
                 bullet = new BasicBulletType(2.5f, 10){{
-                    width = 4f;
+                    width = 3f;
                     height = 20f;
                     lifetime = 60f;
                     collidesAir = false;
@@ -1598,7 +1598,7 @@ public class NyfalisUnits {
                     }}); }
 
                     bullet = new BasicBulletType(2.5f, 8, "olupis-diamond-bullet"){{
-                        width = 5f;
+                        width = 3f;
                         height = 17f;
                         lifetime = 78f;
                         collidesAir = false;

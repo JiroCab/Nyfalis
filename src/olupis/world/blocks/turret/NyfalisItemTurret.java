@@ -16,7 +16,7 @@ public class NyfalisItemTurret extends ItemTurret {
     public void limitRangeI(float margin){
         for(var entry : ammoTypes.entries()){
             limitRange(entry.value, margin);
-            limitRange(entry.value.intervalBullet, margin);
+            if(entry.value.intervalBullet != null)limitRange(entry.value.intervalBullet, margin);
         }
     }
 

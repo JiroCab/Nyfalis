@@ -73,7 +73,7 @@ public class NyfalisTurrets {
                         collidesAir = false;
                     }};
                 }},
-                iron,  new CappedIntervalBullet(4f, 23){{
+                iron,  new CappedIntervalBullet(5f, 37){{
                     pierce = pierceBuilding = true;
                     collidesAir = false;
 
@@ -82,24 +82,9 @@ public class NyfalisTurrets {
                     ammoMultiplier = 1.5f;
                     pierceCap = 2;
 
-                    intervalRandomSpread = 10f;
-                    intervalSpread = 5f;
-                    bulletInterval = 1f;
-                    IntervalCap = 1;
-
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = ironBulletBack;
                     frontColor = iron.color;
-                    intervalBullet = new BasicBulletType(4f, 23){{
-                        pierce = pierceBuilding = true;
-                        collidesAir = false;
-                        width =  height = 7f;
-                        lifetime = 58f;
-
-                        hitEffect = despawnEffect = Fx.hitBulletColor;
-                        hitColor = backColor = trailColor = ironBulletBack;
-                        frontColor = iron.color;
-                    }};
                 }}
             );
 
@@ -110,6 +95,7 @@ public class NyfalisTurrets {
             range = 150;
             shootCone = 5f;
             ammoUseEffect = Fx.casing1;
+            shootEffect = Fx.shootLiquid;
             health = 250;
             inaccuracy = 5f;
             rotateSpeed = 15f;
