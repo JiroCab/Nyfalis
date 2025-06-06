@@ -169,7 +169,6 @@ public class NyfalisMain extends Mod{
             if(!e.unit.hasEffect(NyfalisStatusEffects.marked)) return;
             if(e.bullet.owner instanceof  Statusc s ){
                 s.apply(NyfalisStatusEffects.concentrated);
-                Log.err("Nfyalis concentrated");
             }
         });
     }

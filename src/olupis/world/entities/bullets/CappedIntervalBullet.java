@@ -7,6 +7,7 @@ import java.util.*;
 
 public class CappedIntervalBullet extends BasicBulletType{
      public int IntervalCap = 2;
+     public boolean removeOnIntervalDeplete = false;
     HashMap<Integer, Integer> counts = new HashMap<>();
 
     public CappedIntervalBullet(float speed, float damage, String bulletSprite){
@@ -30,7 +31,10 @@ public class CappedIntervalBullet extends BasicBulletType{
 
     @Override
     public void updateBulletInterval(Bullet b){
-        if(counts.get(b.id) >= IntervalCap) return;
+        if(counts.get(b.id) >= IntervalCap){
+            if(removeOnIntervalDeplete) b.remove();
+            return;
+        }
 
         counts.replace(b.id, counts.get(b.id) + 1);
         super.updateBulletInterval(b);

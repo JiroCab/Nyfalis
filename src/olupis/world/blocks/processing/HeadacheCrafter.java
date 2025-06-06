@@ -46,11 +46,23 @@ public class HeadacheCrafter  extends GenericCrafter{
 
 
         configClear((HeadacheCrafterBuild build) -> build.planSelected = 0);
-
-        consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).input : ItemStack.empty));
-        consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).inputLiquid : LiquidStack.empty));
     }
 
+    @Override
+    public void init(){
+        consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).input : ItemStack.empty));
+        consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).inputLiquid : LiquidStack.empty));
+
+        super.init();
+
+        for( FactoryPlan plan : plans ){
+            if(plan.inputLiquid != null){
+                for(LiquidStack stack : plan.inputLiquid){
+                    liquidFilter[stack.liquid.id] = true;
+                }
+            }
+        };
+    }
 
     public class HeadacheCrafterBuild extends GenericCrafterBuild{
         public int planSelected = -1;

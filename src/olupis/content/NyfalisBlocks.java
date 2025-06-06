@@ -864,13 +864,12 @@ public class NyfalisBlocks {
             buildCostMultiplier = 2f;
 
             consumePower (5f/60);
-            researchCost = with(cobalt, 500, lead, 500, quartz, 500);
-            requirements(Category.distribution, with(cobalt, 1, lead, 5, quartz, 3 ));
+            researchCost = with(cobalt, 500, lead, 500, aluminum, 500, quartz, 500);
+            requirements(Category.distribution, with(cobalt, 1, lead, 5, aluminum, 2, quartz ,1 ));
         }};
 
         ironRouter = new Router("iron-router"){{
             buildCostMultiplier = 1.5f;
-            speed = 16;
 
             researchCost = with(rustyIron, 10, lead, 10);
             requirements(Category.distribution, with(rustyIron, 3, lead, 1));
@@ -878,6 +877,7 @@ public class NyfalisBlocks {
 
         ironDistributor = new Router("iron-distributor"){{
             size = 2;
+            speed = 16;
             health = 200;
             buildCostMultiplier = 2f;
             hasPower = conductivePower = consumesPower = noUpdateDisabled = true;
@@ -896,6 +896,7 @@ public class NyfalisBlocks {
             researchCost = with(rustyIron, 20, lead, 20);
             ((Conveyor)rustyIronConveyor).junctionReplacement = this;
             ((PowerConveyor)ironConveyor).junctionReplacement = this;
+            ((PowerConveyor)cobaltConveyor).junctionReplacement = this;
             requirements(Category.distribution, with(lead, 3, rustyIron, 3));
         }};
 
@@ -933,6 +934,7 @@ public class NyfalisBlocks {
 
             consumePower(10f / 60f); 
             ((PowerConveyor)ironConveyor).bridgeReplacement = this;
+            ((PowerConveyor)cobaltConveyor).bridgeReplacement = this;
             researchCost = with(iron, 100, rustyIron, 500, lead, 500);
             requirements(Category.distribution, with(iron, 12, rustyIron, 35, lead, 8));
         }};
@@ -2438,7 +2440,7 @@ public class NyfalisBlocks {
             unitType = phorid;
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
-            requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500, graphite, 500));
+            requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500, graphite, 500, copper, 1500));
             shootType = new ArtilleryBulletType(3f, 50){{
                 lifetime = 80f;
                 knockback = 1f;
@@ -2472,7 +2474,7 @@ public class NyfalisBlocks {
             limitRange(0);
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
-            requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500));
+            requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500, copper, 2500));
             shootType = new SapBulletType(){{
                 damage = 150f;
                 width = 0.8f;
@@ -2502,7 +2504,7 @@ public class NyfalisBlocks {
             shootEffect = Fx.none;
             shootSound = Sounds.bigshot;
             targetGround = targetHealing = targetAir = true;
-            requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 4500, silicon, 4500, graphite, 4500, quartz, 2500, cobalt, 2500));
+            requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 4500, silicon, 4500, graphite, 4500, quartz, 2500, cobalt, 2500, copper, 2500));
             shootType = new RailBulletType(){{
                 length = 255f;
                 damage = 500;

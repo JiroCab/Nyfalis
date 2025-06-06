@@ -14,6 +14,8 @@ public class ArcLightningBulletType extends BulletType{
                             hitBuilding = true,
                             failLightnighBullet =  false
     ;
+
+    public float minTargetDistance = -1f;
     public Effect chainEffect = NyfalisFxs.chainLightningAlt;
 
     public ArcLightningBulletType(){
@@ -24,6 +26,7 @@ public class ArcLightningBulletType extends BulletType{
         hitEffect = Fx.hitLancer;
         keepVelocity = false;
         hittable = false;
+        fragOnHit = false;
         //for stats
         status = StatusEffects.shocked;
     }
@@ -44,7 +47,7 @@ public class ArcLightningBulletType extends BulletType{
         Seq<Healthc> out = new Seq<>();
         Units.nearby(null, b.x, b.y, range, other -> {
             //Todo, maybe healing?
-            if(other.checkTarget(hitAir, hitGround) && other.targetable(b.team) && (other.team !=b.team)){
+            if(other.checkTarget(hitAir, hitGround) && other.targetable(b.team) && (other.team !=b.team) && (minTargetDistance <= -1 || out.allMatch(c -> !c.within(other, minTargetDistance)))){
                 out.add(other);
             }
         });
@@ -71,11 +74,27 @@ public class ArcLightningBulletType extends BulletType{
             Healthc tar = all.random();
             if(tar == null) break;
 
+            if(fragBullet != null) createFrags(b, tar.x(), tar.y());
             tar.damage(damage);
             if(tar instanceof Statusc s)s.apply(status, statusDuration);
             chainEffect.at(b.x , b.y, b.rotation(), lightningColor, tar);
             all.remove(tar);
         }
+    }
+
+
+    @Override
+    public void despawned(Bullet b){
+        if(despawnHit){
+            hit(b);
+        }else{
+            createUnits(b, b.x, b.y);
+        }
+
+        despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
+        despawnSound.at(b);
+
+        Effect.shake(despawnShake, despawnShake, b);
     }
 }
 

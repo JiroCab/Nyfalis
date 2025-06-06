@@ -332,6 +332,110 @@ public class NyfalisUnits {
         }};
 
         // vortex -> gun ship inspired by Thor gunships of cnc:mental omega
+        vortex = new NyfalisUnitType("vortex"){{
+            armor = 5f;
+            hitSize = 20f;
+            drag = 0.05f;
+            speed = 1.8f;
+            accel = 0.07f;
+            health = 1200f;
+            range = 170f;
+            engineSize = -1;
+            rotateSpeed = 45f;
+            itemCapacity = 15;
+            strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
+
+            lowAltitude = flying = canCircleTarget = alwaysShootWhenMoving = faceTarget = waveHunts = true;
+            constructor = UnitEntity::create;
+
+
+            aiController = WaveAiHandler::new;
+            defaultCommand = NyfalisUnitCommands.circleCommand;
+            setEnginesMirror(
+            new UnitEngine(33 / 4f, -67 / 4f, 4.5f, 300f)
+            );
+
+            weapons.add(new Weapon(){{
+                x = 0f;
+                reload = 100;
+                shootCone = 60f;
+
+                ejectEffect = Fx.none;
+                shootSound = Sounds.spark;
+                ignoreRotation = parentizeEffects = autoTarget = autoFindTarget = true;
+                top = alternate =  mirror = false;
+
+                bullet = new ArcLightningBulletType(){{
+                    rangeOverride = range = 200f;
+                    damage = 30;
+                    maxTargets = 5;
+                    homingPower = 0.1f;
+                    minTargetDistance = 30f;
+
+                    status = StatusEffects.none;
+                    hitEffect= shootEffect = Fx.hitLancer;
+                    lightningColor = hitColor = Pal.surge;
+                    failLightnighBullet = true;
+                    lightningType = new LightningBulletType(){{
+                        damage = 7;
+                        shootY = 0f;
+                        drawSize = 55;
+                        pierceCap = 3;
+                        lightningLength = 13;
+                        lightningLengthRand = 0;
+                        pierce = true;
+                        shootEffect = Fx.none;
+                        lightningColor = hitColor = Pal.surge;
+                        hitEffect = Fx.hitLancer;
+                        status = StatusEffects.electrified;
+
+                        lightningType = new BulletType(0.0001f, 0f){{
+                            pierceCap = 2;
+                            statusDuration = 10f;
+                            hittable = false;
+                            pierce = true;
+                            hitEffect = Fx.hitLancer;
+                            despawnEffect = Fx.none;
+                            status = StatusEffects.shocked;
+                            lifetime = Fx.lightning.lifetime;
+                        }};
+                    }};
+
+                    fragBullets = 1;
+                    fragBullet = new ArtilleryBulletType(0.7f, 25, "circle-bullet"){{
+                        lifetime = 80f;
+                        width = height = 11f;
+                        homingPower = 0.44f;
+                        homingRange = 100f;
+                        shrinkY = shrinkX = 0.75f;
+                        velocityRnd = trailMult = 0;
+                        frontColor = backColor = Pal.surge;
+                        collides = collidesAir = collidesGround = collidesTeam = collidesTiles = keepVelocity = hittable = reflectable =false;
+                        absorbable = true;
+                        hitEffect = Fx.hitLancer;
+                        despawnEffect = trailEffect = Fx.none;
+                        hitSound = Sounds.none;
+
+                        fragBullets = intervalBullets = 1;
+                        fragBullet = intervalBullet = new ArcLightningBulletType(){{
+                            rangeOverride = range = 35f;
+                            damage = 17;
+                            homingPower = 0.1f;
+
+                            status = StatusEffects.none;
+                            hitEffect= shootEffect = Fx.hitLancer;
+                            lightningColor = hitColor = Pal.surge;
+                        }};
+                    }};
+                }};
+
+                shootStatus = StatusEffects.slow;
+                shootStatusDuration = bullet.lifetime + shoot.firstShotDelay;
+            }});
+
+
+        }};
+
         // tempest -> gun ship fires particle spheres
 
         //endregion
@@ -1083,7 +1187,7 @@ public class NyfalisUnits {
             canBoost = lowAltitude = alwaysShootWhenMoving = true;
             armor = 5;
             hitSize = 12f;
-            range = 1.5f;
+            range = Vars.tilesize * 8;
             health = 620;
             speed = 0.7f;
             engineSize = -1;
@@ -1091,17 +1195,16 @@ public class NyfalisUnits {
             rotateSpeed = 2.25f;
             boostMultiplier = 0.8f;
             immunities.add(StatusEffects.burning);
-            abilities.add(new MicroWaveFieldAbility(6.5f, 40f, 40f, 20f){{
+            abilities.add(new MicroWaveFieldAbility(6.5f, 50f, Vars.tilesize * 9.5f, Vars.tilesize * 4.5f){{
                 ideRangeDisplay = false;
                 damageEffect = Fx.none;
                 sectors = 3;
-                boostRange = 20f;
                 maxTargetBoost = 7;
                 maxTargetsGround = 14;
 
             }});
             //Gave up trying to make it, so it has a boost damage weapon since the ability's range display won't go away while boosting if triggered, so made it just it sole weapon that changes on boost or not
-            setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
+            setEnginesMirror(new UnitEngine(24 / 4f, -5 / 4f, 2f, 5f));
             parts.add(
                 new RegionPart("-arm"){{
                     y = 5f;
@@ -1126,6 +1229,7 @@ public class NyfalisUnits {
             );
         }};
 
+        //luridiblatta -> long range shell launcher, only fires at target +/- 5 tiles of max range (has min range)
         luridiblatta = new NyfalisUnitType("luridiblatta"){{
             constructor = MechUnit::create;
 
@@ -1182,8 +1286,70 @@ public class NyfalisUnits {
             setEnginesMirror(new UnitEngine(29 / 4f, 1 / 4f, 2f, 5f));
 
         }};
-        //luridiblatta -> long range shell launcher, only fires at target +/- 5 tiles of max range (has min range)
 
+        vaga = new NyfalisUnitType("vaga"){{
+            constructor = MechUnit::create;
+
+            canBoost = lowAltitude = true;
+            boostMultiplier = 0.8f;
+
+            armor = 7;
+            hitSize = Vars.tilesize * 2.7f;
+            health = 1300;
+            speed = 0.65f;
+            engineSize = -1;
+            rotateSpeed = 1.72f;
+            range = 25 * Vars.tilesize;
+            weapons.add(
+                new Weapon(""){{
+                    x = 10f;
+                    y = 1.25f;
+                    reload = 60f;
+                    shootCone = 30f;
+                    shootSound = Sounds.missile;
+                    top = false;
+                    ejectEffect = Fx.casing1;
+                    parts.addAll(
+                        new RegionPart("olupis-aegis-core-barrel"){{
+                            var p = PartProgress.warmup.add(-1f);
+                            heatProgress = progress =p.mul(-1);
+                            moveRot = 35f;
+                            moveY = -0.8f;
+                            moveX = -0.17f;
+                            under  = true;
+
+                        }}
+                    );
+                    bullet = new EffectivenessMissleType(9f, 30f) {{
+                        //no bonus to air or ground
+                        width = 8f;
+                        shrinkX = 0;
+                        lifetime = (25 * Vars.tilesize) / speed;
+                        height = 13.5f;
+                        trailChance = 0;
+                        trailLength = 2;
+                        knockback = 1.5f;
+                        splashDamage = 3f;
+                        homingPower = 0.6f;
+                        homingRange = 100f;
+                        homingDelay = 10;
+                        splashDamageRadius = 20f * 0.75f;
+                        frontColor = trailColor = graphite.color;
+                        collidesAir = collidesGround = true;
+                        shootEffect = Fx.shootBigColor;
+                        hitEffect = NyfalisFxs.hollowPointHit;
+                    }};
+                }}
+            );
+            setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
+            abilities.add(new MicroWaveFieldAbility(10f, 80f, Vars.tilesize * 9.5f, Vars.tilesize * 16f){{
+                ideRangeDisplay = false;
+                damageEffect = Fx.none;
+                sectors = 4;
+                maxTargetBoost = 14;
+                maxTargetsGround = 7;
+            }});
+        }};
 
         parcoblatta = new NyfalisUnitType("parcoblatta"){{
             constructor = MechUnit::create;
@@ -1196,7 +1362,7 @@ public class NyfalisUnits {
             health = 125;
             speed = 0.60f;
             engineSize = -1;
-            rotateSpeed = 1.72f;
+            rotateSpeed = 2f;
             weapons.add(
             new NyfalisWeapon("olupis-obliterator", false, true){{
                 x = 20;
@@ -1968,7 +2134,9 @@ public class NyfalisUnits {
             fogRadius = 8f;
             legLength = 10f;
             mineSpeed = 4f;
+            stepShake = 0.3f;
             navalSpeed = 1.1f;
+            itemCapacity = 35;
             legForwardScl = 0.8f;
             legBaseOffset = -2f;
             legMoveSpace = 1.4f;
@@ -2070,7 +2238,7 @@ public class NyfalisUnits {
             mineTier = 1;
             hitSize = 8.5f;
             itemOffsetY = 5f;
-            fogRadius = 6;
+            fogRadius = 0;
             mineSpeed = 3.5f;
             itemCapacity = 10;
             ammoCapacity = 150;
