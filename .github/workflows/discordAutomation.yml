@@ -20,23 +20,16 @@ jobs:
           workflow: deploy.yml
           branch: experimental
 
-      - name: send file
-        uses: appleboy/discord-action@master
-        with:
-          webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
-          webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
-          color: "#3ED09A"
-          username: "${{github.actor}}"
-          message: ":3"
-          file: "${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar"
-
       - name: send commit info
         uses: tsickert/discord-webhook@v7.0.0
         with:
           webhook-url: ${{ secrets.DISCORD_BETA_CHANNEL_WH }}
-          content: " ${{github.event.workflow_run.head_commit.message}}"
-          embed-color: "4116634"
-          username: "${{github.actor}}"
+          username: ${{github.actor}}
+          embed-title: owo
+          embed-description: ${{github.event.workflow_run.head_commit.message}}
+          embed-color: 4116634
+          embed-url: ${{ github.event.workflow_run.head_commit.url}}
+          filename: ${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar
 
 
   on-failure:
