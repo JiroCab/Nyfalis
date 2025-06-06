@@ -31,10 +31,12 @@ jobs:
           file: "${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar"
 
       - name: send commit info
-        uses: discord-actions/message@v2
+        uses: tsickert/discord-webhook@v7.0.0
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_ID }}
-          message: " ${{github.event.workflow_run.head_commit.message}}"
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_ID }}
+          content: " ${{github.event.workflow_run.head_commit.message}}"
+          embed-color: "4116634"
+          username: "${{github.actor}}"
 
 
   on-failure:
