@@ -33,7 +33,7 @@ jobs:
       - name: send commit info
         uses: tsickert/discord-webhook@v7.0.0
         with:
-          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook-url: ${{ secrets.DISCORD_BETA_CHANNEL_WH }}
           content: " ${{github.event.workflow_run.head_commit.message}}"
           embed-color: "4116634"
           username: "${{github.actor}}"
