@@ -33,7 +33,7 @@ jobs:
       - name: send commit info
         uses: discord-actions/message@v2
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_ID }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           message: "> ${{github.event.workflow_run.head_commit.message}}"
 
 
