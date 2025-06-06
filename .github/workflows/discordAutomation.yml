@@ -27,15 +27,13 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
           color: "#3ED09A"
           username: "${{github.actor}}"
+          message: ":3"
           file: "${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar"
 
       - name: send commit info
-        uses: appleboy/discord-action@master
+        uses: discord-actions/message@v2
         with:
-          webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
-          webhook_token: ${{ secrets.DISCORD_WEBHOOK_NEW }}
-          color: "#3ED09A"
-          username: "${{github.actor}}"
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_ID }}
           message: "> ${{github.event.workflow_run.head_commit.message}}"
 
 

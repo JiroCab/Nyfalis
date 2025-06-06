@@ -18,6 +18,7 @@ you can figure out the rest, you got this, you're a smart cookie
 # Contributing
 With the way the repository is structured, please refer to the [Experimental branch](https://github.com/JiroCab/Olupis/tree/experimental) on basing changes to avoid future conflict.
 And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/Olupis/blob/experimental/changelog.txt) in case of any similar changes are made
+[Main branch](https://github.com/JiroCab/Olupis/tree/main) is for creating releases and should not be commited directly too or base changes on!
 
 ## Credits:
 * [RushieWashie](https://github.com/JiroCab) - Code, Sprites, Maps
