@@ -27,7 +27,6 @@ jobs:
           username: ${{github.actor}}
           embed-description: ${{github.event.workflow_run.head_commit.message}}
           embed-color: 4116634
-          embed-footer-text: "[link](${{ github.event.workflow_run.head_commit.url}})"
           filename: ${{ github.event.repository.name }}/${{ github.event.repository.name }}.jar
 
 

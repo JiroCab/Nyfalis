@@ -26,6 +26,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
+import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.input.*;
@@ -148,32 +149,55 @@ public class NyfalisUnitType extends UnitType {
 
     @Override
     public @Nullable ItemStack[] getRequirements(@Nullable UnitType[] prevReturn, @Nullable float[] timeReturn){
-       var cons = (ItemUnitTurret) Vars.content.blocks().find(b -> b instanceof ItemUnitTurret c && c.allUnitTypes().contains(this));
 
-       if(cons != null){
-           boolean alt = cons.possibleUnitTypes(false).contains(this);
-           if(timeReturn != null){
-               float mul = cons.ammoTypes.values().toSeq().find(b -> b.spawnUnit == this).reloadMultiplier;
-               timeReturn[0] = cons.reload * mul;
-           }
+        //Find a constructor
+        var cons = (ItemUnitTurret) Vars.content.blocks().find(b -> b instanceof ItemUnitTurret c && c.allUnitTypes().contains(this));
+        if(cons != null){
+            boolean alt = cons.possibleUnitTypes(false).contains(this);
+            if(timeReturn != null){
+                float mul = cons.ammoTypes.values().toSeq().find(b -> b.spawnUnit == this).reloadMultiplier;
+                timeReturn[0] = cons.reload * mul;
+            }
 
            //idk
-           Item modifier = cons.unitTypeToAmmo(this);
-           if(!modifier.isHidden()){
-               ItemStack[] cost = alt  ? cons.requiredItems : cons.requiredAlternate;
-               ItemStack[] out = new ItemStack[cost.length + 1];
-               for(int i = 0; i < cost.length; i++){
-                   out[i] = cost[i];
-               }
+            Item modifier = cons.unitTypeToAmmo(this);
+            if(!modifier.isHidden()){
+                ItemStack[] cost = alt  ? cons.requiredItems : cons.requiredAlternate;
+                ItemStack[] out = new ItemStack[cost.length + 1];
+                for(int i = 0; i < cost.length; i++){
+                    out[i] = cost[i];
+                }
 
-               out[cost.length] = new ItemStack(modifier, 1);
-               return out;
-           } else  return  alt  ? cons.requiredItems : cons.requiredAlternate;
+                out[cost.length] = new ItemStack(modifier, 1);
+                return out;
+            } else  return  alt  ? cons.requiredItems : cons.requiredAlternate;
+        }
 
+        //find Fabricator
+        // only the 3rd real entry is considered a
+        var rec = (Fabricator)content.blocks().find(b -> b instanceof Fabricator re && re.upgrades.contains(u -> u[1] == this));
 
-       }
+        if(rec != null && rec.findConsumer(i -> i instanceof ConsumeItems) instanceof ConsumeItems ci){
+            ItemSeq reqs = new ItemSeq();
+            reqs.add(ci.items);
 
-       return super.getRequirements(prevReturn, timeReturn);
+            if(prevReturn != null){
+                //3rd entry is the real upgrade from, not the inputted
+                var up = rec.upgrades.find(u -> u[1] == this);
+                if(up.length >= 3){
+                    prevReturn[0] = rec.upgrades.find(u -> u[1] == this)[3];
+                    for(var stack : rec.upgrades.find(u -> u[1] == this)[0].getTotalRequirements()){
+                        reqs.add(stack.item, stack.amount);
+                    }
+                } else prevReturn[0] =  rec.upgrades.find(u -> u[1] == this)[0];
+            }
+            if(timeReturn != null){
+                timeReturn[0] = rec.constructTime;
+            }
+            return reqs.toArray();
+        }
+
+        return super.getRequirements(prevReturn, timeReturn);
     };
 
     @Override

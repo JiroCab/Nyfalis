@@ -15,7 +15,7 @@ import mindustry.world.meta.*;
 import java.util.*;
 
 public class NyfalisStatusEffects {
-    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate;
+    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate, comradery;
 
     public static void loadStatusEffects(){
 
@@ -198,19 +198,6 @@ public class NyfalisStatusEffects {
             color = Color.valueOf("6b675f");
             show = true;
         }
-            @Override
-            public void update(Unit unit, float time){
-                super.update(unit, time);
-                Groups.bullet.each(bb -> {
-                    if (bb.team == unit.team && bb.owner instanceof Statusc s && !s.hasEffect(concentrated) && bb.owner != unit){
-                        float d = Mathf.dst(bb.x, bb.y, unit.x(), unit.y());
-                        if(d <= unit.hitSize * 3f ){
-                            s.apply(concentrated, 3 * 60f);
-                            //Log.err("owo");
-                        }
-                    }
-                });
-            }
 
             @Override
             public void draw(Unit unit){
@@ -218,7 +205,7 @@ public class NyfalisStatusEffects {
                 Draw.z((unit.isFlying() ? Layer.flyingUnitLow : Layer.groundUnit) - 0.05f);
 
                 Lines.stroke(1.5f);
-                float rad = unit.hitSize * 0.5f;
+                float rad = unit.hitSize * ((1f + Mathf.sin(Time.time / 50f) )/2f);
                 Draw.color(unit.team.color, 0.8f);
                 Lines.circle(unit.x,  unit.y, rad);
                 Lines.spikes(unit.x, unit.y, 3f/7f * rad, 6f/8f * rad, 4, Time.time * 1.5f);
@@ -237,5 +224,24 @@ public class NyfalisStatusEffects {
             show = true;
             effect = Fx.pickup;
         }};
+
+        comradery = new StatusEffect("comradery"){{
+            speedMultiplier = 1.3f;
+            damageMultiplier = 1.3f;
+            reloadMultiplier = 1.3f;
+        }
+
+            @Override
+            public void draw(Unit unit){
+                super.draw(unit);
+
+                Draw.z((unit.isFlying() ? Layer.flyingUnitLow : Layer.groundUnit) - 0.05f);
+                float rad = unit.hitSize * (0.6f + (Mathf.sin(Time.time / 50f) /2f ));
+                Draw.color(unit.team.color, 0.8f);
+                Lines.square(unit.x,  unit.y, rad, unit.rotation + 45f);
+                Lines.spikes(unit.x, unit.y, 3f/7f * unit.hitSize, 3f/6.5f * unit.hitSize, 4, unit.rotation + 45f);
+                Draw.reset();
+            }
+        };
     }
 }

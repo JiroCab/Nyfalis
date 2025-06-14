@@ -38,6 +38,7 @@ import java.util.*;
 
 import static mindustry.Vars.tilePayload;
 import static mindustry.content.Items.*;
+import static olupis.content.NyfalisColors.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.world.ai.NyfalisPathfind.costLeggedNaval;
 
@@ -1351,6 +1352,7 @@ public class NyfalisUnits {
             }});
         }};
 
+        //TODO: Mining unit that changes the ammo/bullet prop (prob an ability)
         parcoblatta = new NyfalisUnitType("parcoblatta"){{
             constructor = MechUnit::create;
 
@@ -1406,6 +1408,9 @@ public class NyfalisUnits {
                 }};
             }});
             setEnginesMirror(new UnitEngine(29 / 4f, 1 / 4f, 2f, 5f));
+            abilities.addAll(
+                new DeathStatusAbility(NyfalisStatusEffects.comradery)
+            );
         }};
         //endregion
         //region Naval - Carrier
@@ -1423,7 +1428,7 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
 
             abilities.addAll(
-                new CarrierResupplyAblity(1),
+                new CarrierResupplyAbility(1),
                 new UnitRallySpawnAblity(zoner, 60f * 15f, 0, 4.5f){{
                     moveRot = 1800;
                 }}
@@ -1443,7 +1448,7 @@ public class NyfalisUnits {
             rotateMoveFirst = canDeploy = true;
             constructor = UnitWaterMove::create;
             abilities.addAll(
-                new CarrierResupplyAblity(2),
+                new CarrierResupplyAbility(2),
                 new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 0f, 0, -10f)
             );
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-warden-point-defense"){{
@@ -1507,7 +1512,7 @@ public class NyfalisUnits {
                 }};
             }});
             abilities.addAll(
-                new CarrierResupplyAblity(3),
+                new CarrierResupplyAbility(3),
                 new UnitRallySpawnAblity(district, 60f * 30f, 5.5f, 0,0, 15f, true){{
                     displayBars = false;
                 }},
@@ -1605,7 +1610,7 @@ public class NyfalisUnits {
                 }})
             ;
             abilities.addAll(
-                new CarrierResupplyAblity(4),
+                new CarrierResupplyAbility(4),
                 new ShieldArcAbility(){{
                     radius = 36f;
                     angle = 82f;
@@ -1790,11 +1795,11 @@ public class NyfalisUnits {
             constructor = bay.constructor;
             weapons.add(new Weapon("olupis-tri-mount"){{
                 x = 0;
-                y = -9f;
+                y = -3f;
                 recoils = 3;
                 reload = 20;
                 recoil = 0.5f;
-                rotateSpeed = 5f;
+                rotateSpeed = 10f;
                 mirror = false;
                 rotate= top = true;
                 shoot = new ShootAlternate(2.7f);
@@ -1825,46 +1830,117 @@ public class NyfalisUnits {
                     backColor = NyfalisColors.ironBulletBack;
                     hitEffect = despawnEffect = Fx.hitBulletSmall;
                 }};
-            }},
-            new Weapon("olupis-dark-pew"){{
-                x = 0;
-                y = -9f;
-                reload = 35f;
-                mirror = false;
-                rotate = true;
-                layerOffset = 0.01f;
-                ejectEffect = Fx.casing1;
-                shoot = new ShootSpread(6, 2f);
-                bullet = new BasicBulletType(2.5f, 10f){{
-                    width = 7f;
-                    height = 9f;
-                    shrinkX = 25f /60;
-                    shrinkY = 35f /60;
-                    lifetime = 40f;
-                    fragBullets = 1;
-                    fragVelocityMin = 1f;
-                    fragRandomSpread = 0f;
-                }};
-            }},
-            new Weapon("olupis-dark-pew"){{
-                x = 0;
-                y = 11f;
-                reload = 35f;
-                mirror = false;
-                rotate = true;
-                ejectEffect = Fx.casing1;
-                shoot = new ShootSpread(6, 2f);
-                bullet = new BasicBulletType(2.5f, 10f){{
-                    width = 7f;
-                    height = 9f;
-                    shrinkX = 25f /60;
-                    shrinkY = 35f /60;
-                    lifetime = 40f;
-                    fragBullets = 1;
-                    fragVelocityMin = 1f;
-                    fragRandomSpread = 0f;
-                }};
             }});
+
+            float lftm = 65f;
+            for(int i = 0; i < 2; i++){
+                int finalI = i;
+                weapons.add(new Weapon("olupis-dark-tur"){{
+                    x = 0;
+                    y = (finalI == 1) ? 12 : -12f;
+                    reload = 20f;
+                    mirror = false;
+                    rotate = true;
+                    layerOffset = 0.01f;
+                    rotateSpeed = 5f;
+                    ejectEffect = Fx.casing1;
+                    bullet = new CappedIntervalBullet(3f, 14){{
+                        width = 4f;
+                        height = 20f;
+                        lifetime = lftm;
+
+                        collidesAir = false;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = rustyBulletBack;
+                        frontColor =  rustyBullet;
+                        intervalRandomSpread = 15f;
+                        intervalSpread = 3f;
+                        bulletInterval = 1f;
+                        IntervalCap = 4;
+                        reloadMultiplier = 0.8f;
+                        ammoMultiplier = 1f;
+                        intervalBullet = new BasicBulletType(3f, 14){{
+                            width = 4f;
+                            height = 20f;
+                            lifetime = lftm - 2;
+
+                            hitEffect = despawnEffect = Fx.hitBulletColor;
+                            hitColor = backColor = trailColor = rustyBulletBack;
+                            frontColor = rustyBullet;
+                            collidesAir = false;
+                        }};
+                    }};
+                    parts.addAll(
+                        new RegionPart(){{
+                            name = "olupis-dark-pew";
+                            mirror = false;
+                            under = true;
+                            progress = PartProgress.recoil;
+                            y = 1;
+                            moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
+
+                        }}
+                    );
+                }});
+            }
+        }};
+
+        torrent = new NyfalisUnitType("torrent"){{
+            armor = 7f;
+            hitSize = 20f;
+            health = 1300;
+            trailScl = 1.5f;
+            trailLength = 22;
+            waveTrailX = 7f;
+            waveTrailY = -9f;
+            itemCapacity = 60;
+            constructor = bay.constructor;
+            weapons.addAll(
+                new Weapon("olupis-slash"){{
+                    y = x = 0;
+                    reload = 60f * 10;
+                    mirror = false;
+                    rotate = true;
+                    layerOffset = 0.01f;
+                    ejectEffect = Fx.casing1;
+                    shootSound = Sounds.mediumCannon;
+                    soundPitchMin = 0.3f;
+                    soundPitchMax = 0.8f;
+                    rotateSpeed = 2f;
+
+                    bullet = new ArtilleryBulletType(2f, 100f){{
+                        shootEffect = Fx.shootBig;
+                        hitEffect = despawnEffect = deathExplosionEffect = Fx.massiveExplosion;;
+                        width = 10f;
+                        height = 14f;
+                        shrinkX = 25f /60;
+                        shrinkY = 35f /60;
+                        lifetime = 150f;
+                        splashDamage = 80f;
+                        splashDamageRadius = 60f;
+                    }};
+                }},
+                new Weapon("olupis-dark-pew"){{
+                    x = 0;
+                    y = 11f;
+                    reload = 35f;
+                    mirror = false;
+                    rotate = true;
+                    rotateSpeed = 5f;
+                    ejectEffect = Fx.casing1;
+                    shoot = new ShootSpread(6, 2f);
+                    bullet = new BasicBulletType(2.5f, 10f){{
+                        width = 7f;
+                        height = 9f;
+                        shrinkX = 25f /60;
+                        shrinkY = 35f /60;
+                        lifetime = 40f;
+                        fragBullets = 1;
+                        fragVelocityMin = 1f;
+                        fragRandomSpread = 0f;
+                    }};
+                }})
+            ;
         }};
 
         //torret - 2 broadside cram/doom cannons (artillery )
@@ -2934,13 +3010,13 @@ public class NyfalisUnits {
                 float range = 90f + unit.hitSize;
 
                 Unit carrier = Units.closest(unit.team, unit.x, unit.y, range,
-                    u -> Arrays.stream(u.abilities).anyMatch(a -> a instanceof CarrierResupplyAblity)
+                    u -> Arrays.stream(u.abilities).anyMatch(a -> a instanceof CarrierResupplyAbility)
                 , UnitSorts.strongest);
 
                 if(carrier != null){
                     int tier = 1;
                     for(Ability ability : carrier.abilities){
-                        if(ability instanceof CarrierResupplyAblity owo && owo.tier > tier) tier = owo.tier;
+                        if(ability instanceof CarrierResupplyAbility owo && owo.tier > tier) tier = owo.tier;
                     }
 
                     Fx.itemTransfer.at(carrier.x, carrier.y, 15f , Pal.ammo, unit);

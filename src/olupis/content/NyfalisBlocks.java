@@ -1696,12 +1696,19 @@ public class NyfalisBlocks {
             consume(new ConsumeLubricant(45f / 60f));
 
             upgrades.addAll(
-                    new UnitType[]{serpent, reaper},
-                    new UnitType[]{warden, guardian},
-                    new UnitType[]{blitz, crusader},
-                    new UnitType[]{striker, falcon},
-                    new UnitType[]{germanica, luridiblatta},
-                    new UnitType[]{acerodon, nyctalus}
+                //T3
+                new UnitType[]{serpent, reaper},
+                new UnitType[]{warden, guardian},
+                new UnitType[]{blitz, crusader},
+                new UnitType[]{striker, falcon},
+                new UnitType[]{germanica, luridiblatta},
+                new UnitType[]{acerodon, nyctalus},
+                //t4
+                new UnitType[]{aero, vortex, falcon},
+                new UnitType[]{supella, vaga, luridiblatta},
+                new UnitType[]{bay, torrent, crusader},
+                new UnitType[]{sentry, domination, guardian}
+
             );
 
             constructTime = 60f * 60f;
@@ -1712,7 +1719,7 @@ public class NyfalisBlocks {
         //Unit Tree: t1 = construct
         // T2 = construct + alternateArticulator
         // t3 = t2 + reconstructor
-        // t4 = t2 + t3 reconstructor + alternateAmalgamator
+        // t4 = t1 + t3 reconstructor + alternateAmalgamator
         // t5 = t1-t4 at assembler
 
         //alternateAmalgamator allows scarab to have payloa to fire/update
@@ -2315,11 +2322,11 @@ public class NyfalisBlocks {
         ladar = new Ladar("ladar"){{
             emitLight = true;
             size = 2;
-            fogRadius = 64;
+            fogRadius = 16;
             lightRadius = 130f;
             rotateSpeed = 20f;
             glowMag = glowScl = 0f;
-            discoveryTime = 60f * 80f;
+            discoveryTime = 60f * 40f;
             consumePower(240f/60f);
             glowColor = Color.valueOf("00000000");
             requirements(Category.effect, with(Items.lead, 60, Items.graphite, 50, iron, 10));
@@ -2328,11 +2335,11 @@ public class NyfalisBlocks {
         search = new Ladar("search"){{
             emitLight = spotlight = true;
             size = 3;
-            fogRadius = 64;
+            fogRadius = 32;
             lightRadius = 200;
             rotateSpeed = 20f;
             glowMag = glowScl = 0f;
-            discoveryTime = 60f * 80f;
+            discoveryTime = 60f * 40f;
             spotted = NyfalisStatusEffects.marked;
             consumePower(400/60f);
             glowColor = Color.valueOf("00000000");

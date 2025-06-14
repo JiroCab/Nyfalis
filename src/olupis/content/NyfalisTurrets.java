@@ -2,8 +2,10 @@ package olupis.content;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -1555,6 +1557,27 @@ public class NyfalisTurrets {
                     status = NyfalisStatusEffects.sloppy;
                 }}
             );
+            drawer = new DrawTurret("iron-"){{
+
+            }
+                //Yeah this could be better but oh well -rushie
+                public TextureRegion liquidAlt;
+
+                @Override
+                public void load(Block block){
+                    super.load(block);
+                    liquidAlt = Core.atlas.find(block.name + "-liquid1");
+                }
+
+                @Override
+                public void drawTurret(Turret block, TurretBuild build){
+                    super.drawTurret(block, build);
+                    if(liquid.found()){
+                        Liquid toDraw = liquidDraw == null ?( build instanceof  DuelLiquidTurretBuild bl && bl.getLiquidAlt() != null)? bl.getLiquidAlt() :  build.liquids.current() : liquidDraw;
+                        Drawf.liquid(liquidAlt, build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.liquids.get(toDraw) / block.liquidCapacity, toDraw.color.write(Tmp.c1).a(1f), build.drawrot());
+                    }
+                }
+            };
 
             shoot.shots = 2;
 
