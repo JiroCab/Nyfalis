@@ -237,4 +237,10 @@ public class LeggedPayloadUnitClass extends LegsUnit implements Payloadc{
             TypeIO.writePayload(write, (Payload)this.payloads.get(INDEX));
         }
     }
+
+    @Override
+    public EntityCollisions.SolidPred solidity() {
+        //cant be bothered so just return this
+        return EntityCollisions::solid;
+    }
 }

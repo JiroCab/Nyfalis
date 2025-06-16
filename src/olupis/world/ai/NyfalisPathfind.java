@@ -26,7 +26,8 @@ public class NyfalisPathfind {
 
         //Sameish as legged but prefers open blocks
         costPreferTrackedNaval =(team, tile) ->
-            PathTile.legSolid(tile) ? wallImpassableCap : 1 +
+            (PathTile.solid(tile) && (PathTile.team(tile) == team && !PathTile.teamPassable(tile))) ? wallImpassableCap : 1 +
+            (PathTile.solid(tile) && PathTile.team(tile) != team? 0 : 3)+
             (!PathTile.solid(tile) ? 3 : 0) +
             (!PathTile.nearSolid(tile) ? 2 : 0) +
             (!PathTile.liquid(tile) ? 2 : 0) +

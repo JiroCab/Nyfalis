@@ -54,13 +54,9 @@ public class VaraintConveryor extends Conveyor{
     public class ConveyorBuild extends Conveyor.ConveyorBuild{
         @Override
         public void draw(){
-            if(variants <= 0 ) {
-                super.draw();
-                return;
-            }
 
-            int frame = enabled && clogHeat <= 0.5f ? (int)(((Time.time * speed * 8f * timeScale * efficiency)) % 4) : 0;
-            int seed = Mathf.randomSeed(tile.pos(), 0 , variants -1);
+            int frame = enabled && clogHeat <= 0.5f ? (int)Math.abs(((Time.time * speed * 8f * timeScale * efficiency)) % 4) : 0;
+            int seed = variants >= 1 ? Mathf.randomSeed(tile.pos(), 0 , variants -1) : 0;
 
 
             //draw extra conveyors facing this one for non-square tiling purposes
@@ -71,14 +67,14 @@ public class VaraintConveryor extends Conveyor{
                     float rot = i == 0 ? rotation * 90 : (dir)*90;
 
                     Draw.rect(sliced(regions[0][frame], i != 0 ? SliceMode.bottom : SliceMode.top), x + Geometry.d4x(dir) * tilesize*0.75f, y + Geometry.d4y(dir) * tilesize*0.75f, rot);
-                    Draw.rect(sliced(sideRegions[0][seed], i != 0 ? SliceMode.bottom : SliceMode.top), x + Geometry.d4x(dir) * tilesize*0.75f, y + Geometry.d4y(dir) * tilesize*0.75f, rot);
+                    if(variants >= 1 )Draw.rect(sliced(sideRegions[0][seed], i != 0 ? SliceMode.bottom : SliceMode.top), x + Geometry.d4x(dir) * tilesize*0.75f, y + Geometry.d4y(dir) * tilesize*0.75f, rot);
                 }
             }
 
             Draw.z(Layer.block - 0.2f);
 
             Draw.rect(regions[blendbits][frame], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
-            Draw.rect(sideRegions[blendbits][seed], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
+            if(variants >= 1 )Draw.rect(sideRegions[blendbits][seed], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
 
             Draw.z(Layer.block - 0.1f);
             float layer = Layer.block - 0.1f, wwidth = world.unitWidth(), wheight = world.unitHeight(), scaling = 0.01f;

@@ -14,16 +14,15 @@ import mindustry.graphics.Pal;
 
 public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
     private static final Vec2 legOffset = new Vec2();
-    public float groundSpeed =  1f, navalSpeed = groundSpeed, deepSpeed = -1;
+    public float navalSpeed = speed, deepSpeed = -1;
     public boolean showLegsOnLiquid = true, showLegsOnDeepLiquid = showLegsOnLiquid, lockLegsOnLiquid = true,
             floaterOnHiddenLegs = false,
-            boostUsesNaval, customShadow = false,
-            omniMovementNaval = omniMovement, omniMovementGround = omniMovement;
+            boostUsesNaval, customShadow = false
     ;
 
     public LeggedWaterUnit(String name){
         super(name);
-        speed = groundSpeed;
+        speed = navalSpeed;
         canDrown = false;
     }
 
@@ -121,23 +120,5 @@ public class LeggedWaterUnit extends  AmmoLifeTimeUnitType  {
         applyColor(unit);
         Draw.rect(treadRegion, unit.x, unit.y, unit.rotation - 90);
         Draw.reset();
-    }
-
-    @Override
-    public void update(Unit unit){
-        updateMovement(unit);
-
-        super.update(unit);
-    }
-
-    public void updateMovement(Unit unit){
-        if (onWater(unit) || (unit.isFlying() && boostUsesNaval) ){
-            if(deepSpeed > -1 && onDeepWater(unit)) speed = deepSpeed;
-            else speed = navalSpeed;
-            omniMovement = omniMovementNaval;
-        }else {
-            speed = groundSpeed;
-            omniMovement = omniMovementGround;
-        }
     }
 }

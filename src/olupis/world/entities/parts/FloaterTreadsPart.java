@@ -36,7 +36,8 @@ public class FloaterTreadsPart extends RegionPart {
     @Override
     public void load(String name){
         super.load(name);
-        treadRegion = Core.atlas.find(name + "-treads",  name);
+        String realName = this.name == null ? name + suffix : this.name;
+        treadRegion = Core.atlas.find(name + "-treads",  realName);
 
         if(treadRegion.found()){
             treadRegions = new TextureRegion[treadRects.length][treadFrames];

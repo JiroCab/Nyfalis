@@ -15,7 +15,7 @@ import mindustry.world.meta.*;
 import java.util.*;
 
 public class NyfalisStatusEffects {
-    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate, comradery;
+    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate, comradery, overTuned;
 
     public static void loadStatusEffects(){
 
@@ -243,5 +243,13 @@ public class NyfalisStatusEffects {
                 Draw.reset();
             }
         };
+
+        overTuned = new StatusEffect("overtuned"){{
+            color = Pal.accent;
+            damageMultiplier = 1.30f;
+            reloadMultiplier = 1.30f;
+            effectChance = 0.07f;
+            effect = Fx.overclocked;
+        }};
     }
 }

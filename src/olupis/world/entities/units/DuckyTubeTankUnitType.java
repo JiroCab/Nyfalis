@@ -92,15 +92,6 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
         }}
     }
 
-
-    @Override
-    public void updateMovement(Unit unit){
-        super.updateMovement(unit);
-
-        int r = Math.max(Math.round(hitSize * 0.6f / tilesize), 1), total = (r*2+1)*(r*2+1);
-        speed *= Mathf.lerp(1f, crawlSlowdown, Mathf.clamp(onSolidTracker.getOrDefault(unit, 1f) / total / crawlSlowdownFrac));
-    }
-
     @Override
     public void updatePrams (Unit unit){
         NyfPartParms.nyfparams.set(

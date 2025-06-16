@@ -13,6 +13,8 @@ public class GenericCrafterWithPower extends GenericCrafter{
     public float powerProductionBoosted = 1;
     public float minBoosterAmount = 0.2f;
     public Stat generationType = Stat.basePowerGeneration;
+    //time before power drops to 0, slowly dropping in between
+    public float powerDownTime =  0.001f;
 
 
     public GenericCrafterWithPower(String name) {
@@ -31,7 +33,7 @@ public class GenericCrafterWithPower extends GenericCrafter{
             Core.bundle.format("bar.poweroutput",
             Strings.fixed(entity.getPowerProduction() * 60 * entity.timeScale(), 1)),
             () -> Pal.powerBar,
-            () -> entity.efficiency));
+            entity::bufferedEfficiency));
         }
     }
 
@@ -42,13 +44,32 @@ public class GenericCrafterWithPower extends GenericCrafter{
     }
 
     public class  GenericCrafterWithPowerBuild extends  GenericCrafterBuild{
+       public float peekEff;
+
+        @Override
+        public void updateTile(){
+            super.updateTile();
+
+            if(efficiency < peekEff){
+                peekEff -= powerDownTime;
+                if(peekEff <= 0) peekEff = 0;
+            }
+        }
+
         @Override
         public float getPowerProduction(){
-            return enabled ? powerProduction() * efficiency : 0f;
+            return enabled ? powerProduction() * bufferedEfficiency() : 0f;
         }
 
         public float powerProduction(){
             return liquids.currentAmount()  >= minBoosterAmount ? powerProductionBoosted : powerProduction;
+        }
+
+        public float bufferedEfficiency(){
+            if(efficiency < peekEff) return peekEff;
+
+            peekEff = efficiency;
+            return efficiency;
         }
     }
 }

@@ -28,6 +28,7 @@ public class Ladar extends Radar {
     public class LadarBuild extends RadarBuild{
         public @Nullable Vec2 tar = new Vec2();
 
+        //TODO: Directly making changes to fog is imposible, spawn a unit and control it from this block to reveal the target
         @Override
         public void updateTile(){
             if(spotlight){

@@ -197,6 +197,7 @@ public class NyfalisUnits {
                     status = StatusEffects.none;
                     hitEffect= shootEffect = Fx.hitLancer;
                     lightningColor = hitColor = Pal.surge;
+                    lightningCone = 540;
                     failLightnighBullet = true;
                     lightningType = new LightningBulletType(){{
                         damage = 7;
@@ -207,6 +208,7 @@ public class NyfalisUnits {
                         lightningLengthRand = 0;
                         pierce = true;
                         shootEffect = Fx.none;
+                        lightningCone = 540;
                         lightningColor = hitColor = Pal.surge;
                         hitEffect = Fx.hitLancer;
 
@@ -1472,7 +1474,7 @@ public class NyfalisUnits {
 
         //Carrier a long range PDL w/ warm up & laser pointer
         guardian = new DuckyTubeTankUnitType("guardian"){{
-            groundSpeed = 0.6f;
+            speed = 0.6f;
             navalSpeed = 1f;
 
             armor = 6f;
@@ -1481,13 +1483,14 @@ public class NyfalisUnits {
             itemCapacity = 0;
             legCount = 0;
             rotateSpeed = 3.5f;
-            researchCostMultiplier = 0f;
+            crushDamage = 1f;
             legMoveSpace = 0;
+            researchCostMultiplier = 0f;
 
             immunities.add(StatusEffects.wet);
-            rotateMoveFirst = canDeploy = naval = hovering = true;
-            canDrown = ammoDepletesOverTime = killOnAmmoDepletion = omniMovementGround = omniMovementNaval = legPhysicsLayer = allowLegStep = false;
-            constructor = LegsUnit::create; //Legged so it doesnt slow down in deep water
+            rotateMoveFirst = canDeploy = naval = hovering =  true;
+            canDrown = ammoDepletesOverTime = omniMovement = killOnAmmoDepletion = legPhysicsLayer = allowLegStep = false;
+            constructor = TonkNaval::create; //Legged so it doesnt slow down in deep water
             pathCost = NyfalisPathfind.costPreferTrackedNaval;
 
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-guardian-point-defense"){{
@@ -1539,8 +1542,9 @@ public class NyfalisUnits {
         domination = new DuckyTubeTankUnitType("domination"){{
             constructor = LeggedPayloadUnitClass::create; //Legged so it doesnt slow down in deep water
             pathCost = NyfalisPathfind.costPreferTrackedNaval;
-            groundSpeed = 0.6f;
+            speed = 0.6f;
             navalSpeed = 1f;
+            crushDamage = 2f;
 
             armor = 6f;
             hitSize = 20f;
@@ -1553,7 +1557,7 @@ public class NyfalisUnits {
 
             immunities.add(StatusEffects.wet);
             rotateMoveFirst = canDeploy = naval = hovering = true;
-            canDrown = ammoDepletesOverTime = killOnAmmoDepletion = omniMovementGround = omniMovementNaval = legPhysicsLayer = allowLegStep = pickupBlocks = false;
+            canDrown = ammoDepletesOverTime = killOnAmmoDepletion = omniMovement= legPhysicsLayer = allowLegStep = pickupBlocks = false;
 
             payloadUnitsUpdate = true;
 
@@ -1620,8 +1624,23 @@ public class NyfalisUnits {
                     y = -20f;
                     width = 6f;
                     whenShooting = false;
-                }}
+                }},
+                new StatusFieldAbility(NyfalisStatusEffects.overTuned, 60f * 15f, 60f * 10f, 70f)
                 //new UnitRallySpawnAblity(district, 60f * 15f, 0, 6.5f)
+            );
+            parts.addAll(
+                new FloaterTreadsPart(){{
+                    name = "olupis-guardian-treads";
+                    mirror = under =true;
+                    drawRegion  = false;
+                    x = 3.75f;
+                    y = 0;
+                    treadPullOffset = 4;
+                    layerOffset = -0.001f;
+                    treadRects = new Rect[]{new Rect(-14f, -65, 28, 130)};
+                    progress = NyfPartParms.NyfPartProgress.floatingP.inv();
+                    alphaProgress =  NyfPartParms.NyfPartProgress.floatingP.inv();
+                }}
             );
         }};
 
@@ -2892,7 +2911,7 @@ public class NyfalisUnits {
         };
         // 1.7 leftover just convert it when ever
         excess = new LeggedWaterUnit("excess"){{
-            groundSpeed = 0.4f;
+            speed = 0.4f;
             navalSpeed = 2;
             constructor = PayloadUnit::create;
             pathCost = NyfalisPathfind.costPreferNaval; //Still prefer liquid movement

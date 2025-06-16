@@ -29,20 +29,6 @@ public class PowerConveyor extends VaraintConveryor {
             super.updateTile();
             noSleep();
         }
-        @Override
-        public void onProximityUpdate(){
-            super.onProximityUpdate();
-
-            int[] bits = buildBlending(tile, rotation, null, true);
-            blendbits = bits[0];
-            blendsclx = bits[1];
-            blendscly = bits[2];
-            blending = bits[4];
-
-            next = front();
-            nextc = next instanceof ConveyorBuild && next.team == team ? (ConveyorBuild)next : null;
-            aligned = nextc != null && rotation == next.rotation;
-        }
 
         @Override
         public BlockStatus status(){
