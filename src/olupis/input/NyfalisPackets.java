@@ -5,7 +5,7 @@ import mindustry.net.Net;
 import olupis.content.NyfalisTurrets;
 import olupis.world.entities.packets.*;
 
-import static mindustry.Vars.netServer;
+import static mindustry.Vars.*;
 
 public class NyfalisPackets {
     public static void LoadPackets(){
@@ -17,6 +17,7 @@ public class NyfalisPackets {
         Net.registerPacket(ConstructorCheatConfigPacket::new);
 
         /*Too lazy to make a new class lmao*/
+        if(headless) return;
         netServer.addPacketHandler("olupis-getsettings", (p, s) ->{
             NyfalisSyncOtherSettingsPacket packet = new NyfalisSyncOtherSettingsPacket();
             packet.cascadeBread = NyfalisTurrets.cascadeAlt;

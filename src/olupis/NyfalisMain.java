@@ -69,7 +69,7 @@ public class NyfalisMain extends Mod{
     }
 
     public NyfalisMain(){
-        Core.settings.put("extremity-unitdex-olupis", "olupis-germanica=olupis-supella:olupis-acerodon=olupis-pteropus:olupis-striker=olupis-aero:olupis-serpent=olupis-venom:olupis-blitz=olupis-bay:olupis-warden=olupis-sentry:olupis-pedicia=olupis-gnat:olupis-phorid=olupis-pedicia:olupis-diptera=olupis-phorid");
+        loadModSupport();
 
         EnvUpdater.load();
 
@@ -171,6 +171,49 @@ public class NyfalisMain extends Mod{
                 s.apply(NyfalisStatusEffects.concentrated);
             }
         });
+    }
+
+    public void loadModSupport(){
+        //https://github.com/WMF-Industries/Extremity/
+        Core.settings.put("extremity-unitdex-olupis", "olupis-germanica=olupis-supella:olupis-acerodon=olupis-pteropus:olupis-striker=olupis-aero:olupis-serpent=olupis-venom:olupis-blitz=olupis-bay:olupis-warden=olupis-sentry:olupis-pedicia=olupis-gnat:olupis-phorid=olupis-pedicia:olupis-diptera=olupis-phorid");
+
+        //https://github.com/JiroCab/PlanetVPlanetComplablityLayer
+        Core.settings.put( "pcl-ores-olupis",
+            "olupis-ore-iron," + //any
+            "olupis-ore-iron," + //metal floor
+            "olupis-ore-iron," +
+            "olupis-ore-oxidized-lead," +
+            "olupis-ore-oxidized-lead," +
+            "olupis-ore-oxidized-lead," +
+            "olupis-ore-oxidized-copper," +
+            "olupis-ore-oxidized-copper," + // dmg mtl flr
+            "olupis-ore-quartz," + // dark panel
+            "olupis-ore-quartz," +
+            "olupis-ore-alco," +
+            "olupis-ore-alco," +
+            "olupis-ore-cobalt," +
+            "olupis-ore-cobalt," +
+            "," + // any wall
+            "," + // darkmetal
+            "," + // dacite
+            "," + // dirt
+            "," + // snow
+            "," + // salt
+            "," + // regolith
+            "," + // stone
+            ","  // ferric stne
+        );
+
+        Core.settings.put("pcl-spread-olupis", "olupis-moss-stone");
+
+        Core.settings.put( "pcl-blacklist-olupis",
+        "grassy-vent," +
+        "mossy-vent," +
+        "harden-muddy-vent," +
+        "basalt-vent," +
+        "red-sand-vent," +
+        "dirt-vent"
+        );
     }
 
 

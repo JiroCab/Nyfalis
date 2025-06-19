@@ -28,6 +28,7 @@ public class NyfalisUnitTimedOutPacket extends Packet {
     }
 
     public void handleClient() {
+        if(this.unit == null)return;
         if(this.unit.type instanceof AmmoLifeTimeUnitType u) u.timedOut(this.unit);
         else AmmoLifeTimeUnitType.timedOut(unit);
     }

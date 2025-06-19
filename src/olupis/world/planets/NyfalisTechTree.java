@@ -105,7 +105,9 @@ public class NyfalisTechTree {
                         node(falcon, Seq.with(
                         new  Objectives.Research(adaptiveFabricator)
                         ), () -> {
+                            node(vortex, () ->{
 
+                            });
                         });
                     });
                 });
@@ -145,7 +147,11 @@ public class NyfalisTechTree {
                         node(luridiblatta, Seq.with(
                         new  Objectives.Research(adaptiveFabricator)
                         ), () -> {
+                            node(vaga, () ->{
+                                node(parcoblatta, () ->{
 
+                                });
+                            });
                         });
                     });
                 });
@@ -164,6 +170,9 @@ public class NyfalisTechTree {
                         node(guardian, Seq.with(
                         new  Objectives.Research(adaptiveFabricator)
                         ), () -> {
+                            node(domination, () ->{
+
+                            });
                             node(district, () -> {
 
                             });
@@ -179,7 +188,9 @@ public class NyfalisTechTree {
                         node(crusader, Seq.with(
                         new  Objectives.Research(adaptiveFabricator)
                         ), () -> {
+                            node(torrent, () ->{
 
+                            });
                         });
                     });
                 });

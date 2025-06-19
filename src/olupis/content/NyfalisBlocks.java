@@ -138,7 +138,7 @@ public class NyfalisBlocks {
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
     public static ObjectSet<Block>
             nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
-            rainRegrowables = new ObjectSet<>(), spreadingTiles = new ObjectSet<>(),
+            rainRegrowables = new ObjectSet<>(), spreadingTiles = new ObjectSet<>(), vents = new ObjectSet<>(),
             factoryPlans = new ObjectSet<>()
     ;
 
@@ -2655,6 +2655,7 @@ public class NyfalisBlocks {
             if(b.name.startsWith("olupis-")){
                 if(b instanceof  FactoryPlan) factoryPlans.add(b);
                 if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
+                if(b instanceof SteamVent) vents.add(b);
                 allNyfalisBlocks.add(b);
                 b.envEnabled = NyfalisAttributeWeather.nyfalian;
             }

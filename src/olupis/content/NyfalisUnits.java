@@ -1518,6 +1518,7 @@ public class NyfalisUnits {
                 new CarrierResupplyAbility(3),
                 new UnitRallySpawnAblity(district, 60f * 30f, 5.5f, 0,0, 15f, true){{
                     displayBars = false;
+                    display = false;
                 }},
                 new UnitRallySpawnAblity(district, 60f * 30f, -5.5f, 0, 0, 15f, true)
             );
