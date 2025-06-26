@@ -2,6 +2,7 @@ package olupis.content;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -36,7 +37,7 @@ import olupis.world.entities.weapons.*;
 
 import java.util.*;
 
-import static mindustry.Vars.tilePayload;
+import static mindustry.Vars.*;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisColors.*;
 import static olupis.content.NyfalisItemsLiquid.*;
@@ -81,7 +82,7 @@ public class NyfalisUnits {
 
         /*Misc/pending purpose units*/
         firefly, excess,
-        lootbug
+        lootbug, ladarHelper, searchHelper
     ;
 
     public static BatHelperUnitType pteropusAir, acerodonAir, nyctalusAir, mirimiriAir , vampyrumAir;
@@ -198,7 +199,7 @@ public class NyfalisUnits {
                     hitEffect= shootEffect = Fx.hitLancer;
                     lightningColor = hitColor = Pal.surge;
                     lightningCone = 540;
-                    failLightnighBullet = true;
+                    failLightningBullet = true;
                     lightningType = new LightningBulletType(){{
                         damage = 7;
                         shootY = 0f;
@@ -334,7 +335,7 @@ public class NyfalisUnits {
 
         }};
 
-        // vortex -> gun ship inspired by Thor gunships of cnc:mental omega
+        // vortex -> gun/Siege ship inspired by Thor gunships of cnc:mental omega
         vortex = new NyfalisUnitType("vortex"){{
             armor = 5f;
             hitSize = 20f;
@@ -378,7 +379,7 @@ public class NyfalisUnits {
                     status = StatusEffects.none;
                     hitEffect= shootEffect = Fx.hitLancer;
                     lightningColor = hitColor = Pal.surge;
-                    failLightnighBullet = true;
+                    failLightningBullet = true;
                     lightningType = new LightningBulletType(){{
                         damage = 7;
                         shootY = 0f;
@@ -657,7 +658,7 @@ public class NyfalisUnits {
             );
         }};
 
-        //nyctalus -> siege bat, land = cnczh nuke cannon style weapon | air = 2 air-to-air missiles from the back
+        //nyctalus -> artillery bat, land = cnczh nuke cannon style weapon
         nyctalus = new NyfalisUnitType("nyctalus"){{
             hitSize = 17f;
             armor = 5;
@@ -676,13 +677,14 @@ public class NyfalisUnits {
             deployEffect = NyfalisStatusEffects.deployed;
             defaultCommand = NyfalisUnitCommands.nyfalisMoveCommand;
             lowAltitude  = canDeploy = deployHasEffect = customMoveCommand = deployLands = alwaysBoosts = canBoost = canCharge = true;
+            targetAir = false;
             abilities.add(new SationaryBoostAblity());
             weapons.addAll(
                 new NyfalisWeapon("", false, true){{
                     x = y = 0;
                     shootY = 5f;
                     recoil = 0.5f;
-                    reload = 80;
+                    reload = 120;
                     recoils = 1;
                     top = alternate = mirror = false;
                     rotate = alwaysRotate = true;
@@ -690,14 +692,14 @@ public class NyfalisUnits {
                     groundedEvaluation = 0;
                     boostedEvaluation = 1;
 
-                    weaponIconString = "olupis-serpent-tail";
+                    weaponIconString = "olupis-aegis-core";
 
                     shootSound = Sounds.artillery;
                     parts.addAll(
-                    new RegionPart("olupis-serpent-tail"){{
+                    new RegionPart("olupis-aegis-core"){{
                         mirror = false;
                         rotation = 180;
-                        y = 1.95f;
+                        y = -1.95f;
                         moveY = -0.5f;
                         xScl = yScl = 1.5f;
                         progress = NyfPartParms.NyfPartProgress.elevationP.inv();
@@ -715,18 +717,18 @@ public class NyfalisUnits {
                     }}
                     );
 
-                    bullet = new BasicBulletType(2.2f, 37, "large-bomb"){{
+                    bullet = new BasicBulletType(2.2f, 50, "large-bomb"){{
                         spin = 10f;
                         lifetime = 100f;
                         shrinkX = 20f /60;
                         shrinkY = 30f /60;
                         width = height = 17f;
-                        splashDamage = 50f;
-                        splashDamageRadius = 30f;
-                        frontColor = NyfalisColors.ironBullet;
-                        backColor = NyfalisColors.ironBulletBack;
-                        hitEffect = despawnEffect = NyfalisFxs.highYieldExplosive;
-                         shrinkInterp = Interp.slope;
+                        splashDamage = 80f;
+                        splashDamageRadius = 60f;
+                        backColor = Color.purple.cpy().add(Color.lightGray);
+                        frontColor = Color.blue.cpy().add(Color.gray);
+                        hitEffect = despawnEffect = new MultiEffect(NyfalisFxs.highYieldExplosive, NyfalisFxs.highYieldSmoke);
+                        shrinkInterp = Interp.slope;
                         collidesAir = false;
                     }};
                 }}
@@ -2885,6 +2887,32 @@ public class NyfalisUnits {
         //endregion
         //region Misc/Extra/Internal
 
+
+        //Since blocks' frog of war is always on them, this is a work around as FogControl has no ways to add custom stuff
+        ladarHelper = new NyfalisUnitType("ladarHeler"){{
+            isEnemy = logicControllable = playerControllable = bounded = hittable = targetable = physics = useUnitCap = hoverable = drawBody = drawCell = drawMinimap = false;
+            hidden = flying = true;
+            fogRadius = 10;
+            engineSize = -1f;
+            constructor = UnitEntity::create;
+            controller =  u -> new AIController();
+        }
+
+            @Override
+            public void draw(Unit unit){
+                    if(Core.settings.getBool("nyfalis-debug")){
+                        Tmp.v1.set(player.mouseX(), player.mouseY());
+                        if(unit.within(Tmp.v1, 50f)){
+                            Draw.z(Layer.flyingUnit);
+                            Draw.color(unit.team.color);
+                            Draw.rect(Icon.eye.getRegion(), unit.x, unit.y, unit.rotation - 90);
+                            Draw.reset();
+                        }
+                    }
+            }
+        };
+
+
         //Why do i exist? no reason, hope u don't cause any bugs even if you are one
         firefly = new NyfalisUnitType("firefly"){{
             constructor = UnitTypes.mono.constructor;
@@ -2944,7 +2972,7 @@ public class NyfalisUnits {
     }
 
     /*Common custom ammo types for the lifetime units*/
-    public static void LoadAmmoType(){
+    public static void LoadAmmoType()   {
         //Make them last long
         //TODO: refactor this
 

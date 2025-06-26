@@ -12,7 +12,7 @@ public class ArcLightningBulletType extends BulletType{
     public boolean hitAir = true,
                             hitGround = true,
                             hitBuilding = true,
-                            failLightnighBullet =  false
+                            failLightningBullet =  false
     ;
 
     public float minTargetDistance = -1f;
@@ -64,7 +64,7 @@ public class ArcLightningBulletType extends BulletType{
 
     public void handleDamage(Seq<Healthc> all, Bullet b){
         if(all.size < 1) {
-            if(failLightnighBullet){
+            if(failLightningBullet){
                 lightningType.create(b.owner, b.team, b.x, b.y, 0);
             }
             return;

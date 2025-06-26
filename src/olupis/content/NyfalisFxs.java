@@ -14,8 +14,8 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 
-import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Draw.rect;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.randLenVectors;
 import static olupis.content.NyfalisItemsLiquid.rustyIron;
@@ -24,64 +24,64 @@ public class NyfalisFxs extends Fx {
     BounceOut bounceOutTwo = new BounceOut(2);
 
     public static final Effect
-    CascadeSmoke = new Effect(275f, e -> {
-        float z = Draw.z();
-        Draw.z(Layer.blockOver);
-        Draw.color(Color.blue.cpy().add(Color.gray),0.45f);
-        Angles.randLenVectors((long)e.id, 80, 90.0F, (x, y) -> Fill.circle(e.x + x, e.y + y, 12.0F * Mathf.clamp(e.fin() / 0.1F) * Mathf.clamp(e.fout() / 0.1F)));
-        float size = 1.0F + e.fout() * 5.0F;
-        Draw.color(Color.purple.cpy().add(Color.lightGray), Color.blue.cpy().add(Color.gray), e.fin());
-        Fill.circle(e.x, e.y, size / 2.0F);
-        Draw.z(z);
-    }),
-
-    CascadeSun = new Effect(250f, e -> {
-        float z = Draw.z();
-        Draw.z(Layer.blockOver + 4);
-
-        Draw.color(Color.blue.cpy().add(Color.gray));
-        Lines.stroke(e.fout() * 3.0F);
-        float circleRad1 = 6.0F + e.finpow() * 110.0F;
-        Lines.circle(e.x, e.y, circleRad1);
-        rand.setSeed((long)e.id);
-
-        for(int i = 0; i < 21; ++i) {
-            float angle = rand.random(360.0F);
-            float lenRand = rand.random(0.5F, 1.0F);
-            Lines.lineAngle(e.x, e.y, angle, e.foutpow() * 50.0F * rand.random(1.0F, 0.6F) + 2.0F, e.finpow() * 100.0F * lenRand + 6.0F);
-        }
-
-        Draw.color(Color.blue.cpy().add(Color.purple));
-        Lines.stroke(e.fout() * 2.0F);
-        float circleRad = 6.0F + e.finpow() * 80.0F;
-        Lines.circle(e.x, e.y, circleRad);
-        rand.setSeed((long)e.id);
-
-        for(int i = 0; i < 8; ++i) {
-            float angle = rand.random(360.0F);
-            float lenRand = rand.random(0.5F, 1.0F);
-            Tmp.v1.trns(angle, circleRad);
-
-            for(int s : Mathf.signs) {
-                Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.foutpow() * 15.0F, e.fout() * 20.0F * lenRand + 6.0F, angle + 90.0F + (float)s * 90.0F);
-            }
-        }
-        Draw.z(z);
-    }),
-
-    OilyFlame = new Effect(10f, e -> {
-            color(Color.valueOf("912a13"), Pal.darkFlame, e.fin());
-
-            randLenVectors(e.id, 3, 5f + e.fin() * 5f, (x, y) -> {
-                Fill.circle(e.x + x, e.y + y, 0.6f + e.fslope() * 3f);
-            });
-
-            color();
-
-            Drawf.light(e.x, e.y, 40f * e.fslope(), Color.valueOf("806f2c"), 2f);
+        cascadeSmoke = new Effect(275f, e -> {
+            float z = Draw.z();
+            Draw.z(Layer.blockOver);
+            Draw.color(Color.blue.cpy().add(Color.gray),0.45f);
+            Angles.randLenVectors((long)e.id, 80, 90.0F, (x, y) -> Fill.circle(e.x + x, e.y + y, 12.0F * Mathf.clamp(e.fin() / 0.1F) * Mathf.clamp(e.fout() / 0.1F)));
+            float size = 1.0F + e.fout() * 5.0F;
+            Draw.color(Color.purple.cpy().add(Color.lightGray), Color.blue.cpy().add(Color.gray), e.fin());
+            Fill.circle(e.x, e.y, size / 2.0F);
+            Draw.z(z);
         }),
 
-        LubeFlame = new Effect(10f, e -> {
+        cascadeSun = new Effect(250f, e -> {
+            float z = Draw.z();
+            Draw.z(Layer.blockOver + 4);
+
+            Draw.color(Color.blue.cpy().add(Color.gray));
+            Lines.stroke(e.fout() * 3.0F);
+            float circleRad1 = 6.0F + e.finpow() * 110.0F;
+            Lines.circle(e.x, e.y, circleRad1);
+            rand.setSeed((long)e.id);
+
+            for(int i = 0; i < 21; ++i) {
+                float angle = rand.random(360.0F);
+                float lenRand = rand.random(0.5F, 1.0F);
+                Lines.lineAngle(e.x, e.y, angle, e.foutpow() * 50.0F * rand.random(1.0F, 0.6F) + 2.0F, e.finpow() * 100.0F * lenRand + 6.0F);
+            }
+
+            Draw.color(Color.blue.cpy().add(Color.purple));
+            Lines.stroke(e.fout() * 2.0F);
+            float circleRad = 6.0F + e.finpow() * 80.0F;
+            Lines.circle(e.x, e.y, circleRad);
+            rand.setSeed((long)e.id);
+
+            for(int i = 0; i < 8; ++i) {
+                float angle = rand.random(360.0F);
+                float lenRand = rand.random(0.5F, 1.0F);
+                Tmp.v1.trns(angle, circleRad);
+
+                for(int s : Mathf.signs) {
+                    Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.foutpow() * 15.0F, e.fout() * 20.0F * lenRand + 6.0F, angle + 90.0F + (float)s * 90.0F);
+                }
+            }
+            Draw.z(z);
+        }),
+
+        oilyFlame = new Effect(10f, e -> {
+                color(Color.valueOf("912a13"), Pal.darkFlame, e.fin());
+
+                randLenVectors(e.id, 3, 5f + e.fin() * 5f, (x, y) -> {
+                    Fill.circle(e.x + x, e.y + y, 0.6f + e.fslope() * 3f);
+                });
+
+                color();
+
+                Drawf.light(e.x, e.y, 40f * e.fslope(), Color.valueOf("806f2c"), 2f);
+            }),
+
+        lubeFlame = new Effect(10f, e -> {
             color(Color.valueOf("806f2c"), Pal.lightFlame, e.fin());
 
             randLenVectors(e.id, 8, 3f + e.fin() * 4f, (x, y) -> {
@@ -92,8 +92,6 @@ public class NyfalisFxs extends Fx {
 
             Drawf.light(e.x, e.y, 40f * e.fslope(), Color.valueOf("ffb547"), 2f);
         }),
-
-
 
         hollowPointHit =  new Effect(30f, e -> {
             color(Pal.lightOrange, Color.lightGray, Pal.lightishGray, e.fin());
@@ -159,29 +157,48 @@ public class NyfalisFxs extends Fx {
             Drawf.light(e.x, e.y, 20f, Pal.lightOrange, 0.6f * e.fout());
         }).layer(Layer.bullet),
 
-        //TODO Wip scale is off
-        highYieldExplosive = new Effect(55, 120f, e -> {
+        highYieldExplosive = new Effect(40, 120f, e -> {
+            float z = Draw.z();
+            Draw.z(Layer.blockOver + 4);
+            float size = 0.4f;
 
-            color(Pal.darkestGray, Pal.lightOrange,  e.fout());
-            e.scaled(6, i -> {
-                stroke(3f * i.fout());
-                Lines.circle(e.x, e.y, 3f + i.fin() * 15f);
-            });
+            Draw.color(Pal.lightOrange.cpy().add(Color.gray));
+            Lines.stroke(e.fout() * 3.0F);
+            rand.setSeed((long)e.id);
 
-            color(Pal.lightOrange, Color.white, e.fout());
-            randLenVectors(e.id, 4, 4f + 6f * e.finpow(), (x, y) -> {
-                Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.5f);
-            });
-            alpha(1);
+            for(int i = 0; i < 13; ++i) {
+                float angle = rand.random(360.0F);
+                float lenRand = rand.random(0.5F, 1.0F);
+                Lines.lineAngle(e.x, e.y, angle, e.foutpow() * 50.0F * rand.random(1.0F, 0.6F) + 2.0F, e.finpow() * 45.0F * lenRand + 6.0F);
+            }
 
-            color(Pal.lightOrange);
-            stroke(e.fout());
+            Draw.color(Pal.orangeSpark.cpy().add(Color.purple));
+            Lines.stroke(e.fout() * 2.0F);
+            float circleRad = size + e.finpow() * 40.0F;
+            Lines.circle(e.x, e.y, circleRad);
+            rand.setSeed((long)e.id);
 
-            randLenVectors(e.id + 1, 4, 3f + 30f * e.finpow(), (x, y) -> {
-                lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
-            });
+            for(int i = 0; i < 5; ++i) {
+                float angle = rand.random(360.0F);
+                float lenRand = rand.random(0.5F, 1.0F);
+                Tmp.v1.trns(angle, circleRad);
 
+                for(int s : Mathf.signs) {
+                    Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, e.foutpow() * 15.0F, e.fout() * 20.0F * lenRand + 6.0F, angle + 90.0F + (float)s * 90.0F);
+                }
+            }
+            Draw.z(z);
             Drawf.light(e.x, e.y, 45f, Pal.lightOrange, 0.8f * e.fout());
+        }),
+
+        highYieldSmoke = new Effect(80, 120f, e -> {
+            float z = Draw.z();
+            Draw.z(Layer.blockOver);
+
+            Draw.color(Color.purple.cpy().add(Pal.lightOrange).a(0.7f), Pal.orangeSpark.cpy().add(Color.gray).a(0.05f), e.fin());
+            Angles.randLenVectors((long)e.id, 20, 35F, (x, y) -> Fill.circle(e.x + x, e.y + y, 6.0F * Mathf.clamp(e.fin() / 0.1F) * Mathf.clamp(e.fout() / 0.1F)));
+
+            Draw.z(z);
         }),
 
         unitBreakdown = new Effect(100f, e -> {

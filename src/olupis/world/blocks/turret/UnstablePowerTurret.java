@@ -27,7 +27,7 @@ import static mindustry.Vars.world;
 
 public class UnstablePowerTurret extends PowerTurret {
 
-    public Effect explodeEffect = new MultiEffect(NyfalisFxs.CascadeSun, NyfalisFxs.CascadeSmoke);
+    public Effect explodeEffect = new MultiEffect(NyfalisFxs.cascadeSun, NyfalisFxs.cascadeSmoke);
     public Sound explodeSound = Sounds.boom;
     public Sound warningSound = NyfalisSounds.cascadeDangerWarning;
 

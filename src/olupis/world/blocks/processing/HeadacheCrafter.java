@@ -49,6 +49,44 @@ public class HeadacheCrafter  extends GenericCrafter{
     }
 
     @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.output, table -> {
+            table.row();
+
+            table.table(nu -> plans.each(pl -> {
+                nu.row();
+                nu.table(Styles.grayPanel, b -> {
+
+                    //TODO THIS NO WORK LOL
+                    if(!pl.isVisible()){
+                        b.table(e -> {
+                            if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
+                            if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(StatValues.displayLiquid(stack.liquid, 0, false)).pad(5).row();
+                        }).left();
+                        b.image(Icon.cancel.getRegion()).color(Color.scarlet).center();
+                        b.table(e -> {
+                            if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
+                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(StatValues.displayLiquid(stack.liquid, 0, false)).pad(5).row();
+                        }).right();
+                    }else {
+                        b.table(e -> {
+                            if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).row();
+                            if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(StatValues.displayLiquid(stack.liquid, stack.amount, true)).pad(5).row();
+
+                        }).left();
+                        b.image(Icon.right.getRegion()).center();
+                        b.table(e -> {
+                            if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).row();
+                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(StatValues.displayLiquid(stack.liquid, stack.amount, true)).pad(5).row();
+                        }).right();
+                    }
+                }).growX().pad(5).row();
+            })).growX();
+        });
+    }
+
+    @Override
     public void init(){
         consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).input : ItemStack.empty));
         consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).inputLiquid : LiquidStack.empty));

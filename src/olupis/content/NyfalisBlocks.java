@@ -1034,6 +1034,7 @@ public class NyfalisBlocks {
             size = 3;
             craftTime = 185f;
             maxBoost = 2.5f;
+            liquidCapacity = 25;
             buildCostMultiplier = 0.6f;
 
             attribute = bio;
@@ -1252,7 +1253,8 @@ public class NyfalisBlocks {
 
             size = 2;
             health = 600;
-            craftTime = 10f;
+            craftTime = 20f;
+            liquidCapacity = 25;
 
             consumePower(1f);
             consumeItem(rustyIron, 2);
@@ -1266,6 +1268,7 @@ public class NyfalisBlocks {
             hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
 
             size = 3;
+            liquidCapacity = 25;
 
             consumeItem(silicon);
             lightLiquid = lubricant;
@@ -1330,6 +1333,7 @@ public class NyfalisBlocks {
             craftTime = 250;
             envEnabled = Env.any;
             buildCostMultiplier = 0.4f;
+            liquidCapacity = 40;
 
             lightLiquid = Liquids.cryofluid;
             consumePower(200f / 60f);
@@ -1347,6 +1351,7 @@ public class NyfalisBlocks {
             size = 3;
             craftTime = 50f;
             itemCapacity = 20;
+            liquidCapacity = 20;
             buildCostMultiplier = 0.5f;
             craftEffect = Fx.pulverizeMedium;
 
@@ -1423,6 +1428,7 @@ public class NyfalisBlocks {
             size = 2;
             health = 320;
             craftTime = 20f;
+            liquidCapacity = 30;
 
             craftEffect = Fx.none;
             drawer = new DrawMulti(
@@ -2328,6 +2334,7 @@ public class NyfalisBlocks {
             glowMag = glowScl = 0f;
             discoveryTime = 60f * 40f;
             consumePower(240f/60f);
+            type = ladarHelper;
             glowColor = Color.valueOf("00000000");
             requirements(Category.effect, with(Items.lead, 60, Items.graphite, 50, iron, 10));
         }};
@@ -2342,6 +2349,7 @@ public class NyfalisBlocks {
             discoveryTime = 60f * 40f;
             spotted = NyfalisStatusEffects.marked;
             consumePower(400/60f);
+            type = ladarHelper;
             glowColor = Color.valueOf("00000000");
             requirements(Category.effect, with(Items.lead, 60, cobalt, 50, iron, 10));
         }};
