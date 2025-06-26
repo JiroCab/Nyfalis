@@ -15,6 +15,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.*;
+import mindustry.world.meta.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
@@ -32,6 +33,21 @@ public class Ladar extends Radar {
     public void setBars() {
         super.setBars();
         addBar("bar.progress", (RadarBuild entity) -> new Bar("bar.loadprogress", Pal.ammo, () -> entity.progress));
+    }
+
+
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.add(Stat.shootRange, spotRange / tilesize, StatUnit.blocks);
+        stats.add(Stat.range, (float)fogRadius / tilesize, StatUnit.blocks);
+    }
+
+
+    @Override
+    public void drawPlace(int x, int y, int rotation, boolean valid){
+        super.drawPlace(x, y, rotation, valid);
+        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, spotRange * tilesize, Color.lightGray);
     }
 
     public class LadarBuild extends RadarBuild{
@@ -90,7 +106,8 @@ public class Ladar extends Radar {
 
         @Override
         public void drawSelect(){
-            Drawf.dashCircle(x, y, spotRange * tilesize, Color.lightGray);
+            if(efficiency > minEffReveal)Drawf.dashCircle(x, y, spotRange * tilesize, Color.lightGray);
+            if(tar != null && tar.x != -1 && tar.y != -1) Drawf.square(tar.x, tar.y, 3, 45,team.color);
             super.drawSelect();
         }
 

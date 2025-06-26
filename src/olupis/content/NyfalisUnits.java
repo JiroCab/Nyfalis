@@ -730,6 +730,7 @@ public class NyfalisUnits {
                         hitEffect = despawnEffect = new MultiEffect(NyfalisFxs.highYieldExplosive, NyfalisFxs.highYieldSmoke);
                         shrinkInterp = Interp.slope;
                         collidesAir = false;
+                        fragBullet = null;
                     }};
                 }}
             );
@@ -2175,7 +2176,7 @@ public class NyfalisUnits {
             mineTier = 1;
             hitSize = 8.5f;
             itemOffsetY = 5f;
-            fogRadius = 6;
+            fogRadius =06;
             mineSpeed = 3.5f;
             itemCapacity = 20;
             ammoCapacity = 150;
@@ -2194,7 +2195,7 @@ public class NyfalisUnits {
             armor = 2;
             hitSize = 7f;
             speed = 3.25f;
-            fogRadius = 6f;
+            fogRadius = 0f;
             ammoCapacity = 320;
 
 
@@ -2229,7 +2230,7 @@ public class NyfalisUnits {
             health = 150;
             legCount = 6;
             mineTier = 3;
-            fogRadius = 8f;
+            fogRadius = 0f;
             legLength = 10f;
             mineSpeed = 4f;
             stepShake = 0.3f;
@@ -2252,7 +2253,7 @@ public class NyfalisUnits {
         revenant = new AmmoLifeTimeUnitType("revenant"){{
             armor = 2;
             speed = 3.25f;
-            fogRadius = 6f;
+            fogRadius = 0f;
             buildSpeed = 0.8f;
             ammoCapacity = 2500;
 
@@ -2298,6 +2299,7 @@ public class NyfalisUnits {
 
         //endregion
         //region Limited - Sumoned
+        //todo despawn is wack
         embryo = new AmmoLifeTimeUnitType("embryo"){{
             /*(trans) Egg if chan-version is made >;3c */
             speed = 3f;
@@ -2310,7 +2312,7 @@ public class NyfalisUnits {
             flying = alwaysShootWhenMoving = drawAmmo = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
-            controller = u -> new AgressiveFlyingAi(true);
+            controller = u -> new AgressiveFlyingAi(true, true);
             weapons.add(new Weapon(){{
                 top = false;
                 reload = 25f;

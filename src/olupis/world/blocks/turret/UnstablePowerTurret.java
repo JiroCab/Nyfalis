@@ -69,6 +69,7 @@ public class UnstablePowerTurret extends PowerTurret {
         this.stats.add(Stat.input, StatValues.boosters(this.reload, this.coolant.amount, this.coolantMultiplier, false, this::consumesLiquid));
     }
 
+    @Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
         Drawf.dashCircle(x, y, explosionRadius, Color.red);

@@ -1,6 +1,7 @@
 package olupis.world.ai;
 
 import arc.math.geom.*;
+import arc.util.*;
 import mindustry.ai.types.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -41,7 +42,9 @@ public class AgressiveFlyingAi extends FlyingAI {
     public void updateMovement(){
         unloadPayloads();
 
-         if(hasParent && parent != null && !parent.dead() && unit.isAdded()) {
+        //Allways follow parent regardless
+         if(parent != null && !parent.dead() && unit.isAdded()) {
+             Log.err(parent + "");
             /*Perhaps with more units, use the v5 formations instead*/
             float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.isShooting ? unit.speed() * shootSlowDown: unit.speed()) : unit.speed() ;
             circle(parent, parentCircle, speed);

@@ -2,7 +2,7 @@ package olupis.world.entities.bullets;
 
 import arc.Events;
 import arc.math.Mathf;
-import arc.util.Nullable;
+import arc.util.*;
 import mindustry.ai.types.MissileAI;
 import mindustry.entities.Mover;
 import mindustry.entities.bullet.BasicBulletType;
@@ -23,8 +23,9 @@ public class SpawnHelperBulletType extends BasicBulletType {
     public BulletType alternateType;
     public float unitRange = -1;
 
+    //This will not make a bullet since it made to help with spawning
     @Override
-    public @Nullable Bullet create(@Nullable Entityc owner, @Nullable Entityc shooter, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data, @Nullable Mover mover, float aimX, float aimY) {
+    public @Nullable Bullet create(@Nullable Entityc owner, @Nullable Entityc shooter, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data, @Nullable Mover mover, float aimX, float aimY, @Nullable Teamc target) {
         if (spawnUnit != null) {
             //don't spawn units clientside!
             if (!net.client()) {
@@ -70,7 +71,7 @@ public class SpawnHelperBulletType extends BasicBulletType {
 
             //no bullet returned
             return null;
-        } return super.create(owner, shooter, team, x, y, angle, damage, velocityScl, lifetimeScl, data, mover, aimX, aimY);
+        } return super.create(owner, shooter, team, x, y, angle, damage, velocityScl, lifetimeScl, data, mover, aimX, aimY, target);
     }
 
     public UnitType getUnits(boolean alt){

@@ -1,31 +1,25 @@
 package olupis.world.blocks.defence;
 
-import arc.Core;
-import arc.audio.Sound;
-import arc.func.Boolf;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Angles;
-import arc.math.Mathf;
-import arc.math.geom.Vec2;
-import arc.scene.ui.layout.Collapser;
-import arc.scene.ui.layout.Table;
-import arc.struct.ObjectMap;
-import arc.struct.Seq;
+import arc.*;
+import arc.audio.*;
+import arc.func.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
-import mindustry.content.Fx;
-import mindustry.content.UnitTypes;
-import mindustry.core.World;
+import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.entities.*;
-import mindustry.entities.bullet.BulletType;
-import mindustry.entities.part.DrawPart;
-import mindustry.entities.pattern.ShootPattern;
-import mindustry.game.Team;
+import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
+import mindustry.entities.pattern.*;
+import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
-import mindustry.logic.LAccess;
-import mindustry.ui.Styles;
+import mindustry.graphics.*;
+import mindustry.logic.*;
+import mindustry.ui.*;
 import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
@@ -78,7 +72,7 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
 
     @Override
     public void setStats(){
-        stats.add(Stat.ammo, table ->{
+        stats.add(Stat.weapons, table ->{
             table.table(Styles.grayPanel, t ->{
                 t.row();
 
@@ -130,7 +124,7 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
     public void drawPlace(int x, int y, int rotation, boolean valid){
         super.drawPlace(x, y, rotation, valid);
 
-        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range, Pal.placing);
+        Drawf.dashCircle(x * tilesize , y * tilesize, range, Pal.placing);
 
         if(fogRadiusMultiplier < 0.99f && state.rules.fog){
             Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, range * fogRadiusMultiplier, Pal.lightishGray);
@@ -394,6 +388,11 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
             return efficiency;
         }
 
+        @Override
+        public void drawSelect(){
+            super.drawSelect();
+            Drawf.dashCircle(x, y, range, team.color);
+        }
 
         protected void updateReload() {
             float multiplier = 1f;
