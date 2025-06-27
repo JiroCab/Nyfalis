@@ -34,6 +34,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
+import olupis.world.blocks.*;
 import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.packets.*;
@@ -315,7 +316,7 @@ public class ItemUnitTurret extends ItemTurret {
         return NyfalisItemsLiquid.powerAmmoItem;
     }
 
-    public class ItemUnitTurretBuild<T extends UnitPayload> extends ItemTurretBuild{
+    public class ItemUnitTurretBuild<T extends UnitPayload> extends ItemTurretBuild implements Moduleable{
         public @Nullable Vec2 commandPos;
         public float time, speedScl;
         public int direction = -1;
@@ -323,15 +324,17 @@ public class ItemUnitTurret extends ItemTurret {
         public @Nullable UnitPayload payload;
         public Vec2 payVector = new Vec2();
         public @Nullable UnitCommand command;
-        public Seq<Articulator.ArticulatorBuild> modules = new Seq<>(), prevModules = new Seq<>();
+        public Seq<Articulator.ArticulatorBuild> modules = new Seq<>();
         public boolean useAlternate = false;
 
-        public void updateModules(Articulator.ArticulatorBuild build){
-            modules.addUnique(build);
+        @Override
+        public Seq<ArticulatorBuild> getModules(){
+            return modules;
         }
 
-        public void removeModule(Articulator.ArticulatorBuild build){
-            modules.remove(build);
+        @Override
+        public int maxTier(){
+            return 1;
         }
 
         public void checkTier(){
@@ -821,18 +824,10 @@ public class ItemUnitTurret extends ItemTurret {
         public void updateEfficiencyMultiplier(){
             super.updateEfficiencyMultiplier();
 
-            float lasteff = efficiency;
             if(modules.size > 0){
                 efficiency *= moduleEfficiency() / modules.size;
             }
         }
-
-        public float moduleEfficiency(){
-            if(!hasAlternate || modules.size <= 0 ) return 1;
-            float[] total = {1f};
-            for(ArticulatorBuild m : modules) total[0] *= m.efficiency;
-            return total[0];
-        };
 
         @Override
         protected float baseReloadSpeed(){

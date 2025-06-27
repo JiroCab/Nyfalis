@@ -4,6 +4,8 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
@@ -16,6 +18,8 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
+import olupis.world.blocks.*;
+import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
@@ -53,9 +57,15 @@ public class MechPad extends Block {
         update = true;
     }
 
-    public class MechPadBuild extends Building implements ControlBlock{
+    public class MechPadBuild extends Building implements Moduleable, ControlBlock{
         public int readUnitId = -1;
+        public Seq<ArticulatorBuild> modules = new Seq<>();
         public @Nullable Unit slave;
+
+        @Override
+        public Seq<ArticulatorBuild> getModules(){
+            return modules;
+        }
 
         @Override
         public void updateTile(){
@@ -78,15 +88,31 @@ public class MechPad extends Block {
             }
 
             if (slave != null){
-                if(efficiency >=  lowPowerThreshold &&hasUpgrade()) slave.apply(alternateStatus, 1 * Time.toSeconds);
+                if(efficiency >=  lowPowerThreshold){
+                    if(hasUpgrade())slave.apply(alternateStatus, 1 * Time.toSeconds);
+                    else slave.unapply(alternateStatus);
+                }
                 if(efficiency < unPowerThreshold) slave.apply(unPowerStatus, 1 * Time.toSeconds);
                 else if(efficiency < lowPowerThreshold) slave.apply(lowPowerStatus, 1 * Time.toSeconds);
             }
         }
 
         public boolean hasUpgrade(){
-            //todo
-            return false;
+            return modules.size >= 1;
+        }
+
+        @Override
+        public int minTier(){
+            return 2;
+        }
+
+        @Override
+        public void updateEfficiencyMultiplier(){
+            super.updateEfficiencyMultiplier();
+
+            if(modules.size > 0){
+                efficiency *= moduleEfficiency() / modules.size;
+            }
         }
 
         @Override
@@ -110,7 +136,16 @@ public class MechPad extends Block {
             if(revision >= 1)readUnitId = read.i();
         }
 
+        @Override
+        public void display(Table table){
+            super.display(table);
 
+            table.row();
+            table.collapser(t ->{
+                t.left();
+                t.image(Core.atlas.find("olupis-assault")).size(32).padBottom(-4).padRight(2);
+            }, true, this::hasUpgrade).left();
+        }
 
         @Override
         public void drawSelect(){

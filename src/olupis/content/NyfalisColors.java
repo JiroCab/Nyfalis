@@ -1,9 +1,9 @@
 package olupis.content;
 
-import arc.graphics.Color;
+import arc.graphics.*;
 import arc.scene.style.*;
 import mindustry.gen.*;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
 
 import static olupis.content.NyfalisItemsLiquid.*;
 
@@ -31,6 +31,4 @@ public class NyfalisColors{
         aeroLaserColours = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
 
     public static TextureRegionDrawable infoPanel = (TextureRegionDrawable) Tex.whiteui;
-
-
 }

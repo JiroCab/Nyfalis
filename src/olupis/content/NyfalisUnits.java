@@ -1122,6 +1122,9 @@ public class NyfalisUnits {
                     }};
                 }});
         }};
+
+        //-> has payload, takes a bunch of t3 and bellow and  lets them shoot out of them, cnc:ra2 battle fortress / cnc:Zh battle bus
+
         //endregion
         //region Ground - Roach
         supella = new NyfalisUnitType("supella"){{
@@ -1364,9 +1367,9 @@ public class NyfalisUnits {
             canBoost = lowAltitude = true;
             boostMultiplier = 0.81f;
 
-            armor = 3;
+            armor = 19;
             hitSize =UnitTypes.reign.hitSize;
-            health = 125;
+            health = 2000;
             speed = 0.60f;
             engineSize = -1;
             rotateSpeed = 2f;
@@ -1648,8 +1651,8 @@ public class NyfalisUnits {
             );
         }};
 
-        //->Flag ship, boost, payload, Hex sheild when landed, prop/unit booster when flying
-        //-> has payload, takes a bunch of t3 and bellow and  lets them shoot out of them, cnc:ra2 battle fortress / cnc:Zh battle bus
+        //->Flag ship, boost, Hex sheild when landed, prop/unit booster when flying
+
 
 
         //endregion
@@ -2176,7 +2179,7 @@ public class NyfalisUnits {
             mineTier = 1;
             hitSize = 8.5f;
             itemOffsetY = 5f;
-            fogRadius =06;
+            fogRadius =0;
             mineSpeed = 3.5f;
             itemCapacity = 20;
             ammoCapacity = 150;

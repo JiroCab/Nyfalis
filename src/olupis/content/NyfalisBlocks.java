@@ -1447,8 +1447,8 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
-        siliconPlan = new FactoryPlan("silicon-plan", 60f * 3f, with(ash, 2, quartz, 2), with(silicon, 2), LiquidStack.with(Liquids.oil, 20), null);
-        graphitePlan = new FactoryPlan("graphite-plan", 60f * 3f, with(ash, 3), with(graphite, 3), LiquidStack.with(Liquids.oil, 25), null);
+        siliconPlan = new FactoryPlan("silicon-plan", 60f * 3f, with(ash, 2, quartz, 2), with(silicon, 2), LiquidStack.with(Liquids.oil, 20 / 60f), null);
+        graphitePlan = new FactoryPlan("graphite-plan", 60f * 3f, with(ash, 3), with(graphite, 3), LiquidStack.with(Liquids.oil, 25 / 60f), null);
 
         compoundCrucible = new HeadacheCrafter("compound-crucible"){{
             size = 3;
@@ -1720,6 +1720,25 @@ public class NyfalisBlocks {
             constructTime = 60f * 60f;
             hasPower = consumesPower = conductivePower = true;
             requirements(Category.units, with(aluminum, 200, iron, 200, copper, 200, cobalt, 150));
+        }};
+
+        alternateAmalgamator = new Articulator("alternate-amalgamator"){{
+            size = 6;
+            tier = 2;
+
+            ((Fabricator) adaptiveFabricator).statArticulator = this;
+
+            hasPower = consumesPower = conductivePower = true;
+            consumePower(160/60f);
+            requirements(Category.units, with(aluminum, 100, rustyIron, 150, cobalt, 150, iron, 100));
+
+            drawer = new DrawMulti(
+            new ValidFrontDrawRegion("-bottom"){{
+                buildingRotate = true;
+            }},
+            new DrawRegion(""),
+            new DrawRegion("-top"){{ buildingRotate = true;}}
+            );
         }};
 
         //Unit Tree: t1 = construct

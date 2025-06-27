@@ -59,7 +59,7 @@ public class HeadacheCrafter  extends GenericCrafter{
                 nu.table(Styles.grayPanel, b -> {
 
                     //TODO THIS NO WORK LOL
-                    if(!pl.isVisible()){
+                    if(pl.isVisible()){
                         b.table(e -> {
                             if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
                             if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(StatValues.displayLiquid(stack.liquid, 0, false)).pad(5).row();

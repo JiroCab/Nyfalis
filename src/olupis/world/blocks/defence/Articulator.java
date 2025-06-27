@@ -6,11 +6,13 @@ import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
+import olupis.world.blocks.*;
 
 import static mindustry.Vars.world;
 
 public class Articulator extends Block {
     public DrawBlock drawer = new DrawDefault();
+    public int tier = 1;
 
     public Articulator(String name){
         super(name);
@@ -33,8 +35,12 @@ public class Articulator extends Block {
 
 
     public class ArticulatorBuild extends Building {
-        public ItemUnitTurret.ItemUnitTurretBuild link;
+        public Moduleable link;
         public int lastChange = -2;
+
+        public int tier(){
+            return tier;
+        }
 
         @Override
         public void draw(){
@@ -52,7 +58,7 @@ public class Articulator extends Block {
             if(link != null){
                 link.removeModule(this);
             }
-            link = this.front() instanceof ItemUnitTurret.ItemUnitTurretBuild bld  ? bld : null;
+            link = this.front() instanceof Moduleable bld  ? bld : null;
             if(link != null){
                 link.updateModules(this);
             }
@@ -62,7 +68,7 @@ public class Articulator extends Block {
         public void onRemoved(){
             super.onRemoved();
 
-            link = this.front() instanceof ItemUnitTurret.ItemUnitTurretBuild bld ? bld : null;
+            link = this.front() instanceof Moduleable bld ? bld : null;
             if(link != null){
                 link.removeModule(this);
             }
@@ -72,7 +78,7 @@ public class Articulator extends Block {
         public void placed() {
             super.placed();
 
-            link = this.front() instanceof ItemUnitTurret.ItemUnitTurretBuild bld ? bld : null;
+            link = this.front() instanceof Moduleable bld ? bld : null;
             if(link != null){
                 link.updateModules(this);
             }

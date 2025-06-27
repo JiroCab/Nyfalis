@@ -1,35 +1,42 @@
 package olupis.world.blocks.unit;
 
 import arc.*;
+import arc.graphics.*;
 import arc.math.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.UnitAssembler.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
+import olupis.content.*;
+import olupis.world.blocks.*;
 import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.consumer.*;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class Fabricator extends Reconstructor {
     public Liquid baseLube = Liquids.oil;
     public float lubeMultiplier = 3f;
     public @Nullable ConsumeLiquidBase lubrication;
-    public boolean hasAlternate = true;
     protected @Nullable ConsumePayloadDynamic consPayload;
-    public Block module;
-    public static Seq<PayloadStack> savedRequirements[] ;
+    public static Seq<PayloadStack>[] savedRequirements;
+    public Seq<UnlockableContent> requirementList = new Seq<>();
+    public Block statArticulator;
 
-    //TODO t4 module logic (payload input & block attach menats)
     public Fabricator(String name){
         super(name);
     }
@@ -48,28 +55,124 @@ public class Fabricator extends Reconstructor {
         for(int i = 0; i < savedRequirements.length; i++){
             if(upgrades.get(i).length >= 3){
                 savedRequirements[i] = new Seq<>();
+                requirementList.add(upgrades.get(i)[0]); //blacklist
                 for(int j = 2; j < upgrades.get(i).length ; j++){
                     savedRequirements[i].add(PayloadStack.with(upgrades.get(i)[j], 1));
+
                 }
             } else savedRequirements[i] = PayloadStack.list();
         }
 
     }
 
-//    @Override
-//    public void setStats(){
-//        super.setStats();
-//
-//        if(lubrication != null){
-//            stats.remove(Stat.booster);
-//            stats.add(Stat.booster, NyfalisStats.lubeBoosters(constructTime, lubrication.amount, lubeMultiplier, baseLube.heatCapacity, l ->  l != baseLube && l.coolant && consumesLiquid(l)));
-//        }
-//    }
+    @Override
+    public void setStats(){
+        super.setStats();
 
-    public class FabricatorBuild extends ReconstructorBuild{
+        stats.remove(Stat.output);
+        stats.add(Stat.output, table -> {
+            table.row();
+            Seq<UnitType[]> base = new Seq<>(), alt = new Seq<>();
+
+            for(var upgrade : upgrades){
+                if(upgrade.length > 2) alt.add(upgrade);
+                else base.add(upgrade);
+            }
+            for(int i = 0; i < 2; i++){
+                Seq<UnitType[]> in  = i == 1 ? alt : base;
+                int finalI = i;
+                table.table(tab ->{
+                    for(var upgrade : in){
+                        if(upgrade[0].unlockedNow() && upgrade[1].unlockedNow()){
+                            tab.table(Styles.grayPanel, t -> {
+                                t.left();
+
+                                t.image(upgrade[0].uiIcon).size(40).pad(10f).left().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[0]));
+                                t.table(info -> {
+                                    info.add(upgrade[0].localizedName).left();
+                                    info.row();
+                                }).pad(10).padBottom(0).left();
+                                if(upgrade.length > 2){
+                                    t.row();
+                                    t.table(Styles.grayPanelDark, info -> {
+                                        int[] count = {0};
+                                        for(int j = 2; j < upgrade.length; j++){
+                                            info.image(upgrade[j].uiIcon).size(30).pad(10f).center().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[0]));
+                                            count[0]++;
+                                            if(count[0] >= 3){
+                                                count[0] = 0;
+                                                info.row();
+                                            }
+                                        }
+                                    }).fillX().pad(10).padTop(0).left();
+                                }
+
+                            }).fill().padTop(5).padBottom(5);
+
+                            tab.table(Styles.grayPanel, t -> {
+
+                                t.image(Icon.right).color(Pal.darkishGray).size(40).pad(10f);
+                            }).fill().padTop(5).padBottom(5);
+
+                            tab.table(Styles.grayPanel, t -> {
+                                t.left();
+
+                                t.image(upgrade[1].uiIcon).size(40).pad(10f).right().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[1]));
+                                t.table(info -> {
+                                    info.add(upgrade[1].localizedName).right();
+                                    info.row();
+                                }).pad(10).right();
+                            }).fill().padTop(5).padBottom(5);
+
+                            tab.row();
+                        }
+                    }
+                }).fill().row();
+                if(i == 0){
+                    table.image().color(Pal.accent).height(3.0F).fill().padTop(5).padBottom(5).row();
+                    table.add(new Table(NyfalisColors.infoPanel, r ->{
+                        r.add(new Table(c ->{
+                            c.add(new Table(o -> {
+                                o.add(new Image(statArticulator.uiIcon)).size(32f).scaling(Scaling.fit);
+                            })).left().pad(10f);
+                            c.table(info -> {
+                                info.add(statArticulator.localizedName).left();
+                                if (Core.settings.getBool("console")) {
+                                    info.row();
+                                    info.add(statArticulator.name).left().color(Color.lightGray);
+                                }
+                            });
+                            c.button("?", Styles.flatBordert, () -> ui.content.show(statArticulator)).size(40f).pad(10).right().grow().visible(statArticulator::unlockedNow);
+                        })).row();
+                        //todo
+//                        r.add(new Table(i -> {
+//                            i.button(Icon.upOpen, Styles.emptyi, () -> show[1] = !show[1]).update(iu -> iu.getStyle().imageUp = (!show[1] ? Icon.upOpen : Icon.downOpen)).pad(10).padRight(4).left();
+//                            for (ItemStack stack : requiredAlternate) {
+//                                i.table(z -> { // BE/v8 removed itemsDisplay & Rushie cant be bother to set up compiling equivalent so this is why this exists
+//                                    z.add(new Table(o -> {
+//                                        o.left();
+//                                        o.add(new Image(stack.item.uiIcon)).size(32f).scaling(Scaling.fit);
+//                                    }));
+//                                    z.add(new Table(t -> {
+//                                        t.left().bottom();
+//                                        t.add(stack.amount >= 1000 ? UI.formatAmount(stack.amount) : stack.amount + "").style(Styles.outlineLabel);
+//                                        t.pack();
+//                                    }));
+//                                });
+//                            }
+//                        }));
+                    })).fill();
+
+
+                    table.row();
+                }
+            }
+
+        });
+    }
+
+    public class FabricatorBuild extends ReconstructorBuild implements Moduleable{
         public boolean constructing;
-
-        public boolean useAlternate = false;
         public Seq<ArticulatorBuild> modules = new Seq<>();
         public PayloadSeq blocks = new PayloadSeq();
 
@@ -130,8 +233,6 @@ public class Fabricator extends Reconstructor {
 
             speedScl = Mathf.lerpDelta(speedScl, Mathf.num(valid), 0.05f);
             time += edelta() * speedScl * state.rules.unitBuildSpeed(team) * lubeMul;
-
-            checkTier();
         }
 
         public float updateLube(){
@@ -152,11 +253,14 @@ public class Fabricator extends Reconstructor {
             return out;
         }
 
-        public void checkTier(){
-            if(!hasAlternate) return;
-            boolean check =  modules.size > 0;
-            if(check != useAlternate) progress = 0;
-            useAlternate = check;
+        @Override
+        public Seq<ArticulatorBuild> getModules(){
+            return modules;
+        }
+
+        @Override
+        public int minTier(){
+            return 2;
         }
 
         public UnitType[] currentPlan(){
@@ -172,7 +276,7 @@ public class Fabricator extends Reconstructor {
         @Override
         public boolean hasUpgrade(UnitType type){
             UnitType[] p = upgrades.find(u -> u[0] == type);
-            if(p != null && p.length > 2 && !hasAlternate) return false;
+            if(p != null && p.length > 2 && modules.size <= 0) return false;
 
             UnitType t = upgrade(type);
             return t != null && (t.unlockedNowHost() || team.isAI()) && !type.isBanned();
@@ -195,6 +299,10 @@ public class Fabricator extends Reconstructor {
 
         @Override
         public boolean acceptPayload(Building source, Payload payload){
+            if(modules.size <= 0 && requirementList.contains(payload.content())){
+                if(payload.content() != null && payload instanceof UnitPayload p) p.showOverlay(Icon.settings);
+                return false;
+            }
             if(currentRequirements().find( b-> b.item == payload.content()) != null && !blocks.contains( payload.content())) return true;
             return super.acceptPayload(source, payload);
         }
