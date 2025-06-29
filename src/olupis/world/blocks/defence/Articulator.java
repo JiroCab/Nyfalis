@@ -1,5 +1,6 @@
 package olupis.world.blocks.defence;
 
+import arc.*;
 import arc.util.*;
 import mindustry.entities.units.*;
 import mindustry.gen.Building;
@@ -13,12 +14,15 @@ import static mindustry.Vars.world;
 public class Articulator extends Block {
     public DrawBlock drawer = new DrawDefault();
     public int tier = 1;
+    public @Nullable String boosterDesc;
 
     public Articulator(String name){
         super(name);
         rotate = rotateDraw = destructible = update = true;
         quickRotate = solid = false;
         group = BlockGroup.units;
+
+        boosterDesc = Core.bundle.get(getContentType() + "." + this.name + ".asBoost", name +  "has no .asBoost key!");
     }
 
     @Override

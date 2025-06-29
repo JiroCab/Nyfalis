@@ -20,6 +20,7 @@ import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.world.blocks.*;
 import olupis.world.blocks.defence.Articulator.*;
+import olupis.world.entities.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
@@ -31,6 +32,8 @@ public class MechPad extends Block {
     public StatusEffect lowPowerStatus = StatusEffects.slow;
     public StatusEffect unPowerStatus = StatusEffects.unmoving;
     public StatusEffect alternateStatus = NyfalisStatusEffects.alternate;
+    public @Nullable String boosterDesc;
+    public int minAltTier = 2, maxAltTier = Integer.MAX_VALUE;
 
     @Override
     public void setStats(){
@@ -50,11 +53,14 @@ public class MechPad extends Block {
                 b.button("?", Styles.flatBordert, () -> ui.content.show(type)).size(40f).pad(10).right().grow().visible(() -> type.unlockedNow());
             }).growX().pad(5).row();
         });
+
+        stats.add(Stat.boostEffect, NyfalisStats.modulesBoosters(minAltTier, maxAltTier, this));
     }
 
     public  MechPad(String name){
         super(name);
         update = true;
+        boosterDesc = Core.bundle.getOrNull(getContentType() + "." + this.name + ".asBoost");
     }
 
     public class MechPadBuild extends Building implements Moduleable, ControlBlock{
@@ -102,8 +108,18 @@ public class MechPad extends Block {
         }
 
         @Override
+        public int maxTier(){
+            return maxAltTier;
+        }
+
+        @Override
         public int minTier(){
-            return 2;
+            return minAltTier;
+        }
+
+        @Override
+        public String boosterDesc(){
+            return boosterDesc;
         }
 
         @Override

@@ -18,9 +18,13 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.weapons.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+import olupis.content.*;
+import olupis.world.blocks.*;
+import olupis.world.blocks.defence.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.units.*;
 import olupis.world.entities.weapons.*;
@@ -463,6 +467,44 @@ public class NyfalisStats extends StatValues {
                 }
             }).growX().colspan(table.getColumns());
             table.row();
+        };
+    }
+
+    public static StatValue modulesBoosters(int min, int max, Block block){
+        return table -> {
+            table.row();
+            table.table((c) -> {
+                Iterator var6 = NyfalisBlocks.alternateModules.iterator();
+
+                while(var6.hasNext()) {
+                    Articulator art = (Articulator)var6.next();
+                    if(art.tier >= min && art.tier <= max){
+                        c.table(Styles.grayPanel, (b) -> {
+                            if(art.isVisible()){
+                                b.image(art.uiIcon).size(40.0F).pad(10.0F).left().scaling(Scaling.fit);
+                                b.table((info) -> {
+                                    info.add(art.localizedName).left().row();
+                                    String out = art.boosterDesc;
+
+                                    if(block.newBuilding() instanceof Moduleable m && m.boosterDesc() != null){
+                                        out = m.boosterDesc();
+                                    }
+
+                                    info.add(out).left().row();
+                                });
+                            }else {
+                                b.image(art.uiIcon).size(40.0F).pad(10.0F).left().scaling(Scaling.fit);
+                                b.image(Icon.cancel).color(Color.scarlet).size(40.0F).pad(10.0F).left().scaling(Scaling.fit);
+                            }
+                        }).growX().pad(5.0F).row();
+                    }
+
+
+                }
+
+            }).growX().colspan(table.getColumns());
+            table.row();
+
         };
     }
 

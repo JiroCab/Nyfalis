@@ -36,6 +36,7 @@ import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.world.blocks.*;
 import olupis.world.blocks.defence.Articulator.*;
+import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.packets.*;
 import olupis.world.entities.units.*;
@@ -45,7 +46,8 @@ import java.util.*;
 import static mindustry.Vars.*;
 
 /*The cross bread of a Turret and Unit factory, for the sake of being different
-Now with hints of UnitAssembler for extra spice */
+Now with hints of UnitAssembler for extra spice
+This whole thing is a overcomplicated mess, thank you and why rushie*/
 public class ItemUnitTurret extends ItemTurret {
     /*common required items for all unit types*/
     public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20);
@@ -59,11 +61,15 @@ public class ItemUnitTurret extends ItemTurret {
     /*Hovering Shows the unit creation*/
     public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false, unitFactory = false;
     /*Aim at the rally point*/
-    public boolean rallyAim = true, hasAlternate = true;
+    public boolean rallyAim = true;
     /*Aim for closest liquid*/
     public boolean liquidAim = false;
     public boolean setDynamicConsumer = true;
+    //Module pareameters
     public Block statArticulator;
+    public boolean hasAlternate = true, boosterAlternate = false;
+    public int minAltTier = Integer.MIN_VALUE, maxAltTier = 1;
+    public @Nullable String boosterDesc;
 
     //For Shooting whatever is in payload as a bullet
     public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
@@ -87,6 +93,8 @@ public class ItemUnitTurret extends ItemTurret {
             build.command = null;
             build.direction = -1;
         });
+
+        boosterDesc = Core.bundle.getOrNull(getContentType() + "." + this.name + ".asBoost");
     }
 
 
@@ -195,7 +203,7 @@ public class ItemUnitTurret extends ItemTurret {
             table.row();
 
             //Alternate banned check
-            if(statArticulator != null && (!statArticulator.unlockedNow() || !statArticulator.isVisible())){
+            if(statArticulator != null && hasAlternate && (!statArticulator.unlockedNow() || !statArticulator.isVisible())){
                 table.row();
                 table.table(Styles.grayPanel, b -> {
                     b.image(Icon.cancel.getRegion()).color(Pal.remove).size(30).pad(10f).left().scaling(Scaling.fit).tooltip(statArticulator.localizedName);
@@ -274,6 +282,9 @@ public class ItemUnitTurret extends ItemTurret {
                 }
             }, () -> show[1]).growX();
         });
+        if(boosterAlternate){
+            stats.add(Stat.boostEffect, NyfalisStats.modulesBoosters(minAltTier, maxAltTier, this));
+        }
 
         if(heatRequirement > 0) stats.add(Stat.input, heatRequirement, StatUnit.heatUnits);
     }
@@ -334,7 +345,17 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public int maxTier(){
-            return 1;
+            return maxAltTier;
+        }
+
+        @Override
+        public int minTier(){
+            return minAltTier;
+        }
+
+        @Override
+        public String boosterDesc(){
+            return boosterDesc;
         }
 
         public void checkTier(){

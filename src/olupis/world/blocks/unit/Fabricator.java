@@ -97,7 +97,8 @@ public class Fabricator extends Reconstructor {
                                     t.table(Styles.grayPanelDark, info -> {
                                         int[] count = {0};
                                         for(int j = 2; j < upgrade.length; j++){
-                                            info.image(upgrade[j].uiIcon).size(30).pad(10f).center().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[0]));
+                                            int finalJ = j;
+                                            info.image(upgrade[j].uiIcon).size(30).pad(10f).center().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[finalJ], true));
                                             count[0]++;
                                             if(count[0] >= 3){
                                                 count[0] = 0;
@@ -261,6 +262,15 @@ public class Fabricator extends Reconstructor {
         @Override
         public int minTier(){
             return 2;
+        }
+
+        @Override
+        public void updateEfficiencyMultiplier(){
+            super.updateEfficiencyMultiplier();
+
+            if(modules.size > 0){
+                efficiency *= moduleEfficiency() / modules.size;
+            }
         }
 
         public UnitType[] currentPlan(){

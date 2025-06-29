@@ -1434,7 +1434,6 @@ public class NyfalisTurrets {
             lightRadius = (size * 8) + 4;
             fogRadiusMultiplier = 0.5f;
             shootSound = Sounds.respawn;
-            hasAlternate = false;
 
             ammo(
                 lead, new SpawnHelperBulletType(){{
@@ -1462,8 +1461,8 @@ public class NyfalisTurrets {
                     unitRange = 650;
                 }}
             );
-            playerControllable = drawOnTarget = emitLight = true;
-            commandable = configurable = rallyAim = false;
+            playerControllable = drawOnTarget = emitLight =  boosterAlternate= true;
+            commandable = configurable = rallyAim = hasAlternate = false;
             requiredAlternate = with();
             buildingFilter = b -> false; //dont
             lightColor = floodLightColor;

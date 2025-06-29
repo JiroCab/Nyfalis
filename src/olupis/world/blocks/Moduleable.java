@@ -1,11 +1,12 @@
 package olupis.world.blocks;
 
 import arc.struct.*;
-import mindustry.gen.*;
+import arc.util.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.defence.Articulator.*;
 
-public interface Moduleable extends Entityc, Posc {
+public interface Moduleable{
+    //IF more blocks need thiis, make a interface to for setting stuff for the block class
 
     default Seq<ArticulatorBuild> getModules() {
         return new Seq<>();
@@ -31,5 +32,9 @@ public interface Moduleable extends Entityc, Posc {
         float[] total = {1f};
         for(ArticulatorBuild m : getModules()) total[0] *= m.efficiency;
         return total[0];
+    }
+
+    default @Nullable String boosterDesc(){
+        return null;
     }
 }

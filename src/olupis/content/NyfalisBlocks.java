@@ -6,7 +6,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import arc.struct.EnumSet;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -45,8 +44,6 @@ import olupis.world.consumer.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.parts.*;
 import olupis.world.entities.pattern.*;
-
-import java.util.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -139,7 +136,7 @@ public class NyfalisBlocks {
     public static ObjectSet<Block>
             nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
             rainRegrowables = new ObjectSet<>(), spreadingTiles = new ObjectSet<>(), vents = new ObjectSet<>(),
-            factoryPlans = new ObjectSet<>()
+            factoryPlans = new ObjectSet<>(), alternateModules = new ObjectSet<>()
     ;
 
     public static void LoadWorldTiles() {
@@ -2679,22 +2676,24 @@ public class NyfalisBlocks {
         );
 
         Vars.content.blocks().each(b->{
+            //Mod support?
+            if(b instanceof  FactoryPlan) factoryPlans.add(b);
+            if(b instanceof  Articulator) alternateModules.add(b);
+
             if(b.name.startsWith("olupis-")){
-                if(b instanceof  FactoryPlan) factoryPlans.add(b);
                 if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 if(b instanceof SteamVent) vents.add(b);
                 allNyfalisBlocks.add(b);
                 b.envEnabled = NyfalisAttributeWeather.nyfalian;
             }
+
+            if(b.techNode != null && b.techNode.planet == Planets.serpulo){
+                if (!sandBoxBlocks.contains(b)) hiddenNyfalisBlocks.add(b);
+            }
+            
         });
 
         nyfalisCores.addAll(coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant);
-
-        for (Planet p : Vars.content.planets()) {
-            if (Objects.equals(p.name, "serpulo")) p.techTree.each(n -> {
-                if (n.content instanceof Block b && !sandBoxBlocks.contains(b)) hiddenNyfalisBlocks.add(b);
-            });
-        }
 
         rainRegrowables.addAll(grass, moss, mossierStone, mossyStone, yellowGrass, cinderBloomGrass, cinderBloomiest, cinderBloomiest, mossyDirt, frozenDirt, frozenGrass, frozenSlop);
         spreadingTiles.addAll(mycelium, yourcelium, ourcelium, theircelium);
