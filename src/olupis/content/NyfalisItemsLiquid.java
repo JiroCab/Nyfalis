@@ -75,7 +75,7 @@ public class NyfalisItemsLiquid {
             viscosity = 0.7f;
             flammability = 1.2f;
             explosiveness = 1.3f;
-            heatCapacity = 0.86f;
+            heatCapacity = 0.90f;
             barColor = Color.valueOf("C4AA90");
             effect = NyfalisStatusEffects.lubed;
             boilPoint = 0.65f;

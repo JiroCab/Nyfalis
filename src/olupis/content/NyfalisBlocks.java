@@ -1955,10 +1955,10 @@ public class NyfalisBlocks {
 
         windMills = new WindMill("wind-mill"){{
             size = 3;
-            boosterMultiplier = 3.8f;/* rationed for press + 2 gardens*/
+            liquidCapacity = 60;
             powerProduction = 20f/60f;
             attribute = Attribute.steam;
-            consumeLiquid(oil, 10f / 60f).boost();
+            consume(new ConsumeLubricant(45f / 60f)).boost();
             researchCost = with(rustyIron, 20, Items.lead, 2);
             requirements(Category.power, with(rustyIron, 35, Items.lead, 1));
         }};

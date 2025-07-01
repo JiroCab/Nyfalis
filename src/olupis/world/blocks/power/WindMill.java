@@ -1,14 +1,19 @@
 package olupis.world.blocks.power;
 
 import arc.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.units.*;
 import mindustry.world.*;
 import mindustry.world.blocks.power.*;
+import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import olupis.world.consumer.*;
 import olupis.world.entities.parts.*;
 
 public class WindMill extends PowerGenerator {
@@ -18,7 +23,8 @@ public class WindMill extends PowerGenerator {
     public final boolean displayEfficiency = true;
     public final Effect generateEffect = Fx.none;
     public final float effectChance = 0.05f;
-    public float boosterMultiplier = 1f;
+    public float boosterMultiplier = 6.6f;
+    public @Nullable ConsumeLiquidBase lubrication;
 
     public WindMill(String name){
         super(name);
@@ -28,10 +34,24 @@ public class WindMill extends PowerGenerator {
 
         drawer = new DrawMulti(
             new VariantableDrawRegion(2, "-bottom"),
-            new DrawLiquidTile(Liquids.oil, 2f){{alpha = 0.8f;}},
+            new DrawLiquidTile(){{alpha = 0.85f; padding = 2f;}},
             new VariantableDrawRegion(5),
-            new DrawBlurSpin("-rotator", 0.6f * 9f){{blurThresh =  0.01f;}}
+            new DrawBlurSpin("-rotator", 0.6f * 9f){{blurThresh =  0.01f;}
+
+                @Override
+                public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list){
+                    Draw.rect(region, plan.drawx()+ x, plan.drawy() + y, 0);
+                }
+            }
         );
+    }
+
+    @Override
+    public void init(){
+        super.init();
+        if (lubrication == null) {
+            lubrication = findConsumer(c -> c instanceof ConsumeLubricant);
+        }
     }
 
     @Override
@@ -62,10 +82,7 @@ public class WindMill extends PowerGenerator {
 
         @Override
         public void updateTile(){
-            productionEfficiency = (sum * attributeMul) + attribute.env() + 1f;
-            if(boosterMultiplier > 1f){
-                productionEfficiency *= Mathf.lerp(1f, boosterMultiplier, optionalEfficiency);
-            }
+            productionEfficiency = (sum * attributeMul) + attribute.env() + 1f * updateLube();
 
 
             if(productionEfficiency > 0.1f && Mathf.chanceDelta(effectChance)){
@@ -78,6 +95,39 @@ public class WindMill extends PowerGenerator {
             super.onProximityAdded();
 
             sum = sumAttribute(attribute, tile.x, tile.y);
+        }
+
+        @Override
+        public float getPowerProduction(){
+            return powerOfFive(super.getPowerProduction() * 60)/60;
+        }
+
+        //i cant be bother to actaully be smart so heres a dumb work around
+        public float powerOfFive(float value){
+            if(value % 5 == 0 ) return value;
+            float t  = Mathf.round(value);
+            while(t % 5 != 0){
+                t--;
+                if(t % 5 == 0) return t;
+                if(t <= (value -10)) return t;
+            }
+
+            return value;
+        }
+
+
+        public float updateLube(){
+            float out = 1f;
+            if(lubrication == null) return out;
+            if(this.liquids == null) return out;
+            if(lubrication.efficiency(this) == 0) return out;
+            if(efficiency == 0) return out;
+
+            if(lubrication instanceof ConsumeLiquidFilter filter){
+                out +=  Math.abs(filter.getConsumed(this).heatCapacity) * (lubrication.amount * lubrication.efficiency(this)) * boosterMultiplier;
+
+            }
+            return out;
         }
 
     }
