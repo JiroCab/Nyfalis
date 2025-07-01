@@ -82,7 +82,7 @@ public class WindMill extends PowerGenerator {
 
         @Override
         public void updateTile(){
-            productionEfficiency = (sum * attributeMul) + attribute.env() + 1f * updateLube();
+            productionEfficiency = ((sum * attributeMul) + attribute.env() + 1f) * updateLube();
 
 
             if(productionEfficiency > 0.1f && Mathf.chanceDelta(effectChance)){
@@ -99,21 +99,10 @@ public class WindMill extends PowerGenerator {
 
         @Override
         public float getPowerProduction(){
-            return powerOfFive(super.getPowerProduction() * 60)/60;
+            return (float)Mathf.round(super.getPowerProduction() * 60, 5) /60;
         }
 
-        //i cant be bother to actaully be smart so heres a dumb work around
-        public float powerOfFive(float value){
-            if(value % 5 == 0 ) return value;
-            float t  = Mathf.round(value);
-            while(t % 5 != 0){
-                t--;
-                if(t % 5 == 0) return t;
-                if(t <= (value -10)) return t;
-            }
 
-            return value;
-        }
 
 
         public float updateLube(){
