@@ -38,3 +38,5 @@ With the migration to v8 and the rework of content needed, bundles names are now
 Thus the following content will no longer load properly, migration will require you to replace the following
 - t2+ Cores (vestige and above)
 - Porter tree  (to Sentry and respective upgrades)
+- biomatter press (Mush blender)
+- Broiler (Liquifier)

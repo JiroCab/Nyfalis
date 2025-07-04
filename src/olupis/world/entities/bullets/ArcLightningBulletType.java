@@ -1,6 +1,7 @@
 package olupis.world.entities.bullets;
 
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -70,9 +71,14 @@ public class ArcLightningBulletType extends BulletType{
             return;
         };
 
+        if( b.aimX > 0 &&  b.aimY > 0 )all.sort(t -> t.dst(b.aimX, b.aimY));
+
         for(int i = 0; i < maxTargets; i++){
-            Healthc tar = all.random();
-            if(tar == null) break;
+             @Nullable Healthc tar = all.random();
+             //guaranteed to hit aimed target
+            if(i == 0 && !all.isEmpty())tar = all.first();
+
+            if(tar == null) continue;
 
             if(fragBullet != null) createFrags(b, tar.x(), tar.y());
             tar.damage(damage);

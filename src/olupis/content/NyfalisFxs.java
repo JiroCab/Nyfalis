@@ -345,6 +345,18 @@ public class NyfalisFxs extends Fx {
 
             Lines.endLine();
         }),
+        miniMikuMikuBeam = new Effect(15f, 300f, e -> {
+            if(!(e.data instanceof Position v)) return;
+            color(e.color);
+            stroke(e.fout() * 0.9f + 0.6f);
+            Fx.rand.setSeed(e.id);
+
+            e.scaled(14f, b -> {
+                stroke(b.fout() * 5f);
+                color(e.color);
+                Lines.line(e.x, e.y, v.getX(), v.getY());
+            });
+        }),
 
         repairPinBeam = new Effect(20f, e -> {
             if(!(e.data instanceof Vec2 v)) return;

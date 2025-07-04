@@ -337,19 +337,19 @@ public class NyfalisUnits {
 
         // vortex -> gun/Siege ship inspired by Thor gunships of cnc:mental omega
         vortex = new NyfalisUnitType("vortex"){{
-            armor = 5f;
-            hitSize = 20f;
+            armor = 10f;
+            hitSize = 25f;
             drag = 0.05f;
             speed = 1.8f;
             accel = 0.07f;
-            health = 1200f;
-            range = 170f;
+            health = 3000f;
+            range = 110;
             engineSize = -1;
             rotateSpeed = 45f;
             itemCapacity = 15;
             strafePenalty = 0.35f; //Aero Tree has lower strafe pen, something about they're deigned for it
 
-            lowAltitude = flying = canCircleTarget = alwaysShootWhenMoving = faceTarget = waveHunts = true;
+            flying = canCircleTarget = alwaysShootWhenMoving = faceTarget = waveHunts = true;
             constructor = UnitEntity::create;
 
 
@@ -370,14 +370,15 @@ public class NyfalisUnits {
                 top = alternate =  mirror = false;
 
                 bullet = new ArcLightningBulletType(){{
-                    rangeOverride = range = 200f;
-                    damage = 30;
+                    rangeOverride = range = 120f;
+                    damage = 40;
                     maxTargets = 5;
                     homingPower = 0.1f;
                     minTargetDistance = 30f;
 
                     status = StatusEffects.none;
                     hitEffect= shootEffect = Fx.hitLancer;
+                    chainEffect = NyfalisFxs.miniMikuMikuBeam;
                     lightningColor = hitColor = Pal.surge;
                     failLightningBullet = true;
                     lightningType = new LightningBulletType(){{
@@ -406,8 +407,8 @@ public class NyfalisUnits {
                     }};
 
                     fragBullets = 1;
-                    fragBullet = new ArtilleryBulletType(0.7f, 25, "circle-bullet"){{
-                        lifetime = 80f;
+                    fragBullet = new ArtilleryBulletType(0.55f, 25, "circle-bullet"){{
+                        lifetime = 120f;
                         width = height = 11f;
                         homingPower = 0.44f;
                         homingRange = 100f;
@@ -421,6 +422,7 @@ public class NyfalisUnits {
                         hitSound = Sounds.none;
 
                         fragBullets = intervalBullets = 1;
+                        bulletInterval = 40;
                         fragBullet = intervalBullet = new ArcLightningBulletType(){{
                             rangeOverride = range = 35f;
                             damage = 17;
@@ -1304,8 +1306,8 @@ public class NyfalisUnits {
 
             armor = 7;
             hitSize = Vars.tilesize * 2.7f;
-            health = 1300;
-            speed = 0.65f;
+            health = 2400;
+            speed = 0.7f;
             engineSize = -1;
             rotateSpeed = 1.72f;
             range = 25 * Vars.tilesize;
@@ -1313,7 +1315,7 @@ public class NyfalisUnits {
                 new Weapon(""){{
                     x = 10f;
                     y = 1.25f;
-                    reload = 60f;
+                    reload = 65f;
                     shootCone = 30f;
                     shootSound = Sounds.missile;
                     top = false;
@@ -1329,7 +1331,7 @@ public class NyfalisUnits {
 
                         }}
                     );
-                    bullet = new EffectivenessMissleType(9f, 30f) {{
+                    bullet = new MissileBulletType(9.5f, 35f) {{
                         //no bonus to air or ground
                         width = 8f;
                         shrinkX = 0;
@@ -1346,12 +1348,12 @@ public class NyfalisUnits {
                         frontColor = trailColor = graphite.color;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
+                        hitEffect = new MultiEffect(NyfalisFxs.hollowPointHit, Fx.pointHit);
                     }};
                 }}
             );
             setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
-            abilities.add(new MicroWaveFieldAbility(10f, 80f, Vars.tilesize * 9.5f, Vars.tilesize * 16f){{
+            abilities.add(new MicroWaveFieldAbility(20f, 80f, Vars.tilesize * 9.5f, Vars.tilesize * 16f){{
                 ideRangeDisplay = false;
                 damageEffect = Fx.none;
                 sectors = 4;

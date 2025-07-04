@@ -108,13 +108,13 @@ public class NyfalisBlocks {
         rustyIronConveyor, ironConveyor, cobaltConveyor, ironRouter, ironDistributor ,ironJunction, ironBridge, ironOverflow, ironUnderflow, ironUnloader, rustedBridge, offloader,
 
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
-        steamBoiler, broiler, oilSeparator, lubricantMixer, demulsifier,
+        steamBoiler, Liquifier, oilSeparator, lubricantMixer, demulsifier,
 
         wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine, biomassGenerator,
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        bioMatterPress, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible,
+        mushBlender, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator, alternateAmalgamator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
@@ -1245,19 +1245,19 @@ public class NyfalisBlocks {
             );
         }};
 
-        broiler = new BoostableGenericCrafter("broiler"){{
+        Liquifier = new BoostableGenericCrafter("liquifier"){{
             hasLiquids = hasPower =  outputsLiquid =  consumesPower = true;
 
             size = 2;
             health = 600;
-            craftTime = 20f;
+            craftTime = 60f;
             liquidCapacity = 25;
 
             consumePower(1f);
             consumeItem(rustyIron, 2);
             consumeItem(scrap, 1).boost();
             outputLiquid = new LiquidStack(Liquids.slag, 12f / 60f);
-            drawer = new DrawMulti(new DrawDefault(), new DrawLiquidRegion());
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(), new DrawDefault());
             requirements(Category.liquid, with(graphite, 25, iron, 20, lead, 40, silicon, 10));
         }};
 
@@ -1420,7 +1420,7 @@ public class NyfalisBlocks {
             );
         }};
 
-        bioMatterPress = new GenericCrafter("biomatter-press"){{
+        mushBlender = new GenericCrafter("mush-blender"){{
             hasLiquids = hasPower = true;
             size = 2;
             health = 320;
@@ -1429,13 +1429,12 @@ public class NyfalisBlocks {
 
             craftEffect = Fx.none;
             drawer = new DrawMulti(
-                    new DrawRegion("-bottom"),
-                    new DrawPistons(){{
-                        sinMag = 1f;
-                    }},
-                    new DrawDefault(),
-                    new DrawLiquidRegion(),
-                    new DrawRegion("-top")
+                new DrawRegion("-bottom"),
+                new DrawLiquidTile(),
+                new DrawPistons(){{
+                    sinMag = 1f;
+                }},
+                new DrawDefault()
             );
             consumePower(35f /60f);
             consumeItem(condensedBiomatter, 1);

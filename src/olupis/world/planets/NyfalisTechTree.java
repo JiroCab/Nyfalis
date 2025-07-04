@@ -232,6 +232,9 @@ public class NyfalisTechTree {
                                 node(biomassGenerator, () ->{
 
                                 });
+                                node(mushBlender, () ->{
+
+                                });
                             });
                             node(siliconKiln, ()->{
                                 node(hydrochloricGraphitePress, Seq.with(new Objectives.OnSector(dyingForest)), ()->{
@@ -313,7 +316,7 @@ public class NyfalisTechTree {
                                         });
                                     });
                                 });
-                                node(broiler, Seq.with(new Objectives.Research(graphite), new Objectives.Research(siliconArcSmelter)),()->{
+                                node(Liquifier, Seq.with(new Objectives.Research(graphite), new Objectives.Research(siliconArcSmelter)),()->{
 
                                 });
 
@@ -470,7 +473,9 @@ public class NyfalisTechTree {
                                 node(adaptiveFabricator,  Seq.with(
                                 new  Objectives.SectorComplete(conservatorium)
                                 ), () -> {
+                                    node(alternateAmalgamator, () -> {
 
+                                    });
                                 });
                             });
                         });
