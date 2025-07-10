@@ -79,14 +79,16 @@ public class NyfalisTurrets {
                     pierce = pierceBuilding = true;
                     collidesAir = false;
 
-                    width = height = 7f;
+                    width = 7f;
+                    height = 10f;
                     lifetime = 60f;
                     ammoMultiplier = 1.5f;
                     pierceCap = 2;
+                    sprite = "mine-bullet";
 
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = ironBulletBack;
-                    frontColor = iron.color;
+                    frontColor = ironBullet;
                 }}
             );
 

@@ -772,7 +772,7 @@ public class NyfalisUnits {
                 ejectEffect = Fx.casing1;
 
                 showStatSprite = false;
-                bullet = new BasicBulletType(3.2f, 5, "olupis-diamond-bullet"){{
+                bullet = new BasicBulletType(3.2f, 5, "olupis-triangle-bullet"){{
                     width = 4;
                     height = 6f;
                     lifetime = 40f;
@@ -814,10 +814,10 @@ public class NyfalisUnits {
                 shootCone = 65f;
                 baseRotation = -7f;
                 ejectEffect = Fx.none;
-                shoot = new ShootSpread(7, 1.3f);
+                shoot = new ShootSpread(5, 2f);
 
                 showStatSprite = false;
-                bullet = new BasicBulletType(2f, 3.5f, "olupis-diamond-bullet"){{
+                bullet = new BasicBulletType(2f, 4f, "olupis-triangle-bullet"){{
                     width = 6;
                     height = 8f;
                     lifetime = 20f;
@@ -892,7 +892,7 @@ public class NyfalisUnits {
                     shoot = sht;
 
                     showStatSprite = false;
-                    bullet = new BasicBulletType(5f, 4f, "olupis-diamond-bullet"){{
+                    bullet = new BasicBulletType(5f, 4f, "olupis-triangle-bullet"){{
                         width = 4;
                         height = 6f;
                         lifetime = 22f;
@@ -1947,10 +1947,22 @@ public class NyfalisUnits {
                         splashDamage = 80f;
                         splashDamageRadius = 60f;
                     }};
+
+                    parts.addAll(
+                        new RegionPart(){{
+                            name = "olupis-cutboi";
+                            mirror = false;
+                            top = true;
+                            progress = PartProgress.smoothReload;
+                            moveY = 13;
+                            y = -1;
+
+                        }}
+                    );
                 }},
                 new Weapon("olupis-dark-pew"){{
                     x = 0;
-                    y = 11f;
+                    y = -11f;
                     reload = 35f;
                     mirror = false;
                     rotate = true;
@@ -2008,6 +2020,7 @@ public class NyfalisUnits {
                 shootSound = Sounds.pew;
                 ammoType = lifeTimeWeapon;
                 bullet = new FlakBulletType(6f, 3){{
+                    sprite = "mine-bullet";
                     width = 6f;
                     height = 8f;
                     lifetime = 30f;
@@ -2976,6 +2989,13 @@ public class NyfalisUnits {
             }
         };
         //endregion
+        /*
+         To help add conhereance and give easy visual markers to what units can hit what (only attacking stuff)
+         The following bullet sprites should be used in this pattern. (colour, trails and other aspects are free reign)
+         Ground - mine-bullet, olupis-diamond-bullet
+         Air - missile-large, olupis-arc-bullet
+         Both - missile, bullet, olupis-triangle-bullet
+        */
     }
 
     /*Common custom ammo types for the lifetime units*/
