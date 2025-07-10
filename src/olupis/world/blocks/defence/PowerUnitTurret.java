@@ -34,7 +34,7 @@ public class PowerUnitTurret extends ItemUnitTurret {
         hasPower = consumesPower = true;
         setDynamicConsumer = false;
 
-        consume(new ConsumeItemDynamic((PowerUnitTurretBuild e) -> e.regularShoot() ? e.useAlternate ? requiredAlternate : requiredItems : ItemStack.with(Items.copper, 0, Items.lead, 0)));
+        consume(new ConsumeItemDynamic((PowerUnitTurretBuild e) -> e.regularShoot() ? (hasAlternate && e.useAlternate) ? requiredAlternate : requiredItems : ItemStack.with(Items.copper, 0, Items.lead, 0)));
     }
 
     public void setBars(){

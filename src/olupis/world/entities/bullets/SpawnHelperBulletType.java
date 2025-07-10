@@ -1,20 +1,19 @@
 package olupis.world.entities.bullets;
 
-import arc.Events;
-import arc.math.Mathf;
+import arc.*;
+import arc.func.*;
+import arc.math.*;
 import arc.util.*;
-import mindustry.ai.types.MissileAI;
-import mindustry.entities.Mover;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.BulletType;
-import mindustry.game.EventType;
-import mindustry.game.Team;
+import mindustry.ai.types.*;
+import mindustry.entities.*;
+import mindustry.entities.bullet.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.world.blocks.ControlBlock;
-import olupis.world.ai.AgressiveFlyingAi;
-import olupis.world.blocks.defence.ItemUnitTurret;
-import olupis.world.entities.units.AmmoLifeTimeUnitType;
+import mindustry.world.blocks.*;
+import olupis.world.ai.*;
+import olupis.world.blocks.defence.*;
+import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
 
@@ -22,6 +21,7 @@ public class SpawnHelperBulletType extends BasicBulletType {
     public boolean hasParent = false, eventMake = true;
     public BulletType alternateType;
     public float unitRange = -1;
+    public @Nullable Cons<Unit> handler = null;
 
     //This will not make a bullet since it made to help with spawning
     @Override
@@ -32,6 +32,9 @@ public class SpawnHelperBulletType extends BasicBulletType {
                 Unit spawned =  spawnUnit instanceof AmmoLifeTimeUnitType al ? al.create(team, unitRange, x, y) : spawnUnit.create(team);
                 spawned.set(x, y);
                 spawned.rotation = angle;
+
+                if(handler != null) handler.get(spawned);
+
                 //immediately spawn at top speed, since it was launched
                 if (spawnUnit.missileAccelTime <= 0f) spawned.vel.trns(angle, spawnUnit.speed);
                 //assign unit owner

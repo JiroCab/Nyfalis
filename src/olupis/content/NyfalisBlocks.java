@@ -1266,6 +1266,7 @@ public class NyfalisBlocks {
 
             size = 3;
             liquidCapacity = 25;
+            craftTime = 60f* 2f;
 
             consumeItem(silicon);
             lightLiquid = lubricant;
@@ -1280,12 +1281,12 @@ public class NyfalisBlocks {
             size = 2;
 
             liquidCapacity =25f;
-            craftTime = 2f / 60f;
+            craftTime = 2f * 60f;
             consumePower(1f);
             liquidOutputDirections = new int[]{1, 3};
             consumeLiquid(emulsiveSlop, 15f/ 60f);
             researchCost = with(iron, 500, lead, 800, copper, 800, rustyIron, 800);
-            outputLiquids = LiquidStack.with(Liquids.water, 13f / 60f, Liquids.oil, 10f / 60f);
+            outputLiquids = LiquidStack.with(Liquids.water, 18f / 60f, Liquids.oil, 15f / 60f);
             requirements(Category.liquid, with(quartz, 40, iron, 25, lead, 50,copper, 50));
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),
@@ -1315,7 +1316,7 @@ public class NyfalisBlocks {
             consumePower(1f);
             craftEffect = Fx.pulverizeMedium;
             outputItem = new ItemStack(iron, 2);
-            consumeLiquid(Liquids.water, 24f / 60f);
+            consumeLiquid(Liquids.water, 12f / 60f);
             consumeItems(with(lead, 2, rustyIron, 2));
             researchCost = with(rustyIron, 50, lead, 50);
             requirements(Category.crafting, with(rustyIron, 15, lead, 30));
@@ -1327,7 +1328,7 @@ public class NyfalisBlocks {
             rotate = false;
 
             size = 4;
-            craftTime = 250;
+            craftTime = 60* 5;
             envEnabled = Env.any;
             buildCostMultiplier = 0.4f;
             liquidCapacity = 40;
@@ -1335,7 +1336,7 @@ public class NyfalisBlocks {
             lightLiquid = Liquids.cryofluid;
             consumePower(200f / 60f);
             craftEffect = Fx.pulverizeMedium;
-            outputItem = new ItemStack(iron, 2);
+            outputItem = new ItemStack(iron, 3);
             consumeLiquid(Liquids.water, 38f / 60f).boost();
             consumeItems(with(quartz, 1, rustyIron, 6));
             researchCost = with(iron, 2000, lead, 2000, rustyIron, 2000, quartz, 1000, cobalt, 500);
@@ -1367,7 +1368,7 @@ public class NyfalisBlocks {
 
         siliconKiln = new GenericCrafter("silicon-kiln"){{
             size = 2;
-            craftTime = 40f;
+            craftTime = 3f * 60f;
             liquidCapacity = 30f;
             ambientSoundVolume = 0.07f;
             consumeItem(quartz, 4);
@@ -1396,7 +1397,7 @@ public class NyfalisBlocks {
 
         inductionSmelter = new SeparatorWithLiquidOutput("induction-smelter"){{
             size = 3;
-            craftTime = 80f;
+            craftTime = 60* 3f;
             liquidCapacity = 30;
             results = with(
                 aluminum, 3,
@@ -1405,7 +1406,7 @@ public class NyfalisBlocks {
             consumeItem(alcoAlloy);
             consumePower(80f /60f);
             liquidOutputDirections = new int[]{4};
-            liquidOutputs = LiquidStack.with(Liquids.slag, 4.5f / 60f);
+            liquidOutputs = LiquidStack.with(Liquids.slag, 2.5f / 60f);
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, alcoAlloy, 20));
 
             squareSprite = false; //todo, this no work for some reason
@@ -1424,7 +1425,7 @@ public class NyfalisBlocks {
             hasLiquids = hasPower = true;
             size = 2;
             health = 320;
-            craftTime = 20f;
+            craftTime = 2 * 60f;
             liquidCapacity = 30;
 
             craftEffect = Fx.none;
@@ -1458,7 +1459,7 @@ public class NyfalisBlocks {
             hasLiquids = false;
 
             size = 2;
-            craftTime = 30f;
+            craftTime = 60f * 2f;
             itemCapacity = 20;
 
             results = with(
@@ -1505,6 +1506,7 @@ public class NyfalisBlocks {
             itemCapacity = 40;
             alternateCapacity = 40;
             failedMakeSoundPitch = 0.7f;
+            boosterAlternate = true;
             hasAlternate = squareSprite = false;
             ammo(
                 powerAmmoItem ,new SpawnHelperBulletType(){{

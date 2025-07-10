@@ -291,7 +291,7 @@ public class ItemUnitTurret extends ItemTurret {
 
     @Override
     public void init(){
-        if(setDynamicConsumer) consume(new ConsumeItemDynamic((ItemUnitTurretBuild e) -> e.useAlternate ? requiredAlternate : requiredItems));
+        if(setDynamicConsumer) consume(new ConsumeItemDynamic((ItemUnitTurretBuild e) -> (e.useAlternate && hasAlternate) ? requiredAlternate : requiredItems));
 
         consumeBuilder.each(c -> c.multiplier = b -> unitFactory ? state.rules.unitCost(b.team) : 1f);
         super.init();
@@ -359,7 +359,7 @@ public class ItemUnitTurret extends ItemTurret {
         }
 
         public void checkTier(){
-            if(!hasAlternate) return;
+            if(!hasAlternate && !boosterAlternate) return;
             boolean check =  modules.size > 0;
             if(check != useAlternate) reloadCounter = 0;
             useAlternate = check;
@@ -368,8 +368,8 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public boolean acceptItem(Building source, Item item){
             return ((super.acceptItem(source, item) && !ammoTypes.get(item).spawnUnit.isBanned())
-                     || !useAlternate && (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)))
-                    || useAlternate && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < alternateCapacity);
+                     || (!useAlternate || !hasAlternate) && (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)))
+                    || (useAlternate && hasAlternate) && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < alternateCapacity);
         }
 
         @Override
@@ -383,17 +383,17 @@ public class ItemUnitTurret extends ItemTurret {
         public void handleItem(Building source, Item item){
             if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item) && Arrays.stream(requiredAlternate).noneMatch(i -> item == i.item)) {
                 super.handleItem(source, item);
-            } else if (useAlternate && items.get(item) < alternateCapacity || (items.get(item) < getMaximumAccepted(item))) {
+            } else if (hasAlternate && useAlternate && items.get(item) < alternateCapacity || (items.get(item) < getMaximumAccepted(item))) {
                 items.add(item, 1);
             }
         }
 
         public int getMaximumAccepted(Item item) {
             if(unitFactory){
-                if(useAlternate){
-                    if(Arrays.stream(requiredAlternate).anyMatch(i -> item == i.item)) return Math.round(itemCapacity * state.rules.unitCost(team));
+                if(hasAlternate && useAlternate){
+                    if(Arrays.stream(requiredAlternate).anyMatch(i -> item == i.item)) return Math.round(alternateCapacity * state.rules.unitCost(team));
                 } else {
-                    if(Arrays.stream(requiredItems).anyMatch(i -> item == i.item)) return Math.round(alternateCapacity * state.rules.unitCost(team));
+                    if(Arrays.stream(requiredItems).anyMatch(i -> item == i.item)) return Math.round(itemCapacity * state.rules.unitCost(team));
                 }
             }
 
@@ -452,7 +452,7 @@ public class ItemUnitTurret extends ItemTurret {
         }
 
         public boolean hasReqItems(){
-            for (ItemStack req : useAlternate ? requiredAlternate : requiredItems) {
+            for (ItemStack req : (hasAlternate && useAlternate) ? requiredAlternate : requiredItems) {
                 if(items.get(req.item) >= req.amount *  state.rules.unitCost(team)) continue;
                 return false;
             }
@@ -492,6 +492,7 @@ public class ItemUnitTurret extends ItemTurret {
             if(payload == null) {
                 payload = new UnitPayload(type.spawnUnit.create(team));
                 Unit p = (payload).unit;
+                if(moduleBoosted())moduleUnitBoosts(p);
                 if (commandPos != null && p.isCommandable()) {
                     p.command().commandPosition(commandPos);
                 }
@@ -507,8 +508,15 @@ public class ItemUnitTurret extends ItemTurret {
 
         protected void shootRegular(BulletType type, boolean creatable, boolean consume){
             boolean spawn =creatable && (state.rules.waveTeam == this.team || (type.spawnUnit.useUnitCap && this.team.data().countType(type.spawnUnit) < this.team.data().unitCap) || !type.spawnUnit.useUnitCap);
+            /*don't create the unit if it's banned or at unit cap*/
             if(spawn){
-                /*don't create the unit if it's banned or at unit cap*/
+                BulletType t = type;
+
+                if(moduleBoosted() && type instanceof SpawnHelperBulletType spb){
+                    spb.handler = this::moduleUnitBoosts;
+                    t = spb;
+                }
+
                 if(consume)consume();
                 float rot = direction == -1 ? rotation - 90 : (direction -1) * 90,
                         bulletX = x + Angles.trnsx(rot, shootX, shootY),
@@ -519,12 +527,13 @@ public class ItemUnitTurret extends ItemTurret {
                     type.chargeEffect.at(bulletX, bulletY, rot);
                 }
 
+                BulletType finalT = t;
                 shoot.shoot(barrelCounter, (xOffset, yOffset, angle, delay, mover) -> {
                     queuedBullets++;
                     if (delay > 0f) {
-                        Time.run(delay, () -> bullet(type, xOffset, yOffset, angle, mover));
+                        Time.run(delay, () -> bullet(finalT, xOffset, yOffset, angle, mover));
                     } else {
-                        bullet(type, xOffset, yOffset, angle, mover);
+                        bullet(finalT, xOffset, yOffset, angle, mover);
                     }
                 }, () -> barrelCounter++);
             }else {
@@ -601,7 +610,11 @@ public class ItemUnitTurret extends ItemTurret {
         }
 
         protected void updateReload(){
-            float multiplier = hasAmmo() ? peekAmmoAlt().reloadMultiplier : 1f;
+            float multiplier = 1f;
+            if(hasAmmo()){
+                if(peekAmmoAlt() != null) multiplier = peekAmmoAlt().reloadMultiplier;
+                else multiplier = peekAmmo().reloadMultiplier;
+            }
             multiplier *= unitFactory ? state.rules.unitBuildSpeed(team) : 1f;
             reloadCounter += delta() * multiplier * baseReloadSpeed();
 
@@ -609,6 +622,22 @@ public class ItemUnitTurret extends ItemTurret {
             reloadCounter = Math.min(reloadCounter, reload);
         }
 
+        public boolean moduleBoosted(){
+            if(!boosterAlternate) return false;
+            return modules.size >= 1;
+        }
+
+        public void moduleUnitBoosts(Unit p){
+            int lastTier = -1;
+            for(ArticulatorBuild m : modules){
+                if(m.tier() == lastTier)continue;
+                if(m.tier() > lastTier) lastTier = m.tier();
+
+                if(m.tier() == 1) p.apply(StatusEffects.overclock, Float.MAX_VALUE);
+
+            }
+
+        }
 
         @Override
         public void draw(){
@@ -892,7 +921,7 @@ public class ItemUnitTurret extends ItemTurret {
 
         public @Nullable BulletType peekAmmoAlt(){
             return ammo.size == 0 ? null :
-                useAlternate  && ammo.peek().type() instanceof SpawnHelperBulletType s ? s.alternateType
+                (hasAlternate && useAlternate)  && ammo.peek().type() instanceof SpawnHelperBulletType s ? s.alternateType
                 : ammo.peek().type();
         }
     }

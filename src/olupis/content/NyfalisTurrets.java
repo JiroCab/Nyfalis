@@ -49,7 +49,7 @@ public class NyfalisTurrets {
         fracture = new NyfalisItemTurret("fracture"){{
             targetAir = false;
             ammo(
-                rustyIron,  new CappedIntervalBullet(4f, 14){{
+                rustyIron,  new CappedIntervalBullet(5f, 27){{
                     width = 4f;
                     height = 20f;
                     lifetime = 60f;
@@ -64,7 +64,7 @@ public class NyfalisTurrets {
                     IntervalCap = 2;
                     reloadMultiplier = 0.8f;
                     ammoMultiplier = 1f;
-                    intervalBullet = new BasicBulletType(4f, 14){{
+                    intervalBullet = new BasicBulletType(5f, 27){{
                         width = 4f;
                         height = 20f;
                         lifetime = 58f;
@@ -129,7 +129,7 @@ public class NyfalisTurrets {
             }};
             limitRangeI(5f);
             coolant = consume(new ConsumeLiquid(steam, 5 / 60f));
-            consume(new ConsumePressureAgent(35f / 60f));
+            consume(new ConsumePressureAgent(15f / 60f));
             requirements(Category.turret, with(rustyIron, 50, lead, 25));
         }};
 
