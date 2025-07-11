@@ -96,7 +96,8 @@ public class NyfalisTurrets {
             recoil = 1f;
             shootY = 3f;
             reload = 20f;
-            range = 150;
+            range = 180;
+            fogRadius = 140;
             shootCone = 5f;
             ammoUseEffect = Fx.casing1;
             shootEffect = Fx.shootLiquid;
@@ -601,7 +602,8 @@ public class NyfalisTurrets {
             rotateSpeed = 3f;
             lightRadius = 150;
             coolantMultiplier = 2.5f;
-            liquidCapacity = reload = 5f;
+            liquidCapacity = 5f;
+            reload = 4.5f;
 
             ammo(
                 Liquids.water, new LiquidBulletType(Liquids.water){{
@@ -611,7 +613,7 @@ public class NyfalisTurrets {
 
                     speed = 5.5f;
                     drag = 0.008f;
-                    damage = 10f;
+                    damage = 16f;
                     pierceCap = 1;
                     lifetime = 9999f;
                     rangeChange = 15f;
@@ -629,7 +631,7 @@ public class NyfalisTurrets {
                     speed = 8f;
                     drag = 0.009f;
                     lifetime = 9999f;
-                    damage = 15f;
+                    damage = 20f;
                     pierceCap = 3;
                     ammoMultiplier = 2.5f;
                     statusDuration = 60f * 5;
@@ -638,7 +640,7 @@ public class NyfalisTurrets {
                 }},
                 Liquids.slag, new LiquidBulletType(Liquids.slag){{
                     speed = 5.8f;
-                    damage = 17;
+                    damage = 23;
                     pierceCap = 1;
                     drag = 0.0009f;
                     lifetime = 9999f;
@@ -655,7 +657,7 @@ public class NyfalisTurrets {
                 }},
                 emulsiveSlop, new LiquidBulletType(emulsiveSlop){{
                     speed = 5.8f;
-                    damage = 13;
+                    damage = 20;
                     pierceCap = 1;
                     drag = 0.0009f;
                     lifetime = 9999f;
@@ -716,14 +718,23 @@ public class NyfalisTurrets {
         strata = new NyfalisItemTurret("strata"){{
 
             ammo(
-                iron, new BasicBulletType(0,0){{
+                aluminum, new BasicBulletType(0,0){{
                     lifetime = 0;
-                    fragBullets = 8;
-                    fragRandomSpread = 10;
-                    fragSpread = 40;
+                    fragBullets = 20;
+                    fragRandomSpread = 3;
+                    fragSpread = 5;
+                    fragVelocityMin = 0.6f;
+
                     fragBullet = new BulletType(){{
+                        width  = 30f;
+                        height = 37f;
+                        homingPower = 0.2f;
+                        homingRange = 200f;
+                        homingDelay = 10;
+
                         damage = 0;
-                        lifetime = 250;
+                        lifetime = 330;
+                        scaleLife = true;
                         scaleLife = true;
                         collidesAir = collidesGround = false;
                         hitColor = trailColor = iron.color;
@@ -746,12 +757,20 @@ public class NyfalisTurrets {
                 }},
                 cobalt, new BasicBulletType(0,0){{
                     lifetime = 0;
-                    fragBullets = 12;
-                    fragRandomSpread = 10;
-                    fragSpread = 40;
+                    fragBullets = 20;
+                    fragRandomSpread = 3;
+                    fragSpread = 5;
+                    fragVelocityMin = 0.6f;
+
                     fragBullet = new BulletType(){{
+                        width  = 30f;
+                        height = 37f;
+                        homingPower = 0.2f;
+                        homingRange = 200f;
+                        homingDelay = 10;
+
                         damage = 0;
-                        lifetime = 250;
+                        lifetime = 330;
                         scaleLife = true;
                         collidesAir = collidesGround = false;
                         hitColor = trailColor = cobalt.color;
@@ -773,13 +792,21 @@ public class NyfalisTurrets {
                     }};
                 }},
                 quartz, new BasicBulletType(0,0){{
-                    lifetime = 0;
-                    fragBullets = 10;
-                    fragRandomSpread = 10;
-                    fragSpread = 40;
+                lifetime = 0;
+                fragBullets = 20;
+                fragRandomSpread = 3;
+                fragSpread = 5;
+                fragVelocityMin = 0.6f;
+
                     fragBullet = new BulletType(){{
+                        width  = 30f;
+                        height = 37f;
+                        homingPower = 0.2f;
+                        homingRange = 200f;
+                        homingDelay = 10;
+
                         damage = 0;
-                        lifetime = 250;
+                        lifetime = 330;
                         scaleLife = true;
                         collidesAir = collidesGround = false;
                         hitColor = trailColor = quartz.color;
@@ -803,11 +830,19 @@ public class NyfalisTurrets {
                 condensedBiomatter, new BasicBulletType(0,0){{
                     lifetime = 0;
                     fragBullets = 20;
-                    fragRandomSpread = 10;
-                    fragSpread = 40;
+                    fragRandomSpread = 3;
+                    fragSpread = 5;
+                    fragVelocityMin = 0.6f;
+
                     fragBullet = new BulletType(){{
+                        width  = 30f;
+                        height = 37f;
+                        homingPower = 0.2f;
+                        homingRange = 200f;
+                        homingDelay = 10;
+
                         damage = 0;
-                        lifetime = 250;
+                        lifetime = 330;
                         scaleLife = true;
                         collidesAir = collidesGround = false;
                         hitColor = trailColor = condensedBiomatter.color;
@@ -836,10 +871,12 @@ public class NyfalisTurrets {
                 size = 3;
                 recoil = 0;
                 lockRotation = true;
-                rotateSpeed = 0;
                 rotateDraw = false;
                 shootY = 0;
                 range = 320f;
+                trackingRange = 350f;
+                minRange = 200f;
+                drawMinRange = true;
                 predictTarget = true;
                 health = 1500;
                 fogRadius = 13;
@@ -849,7 +886,7 @@ public class NyfalisTurrets {
                 new RegionPart("-piston"){{
                     layerOffset = 3;
                     mirror = outline = false;
-                    under = true;
+                    under  = true;
                     growProgress = PartProgress.reload.inv();
                     growX = growY = 0.2f;
                 }}
@@ -879,8 +916,7 @@ public class NyfalisTurrets {
                 shootY = 5;
                 shootX = 0f;
                 reload = 120;
-                range = 50f * 8f;
-                lightRadius = 450;
+                lightRadius = range = 30f * 8f;
                 inaccuracy = 5;
                 minWarmup = 0.8f;
                 fogRadiusMultiplier = 0.75f;
@@ -888,38 +924,39 @@ public class NyfalisTurrets {
 
                 final float airGroundPend = 1.5f, airBuildPend = 0.5f;
                 ammo(
-                    copper, new EffectivenessMissleType(6f, 10f) {{
+                    aluminum, new EffectivenessMissleType(7f, 40f) {{
                         width = 6f;
-                        reloadMultiplier = 1.6f;
+                        reloadMultiplier = 1.3f;
                         shrinkX = 0;
                         lifetime = 70f;
                         height = 10.5f;
                         knockback = 0.8f;
-                        splashDamage = 2f;
+                        splashDamage = 15f;
                         ammoMultiplier = 1;
                         statusDuration = 120f;
                         homingPower = 0.4f;
                         homingRange = 150f;
                         homingDelay = 20;
-                        splashDamageRadius = 25f * 0.75f;
-                        frontColor = trailColor = copper.color;
+                        splashDamageRadius = 80f * 0.75f;
+                        frontColor = trailColor = aluminum.color;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;
                         status = StatusEffects.shocked;
+                        groundDamageMultiplier = airGroundPend;
+                        buildingDamageMultiplier = airBuildPend;
                     }},
-                    lead, new EffectivenessMissleType(3f, 15f) {{
+                    lead, new EffectivenessMissleType(5f, 15f) {{
+                        inaccuracy = 10f;
                         width = 6f;
-                        reloadMultiplier = 2f;
+                        reloadMultiplier = 3f;
                         shrinkX = 0;
                         lifetime = 140f;
                         height = 10.5f;
-                        knockback = 0.8f;
                         splashDamage = 5f;
                         statusDuration = 120f;
                         homingPower = 0.4f;
-                        homingRange = 150f;
-                        homingDelay = 20;
+                        homingRange = 200f;
                         ammoMultiplier = 1;
                         splashDamageRadius = 25f * 0.75f;
                         frontColor = trailColor = lead.color;
@@ -931,7 +968,7 @@ public class NyfalisTurrets {
                         buildingDamageMultiplier = airBuildPend;
                     }},
 
-                    rustyIron, new EffectivenessMissleType(3f, 8f) {{
+                    iron, new EffectivenessMissleType(5.5f, 20f) {{
                         width = 6f;
                         reloadMultiplier = 2f;
                         shrinkX = 0;
@@ -945,7 +982,7 @@ public class NyfalisTurrets {
                         homingRange = 150f;
                         homingDelay = 20;
                         splashDamageRadius = 25f * 0.75f;
-                        frontColor = trailColor = rustyIron.color;
+                        frontColor = trailColor = iron.color;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = NyfalisFxs.hollowPointHit;

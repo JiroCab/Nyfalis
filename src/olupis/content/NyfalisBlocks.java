@@ -1808,14 +1808,14 @@ public class NyfalisBlocks {
         //endregion
         //region Mines
         heavyMine = new ShockMine("heavy-mine"){{
-            requirements(Category.effect, ItemStack.with(Items.lead, 25, iron, 12));
+            requirements(Category.effect, ItemStack.with(Items.lead, 25, aluminum, 12));
             hasShadow = false;
             size = 1;
-            health = 50;
+            health = 100;
             damage = tileDamage = tendrils = length = 0;
             shots = 1;
             rebuildable = false;
-            bullet = new ExplosionBulletType(200, 20*8){{
+            bullet = new ExplosionBulletType(250, 20*8){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;
                 fragBullets = 8;
@@ -1838,7 +1838,8 @@ public class NyfalisBlocks {
             requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, cobalt, 12}));
             hasShadow = false;
             size = 1;
-            health = 30;
+            health = 60;
+            armor = 2;
             damage = tileDamage = tendrils = length = 0;
             shots = 1;
             rebuildable = false;
