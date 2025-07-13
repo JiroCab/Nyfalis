@@ -1,17 +1,16 @@
 package olupis.world.entities.weapons;
 
-import arc.graphics.Blending;
-import arc.graphics.g2d.Draw;
-import arc.math.Angles;
-import arc.math.Mathf;
-import mindustry.entities.part.DrawPart;
-import mindustry.entities.units.WeaponMount;
-import mindustry.gen.Crawlc;
-import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
-import mindustry.type.UnitType;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import mindustry.entities.part.*;
+import mindustry.entities.units.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
 
-/*Very janky but gets the work done*/
+/*Very janky but gets the work done*
+I can see why the base game doesnt have this*/
 public class SnekWeapon extends NyfalisWeapon {
     /*Sets which segment the weapon is "mounted" to*/
     public float weaponSegmentParent = 3;
@@ -34,42 +33,44 @@ public class SnekWeapon extends NyfalisWeapon {
     @Override
     public void update(Unit unit, WeaponMount mount) {
 
-        if ( altWeaponPos &&unit instanceof Crawlc crawl) {
+        if ( altWeaponPos && unit instanceof Crawlc crawl) {
             UnitType type = unit.type;
             float trns = Mathf.sin(crawl.crawlTime() + weaponSegmentParent * type.segmentPhase, type.segmentScl, type.segmentMag),
                     rot = Mathf.slerp(crawl.segmentRot(), unit.rotation, weaponSegmentParent / (type.segments - 1f)),
-                    tx = Angles.trnsx(rot, trns), ty = Angles.trnsy(rot, trns), rotation = rot - 90,
-                    mountX = unit.x + Angles.trnsx(rotation, x, y),
-                    mountY = unit.y + Angles.trnsy(rotation, x, y);
-            shootXf  = mountX + Angles.trnsx(rotation, this.shootX, this.shootY) + tx;
-            shootYf  = mountY + Angles.trnsy(rotation, this.shootX, this.shootY) + ty;
+                    tx = Angles.trnsx(rot, trns), ty = Angles.trnsy(rot, trns), rotation = unit.rotation - 90,
+                    weaponRotation = rotation + (rotate ? mount.rotation : baseRotation);
+            shootXf  = tx + unit.x + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, this.shootX, this.shootY);
+            shootYf  = ty + unit.y + Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, this.shootX, this.shootY);
         }
         super.update(unit, mount);
     }
 
     @Override
     public void draw(Unit unit, WeaponMount mount){
+        updateParams(unit);
         if (unit instanceof Crawlc crawl) {
             //apply layer offset, roll it back at the end
             float z = Draw.z();
             Draw.z(z + layerOffset);
             UnitType type = unit.type;
 
-            float
+            float wr = rotate ? mount.rotation : baseRotation, rotation = unit.rotation - 90,
                     trns = Mathf.sin(crawl.crawlTime() + weaponSegmentParent * type.segmentPhase, type.segmentScl, type.segmentMag),
                     rot = Mathf.slerp(crawl.segmentRot(), unit.rotation, weaponSegmentParent / (type.segments - 1f)),
-                    tx = Angles.trnsx(rot, trns), ty = Angles.trnsy(rot, trns), rotation = rot - 90,
+                    tx = Angles.trnsx(rot, trns), ty = Angles.trnsy(rot, trns),
                     realRecoil = Mathf.pow(mount.recoil, recoilPow) * recoil,
-                    weaponRotation = rotation + (rotate ? mount.rotation : baseRotation),
-                    wx = (unit.x + Angles.trnsx(rotation, x, y)+ Angles.trnsx(weaponRotation, 0, -realRecoil)) + tx,
-                    wy = (unit.y + Angles.trnsy(rotation, x, y)+ Angles.trnsy(weaponRotation, 0, -realRecoil)) + ty;
+                    weaponRotation = rotation + wr,
+                    wx = tx + unit.x + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, -realRecoil),
+                    wy = ty + unit.y +  Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, -realRecoil);
 
             if (shadow > 0) {
                 Drawf.shadow(wx, wy, shadow);
             }
 
-            if (top) {
-                drawOutline(unit, mount);
+            if (top && outlineRegion.found()){
+                Draw.xscl = -Mathf.sign(flipSprite);
+                Draw.rect(outlineRegion, wx, wy, weaponRotation);
+                Draw.xscl = 1f;
             }
 
             if (parts.size > 0) {

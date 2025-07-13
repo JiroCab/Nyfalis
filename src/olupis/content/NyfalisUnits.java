@@ -932,6 +932,7 @@ public class NyfalisUnits {
 
            weapons.addAll(new SnekWeapon("olupis-dark-pew"){{
                 x = y = 0f;
+                inaccuracy  = 3f;
                 reload = 40f;
                 shootY = 4.5f;
                 shoot.shots = 3;
@@ -946,9 +947,6 @@ public class NyfalisUnits {
                     shrinkX = 25f /60;
                     shrinkY = 35f /60;
                     lifetime = 50f;
-                    fragBullets = 1;
-                    fragVelocityMin = 1f;
-                    fragRandomSpread = 0f;
                 }};
             }});
         }};
@@ -1146,7 +1144,7 @@ public class NyfalisUnits {
                     x = -0.1f;
                     y = 1.25f;
                     shootX = 6f;
-                    reload = 15f;
+                    reload = 20f;
                     shootCone = 15f;
                     top = false;
                     ejectEffect = Fx.casing1;
@@ -1160,7 +1158,7 @@ public class NyfalisUnits {
 
                       }}
                     );
-                    bullet = new BasicBulletType(2.5f, 8){{
+                    bullet = new BasicBulletType(3f, 7){{
                         width = 5f;
                         height = 7f;
                         lifetime = 45;
@@ -1178,7 +1176,7 @@ public class NyfalisUnits {
                     rotationLimit = 90f;
                     autoTarget = rotate = partialControl = true;
                     mirror = controllable = top = false;
-                    bullet = new BasicBulletType(3f, 7){{
+                    bullet = new BasicBulletType(4f, 7){{
                         width = 5f;
                         height = 6f;
                         lifetime = 36f;

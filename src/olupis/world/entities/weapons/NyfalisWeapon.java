@@ -1,26 +1,22 @@
 package olupis.world.entities.weapons;
 
-import arc.math.Angles;
-import arc.math.Mathf;
-import arc.math.geom.Vec2;
-import arc.scene.ui.layout.Table;
-import arc.struct.ObjectMap;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
-import mindustry.ai.types.LogicAI;
-import mindustry.audio.SoundLoop;
-import mindustry.entities.Predict;
-import mindustry.entities.Sized;
-import mindustry.entities.units.WeaponMount;
+import mindustry.ai.types.*;
+import mindustry.audio.*;
+import mindustry.entities.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
-import mindustry.type.UnitType;
-import mindustry.type.Weapon;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
-import olupis.content.NyfalisStatusEffects;
-import olupis.input.NyfalisUnitCommands;
-import olupis.world.entities.NyfalisStats;
-import olupis.world.entities.parts.NyfPartParms;
-import olupis.world.entities.units.NyfalisUnitType;
+import mindustry.type.*;
+import mindustry.world.meta.*;
+import olupis.content.*;
+import olupis.input.*;
+import olupis.world.entities.*;
+import olupis.world.entities.parts.*;
+import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
 
@@ -66,22 +62,26 @@ public  class NyfalisWeapon extends Weapon {
 
     @Override
     public void draw(Unit unit, WeaponMount mount){
+        updateParams(unit);
+        super.draw(unit, mount);
+    }
+
+    public void  updateParams(Unit unit){
         if(parts.size > 0){
             float water = 0, ammop = 0;
             if(unit.type instanceof  NyfalisUnitType nyf){
                 ammop = nyf.partAmmo(unit);
             }
             NyfPartParms.nyfparams.set(
-                unit.healthf(),
-                unit.team.id,
-                unit.elevation(),
-                ammop,
-                 NyfalisUnitType.onWater(unit) ? 1 : 0,
-                0,
-                unit instanceof Payloadc p ? p.payloads().size : 0
+            unit.healthf(),
+            unit.team.id,
+            unit.elevation(),
+            ammop,
+            NyfalisUnitType.onWater(unit) ? 1 : 0,
+            0,
+            unit instanceof Payloadc p ? p.payloads().size : 0
             );
         }
-        super.draw(unit, mount);
     }
 
     @Override
