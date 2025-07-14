@@ -80,55 +80,65 @@ public class NyfalisStats extends StatValues {
 
                         MineBulletType mb = (MineBulletType) type;
                         if (mb.mine != null) {
-                            in.table(info -> {
-                                if(mb.mine.canBeBuilt() && mb.mine.fullIcon != null) info.image(mb.mine.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                                else info.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+                            if(!mb.mine.unlockedNowHost()){
+                                in.image(Icon.lock.getRegion()).color(Pal.darkerGray).size(30).pad(10f).left().scaling(Scaling.fit);
+                            }
+                            if(mb.mine.isVisible() && mb.mine.fullIcon != null){
+                                in.table(info -> {
 
-                                info.table(bt -> {
-                                    bt.left().top().defaults().growX().left();
-                                    if(!(t instanceof  UnitType))title(bt, (t.localizedName), t.fullIcon);
-                                    sepLeft(bt, (mb.mine.localizedName));
-                                    sepLeftWrap(bt, (mb.mine.description));
-                                    if(Core.settings.getBool("console"))sepLeft(bt, ("[lightgray]"+ mb.mine.name));
-                                    if (mb.createChance) {
-                                        float set;
-                                        if (mb.createChancePercent > 0.99) {
-                                            set = 99;
-                                        } else if (mb.createChancePercent < 0.01) {
-                                            set = 1;
-                                        } else {
-                                            set = (mb.createChancePercent * 100);
-                                        }
-                                        sep(bt, Core.bundle.format("stat.olupis-chancepercent", Strings.autoFixed(set, 2)));
-                                    }
-                                    if (mb.mine instanceof ShockMine sm) {
-                                        float mdmg = (sm.damage * sm.tendrils) + sm.tileDamage;
-                                        if (mdmg != 0) {
-                                            sep(bt, Core.bundle.format("bullet.damage", (sm.damage * sm.tendrils) + sm.tileDamage));
-                                        }
-                                        if (sm.bullet != null) {
-                                            bt.row();
+                                        info.image(mb.mine.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit).get().clicked(() -> ui.content.show(mb.mine));
+                                        info.table(bt -> {
+                                            bt.left().top().defaults().growX().left();
+                                            if(t instanceof Item itm) title(bt, itm);
+                                            sepLeft(bt, (mb.mine.localizedName));
+                                            sepLeftWrap(bt, (mb.mine.description));
+                                            if(Core.settings.getBool("console")) sepLeft(bt, ("[lightgray]" + mb.mine.name));
+                                            if(mb.createChance){
+                                                float set;
+                                                if(mb.createChancePercent > 0.99){
+                                                    set = 99;
+                                                }else if(mb.createChancePercent < 0.01){
+                                                    set = 1;
+                                                }else{
+                                                    set = (mb.createChancePercent * 100);
+                                                }
+                                                sep(bt, Core.bundle.format("stat.olupis-chancepercent", Strings.autoFixed(set, 2)));
+                                            }
+                                            if(mb.mine instanceof ShockMine sm){
+                                                float mdmg = (sm.damage * sm.tendrils) + sm.tileDamage;
+                                                if(mdmg != 0){
+                                                    sep(bt, Core.bundle.format("bullet.damage", (sm.damage * sm.tendrils) + sm.tileDamage));
+                                                }
+                                                if(sm.bullet != null){
+                                                    bt.row();
 
-                                            Table ic = new Table();
-                                            ammoWithInfo(ObjectMap.of(t, sm.bullet), indent + 1, false, null).display(ic);
-                                            Collapser coll = new Collapser(ic, true);
-                                            coll.setDuration(0.1f);
+                                                    Table ic = new Table();
+                                                    ammoWithInfo(ObjectMap.of(t, sm.bullet), indent + 1, false, null).display(ic);
+                                                    Collapser coll = new Collapser(ic, true);
+                                                    coll.setDuration(0.1f);
 
-                                            bt.table(it -> {
-                                                it.left().defaults().left();
+                                                    bt.table(it -> {
+                                                        it.left().defaults().left();
 
-                                                it.add(Core.bundle.format("stat.olupis-bullet", Strings.autoFixed(sm.shots, 2)));
-                                                it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
-                                            });
-                                            bt.row();
-                                            bt.add(coll);
-                                        }
-                                    }
-                                }).left().growX();
-                            }).growX().left();
-                            in.button("?", Styles.flatBordert, () -> ui.content.show(mb.mine)).size(40f).right().visible(mb.mine::unlockedNow).row();
+                                                        it.add(Core.bundle.format("stat.olupis-bullet", Strings.autoFixed(sm.shots, 2)));
+                                                        it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
+                                                    });
+                                                    bt.row();
+                                                    bt.add(coll);
+                                                }
+                                            }
+                                        }).left().growX();
+
+                                }).growX().left();
+                                in.button("?", Styles.flatBordert, () -> ui.content.show(mb.mine)).size(40f).right().visible(mb.mine::unlockedNow).row();
+                            } else {
+                                in.table(info -> {
+                                    info.image(Icon.cancel.getRegion()).color(Pal.remove).size(30).pad(10f).left().scaling(Scaling.fit);
+                                    info.image(mb.mine.fullIcon).tooltip(mb.mine.localizedName).size(30).pad(10f).left().scaling(Scaling.fit);
+                                }).growX().left();
+                            }
                         }
-                    }).padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).margin(compact ? 0 : 10);
+                    }).growX().padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).margin(compact ? 0 : 10);
                     table.row();
                 }
                 else if (type instanceof SpawnHelperBulletType || type.spawnUnit != null ) { //TODO Icon broken
@@ -181,8 +191,13 @@ public class NyfalisStats extends StatValues {
 
                         if (!compact && !(t instanceof Turret)) {
                             bt.table(title -> {
-                                title.image(icon(t)).size(3 * 8).padRight(4).right().scaling(Scaling.fit).top();
-                                title.labelWrap(t.localizedName).padRight(10).left().top();
+                                title.image(icon(t)).size(3 * 8).padRight(4).right().scaling(Scaling.fit).top().with(i -> withTooltip(i, t, false));
+
+                                title.add(t.localizedName).padRight(10).left().top();
+
+                                if(type.displayAmmoMultiplier && type.statLiquidConsumed > 0f){
+                                    title.add("[stat]" + fixValue(type.statLiquidConsumed / type.ammoMultiplier * 60f) + " [lightgray]" + StatUnit.perSecond.localized());
+                                }
                             });
                             bt.row();
                         }
@@ -197,11 +212,11 @@ public class NyfalisStats extends StatValues {
                             if (type.continuousDamage() > 0) {
                                 bt.add(Core.bundle.format("bullet.damage", type.continuousDamage()) + StatUnit.perSecond.localized());
                             }else if( type instanceof  DistanceScalingBulletType st){
-                                bt.add(Core.bundle.format("bullet.damage", (type.damage * st.minDmgMul) + "-" + type.damage * st.maxDmgMul ));
+                                bt.add(Core.bundle.format("bullet.damage", autoFixedCustom(type.damage * st.minDmgMul) + "-" + autoFixedCustom(type.damage * st.maxDmgMul)));
                             }else {
                                 String owo = "";
                                 if(type instanceof  CappedIntervalBullet c) owo = " x" +c.IntervalCap + " ";
-                                bt.add(Core.bundle.format("bullet.damage",  type.damage + owo));
+                                bt.add(Core.bundle.format("bullet.damage",  autoFixedCustom(type.damage) + owo));
                             }
                         }
 
@@ -210,28 +225,36 @@ public class NyfalisStats extends StatValues {
                             sep(bt, Core.bundle.format("bullet.buildingdamage", ammoStat(val)));
                         }
 
+                        if (type.splashDamage > 0) {
+                            if( type instanceof  DistanceScalingBulletType st){
+                                sep(bt, Core.bundle.format("bullet.splashdamage",  (autoFixedCustom(type.splashDamage * st.minDmgMul) + "-" + autoFixedCustom(type.splashDamage * st.maxDmgMul) ), Strings.fixed(type.splashDamageRadius / tilesize, 1)));
+                            }else sep(bt, Core.bundle.format("bullet.splashdamage", autoFixedCustom(type.splashDamage), Strings.fixed(type.splashDamageRadius / tilesize, 1)));
+                        }
+
+                        if (type instanceof EffectivenessMissleType m && m.groundDamageMultiplier != 1f) {
+                            float val = (m.flatDamage ? ((m.groundDamageMultiplier / m.damage) * 100 -100) : m.groundDamageMultiplier * 100 - 100);
+                            sep(bt, Core.bundle.format("stat.olupis-groundpenalty", autoFixedCustom(m.flatDamage ? m.groundDamageMultiplier : m.damage * m.groundDamageMultiplier), ammoStat(val)));
+                        }
+
+                        if(type.shieldDamageMultiplier != 1){
+                            sep(bt, Core.bundle.format("bullet.shielddamage", ammoStat((int)(type.shieldDamageMultiplier * 100 - 100))));
+                        }
+
                         if (type.rangeChange != 0 && !compact) {
                             sep(bt, Core.bundle.format("bullet.range", ammoStat(type.rangeChange / tilesize)));
                         }
 
-                        if (type.splashDamage > 0) {
-                            if( type instanceof  DistanceScalingBulletType st){
-                                sep(bt, Core.bundle.format("bullet.splashdamage",  ((type.splashDamage * st.minDmgMul) + "-" + type.splashDamage * st.maxDmgMul ), Strings.fixed(type.splashDamageRadius / tilesize, 1)));
-                            }else sep(bt, Core.bundle.format("bullet.splashdamage", (int) type.splashDamage, Strings.fixed(type.splashDamageRadius / tilesize, 1)));
-                        }
-
                         if(type.fragBullet instanceof DistanceScalingBulletType st){
-                            sep(bt, Core.bundle.format("bullet.splashdamage",  ((st.splashDamage * st.minDmgMul) + "-" + st.splashDamage * st.maxDmgMul ), Strings.fixed(st.splashDamageRadius / tilesize, 1)));
+                            sep(bt, Core.bundle.format("bullet.splashdamage",  (autoFixedCustom(st.splashDamage * st.minDmgMul) + "-" + autoFixedCustom(st.splashDamage * st.maxDmgMul)), Strings.fixed(st.splashDamageRadius / tilesize, 1)));
                         }
 
                         if (type.splashDamage > 0 && type instanceof EffectivenessMissleType m && m.groundDamageSplashMultiplier != 1f) {
                             float val = (m.flatDamage ? (m.groundDamageMultiplier / m.damage) * 100 -100 : m.groundDamageMultiplier * 100 - 100);
-                            sep(bt, Core.bundle.format("stat.olupis-splashpenalty", ammoStat(val), m.flatDamage ? m.groundDamageMultiplier : m.damage * m.groundDamageMultiplier, 2));
+                            sep(bt, Core.bundle.format("stat.olupis-splashpenalty",  autoFixedCustom(m.flatDamage ? m.groundDamageSplashMultiplier : m.damage * m.groundDamageSplashMultiplier), ammoStat(val)));
                         }
 
-
-                        if (!compact && !Mathf.equal(type.ammoMultiplier, 1f) && type.displayAmmoMultiplier && (!(t instanceof Turret turret) || turret.displayAmmoMultiplier)) {
-                            sep(bt, Core.bundle.format("bullet.multiplier", (int) type.ammoMultiplier));
+                        if(type.statLiquidConsumed <= 0f && !compact && !Mathf.equal(type.ammoMultiplier, 1f) && type.displayAmmoMultiplier && (!(t instanceof Turret turret) || turret.displayAmmoMultiplier)){
+                            sep(bt, Core.bundle.format("bullet.multiplier", (int)type.ammoMultiplier));
                         }
 
                         if (!compact && !Mathf.equal(type.reloadMultiplier, 1f)) {
@@ -273,6 +296,10 @@ public class NyfalisStats extends StatValues {
                             sep(bt, "@bullet.armorpierce");
                         }
 
+                        if(type.maxDamageFraction > 0){
+                            sep(bt, Core.bundle.format("bullet.maxdamagefraction", (int)(type.maxDamageFraction * 100)));
+                        }
+
                         if (type.suppressionRange > 0) {
                             sep(bt, Core.bundle.format("bullet.suppression", Strings.autoFixed(type.suppressionDuration / 60f, 2), Strings.fixed(type.suppressionRange / tilesize, 1)));
                         }
@@ -281,9 +308,12 @@ public class NyfalisStats extends StatValues {
                             sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + (Strings.autoFixed(type.statusDuration / 60f, 1)) + "[lightgray] " + Core.bundle.get("unit.seconds")));
                         }
 
-                        if (type instanceof EffectivenessMissleType m && m.groundDamageMultiplier != 1f) {
-                            float val = (m.flatDamage ? (m.groundDamageMultiplier / m.damage) * 100 -100 : m.groundDamageMultiplier * 100 - 100);
-                            sep(bt, Core.bundle.format("stat.olupis-groundpenalty", ammoStat(val), m.flatDamage ? m.groundDamageMultiplier : m.damage * m.groundDamageMultiplier, 2));
+                        if(!type.targetMissiles){
+                            sep(bt, "@bullet.notargetsmissiles");
+                        }
+
+                        if(!type.targetBlocks){
+                            sep(bt, "@bullet.notargetsbuildings");
                         }
 
                         if (t instanceof  NyfalisUnitType nu && nu.weaponsStartEmpty){
@@ -359,7 +389,31 @@ public class NyfalisStats extends StatValues {
                         if(weapon instanceof PointDefenseWeapon) sep(w, "@stat.olupis-pointdefence");
 
                         w.row();
+                        //Cant be bothered, since some units use van weapons for reasons
+                        if(weapon.inaccuracy > 0){
+                            w.row();
+                            w.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + (int)weapon.inaccuracy + " " + StatUnit.degrees.localized());
+                        }
+                        if(!weapon.alwaysContinuous && weapon.reload > 0 && !weapon.bullet.killShooter){
+                            w.row();
+                            w.add("[lightgray]" + Stat.reload.localized() + ": " + (weapon.mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / weapon.reload * weapon.shoot.shots, 2) + " " + StatUnit.perSecond.localized());
+                        }
+
                         ammoWithInfo(ObjectMap.of(unit, weapon.bullet), unit).display(w);
+
+                        if(weapon.shootOnDeath || (weapon instanceof NyfalisWeapon nyf && nyf.fireOnTimeOut)){
+                            w.row();
+                            w.add(Core.bundle.get("stat.olupis-deathshoot"));
+                        }
+                        if(weapon instanceof  NyfalisWeapon nyf){
+                            if(nyf.groundShoot && !nyf.boostShoot){
+                                w.row();
+                                w.add(Core.bundle.get("stat.olupis-grounded"));
+                            }else if(!nyf.groundShoot && nyf.boostShoot){
+                                w.row();
+                                w.add(Core.bundle.get("stat.olupis-boosted"));
+                            }
+                        }
                     }).growX().pad(5.0F).margin(10.0F);
                     table.row();
                 }
@@ -398,6 +452,14 @@ public class NyfalisStats extends StatValues {
         }).left().row();
     }
 
+
+    private static void title(Table table, Item item){
+        table.table(te -> {
+            te.add(StatValues.displayItem(item, 0, false)).size(3 * 8).left().scaling(Scaling.fit).top();
+            te.add(item.localizedName).padLeft(10f).left().top();
+        }).left().row();
+    }
+
     private static void title(Table table, String text, TextureRegion icon, Color colour){
         table.table(te -> {
             te.image(icon).size(3 * 8).left().scaling(Scaling.fit).color(colour).top();
@@ -408,6 +470,12 @@ public class NyfalisStats extends StatValues {
     //for AmmoListValue
     private static String ammoStat(float val){
         return (val > 0 ? "[stat]+" : "[negstat]") + Strings.autoFixed(val, 1);
+    }
+
+    private static String autoFixedCustom(Float in){
+        String out =Strings.autoFixed(in, 2);
+        if(1 > in) return "[#e0a387]" + out + "[]";
+        return out;
     }
 
     public static StatValue sawBoosters(float reload, float maxUsed, float multiplier, boolean baseReload, Boolf<Liquid> filter) {

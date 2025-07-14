@@ -41,6 +41,7 @@ import static mindustry.Vars.*;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisColors.*;
 import static olupis.content.NyfalisItemsLiquid.*;
+import static olupis.content.NyfalisItemsLiquid.steam;
 import static olupis.world.ai.NyfalisPathfind.costLeggedNaval;
 
 public class NyfalisUnits {
@@ -1140,7 +1141,7 @@ public class NyfalisUnits {
             engineSize = -1;
             rotateSpeed = 1.72f;
             weapons.add(
-                new Weapon(""){{
+                new NyfalisWeapon("", false, true){{
                     x = -0.1f;
                     y = 1.25f;
                     shootX = 6f;
@@ -1310,7 +1311,7 @@ public class NyfalisUnits {
             rotateSpeed = 1.72f;
             range = 25 * Vars.tilesize;
             weapons.add(
-                new Weapon(""){{
+                new NyfalisWeapon("", false, true){{
                     x = 10f;
                     y = 1.25f;
                     reload = 65f;
@@ -2054,33 +2055,58 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
             controller = u -> new SearchAndDestroyFlyingAi(true);
-            weapons.add(new NyfalisWeapon(){{
-                y = x = 0f;
-                reload = 10f;
-                shootCone = 15f;
-                targetInterval = 30f;
-                ammoPerShot = 2;
-                targetSwitchInterval = 60f;
+            weapons.addAll(
+                new NyfalisWeapon(){{
+                    y = x = 0f;
+                    reload = 10f;
+                    shootCone = 15f;
+                    targetInterval = 30f;
+                    ammoPerShot = 2;
+                    targetSwitchInterval = 60f;
 
-                shootSound = Sounds.pew;
-                ammoType = lifeTimeWeapon;
-                /*Gave up using LiquidBulletType*/
-                bullet = new NoBoilLiquidBulletType(NyfalisItemsLiquid.steam){{
-                    useAmmo = true;
-                    pierce = true;
+                    shootSound = Sounds.pew;
+                    ammoType = lifeTimeWeapon;
+                    /*Gave up using LiquidBulletType*/
+                    bullet = new NoBoilLiquidBulletType(NyfalisItemsLiquid.steam){{
+                        useAmmo = true;
+                        pierce = true;
 
-                    speed = 2f;
-                    lifetime = 18f;
-                    damage = 10f;
-                    pierceCap = 1;
-                    ammoMultiplier = 1.5f;
-                    statusDuration = 1.5f *60f;
-                    buildingDamageMultiplier = 0f;
-                    status = StatusEffects.corroded;
-                    shootEffect = Fx.shootLiquid;
-                    despawnEffect = hitEffect = Fx.steam;
-                }};
-            }});
+                        speed = 2f;
+                        lifetime = 18f;
+                        damage = 10f;
+                        pierceCap = 1;
+                        ammoMultiplier = 1.5f;
+                        statusDuration = 1.5f *60f;
+                        buildingDamageMultiplier = 0f;
+                        status = StatusEffects.corroded;
+                        shootEffect = Fx.shootLiquid;
+                        despawnEffect = hitEffect = Fx.steam;
+                    }};
+                }},
+                new NyfalisWeapon(){{
+                    reload = 24f;
+                    x = shootY = 0f;
+                    shootCone = 180f;
+                    soundPitchMax = 6f;
+                    soundPitchMin = 0.2f;
+                    ejectEffect = Fx.none;
+                    ammoPerShot = ammoCapacity ;
+                    shootSound = Sounds.none;
+                    mirror = false;
+                    shootOnDeath = fireOnTimeOut = true;
+                    bullet = new BulletType(){{
+                        fragBullet = new FirePuddleBulletType(20,10, true){{
+                            splashDelay = 3;
+                            splashAmount = 1;
+                            specialEffect = Fx.fireSmoke;
+                            applySound = Sounds.none;
+                            frontColor = backColor =  steam.color;
+                            particleColor = steam.color;
+                            particleEffect = Fx.hitLiquid;
+                        }};
+                    }};
+                }}
+            );
         }};
 
         //fires 2 roll bullets in quick succession

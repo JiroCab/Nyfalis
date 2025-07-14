@@ -7,7 +7,6 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
-import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -77,21 +76,24 @@ public class PowerUnitTurret extends ItemUnitTurret {
                 if (displayUnit == null || internalItem == null) return;
                 nu.row();
                 nu.table(Styles.grayPanel, b -> {
-                    if (!displayUnit.isBanned())
-                        b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                    else
-                        b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+                    if (!displayUnit.isBanned()){
+                        b.add(new Image(displayUnit.uiIcon)).with(owo -> owo.clicked(() -> ui.content.show(displayUnit))).size(40).padLeft(10f).scaling(Scaling.fit);
+                        b.table(info -> {
+                            if (internalItem != null) info.table(title -> {
+                                title.image(internalItem.uiIcon).size(3 * 8).left().scaling(Scaling.fit).top();
+                                title.add(Core.bundle.get("stat.olupis-unitpowercost")).left().top().padLeft(5f);
+                            }).left().row();
+                            info.add(displayUnit.localizedName).left().row();
+                            info.add("[lightgray]"+Math.round(NyfalisStats.unitReloadTime(ammoTypes.get(internalItem).reloadMultiplier) * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
+                            if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
+                        });
+                        b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
+                    }
+                    else{
+                        b.image(Icon.cancel.getRegion()).color(Pal.remove).size(30).pad(10f).left().scaling(Scaling.fit);
+                        b.image(displayUnit.uiIcon).size(30).pad(10f).left().scaling(Scaling.fit);
+                    }
 
-                    b.table(info -> {
-                        if (internalItem != null) info.table(title -> {
-                            title.image(internalItem.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
-                            title.add(Core.bundle.get("stat.olupis-unitpowercost")).left().top().padLeft(5f);
-                        }).left().row();
-                        info.add(displayUnit.localizedName).left().row();
-                        info.add("[lightgray]"+Math.round(NyfalisStats.unitReloadTime(ammoTypes.get(internalItem).reloadMultiplier) * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
-                        if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
-                    });
-                    b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
                 }).growX().pad(5).row();
             }).growX().pad(5).row();
 
@@ -99,45 +101,24 @@ public class PowerUnitTurret extends ItemUnitTurret {
             table.image().color(Pal.accent).height(3.0F).pad(3.0F).growX().row();
 
             //Items
-            table.add(new Table(NyfalisColors.infoPanel, b ->{
-                b.button(Icon.upOpen, Styles.emptyi, () -> show[0] = !show[0]).update(i -> i.getStyle().imageUp = (!show[0] ? Icon.upOpen : Icon.downOpen)).pad(10).padRight(4).left();
-                for(ItemStack stack : requiredItems){
-                    b.table(z -> { //v8 / Be removed itemsdiplay & i cant be bother to set up compiling equivalent so this is why this exists
-                        z.add(new Image(stack.item.uiIcon)).size(32f).scaling(Scaling.fit);
-                        z.add(new Table(t -> {
-                            t.left().bottom();
-                            t.add(stack.amount >= 1000 ? UI.formatAmount(stack.amount) : stack.amount + "").style(Styles.outlineLabel);
-                            t.pack();
-                        }));
-                    });
-                }
-            }).align(Align.center)).growX().pad(5);
-            table.row();
+            if((requiredItems.length > 0)){
+                table.add(new Table(NyfalisColors.infoPanel, b ->{
+                    b.button(Icon.upOpen, Styles.emptyi, () -> show[0] = !show[0]).update(i -> i.getStyle().imageUp = (!show[0] ? Icon.upOpen : Icon.downOpen)).pad(10).padRight(4).left();
+                    b.table(bt -> {
+                        for(ItemStack stack : requiredItems) bt.add(StatValues.displayItem(stack.item, stack.amount, false));
+                    }).center().growX();
+                }).align(statArticulator != null ? Align.center : Align.left)).growX().pad(5);
+                table.row();
+            }
+
+            HashMap<Item, BulletType> nor = new HashMap<>();
+            this.ammoTypes.each((item, bul) -> {
+                if(item != internalItem) nor.put(item, bul);
+            });
 
             //Units
-            table.collapser(nu -> this.ammoTypes.each((item, bul) -> {
-                UnitType displayUnit = bul.spawnUnit;
-                if (displayUnit == null || item == internalItem) return;
-                nu.row();
-                nu.table(Styles.grayPanel, b -> {
-                    if (!displayUnit.isBanned())
-                        b.image(displayUnit.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                    else
-                        b.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+            statsUnitLists(table, () -> show[0], nor);
 
-                    b.table(info -> {
-                        if (item != null) info.table(title -> {
-                            title.image(item.fullIcon).size(3 * 8).left().scaling(Scaling.fit).top();
-                            title.add(item.localizedName).left().top().padLeft(5f);
-                        }).left().row();
-                        info.add(displayUnit.localizedName).left().row();
-                        float mul  = 1 + Math.abs(1 - bul.reloadMultiplier);
-                        info.add("[lightgray]"+Math.round(mul * reload / 60) + " " + StatUnit.seconds.localized()).left().row();
-                        if (Core.settings.getBool("console")) info.add(displayUnit.name).left().color(Color.lightGray);
-                    });
-                    b.button("?", Styles.flatBordert, () -> ui.content.show(displayUnit)).size(40f).pad(10).right().grow().visible(displayUnit::unlockedNow);
-                }).growX().pad(5).row();
-            }), () -> show[0]).growX();
         });
     }
 

@@ -134,174 +134,165 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(rustyIron, 50, lead, 25));
         }};
 
-        avenger = new AirPriorityItemTurret("avenger"){
-            {
-                targetAir = slowFogOfWar = emitLight = true;
-                size = 3;
-                recoil = 0;
-                reload = 42f;
-                health = 300;
-                range = 34 * 8;
-                lightRadius = 320;
-                rotateSpeed = 0;
-                shootCone = 360;
-                inaccuracy = 180;
-                minWarmup = 0.96f;
-                shootY = shootX= 0f;
-                coolantMultiplier = 2.5f;
-                warmupMaintainTime = 1f;
-                fogRadiusMultiplier = 0.75f;
-                shootWarmupSpeed = 0.11f;
+        avenger = new AirPriorityItemTurret("avenger"){{
+            targetAir = slowFogOfWar = emitLight = true;
+            size = 3;
+            recoil = 0;
+            reload = 42f;
+            health = 300;
+            range = 34 * 8;
+            lightRadius = 320;
+            rotateSpeed = 0;
+            shootCone = 360;
+            inaccuracy = 180;
+            minWarmup = 0.96f;
+            shootY = shootX= 0f;
+            coolantMultiplier = 2.5f;
+            warmupMaintainTime = 1f;
+            fogRadiusMultiplier = 0.75f;
+            shootWarmupSpeed = 0.11f;
 
-                final float groundPenalty = 0.05f, splashPenalty = 0.05f;
-                ammo(
-                    copper, new EffectivenessMissleType(4.8f, 20f){{
-                        width = 6f;
-                        shrinkX = 0;
-                        lifetime = 70f;
-                        height = 10.5f;
-                        knockback = 0.4f;
-                        splashDamage = 10f;
-                        statusDuration = 120f;
-                        homingPower = 0.1f;
-                        homingRange = 34 * 8;
-                        splashDamageRadius = 25f * 0.75f;
-                        backColor = trailColor = copper.color;
-                        collidesAir = collidesGround = flatDamage = true;
-                        shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
-                        status = StatusEffects.shocked;
-                        groundDamageMultiplier = groundPenalty;
-                        groundDamageSplashMultiplier = splashPenalty;
+            final float groundPenalty = 0.05f, splashPenalty = 0.05f;
+            ammo(
+                copper, new EffectivenessMissleType(4.8f, 20f){{
+                    width = 6f;
+                    shrinkX = 0;
+                    lifetime = 70f;
+                    height = 10.5f;
+                    knockback = 0.4f;
+                    splashDamage = 10f;
+                    statusDuration = 120f;
+                    homingPower = 0.1f;
+                    homingRange = 34 * 8;
+                    splashDamageRadius = 25f * 0.75f;
+                    backColor = trailColor = copper.color;
+                    collidesAir = collidesGround = flatDamage = true;
+                    shootEffect = Fx.shootBigColor;
+                    hitEffect = NyfalisFxs.hollowPointHit;
+                    status = StatusEffects.shocked;
+                    groundDamageMultiplier = groundPenalty;
+                    groundDamageSplashMultiplier = splashPenalty;
+                }},
+                lead, new EffectivenessMissleType(4.8f, 60f){{
+                    width = 6f;
+                    shrinkX = 0;
+                    lifetime = 70;
+                    height = 10.5f;
+                    inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
+                    knockback = 0.4f;
+                    splashDamage = 10f;
+                    statusDuration = 60f;
+                    homingPower = 0.4f;
+                    homingRange = 34 * 8;
+                    splashDamageRadius = 25f * 0.75f;
+                    backColor = trailColor = lead.color;
+                    collidesAir = collidesGround = flatDamage = true;
+                    shootEffect = Fx.shootBigColor;
+                    hitEffect = NyfalisFxs.hollowPointHit;
+                    status = NyfalisStatusEffects.drained;
+                    groundDamageMultiplier = groundPenalty;
+                    groundDamageSplashMultiplier = splashPenalty;
+                }},
+                iron, new EffectivenessMissleType(5.2f, 80f){{
+                    width = 6f;
+                    shrinkX = 0;
+                    lifetime = 70;
+                    height = 10.5f;
+                    inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
+                    knockback = 0.4f;
+                    splashDamage = 10f;
+                    statusDuration = 60f;
+                    homingPower = 0.04f;
+                    homingRange = 34 * 8;
+                    splashDamageRadius = 25f * 0.75f;
+                    backColor = trailColor = iron.color;
+                    collidesAir = collidesGround = flatDamage = true;
+                    shootEffect = Fx.shootBigColor;
+                    hitEffect = NyfalisFxs.hollowPointHit;
+                    status = StatusEffects.slow;
+                    groundDamageMultiplier = groundPenalty;
+                    groundDamageSplashMultiplier = splashPenalty;
+                }},
+                graphite, new EffectivenessMissleType(6f, 110f){{
+                    width = 7f;
+                    shrinkX = 0;
+                    height = 11f;
+                    lifetime = 60;
+                    trailChance = 0;
+                    trailLength = 3;
+                    inaccuracy = 20; // more refined firing
+                    knockback = 0.4f;
+                    homingPower = 0.04f;
+                    homingRange = 34 * 8;
+                    backColor = trailColor = graphite.color;
+                    collidesAir = collidesGround = flatDamage = true;
+                    shootEffect = Fx.shootBigColor;
+                    hitEffect = Fx.hitBulletSmall;
+                    groundDamageMultiplier = groundPenalty;
+                    groundDamageSplashMultiplier = splashPenalty;
+                }},
+                cobalt, new EffectivenessMissleType(4.8f, 20f){{
+                    width = 6f;
+                    shrinkX = 0;
+                    lifetime = 70;
+                    height = 10.5f;
+                    knockback = 0.4f;
+                    inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
+                    splashDamage = 10f;
+                    statusDuration = 20f;
+                    homingPower = 0.5f;
+                    homingRange = 34 * 8;
+                    splashDamageRadius = 25f * 0.75f;
+                    backColor = trailColor = cobalt.color;
+                    absorbable = false;
+                    collidesAir =  collidesGround = flatDamage = true;
+                    shootEffect = Fx.shootBigColor;
+                    hitEffect = NyfalisFxs.hollowPointHit;
+                    status = NyfalisStatusEffects.corupt;
+                    groundDamageMultiplier = groundPenalty;
+                    groundDamageSplashMultiplier = splashPenalty;
+                }}
+            );
+            lightColor = floodLightColor;
+            limitRange(3f);
+            shootSound = Sounds.missile;
+            shootEffect = Fx.blastsmoke;
+
+            drawer = new DrawTurret(){{
+                parts.add(
+                    new RegionPart("-door-bl"){{
+                        progress = PartProgress.warmup;
+                        moveX = moveY = -2.8f;
+                        layerOffset = -2.8f;
+                        mirror = outline = false;
                     }},
-                    lead, new EffectivenessMissleType(4.8f, 60f){{
-                        width = 6f;
-                        shrinkX = 0;
-                        lifetime = 70;
-                        height = 10.5f;
-                        inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
-                        knockback = 0.4f;
-                        splashDamage = 10f;
-                        statusDuration = 60f;
-                        homingPower = 0.4f;
-                        homingRange = 34 * 8;
-                        splashDamageRadius = 25f * 0.75f;
-                        backColor = trailColor = lead.color;
-                        collidesAir = collidesGround = flatDamage = true;
-                        shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
-                        status = NyfalisStatusEffects.drained;
-                        groundDamageMultiplier = groundPenalty;
-                        groundDamageSplashMultiplier = splashPenalty;
+                    new RegionPart("-door-tl"){{
+                        progress = PartProgress.warmup;
+                        moveX = -2.8f;
+                        moveY = 2.8f;
+                        layerOffset = -2;
+                        mirror = outline = false;
                     }},
-                    iron, new EffectivenessMissleType(5.2f, 80f){{
-                        width = 6f;
-                        shrinkX = 0;
-                        lifetime = 70;
-                        height = 10.5f;
-                        inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
-                        knockback = 0.4f;
-                        splashDamage = 10f;
-                        statusDuration = 60f;
-                        homingPower = 0.04f;
-                        homingRange = 34 * 8;
-                        splashDamageRadius = 25f * 0.75f;
-                        backColor = trailColor = iron.color;
-                        collidesAir = collidesGround = flatDamage = true;
-                        shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
-                        status = StatusEffects.slow;
-                        groundDamageMultiplier = groundPenalty;
-                        groundDamageSplashMultiplier = splashPenalty;
+                    new RegionPart("-door-br"){{
+                        progress = PartProgress.warmup;
+                        moveX = 2.8f;
+                        moveY = -2.8f;
+                        layerOffset = -2;
+                        mirror = outline = false;
                     }},
-                    graphite, new EffectivenessMissleType(6f, 110f){{
-                        width = 7f;
-                        shrinkX = 0;
-                        height = 11f;
-                        lifetime = 60;
-                        trailChance = 0;
-                        trailLength = 3;
-                        inaccuracy = 20; // more refined firing
-                        knockback = 0.4f;
-                        homingPower = 0.04f;
-                        homingRange = 34 * 8;
-                        backColor = trailColor = graphite.color;
-                        collidesAir = collidesGround = flatDamage = true;
-                        shootEffect = Fx.shootBigColor;
-                        hitEffect = Fx.hitBulletSmall;
-                        groundDamageMultiplier = groundPenalty;
-                        groundDamageSplashMultiplier = splashPenalty;
-                    }},
-                    cobalt, new EffectivenessMissleType(4.8f, 20f){{
-                        width = 6f;
-                        shrinkX = 0;
-                        lifetime = 70;
-                        height = 10.5f;
-                        knockback = 0.4f;
-                        inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
-                        splashDamage = 10f;
-                        statusDuration = 20f;
-                        homingPower = 0.5f;
-                        homingRange = 34 * 8;
-                        splashDamageRadius = 25f * 0.75f;
-                        backColor = trailColor = cobalt.color;
-                        absorbable = false;
-                        collidesAir =  collidesGround = flatDamage = true;
-                        shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
-                        status = NyfalisStatusEffects.corupt;
-                        groundDamageMultiplier = groundPenalty;
-                        groundDamageSplashMultiplier = splashPenalty;
+                    new RegionPart("-door-tr"){{
+                        progress = PartProgress.warmup;
+                        moveX = moveY = 2.8f;
+                        layerOffset = -2;
+                        mirror = outline = false;
                     }}
                 );
-                lightColor = floodLightColor;
-                limitRange(3f);
-                shootSound = Sounds.missile;
-                shootEffect = Fx.blastsmoke;
 
-                drawer = new DrawTurret(){{
-                    parts.add(
-                        new RegionPart("-door-bl"){{
-                            progress = PartProgress.warmup;
-                            moveX = moveY = -2.8f;
-                            layerOffset = -2.8f;
-                            mirror = outline = false;
-                        }},
-                        new RegionPart("-door-tl"){{
-                            progress = PartProgress.warmup;
-                            moveX = -2.8f;
-                            moveY = 2.8f;
-                            layerOffset = -2;
-                            mirror = outline = false;
-                        }},
-                        new RegionPart("-door-br"){{
-                            progress = PartProgress.warmup;
-                            moveX = 2.8f;
-                            moveY = -2.8f;
-                            layerOffset = -2;
-                            mirror = outline = false;
-                        }},
-                        new RegionPart("-door-tr"){{
-                            progress = PartProgress.warmup;
-                            moveX = moveY = 2.8f;
-                            layerOffset = -2;
-                            mirror = outline = false;
-                        }}
-                    );
-
-                }};
-                researchCost = with(lead, 100, rustyIron, 100);
-                coolant = consume(new ConsumeLubricant(30f / 60f));
-                requirements(Category.turret, with(rustyIron, 20, lead, 40));
-            }
-
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
-            }
-        };
+            }};
+            researchCost = with(lead, 100, rustyIron, 100);
+            coolant = consume(new ConsumeLubricant(30f / 60f));
+            requirements(Category.turret, with(rustyIron, 20, lead, 40));
+        }};
 
         slash = new NyfalisPowerCutter("slash"){{
             reload = 6;
@@ -578,15 +569,7 @@ public class NyfalisTurrets {
                 }}
             );
             limitRange();
-        }
-
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
-            }
-        };
+        }};
 
         corroder = new NyfalisLiquidTurret("corroder"){{ //architronito
             targetAir = emitLight = true;
@@ -704,15 +687,7 @@ public class NyfalisTurrets {
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
             requirements(Category.turret, with(quartz, 25, iron, 30));
 
-        }
-
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
-            }
-        };
+        }};
 
         //TODO: Mixed items can stop firing at all
         strata = new NyfalisItemTurret("strata"){{
@@ -864,6 +839,7 @@ public class NyfalisTurrets {
                     }};
                 }}
             );
+            statsBlocksOnly = true;
             drawer = new DrawTurret(){{
                 targetAir = false;
                 shootCone = 360;
@@ -900,14 +876,7 @@ public class NyfalisTurrets {
             coolant = consume(new ConsumeLubricant(35f / 60f));
             requirements(Category.turret, with(iron, 100, copper, 150, silicon, 50, quartz, 100));
 
-        }
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, NyfalisStats.ammoBlocksOnly(ammoTypes, this));
-            }
-        };
+        }};
 
         aegis = new AirPriorityItemTurret("aegis"){
             {
@@ -1174,15 +1143,7 @@ public class NyfalisTurrets {
                 coolantMultiplier = 2.2f;
                 requirements(Category.turret, with(iron, 100, quartz, 200, alcoAlloy, 75, silicon, 75));
                 limitRange(1f);
-            }
-
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
-            }
-        };
+        }};
 
         laceration = new NyfalisPowerTurret("laceration"){{
             emitLight = true;
@@ -1452,15 +1413,7 @@ public class NyfalisTurrets {
                     }}
             );
             limitRange(2f);
-        }
-
-            @Override
-            public void setStats() {
-                super.setStats();
-                stats.remove(Stat.ammo);
-                stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
-            }
-        };
+        }};
 
         //alternateAmalgamator connected give this :full map range" (always fireing) but range still the same & spawns are not in frog of war targeting only
         hive = new ItemUnitTurret("hive"){{

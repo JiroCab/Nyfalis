@@ -1,9 +1,14 @@
 package olupis.world.entities.abilities;
 
+import arc.*;
+import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.entities.abilities.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+
+import static mindustry.Vars.tilesize;
 
 public class DeathStatusAbility extends Ability{
     public float range = 30 * Vars.tilesize, effectDuration = 60f * 10f;
@@ -23,6 +28,12 @@ public class DeathStatusAbility extends Ability{
         this.effectDuration = effectDuration;
     }
 
+    @Override
+    public void addStats(Table t){
+        t.add(Core.bundle.format("bullet.range", Strings.autoFixed(range / tilesize, 2)));
+        t.row();
+        t.add((effect.hasEmoji() ? effect.emoji() : "") + "[stat]" + effect.localizedName);
+    }
 
     @Override
     public void death(Unit unit){

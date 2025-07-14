@@ -222,13 +222,13 @@ public class NyfalisUnitType extends UnitType {
 
         /*We have a weird tech tree, this just makes it easier for the player's end*/
         if(displayFactory.size >= 1){
-            stats.add(Stat.input, table -> displayFactory.each(fac -> {
+            stats.add(new Stat("olupis-relevant", StatCat.optional), table -> displayFactory.each(fac -> {
                 table.row();
-                table.table(Styles.grayPanel, t -> {
+                table.table(NyfalisColors.infoPanel, t -> {
                     boolean show = (fac instanceof Block b && b.isVisible()) || (fac instanceof  UnitType u && !u.isBanned());
                     if(!fac.unlocked() && (Vars.state.isCampaign() || !Vars.state.isPlaying())) t.image(Icon.lock.getRegion()).tooltip(fac.localizedName).size(25).pad(10f).left().scaling(Scaling.fit);
                     else {
-                        if(show) t.image(fac.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+                        if(show) t.image(fac.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit).get().clicked(()-> ui.content.show(fac));
                         else t.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
                         t.table(info -> {
                             info.add(fac.localizedName).left();
@@ -239,7 +239,7 @@ public class NyfalisUnitType extends UnitType {
                         });
                         t.button("?", Styles.flatBordert, () -> ui.content.show(fac)).size(40f).pad(10).right().grow().visible(fac::unlockedNow);
                     }
-                }).growX().pad(5).row();
+                }).growX().padBottom(5f).padLeft(10f).padRight(10f).row();
             }));
         }
 

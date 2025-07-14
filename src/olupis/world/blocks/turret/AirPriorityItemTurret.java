@@ -1,17 +1,14 @@
 package olupis.world.blocks.turret;
 
-import arc.math.Mathf;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.Vars;
-import mindustry.entities.Units;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
+import arc.math.*;
+import arc.util.io.*;
+import mindustry.*;
+import mindustry.entities.*;
+import mindustry.graphics.*;
 
 import static mindustry.Vars.*;
 
-public class AirPriorityItemTurret extends ItemTurret {
+public class AirPriorityItemTurret extends NyfalisItemTurret {
     public float discoveryTime = 60f * 60f * 1f;
     public float illuminateTime = 30f;
     public boolean slowFogOfWar = false;

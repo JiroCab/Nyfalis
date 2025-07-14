@@ -7,6 +7,7 @@ import mindustry.world.meta.*;
 import olupis.world.entities.*;
 
 public class NyfalisItemTurret extends ItemTurret {
+    public boolean statsBlocksOnly = false;
     public float illuminateTime = 30f;
 
     public  NyfalisItemTurret(String name){
@@ -24,7 +25,8 @@ public class NyfalisItemTurret extends ItemTurret {
     public void setStats() {
         super.setStats();
         stats.remove(Stat.ammo);
-        stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
+        if(statsBlocksOnly) stats.add(Stat.ammo, NyfalisStats.ammoBlocksOnly(ammoTypes, this));
+        else stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
     }
 
     public class NyfalisItemTurretBuild extends ItemTurretBuild{

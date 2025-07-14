@@ -21,6 +21,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
+import olupis.world.entities.*;
 import olupis.world.entities.parts.*;
 
 import static mindustry.Vars.world;
@@ -64,7 +65,7 @@ public class UnstablePowerTurret extends PowerTurret {
     public void setStats() {
         super.setStats();
         this.stats.remove(Stat.ammo);
-        this.stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(new Object[]{this, this.shootType})));
+        this.stats.add(Stat.ammo, NyfalisStats.ammo(ObjectMap.of(new Object[]{this, this.shootType})));
         this.stats.remove(Stat.booster);
         this.stats.add(Stat.input, StatValues.boosters(this.reload, this.coolant.amount, this.coolantMultiplier, false, this::consumesLiquid));
     }

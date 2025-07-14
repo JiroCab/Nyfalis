@@ -87,7 +87,7 @@ public class Fabricator extends Reconstructor {
                             tab.table(Styles.grayPanel, t -> {
                                 t.left();
 
-                                t.image(upgrade[0].uiIcon).size(40).pad(10f).left().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[0]));
+                                t.image(upgrade[0].uiIcon).size(40).pad(10f).left().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[0]).clicked(() -> ui.content.show(upgrade[0])));
                                 t.table(info -> {
                                     info.add(upgrade[0].localizedName).left();
                                     info.row();
@@ -98,7 +98,7 @@ public class Fabricator extends Reconstructor {
                                         int[] count = {0};
                                         for(int j = 2; j < upgrade.length; j++){
                                             int finalJ = j;
-                                            info.image(upgrade[j].uiIcon).size(30).pad(10f).center().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[finalJ], true));
+                                            info.image(upgrade[j].uiIcon).size(30).pad(10f).center().scaling(Scaling.fit).with(im -> StatValues.withTooltip(im, upgrade[finalJ], true).clicked(() -> ui.content.show(upgrade[finalJ])));
                                             count[0]++;
                                             if(count[0] >= 3){
                                                 count[0] = 0;
@@ -134,7 +134,7 @@ public class Fabricator extends Reconstructor {
                     table.add(new Table(NyfalisColors.infoPanel, r ->{
                         r.add(new Table(c ->{
                             c.add(new Table(o -> {
-                                o.add(new Image(statArticulator.uiIcon)).size(32f).scaling(Scaling.fit);
+                                o.add(new Image(statArticulator.uiIcon)).with(owo -> owo.clicked(() -> ui.content.show(statArticulator))).size(32f).scaling(Scaling.fit);
                             })).left().pad(10f);
                             c.table(info -> {
                                 info.add(statArticulator.localizedName).left();
