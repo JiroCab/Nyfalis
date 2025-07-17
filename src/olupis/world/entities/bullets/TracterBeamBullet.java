@@ -4,12 +4,14 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import olupis.world.entities.status.*;
 
 public class TracterBeamBullet extends ContinuousLaserBulletType {
     public TextureRegion laserEndSprite;
@@ -78,6 +80,10 @@ public class TracterBeamBullet extends ContinuousLaserBulletType {
 
     @Override
     public void applyDamage(Bullet b){
+        if(status instanceof TrackedSatusEffect ts && b.owner instanceof Unit own && b.data instanceof Unit tar){
+            ObjectFloatMap<Unit> ref = ts.valueMap.get(tar, ObjectFloatMap::new); // though wait let me check something in my older code
+            if(ref.get(own, -1) <= 0) ref.put(own, Time.time + statusDuration);
+        }
 
         if(b.data instanceof Hitboxc hit){
             hit.collision(b, hit.x(), hit.y());

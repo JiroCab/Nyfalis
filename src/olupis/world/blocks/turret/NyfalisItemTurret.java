@@ -1,13 +1,15 @@
 package olupis.world.blocks.turret;
 
-import arc.math.Mathf;
-import mindustry.graphics.Drawf;
-import mindustry.world.blocks.defense.turrets.ItemTurret;
+import arc.math.*;
+import mindustry.entities.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import olupis.world.entities.*;
 
 public class NyfalisItemTurret extends ItemTurret {
-    public boolean statsBlocksOnly = false;
+    public boolean statsBlocksOnly = false, angleCheck = false;
     public float illuminateTime = 30f;
 
     public  NyfalisItemTurret(String name){
@@ -43,6 +45,25 @@ public class NyfalisItemTurret extends ItemTurret {
         }
 
 
+        @Override
+        protected Posc findEnemy(float range){
+            if(!angleCheck) return super.findEnemy(range);
+
+            if(targetAir && !targetGround){
+                return Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded() &&  unitFilter.get(e) && rayCheck(e), unitSort);
+            }else{
+                var ammo = peekAmmo();
+                boolean buildings = targetGround && targetBlocks && (ammo == null || ammo.targetBlocks), missiles = ammo == null || ammo.targetMissiles;
+                return Units.bestTarget(team, x, y, range,
+                e -> rayCheck(e) && !e.dead() && unitFilter.get(e) && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround) && (missiles || !(e instanceof TimedKillc)),
+                b -> buildings && buildingFilter.get(b), unitSort);
+            }
+        }
+
+        public boolean rayCheck(Unit e ){
+            //todo
+            return true;
+        }
     }
 
 }

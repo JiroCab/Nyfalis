@@ -1040,14 +1040,14 @@ public class NyfalisUnits {
 
         reaper = new SnekUnitType("reaper"){{
             constructor = CrawlUnit::create;
-            accel = 3f;
+            accel = 1f;
             armor = 5;
             hitSize = 11f;
             health = 1600;
             segments = 3;
-            speed = 2.15f;
+            speed = 2f;
             segmentScl = 7f;
-            rotateSpeed = 15f;
+            rotateSpeed = 10f;
             legMoveSpace = 1.2f;
             crushDamage = 0.2f;
             segmentMaxRot = 80f;
@@ -1075,51 +1075,22 @@ public class NyfalisUnits {
                     bullet = new TracterBeamBullet(){{
                         continuous = true;
                         shake = 0f;
-                        width = 0.7f;
+                        width = 0.8f;
                         length = 100f;
                         lifetime = 20;
                         lightStroke = 10;
                         damage = 40 / 12f;
                         statusDuration = 60f;
                         absMag = absScl = 0f;
+                        ownerStatusDuration = 10f;
                         statusOnOwner = true;
                         layer = Layer.groundUnit - 0.01f;
-                        status = NyfalisStatusEffects.marked;
+                        status = NyfalisStatusEffects.magnetized;
                         ownerStatus = StatusEffects.slow;
                         incendChance = incendSpread = 0f;
-                        smokeEffect = shootEffect = Fx.none;
-                        chargeEffect = hitEffect = NyfalisFxs.hitTracter;
+                        smokeEffect = hitEffect = shootEffect = Fx.none;
+                        chargeEffect  = NyfalisFxs.hitTracter;
                         colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
-                    }};
-                }},
-                new SnekWeapon(""){{
-                    x = 0;
-                    y = -10f;
-                    shootSound = Sounds.flame;
-                    shootY = 2f;
-                    reload = 35f;
-                    shootCone = 360f;
-                    baseRotation = 180f;
-                    minShootVelocity = 0.1f; //So they don't dash while on the target or something
-                    weaponSegmentParent = 0;
-                    ignoreRotation = dashShoot = dashExclusive = partialControl = true;
-                    rotate = alternate = mirror = aiControllable = top = useAmmo = false;
-                    ejectEffect = Fx.none;
-                    bullet = new BulletType(4.2f, 37f){{
-                        ammoMultiplier = 3f;
-                        hitSize = 7f;
-                        lifetime = 13f;
-                        recoil = 10f;
-                        pierce = true;
-                        pierceBuilding = true;
-                        pierceCap = 2;
-                        statusDuration = 60f * 4;
-                        shootEffect = Fx.shootSmallFlame;
-                        hitEffect = Fx.hitFlameSmall;
-                        despawnEffect = Fx.none;
-                        status = StatusEffects.burning;
-                        keepVelocity = false;
-                        hittable = false;
                     }};
                 }});
         }};
@@ -1140,7 +1111,7 @@ public class NyfalisUnits {
             speed = 0.65f;
             engineSize = -1;
             rotateSpeed = 1.72f;
-            weapons.add(
+            weapons.addAll(
                 new NyfalisWeapon("", false, true){{
                     x = -0.1f;
                     y = 1.25f;

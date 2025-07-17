@@ -49,46 +49,75 @@ public class NyfalisTurrets {
         fracture = new NyfalisItemTurret("fracture"){{
             targetAir = false;
             ammo(
-                rustyIron,  new CappedIntervalBullet(5f, 27){{
+                rustyIron,  new CappedIntervalBullet(4.5f, 27){{
                     width = 4f;
                     height = 20f;
                     lifetime = 60f;
+                    knockback = 0.2f;
 
                     collidesAir = false;
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = rustyBulletBack;
                     frontColor =  rustyBullet;
+
+                    intervalBullet = this.copy();
                     intervalRandomSpread = 10f;
                     intervalSpread = 5f;
                     bulletInterval = 1f;
                     IntervalCap = 2;
-                    reloadMultiplier = 0.8f;
-                    ammoMultiplier = 1f;
-                    intervalBullet = new BasicBulletType(5f, 27){{
-                        width = 4f;
-                        height = 20f;
-                        lifetime = 58f;
-
-                        hitEffect = despawnEffect = Fx.hitBulletColor;
-                        hitColor = backColor = trailColor = rustyBulletBack;
-                        frontColor = rustyBullet;
-                        collidesAir = false;
-                    }};
                 }},
-                iron,  new CappedIntervalBullet(5f, 37){{
+                iron,  new BasicBulletType(3.7f, 37){{
                     pierce = pierceBuilding = true;
                     collidesAir = false;
 
                     width = 7f;
                     height = 10f;
                     lifetime = 60f;
-                    ammoMultiplier = 1.5f;
                     pierceCap = 2;
+                    rangeChange = 30f;
+                    ammoMultiplier = 1.5f;
+                    knockback = 0.3f;
                     sprite = "mine-bullet";
 
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = ironBulletBack;
                     frontColor = ironBullet;
+                }},
+                alcoAlloy,  new CappedIntervalBullet(5f, 40, "olupis-diamond-bullet"){{
+                    pierce = pierceBuilding = true;
+                    collidesAir = false;
+
+                    width = 7f;
+                    height = 10f;
+                    lifetime = 60f;
+                    knockback = 0.3f;
+                    ammoMultiplier = 1.5f;
+                    pierceCap = 2;
+
+                    hitEffect = despawnEffect = Fx.hitBulletColor;
+                    hitColor = backColor = trailColor = alcoBulletBack;
+                    frontColor = alcoBullet;
+                    intervalBullet =  this.copy();
+                    intervalSpread = 5f;
+                    intervalRandomSpread = 10f;
+                    bulletInterval = IntervalCap = 1;
+                }},
+                aluminum,  new BasicBulletType(5f, 60){{
+                    pierce = pierceBuilding = true;
+                    collidesAir = false;
+
+                    width = 7f;
+                    height = 10f;
+                    lifetime = 60f;
+                    knockback = 0.5f;
+                    pierceCap = 2;
+                    ammoMultiplier = 1.5f;
+                    rangeChange = 30f;
+                    sprite = "mine-bullet";
+
+                    hitEffect = despawnEffect = Fx.hitBulletColor;
+                    hitColor = backColor = trailColor = alcoBulletBack;
+                    frontColor = alcoBullet;
                 }}
             );
 
@@ -99,9 +128,10 @@ public class NyfalisTurrets {
             range = 180;
             fogRadius = 140;
             shootCone = 5f;
+            shootSound = NyfalisSounds.cncRa2DestoryerOsprey;
             ammoUseEffect = Fx.casing1;
             shootEffect = Fx.shootLiquid;
-            health = 250;
+            health = 350;
             inaccuracy = 5f;
             rotateSpeed = 15f;
             researchCostMultiplier = 0.05f;
@@ -154,23 +184,25 @@ public class NyfalisTurrets {
 
             final float groundPenalty = 0.05f, splashPenalty = 0.05f;
             ammo(
-                copper, new EffectivenessMissleType(4.8f, 20f){{
+                copper, new EffectivenessMissleType(5f, 20f){{
                     width = 6f;
                     shrinkX = 0;
                     lifetime = 70f;
                     height = 10.5f;
-                    knockback = 0.4f;
-                    splashDamage = 10f;
+                    reloadMultiplier = 1.15f;
+                    inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
                     statusDuration = 120f;
-                    homingPower = 0.1f;
-                    homingRange = 34 * 8;
-                    splashDamageRadius = 25f * 0.75f;
+                    homingPower = 0.3f;
+                    homingDelay =6f;
+                    homingRange = 60 * 8;
+                    ammoMultiplier = 3;
+                    homingExtendedRange = 7f * Vars.tilesize;
                     backColor = trailColor = copper.color;
                     collidesAir = collidesGround = flatDamage = true;
                     shootEffect = Fx.shootBigColor;
                     hitEffect = NyfalisFxs.hollowPointHit;
                     status = StatusEffects.shocked;
-                    groundDamageMultiplier = groundPenalty;
+                    groundDamageMultiplier = 10f;
                     groundDamageSplashMultiplier = splashPenalty;
                 }},
                 lead, new EffectivenessMissleType(4.8f, 60f){{
@@ -178,12 +210,13 @@ public class NyfalisTurrets {
                     shrinkX = 0;
                     lifetime = 70;
                     height = 10.5f;
-                    inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
+                    inaccuracy = 150; //180 (turret) + 180 (bullet) = 360 inaccuracy
                     knockback = 0.4f;
                     splashDamage = 10f;
                     statusDuration = 60f;
                     homingPower = 0.4f;
-                    homingRange = 34 * 8;
+                    ammoMultiplier = 1f;
+                    homingRange = 40 * 8;
                     splashDamageRadius = 25f * 0.75f;
                     backColor = trailColor = lead.color;
                     collidesAir = collidesGround = flatDamage = true;
@@ -200,10 +233,11 @@ public class NyfalisTurrets {
                     height = 10.5f;
                     inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
                     knockback = 0.4f;
-                    splashDamage = 10f;
+                    splashDamage = 40f;
                     statusDuration = 60f;
-                    homingPower = 0.04f;
-                    homingRange = 34 * 8;
+                    homingPower = 0.5f;
+                    homingRange = 40 * 8;
+                    ammoMultiplier = 2.5f;
                     splashDamageRadius = 25f * 0.75f;
                     backColor = trailColor = iron.color;
                     collidesAir = collidesGround = flatDamage = true;
@@ -222,8 +256,9 @@ public class NyfalisTurrets {
                     trailLength = 3;
                     inaccuracy = 20; // more refined firing
                     knockback = 0.4f;
-                    homingPower = 0.04f;
-                    homingRange = 34 * 8;
+                    homingPower = 1f;
+                    homingRange = 40 * 8;
+                    ammoMultiplier = 3.5f;
                     backColor = trailColor = graphite.color;
                     collidesAir = collidesGround = flatDamage = true;
                     shootEffect = Fx.shootBigColor;
@@ -238,10 +273,10 @@ public class NyfalisTurrets {
                     height = 10.5f;
                     knockback = 0.4f;
                     inaccuracy = 180; //180 (turret) + 180 (bullet) = 360 inaccuracy
-                    splashDamage = 10f;
+                    splashDamage = 20;
                     statusDuration = 20f;
-                    homingPower = 0.5f;
-                    homingRange = 34 * 8;
+                    homingPower = 1.5f;
+                    homingRange = 40 * 8;
                     splashDamageRadius = 25f * 0.75f;
                     backColor = trailColor = cobalt.color;
                     absorbable = false;
@@ -327,7 +362,7 @@ public class NyfalisTurrets {
                 size = 2;
                 recoil = 0;
                 armor = 2f;
-                range = 20f;
+                range = Vars.tilesize * 3;
                 health = 3000;
                 fogRadius = 13;
                 lightRadius = 37;
@@ -442,7 +477,7 @@ public class NyfalisTurrets {
         shredder = new NyfalisItemTurret("shredder"){{
             //TODO: check for clear path to unit
             targetAir = false;
-            emitLight = true;
+            emitLight = angleCheck = true;
 
             size = 3;
             armor = 5;
@@ -482,8 +517,8 @@ public class NyfalisTurrets {
                     buildingDamageMultiplier = 0.4f;
                     ammoMultiplier = pierceCap = 2;
                     shootEffect = smokeEffect = Fx.none;
-                    frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.3f);
-                    backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.3f);
+                    frontColor = rustyBullet;
+                    backColor = rustyBulletBack;
                 }},
                 iron, new RollBulletType(4f, 42){{
                     status = StatusEffects.slow;
@@ -496,11 +531,12 @@ public class NyfalisTurrets {
                     ammoMultiplier = 2;
                     homingPower = 0.2f;
                     homingRange = 100f;
+                    reloadMultiplier = 1.1f;
                     statusDuration = 60f * 2f;
                     buildingDamageMultiplier = 0.4f;
                     shootEffect = smokeEffect = Fx.none;
-                    frontColor = new Color().set(iron.color).lerp(Pal.bulletYellowBack, 0.1f);
-                    backColor = new Color().set(iron.color).lerp(Pal.bulletYellow, 0.2f);
+                    frontColor = ironBullet;
+                    backColor = ironBulletBack;
                 }},
                 quartz, new RollBulletType(4.1f, 46){{
                     status = StatusEffects.slow;

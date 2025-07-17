@@ -11,14 +11,15 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
+import olupis.world.entities.status.*;
 
 import java.util.*;
 
 public class NyfalisStatusEffects {
-    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate, comradery, overTuned;
+    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate, comradery, overTuned, magnetized;
 
     public static void loadStatusEffects(){
-
+        //lube buff
         lubed = new StatusEffect("lubed"){{
             color = Color.valueOf("6b675f");
             speedMultiplier = 1.15f;
@@ -27,6 +28,7 @@ public class NyfalisStatusEffects {
             init(() -> this.affinities = StatusEffects.tarred.affinities);
         }};
 
+        //used by bats to no move
         deployed = new StatusEffect("deployed"){{
             color = Color.valueOf("DE9458");
             speedMultiplier = 0.001f;
@@ -37,6 +39,7 @@ public class NyfalisStatusEffects {
             });
         }};
 
+        //cobalt debuffs
         corupt = new StatusEffect("corupt"){
             @Override
             public void update(Unit unit, float time){
@@ -162,6 +165,7 @@ public class NyfalisStatusEffects {
             }
         };
 
+        //slop debuff
         sloppy = new StatusEffect("sloppy"){{
             color = Color.valueOf("6b675f");
             speedMultiplier = 1.15f;
@@ -171,6 +175,7 @@ public class NyfalisStatusEffects {
             init(() -> this.opposites = StatusEffects.tarred.opposites);
         }};
 
+        //mossed debuff
         mossed = new StatusEffect("mossed"){{
             color = Color.valueOf("5a9e70");
             speedMultiplier = reloadMultiplier = 0.9f;
@@ -183,17 +188,20 @@ public class NyfalisStatusEffects {
             });
         }};
 
+        //marker to tell nyf weapons to unload (gnat nerf)
         unloaded = new StatusEffect("unloaded"){{ //Just tells Nyfalis weapon to unload/reset reload
             color = Color.valueOf("6b675f");
             effect = Fx.oily;
             show = false;
         }};
 
+        //Weaker sapped
         drained = new StatusEffect("drained"){{
             color = Color.valueOf("A258A3");
             speedMultiplier = healthMultiplier = 0.9f;
         }};
 
+        //Used my guardian & lidar & search
         marked = new StatusEffect("marked"){{
             color = Color.valueOf("6b675f");
             show = true;
@@ -213,11 +221,13 @@ public class NyfalisStatusEffects {
             }
         };
 
+        //buff effect of marked
         concentrated = new StatusEffect("concentrated"){{
             reloadMultiplier = damageMultiplier = 1.25f;
             show = true;
         }};
 
+        //Tell units to do more, ie scrab's payload to shoot
         alternate = new StatusEffect("alternate"){{
             speedMultiplier = 0.95f;
             color = Color.valueOf("6b675f");
@@ -225,6 +235,7 @@ public class NyfalisStatusEffects {
             effect = Fx.pickup;
         }};
 
+        //luridiblatta death buff
         comradery = new StatusEffect("comradery"){{
             speedMultiplier = 1.3f;
             damageMultiplier = 1.3f;
@@ -244,12 +255,19 @@ public class NyfalisStatusEffects {
             }
         };
 
+        //alt to overclock
         overTuned = new StatusEffect("overtuned"){{
             color = Pal.accent;
             damageMultiplier = 1.30f;
             reloadMultiplier = 1.30f;
             effectChance = 0.07f;
-            effect = Fx.overclocked;
+            effect = NyfalisFxs.overTuned;
+        }};
+
+        magnetized = new TrackedSatusEffect("magnetized"){{
+            color = Color.valueOf("6b675f");
+            show = true;
+            effect = Fx.redgeneratespark;
         }};
     }
 }

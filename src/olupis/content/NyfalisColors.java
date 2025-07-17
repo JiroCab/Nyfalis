@@ -18,10 +18,12 @@ public class NyfalisColors{
 
 		glowPlantLight =  Color.valueOf("A0A54D").a(0.5f),
 
-		rustyBullet = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f),
-		rustyBulletBack = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f),
-		ironBullet = new Color().set(iron.color).lerp(Pal.bulletYellow, 1 - 0.25f),
-		ironBulletBack = new Color().set(iron.color).lerp(Pal.bulletYellowBack, 1 - 0.25f),
+		rustyBullet = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f).a(1),
+		rustyBulletBack = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f).a(1),
+		ironBullet = new Color().set(iron.color).lerp(Pal.bulletYellow, 0.25f).a(1),
+		ironBulletBack = new Color().set(iron.color).lerp(Pal.bulletYellowBack,  0.25f).a(1),
+		alcoBullet = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellow, 0.25f).a(1),
+		alcoBulletBack = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellowBack, 0.25f).a(1),
 
 		floodLightColor = new Color().set(Color.white).a(0.2f),
 		turretLightColor = new Color().set(Color.white).a(0.35f)

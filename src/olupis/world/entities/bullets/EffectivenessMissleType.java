@@ -1,18 +1,17 @@
 package olupis.world.entities.bullets;
 
-import arc.Events;
-import arc.func.Cons;
-import arc.math.Mathf;
-import arc.math.geom.Rect;
-import arc.util.Tmp;
-import mindustry.content.StatusEffects;
-import mindustry.core.World;
+import arc.*;
+import arc.func.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.util.*;
+import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.entities.*;
-import mindustry.entities.bullet.MissileBulletType;
-import mindustry.game.EventType;
-import mindustry.game.Team;
+import mindustry.entities.bullet.*;
+import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.world.Tile;
+import mindustry.world.*;
 
 import static mindustry.Vars.*;
 
@@ -20,7 +19,8 @@ public class EffectivenessMissleType extends MissileBulletType {
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
     public float groundDamageMultiplier = 1f;
     public float groundDamageSplashMultiplier = 1f;
-    public boolean flatDamage = false;
+    public boolean flatDamage = false, homingExtends = true;
+    public float homingExtendedRange = 3f * tilesize;
 
     private static final Rect rect = new Rect();
 
@@ -34,6 +34,22 @@ public class EffectivenessMissleType extends MissileBulletType {
 
     public EffectivenessMissleType(){
         super();
+    }
+
+    @Override
+    public void update(Bullet b){
+        super.update(b);
+        if(homingExtends){
+            Teamc target;
+            if(b.aimTile != null && b.aimTile.build != null && b.aimTile.build.team != b.team && collidesGround && !b.hasCollided(b.aimTile.build.id)){
+                target = b.aimTile.build;
+            }else{
+                target = Units.closestTarget(b.team, b.aimX, b.aimY, homingRange,
+                e -> e != null && e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
+                t -> t != null && collidesGround && !b.hasCollided(t.id));
+            }
+            if(target != null && target.within(b, homingExtendedRange)) b.lifetime += 1;
+        }
     }
 
     @Override

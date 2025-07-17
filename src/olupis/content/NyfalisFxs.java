@@ -390,7 +390,15 @@ public class NyfalisFxs extends Fx {
             });
         }),
 
-        obliteratorShockwave = new MultiEffect(colouredShockwave, fastSquareSmokeCloud)
+        obliteratorShockwave = new MultiEffect(colouredShockwave, fastSquareSmokeCloud),
+
+        overTuned = new Effect(20f, e -> {
+            color(e.color);
+
+            randLenVectors(e.id, 2, 1f + e.fin() * 2f, (x, y) -> {
+                Fill.poly(e.x, e.y, 3, e.fout() * 2.3f + 0.5f);
+            });
+        })
 
     ;
 

@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.gen.*;
+import olupis.world.ai.*;
 
 /*ehehe snek*/
 public class SnekUnitType extends NyfalisUnitType{
@@ -15,6 +16,7 @@ public class SnekUnitType extends NyfalisUnitType{
 
     public SnekUnitType(String name){
         super(name);
+        pathCost = NyfalisPathfind.costSnek;
     }
 
     @Override
