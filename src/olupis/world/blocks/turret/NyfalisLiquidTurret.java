@@ -1,13 +1,17 @@
 package olupis.world.blocks.turret;
 
 import arc.math.Mathf;
+import mindustry.entities.*;
+import mindustry.gen.*;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.defense.turrets.LiquidTurret;
 import mindustry.world.meta.*;
+import olupis.world.*;
 import olupis.world.entities.*;
 
 public class NyfalisLiquidTurret  extends LiquidTurret {
     public float illuminateTime = 30f;
+    public boolean angleCheck = false;
 
     public NyfalisLiquidTurret(String name){
         super(name);
@@ -38,6 +42,21 @@ public class NyfalisLiquidTurret  extends LiquidTurret {
                 if(progressLight >= 0)Drawf.light(x, y, progressLight, lightColor, lightColor.a);
             }
             super.drawLight();
+        }
+
+        @Override
+        protected Posc findEnemy(float range){
+            if(!angleCheck) return super.findEnemy(range);
+
+            if(targetAir && !targetGround){
+                return Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded() &&  unitFilter.get(e) && !NyfWorldFuckingHelper.rayCheck(this, e, b -> b.solid), unitSort);
+            }else{
+                var ammo = peekAmmo();
+                boolean buildings = targetGround && targetBlocks && (ammo == null || ammo.targetBlocks), missiles = ammo == null || ammo.targetMissiles;
+                return Units.bestTarget(team, x, y, range,
+                e -> !NyfWorldFuckingHelper.rayCheck(this, e, b -> b.solid) && !e.dead() && unitFilter.get(e) && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround) && (missiles || !(e instanceof TimedKillc)),
+                b -> buildings && buildingFilter.get(b), unitSort);
+            }
         }
 
     }

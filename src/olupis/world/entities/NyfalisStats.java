@@ -283,7 +283,7 @@ public class NyfalisStats extends StatValues {
                         }
 
                         if (type.homingPower > 0.01f) {
-                            if(type instanceof  BarrelBulletType) sep(bt, "@stat.olupis-bouncy");
+                            if(type instanceof  BarrelBulletType r && (r.bounceOnWalls || r.bounceOnEnemyWalls )) sep(bt, "@stat.olupis-bouncy");
                             else if(type instanceof  RollBulletType r  && r.ricochetHoming) sep(bt, "@stat.olupis-ricochet");
                             else sep(bt, "@bullet.homing");
                         }
@@ -399,7 +399,8 @@ public class NyfalisStats extends StatValues {
                             w.add("[lightgray]" + Stat.reload.localized() + ": " + (weapon.mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / weapon.reload * weapon.shoot.shots, 2) + " " + StatUnit.perSecond.localized());
                         }
 
-                        ammoWithInfo(ObjectMap.of(unit, weapon.bullet), unit).display(w);
+                        if(weapon instanceof NyfalisWeapon nyf && nyf.statsBlocksOnly) ammoBlocksOnly(ObjectMap.of(unit, weapon.bullet), unit).display(w);
+                        else ammoWithInfo(ObjectMap.of(unit, weapon.bullet), unit).display(w);
 
                         if(weapon.shootOnDeath || (weapon instanceof NyfalisWeapon nyf && nyf.fireOnTimeOut)){
                             w.row();

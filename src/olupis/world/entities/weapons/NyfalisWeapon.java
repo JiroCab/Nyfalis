@@ -2,8 +2,6 @@ package olupis.world.entities.weapons;
 
 import arc.math.*;
 import arc.math.geom.*;
-import arc.scene.ui.layout.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.ai.types.*;
 import mindustry.audio.*;
@@ -11,10 +9,8 @@ import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.input.*;
-import olupis.world.entities.*;
 import olupis.world.entities.parts.*;
 import olupis.world.entities.units.*;
 
@@ -245,23 +241,6 @@ public  class NyfalisWeapon extends Weapon {
                 if (unit.ammo < 0) unit.ammo = 0;
             }
         }
-    }
-
-    @Override
-    public void addStats(UnitType u, Table t){
-        if(inaccuracy > 0){
-            t.row();
-            t.add("[lightgray]" + Stat.inaccuracy.localized() + ": [white]" + (int)inaccuracy + " " + StatUnit.degrees.localized());
-        }
-        if(!alwaysContinuous && reload > 0){
-            t.row();
-            t.add("[lightgray]" + Stat.reload.localized() + ": " + (mirror ? "2x " : "") + "[white]" + Strings.autoFixed(60f / reload * shoot.shots, 2) + " " + StatUnit.perSecond.localized());
-        }
-        if(statsBlocksOnly){
-            NyfalisStats.ammoBlocksOnly(ObjectMap.of(u, bullet), null).display(t);
-            return;
-        }
-        NyfalisStats.ammo(ObjectMap.of(u, bullet)).display(t);
     }
 
 }

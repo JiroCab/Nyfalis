@@ -35,8 +35,8 @@ public class FirePuddleBulletType extends MultiShockBulletType{
             for (int y = -rad; y <= rad; ++y) {
                 if ((float) (x * x + y * y) <= (float) (rad * rad) - Simplex.noise2d(0, 2.0, 0.5, (double) (1.0F / 5), (double) (x + tx), (double) (y + ty)) * realNoise * realNoise) {
                     Tile tile = Vars.world.tile(tx + x, ty + y);
-                    specialEffect.at(tile);
                     if (tile != null) {
+                        specialEffect.at(tile);
                         if(removeInstead) Fires.extinguish(tile, 100f);
                         else Fires.create(tile);
                     }

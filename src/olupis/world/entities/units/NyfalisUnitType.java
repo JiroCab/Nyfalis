@@ -38,6 +38,7 @@ import olupis.world.entities.parts.*;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;
+import static mindustry.ai.UnitStance.holdFire;
 
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
@@ -317,12 +318,11 @@ public class NyfalisUnitType extends UnitType {
             unit.updateBoosting(unit.onSolid());
         }
 
-        if(payloadUnitsUpdate || (payloadUpdateRequiresStatus && unit.hasEffect(payloadUpdateSE))) updatePayload(unit);
+        if(canUpdatePayload(unit)) updatePayload(unit);
         if(payloadDisarms && unit instanceof  Payloadc p && p.hasPayload()){
             unit.apply(payloadDisarmSE, Time.toSeconds);
         }
     }
-
     public void updatePrams(Unit unit){
         NyfPartParms.nyfparams.set(
             unit.healthf(),
@@ -344,38 +344,46 @@ public class NyfalisUnitType extends UnitType {
         return onWater(unit) && unit.floorOn().drownTime > 0;
     }
 
+    public boolean canUpdatePayload(Unit unit){
+        return payloadUnitsUpdate || (payloadUpdateRequiresStatus && unit.hasEffect(payloadUpdateSE));
+    }
+
     public void updatePayload(Unit unit){
         //AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+
+        if(unit.isCommandable() && unit.command().stance == holdFire) return;
 
         if(!(unit instanceof Payloadc c)) return;
         if(c.payloads().isEmpty()) return;
         int[] m ={-1};
-        WeaponMount parent = unit.mounts[mountPointer];
+
+        float range = c.payloads().first().content() instanceof UnitType ut ? ut.maxRange : 20f;
+        Teamc target = Units.bestTarget(unit.team, unit.x, unit.y, range, a -> !a.dead(), b -> true, UnitSorts.closest);
+        if(target == null) return;
+
+        float aimX = target.x(), aimY = target.y();
+
 
         for(Payload p : c.payloads()){
             if(p instanceof UnitPayload up && up.unit.hasWeapons()){
                 Unit u = up.unit;
-                u.rotation(unit.rotation);
 
-                Teamc target = Units.closestEnemy(unit.team, unit.x, unit.y, u.range(), a -> a.team != unit.team);
-                boolean shoot = target != null || unit.isShooting, schk = unit.isShooting || target == null;
-                float aimX = schk ? unit.aimX : target.x(), aimY = schk ? unit.aimY() : target.y(),
-                rot =  Angles.angle(unit.x, unit.y, aimX, aimY) - unit.rotation;
-
-
-                for(Ability ability : u.abilities){
-                    ability.update(u);
+                Weapon[] get = NyfalisUnits.payloadWeaponIndex.get(u.type);
+                for(int i = 0; i < get.length; i++){
+                    Weapon weapon = get[i];
+                    Log.err(i + " " + weapon.flipSprite);
                 }
 
                 m[0] = 0;
                 if(u.type.weapons.size >= 1){
                     WeaponMount[] mounts = u.mounts();
                     for(WeaponMount mount : mounts){
-                        mount.shoot = shoot;
-                        mount.targetRotation = mount.rotation = rot;
-
+                        mount.shoot = true;
                         Weapon w = NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0]];
-                        if(w.predictTarget && target != null){
+                         mount.rotation = Angles.angle(w.x + unit.x, w.y + unit.y, aimX, aimY) - unit.rotation;
+
+
+                        if(w.predictTarget){
                             Vec2 to = Predict.intercept(unit, target, w.bullet.speed);
                             aimX = to.x;
                             aimY = to.y;
@@ -383,15 +391,17 @@ public class NyfalisUnitType extends UnitType {
 
                         mount.aimX = aimX;
                         mount.aimY = aimY;
-                        w.update(unit, mount);
+
                         if(w.flipSprite){
                             NyfalisUnits.payloadWeaponIndex.get(u.type)[m[0] + 1].update(unit, mount);
+
                             m[0]++;
+                        } else {
+                            w.update(unit, mount);
                         }
                         m[0]++;
                     }
                 }
-                u.update();
             }
         }
     }

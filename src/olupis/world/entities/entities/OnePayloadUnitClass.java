@@ -1,6 +1,7 @@
 package olupis.world.entities.entities;
 
 import mindustry.gen.*;
+import mindustry.type.*;
 import olupis.content.*;
 import olupis.world.entities.units.*;
 
@@ -18,6 +19,13 @@ public class OnePayloadUnitClass extends PayloadUnit{
     public int classId(){
         return NyfUnitMapper.OnePayloadUnit;
     }
+
+    @Override
+    public float range(){
+        if(payloads.size >= 1&& type instanceof NyfalisUnitType nyf && nyf.canUpdatePayload(this) && payloads.first().content() instanceof UnitType p) return Math.max(type.maxRange, p.maxRange);
+        return super.range();
+    }
+
 
     @Override
     public boolean canPickup(Building build){

@@ -475,7 +475,6 @@ public class NyfalisTurrets {
         }
 
         shredder = new NyfalisItemTurret("shredder"){{
-            //TODO: check for clear path to unit
             targetAir = false;
             emitLight = angleCheck = true;
 
@@ -493,7 +492,7 @@ public class NyfalisTurrets {
             shootY = (Vars.tilesize * size) - 10f;
             outlineColor = nyfalisBlockOutlineColour;
 
-            limitRange(1f);
+            limitRange(0f);
             lightColor = turretLightColor;
             drawer = new DrawTurret("iron-");
             shoot = new ShootSpread(3, 15);
@@ -595,6 +594,8 @@ public class NyfalisTurrets {
                     trailWidth = 5f;
                     trailChance = 0;
                     knockback = 5f;
+                    homingPower = 0.3f;
+                    homingRange = 50f;
                     statusDuration = 60f * 2f;
                     buildingDamageMultiplier = 0.35f;
                     reloadMultiplier = 0.85f;
@@ -1286,7 +1287,7 @@ public class NyfalisTurrets {
         porcupine = new NyfalisLiquidTurret("porcupine"){{
             //TODO: check for clear path to unit
             targetAir = displayAmmoMultiplier = false;
-            emitLight = true;
+            emitLight = angleCheck = true;
             loopSound = Sounds.none;
             size = 3;
             armor = 5;
@@ -1600,7 +1601,7 @@ public class NyfalisTurrets {
                 public void drawTurret(Turret block, TurretBuild build){
                     super.drawTurret(block, build);
                     if(liquid.found()){
-                        Liquid toDraw = liquidDraw == null ?( build instanceof  DuelLiquidTurretBuild bl && bl.getLiquidAlt() != null)? bl.getLiquidAlt() :  build.liquids.current() : liquidDraw;
+                        Liquid toDraw = liquidDraw == null ?( build instanceof  DuelLiquidTurretBuild bl && bl.getLiquidAltDraw() != null)? bl.getLiquidAltDraw() :  build.liquids.current() : liquidDraw;
                         Drawf.liquid(liquidAlt, build.x + build.recoilOffset.x, build.y + build.recoilOffset.y, build.liquids.get(toDraw) / block.liquidCapacity, toDraw.color.write(Tmp.c1).a(1f), build.drawrot());
                     }
                 }

@@ -2167,37 +2167,52 @@ public class NyfalisBlocks {
         //TODO: late game wall is also a router
 
 
-        rustyScrapWall = new Wall("rusty-scrap-wall"){{
+        rustyScrapWall = new FunnyWall("rusty-scrap-wall"){{
             size = 1;
             variants = 1;
+            armor = -10; //bc fck u
             health = 240;
-            requirements(Category.defense, BuildVisibility.editorOnly, with(rustyIron, 6, scrap, 3));
+            buildCostMultiplier = 0.8f;
+            floating = true;
+            requirements(Category.defense,  with(rustyIron, 15, scrap, 8));
         }};
 
-        rustyScrapWallLarge = new Wall("rusty-scrap-wall-large"){{
+        rustyScrapWallLarge = new FunnyWall("rusty-scrap-wall-large"){{
             size = 2;
             variants = 3;
+            armor = -10; //bc fck u
             health = 960;
-            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 4));
+            buildCostMultiplier = 0.8f;
+            floating = true;
+            requirements(Category.defense,  ItemStack.mult(rustyScrapWall.requirements, 4));
         }};
 
-        rustyScrapWallHuge = new Wall("rusty-scrap-wall-huge"){{
+        rustyScrapWallHuge = new FunnyWall("rusty-scrap-wall-huge"){{
             size = 3;
             variants  = 2;
+            armor = -10; //bc fck u
             health = 2160;
-            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 9));
+            buildCostMultiplier = 0.8f;
+            floating = true;
+            requirements(Category.defense,  ItemStack.mult(rustyScrapWall.requirements, 9));
         }};
 
-        rustyScrapWallGigantic = new Wall("rusty-scrap-wall-gigantic"){{
+        rustyScrapWallGigantic = new FunnyWall("rusty-scrap-wall-gigantic"){{
             size = 4;
             health = 3840;
-            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 16));
+            armor = -10; //bc fck u
+            buildCostMultiplier = 0.8f;
+            floating = true;
+            requirements(Category.defense,  ItemStack.mult(rustyScrapWall.requirements, 16));
         }};
 
-        rustyScrapWallHumongous = new Wall("rusty-scrap-wall-humongous"){{
+        rustyScrapWallHumongous = new FunnyWall("rusty-scrap-wall-humongous"){{
             size = 5;
+            armor = -10; //bc fck u
             health = 6000;
-            requirements(Category.defense, BuildVisibility.editorOnly, ItemStack.mult(rustyScrapWall.requirements, 16));
+            buildCostMultiplier = 0.8f;
+            floating = true;
+            requirements(Category.defense,  ItemStack.mult(rustyScrapWall.requirements, 16));
         }};
 
         //endregion

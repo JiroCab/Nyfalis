@@ -3,6 +3,7 @@ package olupis.world.planets;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.game.*;
+import mindustry.game.Objectives.*;
 
 import static mindustry.content.Items.*;
 import static mindustry.content.TechTree.*;
@@ -429,6 +430,17 @@ public class NyfalisTechTree {
 
                             });
                         });
+                        node(rustyScrapWall, Seq.with(new Objectives.SectorComplete(sanctuary), new Research(rustyScrapWallHuge)), () ->{
+                            node(rustyScrapWallLarge, ()->{
+                                node(rustyScrapWallHuge, ()->{
+                                    node(rustyScrapWallGigantic, ()->{
+                                        node(rustyScrapWallHumongous, ()->{
+
+                                        });
+                                    });
+                                });
+                            });
+                        });
                         node(ironWall, ()->{
                             node(ironWallLarge, ()->{
                                 node(quartzWall, () -> {
@@ -500,7 +512,9 @@ public class NyfalisTechTree {
 
                 nodeProduce(rustyIron, () ->{
                     nodeProduce(copper, () ->{
+                        nodeProduce(scrap, () ->{
 
+                        });
                     });
                     nodeProduce(lead, () ->{
                         nodeProduce(sand, () ->{

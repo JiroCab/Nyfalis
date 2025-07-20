@@ -1,6 +1,7 @@
 package olupis.world.entities.bullets;
 
 import arc.math.*;
+import mindustry.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -38,7 +39,13 @@ public class BarrelBulletType extends RollBulletType{
         if (!currentHp.containsKey(b.id)) currentHp.put(b.id, max);
 
         if (bounceOnWalls&&b.time >= bounceDelay && !justBounced.get(b.id)) {
-            Units.nearbyBuildings(b.x,b.y,b.hitSize*3,bl -> {
+            if(b.x <= -1  || b.y <= -1 || b.x > Vars.world.unitWidth() ||  b.y > Vars.world.unitHeight()) {
+                if (bounces.get(b.id) < maxBounces) {
+                    b.vel.setAngle( b.rotation() + 180 + Mathf.random(-50,50));
+                    bounces.replace(b.id, bounces.get(b.id) + 1);
+                    justBounced.replace(b.id, true);
+                } else  b.remove();
+            }else Units.nearbyBuildings(b.x,b.y,b.hitSize*3,bl -> {
                 if (bl.block.solid) {
                     if (bl.team == b.team) {
                         if (bounces.get(b.id) < maxBounces) {

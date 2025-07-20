@@ -6,6 +6,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
+import olupis.world.*;
 import olupis.world.entities.*;
 
 public class NyfalisItemTurret extends ItemTurret {
@@ -50,19 +51,14 @@ public class NyfalisItemTurret extends ItemTurret {
             if(!angleCheck) return super.findEnemy(range);
 
             if(targetAir && !targetGround){
-                return Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded() &&  unitFilter.get(e) && rayCheck(e), unitSort);
+                return Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded() &&  unitFilter.get(e) && !NyfWorldFuckingHelper.rayCheck(this, e, b -> b.solid), unitSort);
             }else{
                 var ammo = peekAmmo();
                 boolean buildings = targetGround && targetBlocks && (ammo == null || ammo.targetBlocks), missiles = ammo == null || ammo.targetMissiles;
                 return Units.bestTarget(team, x, y, range,
-                e -> rayCheck(e) && !e.dead() && unitFilter.get(e) && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround) && (missiles || !(e instanceof TimedKillc)),
+                e -> !NyfWorldFuckingHelper.rayCheck(this, e, b -> b.solid) && !e.dead() && unitFilter.get(e) && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround) && (missiles || !(e instanceof TimedKillc)),
                 b -> buildings && buildingFilter.get(b), unitSort);
             }
-        }
-
-        public boolean rayCheck(Unit e ){
-            //todo
-            return true;
         }
     }
 

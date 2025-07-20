@@ -53,6 +53,10 @@ public class DuelLiquidTurret extends NyfalisLiquidTurret {
             return filterLiquid().size >= 2 ? filterLiquid().get(1) : null;
         }
 
+        public Liquid getLiquidAltDraw(){
+            return filterLiquid().size >= 2 ? filterLiquid().get(1) : getLiquid();
+        }
+
         @Override
         public BulletType useAmmo(){
             if(cheating()) return ammoTypes.get(getLiquid());

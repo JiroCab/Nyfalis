@@ -1674,6 +1674,7 @@ public class NyfalisUnits {
                 rotationLimit = 45f;
                 targetInterval = 10f;
                 targetSwitchInterval = 20f;
+
                 autoTarget = rotate = partialControl = weaponIconUseFullString = true;
                 mirror = controllable = false;
                 weaponIconString = "olupis-bay-ui-front";
@@ -1842,6 +1843,7 @@ public class NyfalisUnits {
                     layerOffset = 0.01f;
                     rotateSpeed = 5f;
                     ejectEffect = Fx.casing1;
+                    shootSound = NyfalisSounds.cncRa2DestoryerOsprey;
                     bullet = new CappedIntervalBullet(3f, 14){{
                         width = 4f;
                         height = 20f;
@@ -1920,7 +1922,7 @@ public class NyfalisUnits {
 
                     parts.addAll(
                         new RegionPart(){{
-                            name = "olupis-cutboi";
+                            name = "olupis-shear";
                             mirror = false;
                             top = true;
                             progress = PartProgress.smoothReload;
@@ -2434,7 +2436,7 @@ public class NyfalisUnits {
                 shootY = -9.1f;
                 y = x = recoil = 0f;
                 reload = shootCone = 360f;
-                noAttack = shootOnDeath = statsBlocksOnly = dashShoot = true;
+                shootOnDeath = statsBlocksOnly = dashShoot = true;
                 ejectEffect = Fx.none;
                 shootSound = Sounds.none;
                 bullet = new BasicBulletType(){{
@@ -3109,11 +3111,13 @@ public class NyfalisUnits {
                 w.shoot = ow.shoot.copy();
                 //Flat reload nerf since we can go beyond the unit cap and this is to "help" w/ balancing
                 w.reload *=2.5f;
-                w.rotate = w.ignoreRotation = true;
-                w.mirror = false;
-                //TODO: Fireports?
+                //is always true despite not used can cause headaches down the line
+                if(!w.mirror) w.alternate = false;
+                w.rotate = w.ignoreRotation = w.controllable = true;
+                w.mirror = w.flipSprite = false;
 
                 w.shootCone = 360f;
+                w.rotationLimit = 361f;
                 w.rotateSpeed = Math.max(w.rotateSpeed, 20);
                 if(w.alternate){
                     w.alternate = false;
