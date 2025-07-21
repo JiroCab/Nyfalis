@@ -174,7 +174,6 @@ public class NyfalisStartUpUis {
 
             }).width(77.5f).height(40f).checked(false).tooltip("Capture Sector & fill core with Items");
             z.row();
-            z.button("Ua", Icon.modeAttack, Styles.squareTogglet, EnvUpdater::debugUpdateActive).width(77.5f).height(40f).checked(false).tooltip("Update Spreading Moss");
         }).width(155f).growY().margin(12f).checked(false).row();
         debugTable.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
             ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());

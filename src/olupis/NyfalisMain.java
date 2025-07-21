@@ -70,7 +70,6 @@ public class NyfalisMain extends Mod{
 
     public NyfalisMain(){
         loadModSupport();
-
         EnvUpdater.load();
 
         //Load sounds once they're added to the file tree
@@ -219,6 +218,13 @@ public class NyfalisMain extends Mod{
 
     public static void  globalLoadEvent(){
         NyfalisUnits.GenerateWeapons();
+
+        try{
+            asyncCore.processes.add(new EnvUpdater());
+        }catch(Exception e){
+            Log.warn("Failed to initialize EnvUpdater with the following exception:");
+            Log.warn(e.getMessage());
+        }
     }
 
     public static void sectorPostTurn(){

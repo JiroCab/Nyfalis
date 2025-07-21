@@ -3,7 +3,8 @@ package olupis.world.entities.bullets;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import olupis.world.*;
+
+import static olupis.world.EnvUpdater.*;
 
 public class MossRemoverBullet extends BulletType{
 
@@ -20,9 +21,7 @@ public class MossRemoverBullet extends BulletType{
     public void update(Bullet b){
         super.update(b);
 
-        EnvUpdater.restoreTile(b.tileOn());
-
-
+        resetTile(b.tileOn());
         b.remove();
     }
 }

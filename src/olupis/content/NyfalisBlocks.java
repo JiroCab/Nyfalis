@@ -791,60 +791,60 @@ public class NyfalisBlocks {
             next = mossiestStoneWall;
         }};
 
-        mycelium = new SpreadingFloor("mossy-overlay", 3){{
-            growSpread = true;
-            overlay = true;
+        mycelium = new SpreadingOverlay("mossy-overlay", 3){{
+            spread = true;
 
             spreadTries = 5;
-            spreadChance = 0.021d;
+            spreadChance = 0.021d / 30d;
             drillEfficiency = 0.66f;
 
             replacements.putAll(
-                    stoneWall, growingWall
+                stoneWall, mossStoneWall
             );
-            blacklist.addAll(
-                    coreZone, theircelium
-            );
+
+            blacklistKey = "calyx";
 
             mapColor = Color.valueOf("#78bc27");
             spreadSound = NyfalisSounds.mossSpread;
         }};
 
-        yourcelium = new SpreadingFloor("mossier-overlay", 3){{
-            // this doesn't spread, but growth is affected by these settings too
-            overlay = true;
+        yourcelium = new SpreadingOverlay("mossier-overlay", 3){{
             inEditor = false;
 
+            // this doesn't spread, but growth is affected by these settings too
             spreadTries = 7;
-            spreadChance = 0.013d;
+            spreadChance = 0.013d / 30d;
 
-            ((SpreadingFloor) mycelium).next = this;
+            ((SpreadingOverlay) mycelium).next = this;
+
+            blacklistKey = "calyx";
 
             mapColor = Color.valueOf("#5a8d1d");
             spreadSound = NyfalisSounds.mossSpread;
         }};
 
-        ourcelium = new SpreadingFloor("mossiest-overlay", 3){{
-            // this doesn't spread, but growth is affected by these settings too
-            overlay = true;
+        ourcelium = new SpreadingOverlay("mossiest-overlay", 3){{
             inEditor = false;
 
+            // this doesn't spread, but growth is affected by these settings too
             spreadTries = 10;
-            spreadChance = 0.0095d;
+            spreadChance = 0.0095d / 30d;
 
-            ((SpreadingFloor) yourcelium).next = this;
+            ((SpreadingOverlay) yourcelium).next = this;
+
+            blacklistKey = "calyx";
 
             mapColor = Color.valueOf("#3c5e14");
             spreadSound = NyfalisSounds.mossSpread;
-            blacklist.addAll(coreZone); //doesnt work
-            statusEffect = status = StatusEffects.corroded;
+
+            status = StatusEffects.corroded;
         }};
 
         theircelium = new Floor("moss", 3){{
             mapColor = Color.valueOf("#1e2f0a");
             inEditor = false;
 
-            ((SpreadingFloor) ourcelium).next = this;
+            ((SpreadingOverlay) ourcelium).next = this;
             status = StatusEffects.corroded;
         }};
 

@@ -6,6 +6,9 @@ import mindustry.entities.bullet.*;
 import mindustry.world.*;
 import olupis.world.*;
 
+import static mindustry.Vars.*;
+import static olupis.world.EnvUpdater.*;
+
 public class NyfalisPowerCutter extends NyfalisPowerTurret{
     //Snip size should be 1 unless you can figure out cutting for tiles w/ even blocks
     public int snipSize = 0, snipRand = 2;
@@ -23,7 +26,7 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
             super.updateTile();
 
             if(target == null){
-                Tile t = EnvUpdater.closestSpread(x, y, range * 8, f -> f.within(this, minRange));
+                Tile t = closestInfested(tileX(), tileY(), (int) range / tilesize, world.width(), world.height());
                 if(t == null) return;
 
                 targetPos.set(t);
@@ -45,9 +48,8 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
         protected void shoot(BulletType type){
             Tile t = Vars.world.tiles.getc(Math.round((targetPos.x + snipSize) /8), Math.round(targetPos.y /8));
             if(t != null && t.within(this, range + 8) && !t.within(this, minRange)){
-
-                EnvUpdater.restoreTile(t, snipSize);
-
+                resetTile(t);
+                target = null;
             }
 
             super.shoot(type);
@@ -68,8 +70,4 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
             return alwaysShooting || (isControlled() ? unit.isShooting() : logicControlled() ? logicShooting : target != null) || (targetPos != null && wasShooting);
         }
     }
-
-
-
-
 }
