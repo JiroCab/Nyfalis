@@ -1,17 +1,19 @@
 package olupis.content;
 
-import arc.Core;
-import arc.graphics.Color;
-import arc.graphics.Texture;
-import arc.util.Time;
-import arc.util.Tmp;
-import mindustry.content.StatusEffects;
-import mindustry.game.Team;
+import arc.*;
+import arc.graphics.*;
+import arc.math.*;
+import arc.util.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.type.Weather;
-import mindustry.type.weather.ParticleWeather;
-import mindustry.type.weather.RainWeather;
-import mindustry.world.meta.Attribute;
+import mindustry.type.*;
+import mindustry.type.weather.*;
+import mindustry.world.*;
+import mindustry.world.meta.*;
+import olupis.world.*;
+import olupis.world.blocks.environment.*;
 
 import static mindustry.content.Blocks.*;
 import static olupis.content.NyfalisBlocks.*;
@@ -163,8 +165,8 @@ public class NyfalisAttributeWeather {
     }
 
     public static class AcidRainWeather extends RainWeather{
-        public float damageDelay = 1.5f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f,
-                          regrowPercent = 0.1f;
+        public float damageDelay = 1.5f * Time.toMinutes, regrowDelay = 3f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f,
+                            regrowPercent = 0.005f;
         boolean coolDown = false, coolDownRegrow = false;
 
         public AcidRainWeather(String name){
@@ -173,6 +175,29 @@ public class NyfalisAttributeWeather {
 
         @Override
         public void update(WeatherState state){
+            applyDamage();
+            regrow();
+        }
+
+        public void regrow(){
+            if(coolDownRegrow) return;
+            Time.run(regrowDelay, () ->{
+                for(Tile t : Vars.world.tiles){
+                    boolean grow = Mathf.randomBoolean(regrowPercent);
+                    if(grow && t.block() instanceof SprigProp){
+                        NyfWorldFuckingHelper.growSprigs(t);
+                        continue;
+                    }
+                    if(t.solid()) continue;
+
+                    if(grow) NyfWorldFuckingHelper.placeSprigs(t);
+                }
+                coolDownRegrow = false;
+            });
+            coolDownRegrow = true;
+        }
+
+        public void applyDamage(){
             if(coolDown) return;
             coolDown = true;
             Time.run(damageDelay, () ->{
@@ -182,19 +207,6 @@ public class NyfalisAttributeWeather {
                 });
                 /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
                 if(damageUnits > 0)Groups.unit.each(u -> u.damage(damageUnits));
-//                if(!coolDownRegrow){
-//                    int range = Math.round((Vars.world.height() + Vars.world.height()) * regrowPercent);
-//                    Log.err("nya");
-//                    for(int r = range ; r > 0 ; r-- ){
-//                        int x = (int) Mathf.range(0, Vars.world.width()), y = (int) Mathf.range(0, Vars.world.height());
-//
-//                        Tile t = Vars.world.tiles.get(x, y);
-//                        if(t.block() == air && rainRegrowables.contains(t.floor())){
-//                            t.setNet(t.floor().decoration);
-//                        }
-//                    }
-//                }
-//                coolDownRegrow = !coolDownRegrow;
                 coolDown = false;
             });
         }

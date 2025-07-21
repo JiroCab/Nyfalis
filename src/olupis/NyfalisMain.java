@@ -154,7 +154,7 @@ public class NyfalisMain extends Mod{
                 //ui.planet.debugSelect = true;
                 //ui.content.show(NyfalisUnits.resolute);
             }
-
+            NyfalisClassMap.load(this.getClass().getPackage().getName());
             /*For those people who don't like the name/icon or overwrites in general*/
             if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";
             if(Core.settings.getBool("nyfalis-green-name")) Team.green.name = "nyfalis-green";

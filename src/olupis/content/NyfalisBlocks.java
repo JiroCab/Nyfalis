@@ -79,6 +79,7 @@ public class NyfalisBlocks {
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly,
+        grassSprig, mossSprig, yellowSprig, glowSprig, lumaSprig,
         beachSandBoulder, gypsumBoulder, pumiceBoulder, galenaBoulder, rustyBoulder,
 
         /*walls*/
@@ -628,6 +629,39 @@ public class NyfalisBlocks {
             hasShadow = false;
             lightColor = NyfalisColors.glowPlantLight;
             floating = placeableLiquid = emitLight = true;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        //Rain stage grows of props
+        grassSprig = new SprigProp("grass-sprig") {{
+            hasShadow = false;
+            replacement = bush;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        mossSprig = new SprigProp("moss-sprig") {{
+            hasShadow = false;
+            replacement = mossBoulder;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        yellowBush = new SprigProp("yellow-sprig") {{
+            hasShadow = false;
+            replacement = yellowBush;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        glowSprig = new SprigProp("glow-sprig") {{
+            hasShadow = false;
+            lightRadius = 5f;
+            floating = placeableLiquid = emitLight = rotate =  true;
+            replacement = glowLilly;
+            breakSound = Sounds.plantBreak;
+        }};
+
+        lumaSprig = new SprigProp("luma-sprig") {{
+            hasShadow = false;
+            replacement = lumaFlora;
             breakSound = Sounds.plantBreak;
         }};
 

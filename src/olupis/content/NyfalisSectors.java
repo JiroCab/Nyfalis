@@ -34,7 +34,10 @@ public class NyfalisSectors {
             solidMossYellow = Seq.with(yellowShrubs, yellowShrubsCrooked, yellowShrubsIrregular, yellowTree, yellowTreeBlooming),
             solidMossYellowAll = Seq.with(solidMossYellow).addAll(yellowTree),
             solidShurbsGrass = Seq.with(greenShrubsIrregular, greenShrubsCrooked),
-            overlayFlowers = Seq.with(glowSprouts, lumaSprouts)
+            overlayFlowers = Seq.with(glowSprouts, lumaSprouts),
+            sprigs = Seq.with(grassSprig, mossSprig, yellowSprig, glowSprig, lumaSprig),
+            grasses = Seq.with(Blocks.grass, forestGrass, frozenGrass),
+            luma = Seq.with(lumaGrass, lumaGrassWater)
     ;
 
     public static final Seq<SectorPreset> nyfalisSectorRequirement = Seq.with(ironCurtain, glasierSea, conciditRuins);
