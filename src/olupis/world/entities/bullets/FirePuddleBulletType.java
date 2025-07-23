@@ -1,5 +1,6 @@
 package olupis.world.entities.bullets;
 
+import arc.math.*;
 import arc.util.noise.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -10,12 +11,15 @@ import mindustry.world.*;
 public class FirePuddleBulletType extends MultiShockBulletType{
     boolean removeInstead = false;
     public Effect specialEffect = Fx.none;
+    public float extinguishIn = 100f;
+    public float specialEffectChance = 0.05f;
 
     public FirePuddleBulletType(float splashDamage, float radius) {
         super(splashDamage, radius);
         applySound = Sounds.none;
         particleEffect = Fx.none;
         drawBlast = false;
+        displayAmmoMultiplier = false;
     }
 
     public FirePuddleBulletType(float splashDamage, float radius, boolean removeInstead) {
@@ -36,8 +40,8 @@ public class FirePuddleBulletType extends MultiShockBulletType{
                 if ((float) (x * x + y * y) <= (float) (rad * rad) - Simplex.noise2d(0, 2.0, 0.5, (double) (1.0F / 5), (double) (x + tx), (double) (y + ty)) * realNoise * realNoise) {
                     Tile tile = Vars.world.tile(tx + x, ty + y);
                     if (tile != null) {
-                        specialEffect.at(tile);
-                        if(removeInstead) Fires.extinguish(tile, 100f);
+                        if(specialEffectChance >= 0 && Mathf.randomBoolean(specialEffectChance))specialEffect.at(tile);
+                        if(removeInstead) Fires.extinguish(tile, extinguishIn);
                         else Fires.create(tile);
                     }
                 }

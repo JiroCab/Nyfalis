@@ -645,7 +645,7 @@ public class NyfalisBlocks {
             breakSound = Sounds.plantBreak;
         }};
 
-        yellowBush = new SprigProp("yellow-sprig") {{
+        yellowSprig = new SprigProp("yellow-sprig") {{
             hasShadow = false;
             replacement = yellowBush;
             breakSound = Sounds.plantBreak;
@@ -656,6 +656,7 @@ public class NyfalisBlocks {
             lightRadius = 5f;
             floating = placeableLiquid = emitLight = rotate =  true;
             replacement = glowLilly;
+            lightColor = NyfalisColors.glowPlantLightSofter;
             breakSound = Sounds.plantBreak;
         }};
 
@@ -2245,8 +2246,8 @@ public class NyfalisBlocks {
             armor = -10; //bc fck u
             health = 6000;
             buildCostMultiplier = 0.8f;
-            floating = true;
-            requirements(Category.defense,  ItemStack.mult(rustyScrapWall.requirements, 16));
+            floating = placeableLiquid = true;
+            requirements(Category.defense, with(rustyIron, 15 * 16 , scrap, 8 * 16, iron, 5 * 16));
         }};
 
         //endregion
@@ -2738,11 +2739,14 @@ public class NyfalisBlocks {
                 b.envEnabled = NyfalisAttributeWeather.nyfalian;
             }
 
-            if(b.techNode != null && b.techNode.planet == Planets.serpulo){
+            if(b.techNode != null && b.techNode.planet == Planets.serpulo || b.isOnPlanet(Planets.serpulo)){
                 if (!sandBoxBlocks.contains(b)) hiddenNyfalisBlocks.add(b);
+                b.shownPlanets.removeAll(NyfalisPlanets.planetList);
+
             }
             
         });
+
 
         nyfalisCores.addAll(coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant);
 

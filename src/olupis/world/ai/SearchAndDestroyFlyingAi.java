@@ -1,30 +1,32 @@
  package olupis.world.ai;
 
- import arc.math.Mathf;
- import arc.math.geom.Vec2;
- import arc.util.Time;
- import mindustry.ai.types.FlyingAI;
- import mindustry.entities.Predict;
- import mindustry.entities.Units;
+ import arc.math.*;
+ import arc.math.geom.*;
+ import arc.struct.*;
+ import arc.util.*;
+ import mindustry.ai.types.*;
+ import mindustry.entities.*;
  import mindustry.gen.*;
- import mindustry.type.Weapon;
- import mindustry.world.meta.BlockFlag;
- import olupis.world.entities.units.AmmoLifeTimeUnitType;
+ import mindustry.type.*;
+ import mindustry.world.meta.*;
+ import olupis.world.entities.units.*;
 
  import static mindustry.Vars.state;
 
-/*FlyingAi but really aggressive */
+ /*FlyingAi but really aggressive */
 public class SearchAndDestroyFlyingAi extends FlyingAI {
     /*avoids stuttering on trying to go to spawn after target is null*/
     public float delay = 70f * 60f, idleAfter;
     /*screw crawlers in particular*/
-    public boolean suicideOnSuicideUnits = false, suicideOnTarget = false, inoperable = false;
+    public boolean suicideOnSuicideUnits = false, suicideOnTarget = false, inoperable = false, targetOverriden = false;
     /*Compensate for target speed, for better chasing */
     public boolean compensateTargetSpeed = true;
     /*Allow the ai to seek new targets or pick one and idle*/
     public boolean updateTargeting = false;
 
     public boolean circleBombing = false;
+    public boolean targetFlames = false;
+    public @Nullable Fire tarFire;
 
     public SearchAndDestroyFlyingAi(boolean suicideOnSuicideUnits){
         this.suicideOnTarget = suicideOnSuicideUnits;
@@ -35,6 +37,7 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
     public void updateMovement(){
         unloadPayloads();
 
+        targetOverriden = false;
         if(invalid(target)){
             if(unit.type instanceof AmmoLifeTimeUnitType) inoperable = true;
             if(updateTargeting) target = null;
@@ -51,13 +54,13 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
             }
             else findMainTarget(unit.x, unit.y, unit.range(), unit.type().targetAir, unit.type().targetGround);
         }
+        /*screw crawlers in particular*/
+        float range = ((suicideOnSuicideUnits || (targetFlames && tarFire != null && unit.ammo < (unit.type.ammoCapacity * 0.05f))) && suicideOnTarget) ? 0f : Math.min(unit.range() -5f, 5f) ;
 
         if(target != null && unit.hasWeapons()){
             idleAfter = Time.time + delay;
             float speed = target instanceof Unit tar ? unit().speed() + tar.speed() : unit.speed();
             Vec2 tarVec = Predict.intercept(unit, target, speed);
-            /*screw crawlers in particular*/
-            float range = (suicideOnSuicideUnits && suicideOnTarget) ? 0f : Math.min(unit.range() -5f, 5f) ;
 
             if(unit.type.circleTarget || circleBombing && (target instanceof Building || (target instanceof Unit p && p.isGrounded()))){
                 circleAttack(120f);
@@ -66,10 +69,33 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
                 vec.set(tarVec).sub(unit).setLength(moveSpd);
                 if(suicideOnSuicideUnits || !unit.within(target, unit.range() * 0.95f)) unit.moveAt(vec);
             } else  moveTo(target, range);
+        }else if(target == null && targetFlames && !Groups.fire.isEmpty()){
+            Seq<Fire> ff = Groups.fire.copy().sort(f -> f.dst(unit));
+            tarFire = ff.find(f -> f.within(unit, 650f ));
+            if(tarFire != null){
+                idleAfter = Time.time + delay;
+                unit.isShooting = targetOverriden = unit.within(tarFire, unit.range() * 1.05f);
+                moveTo(tarFire, range * 0.8f, 300f, false, null, false);
+            }
         }
     }
 
     public void updateWeapons(){
+        if(targetOverriden && tarFire != null) {
+            unit.isShooting = true;
+            /*I don't know which one worked so have all of them*/
+            unit.aimLook(tarFire); unit.lookAt(tarFire); unit.aim(tarFire);
+            for(var mount : unit.mounts) {
+                Weapon weapon = mount.weapon;
+
+                //let uncontrollable weapons do their own thing
+                if (!weapon.controllable || weapon.noAttack) continue;
+
+                mount.aimX = tarFire.x;
+                mount.aimY = tarFire.y;
+                mount.shoot = true;
+            }
+        };
         if(compensateTargetSpeed){
             if(target == null) target = findMainTarget(unit.x, unit.y, unit.range(), unit.type.targetAir, unit.type.targetGround);
             noTargetTime += Time.delta;

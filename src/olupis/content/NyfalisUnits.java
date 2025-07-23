@@ -2023,18 +2023,21 @@ public class NyfalisUnits {
             penaltyMultiplier = 1f;
             ammoDepletionAmount = hiveDepletionRate;
 
+
             flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
             playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
             constructor = UnitEntity::create;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
-            controller = u -> new SearchAndDestroyFlyingAi(true);
+            controller = u -> new SearchAndDestroyFlyingAi(true){{
+                targetFlames = true;
+            }};
             weapons.addAll(
                 new NyfalisWeapon(){{
                     y = x = 0f;
                     reload = 10f;
                     shootCone = 15f;
                     targetInterval = 30f;
-                    ammoPerShot = 2;
+                    ammoPerShot = 3;
                     targetSwitchInterval = 60f;
 
                     shootSound = Sounds.pew;
@@ -2045,8 +2048,8 @@ public class NyfalisUnits {
                         pierce = true;
 
                         speed = 2f;
-                        lifetime = 18f;
-                        damage = 10f;
+                        lifetime = 20f;
+                        damage = 25f;
                         pierceCap = 1;
                         ammoMultiplier = 1.5f;
                         statusDuration = 1.5f *60f;
@@ -2062,22 +2065,21 @@ public class NyfalisUnits {
                     shootCone = 180f;
                     soundPitchMax = 6f;
                     soundPitchMin = 0.2f;
-                    ejectEffect = Fx.none;
+                    ejectEffect  = Fx.none;
                     ammoPerShot = ammoCapacity ;
                     shootSound = Sounds.none;
-                    mirror = false;
+                    mirror = controllable = aiControllable = false;
                     shootOnDeath = fireOnTimeOut = true;
-                    bullet = new BulletType(){{
-                        fragBullet = new FirePuddleBulletType(20,10, true){{
+                    bullet  = new FirePuddleBulletType(20,10, true){{
                             splashDelay = 3;
                             splashAmount = 1;
-                            specialEffect = Fx.fireSmoke;
                             applySound = Sounds.none;
                             frontColor = backColor =  steam.color;
                             particleColor = steam.color;
                             particleEffect = Fx.hitLiquid;
+                            shootEffect = hitEffect = despawnEffect = Fx.none;
+                            extinguishIn = 250f;
                         }};
-                    }};
                 }}
             );
         }};

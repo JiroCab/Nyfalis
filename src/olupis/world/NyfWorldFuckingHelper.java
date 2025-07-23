@@ -33,7 +33,6 @@ public class NyfWorldFuckingHelper{
             return false;
         });
 
-        Log.err(set.toString());
         return set.contains(filter::get);
     }
 

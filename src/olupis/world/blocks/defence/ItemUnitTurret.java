@@ -392,6 +392,23 @@ public class ItemUnitTurret extends ItemTurret {
 
             checkTier();
 
+            if(target == null && peekAmmoAlt() != null && peekAmmoAlt() instanceof  SpawnHelperBulletType s && s.targetsFlames ){
+                @Nullable Fire t = Groups.fire.find( f -> f.within(this, range));
+                if(t == null) return;
+
+                targetPos.set(t);
+                float targetRot = angleTo(t);
+
+                if(shouldTurn() && !isControlled() && !logicControlled()){
+                    turnToTarget(targetRot);
+                }
+
+                if(Angles.angleDist(rotation, targetRot) < Math.max(shootCone / 2, 4f)){
+                    wasShooting = true;
+                    updateReload();
+                    updateShooting();
+                }
+            }
         }
 
         public UnitType checkUnit(Item item){

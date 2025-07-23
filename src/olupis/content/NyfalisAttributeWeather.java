@@ -68,12 +68,12 @@ public class NyfalisAttributeWeather {
 
             sound = Sounds.rain;
             status = StatusEffects.wet;
-            color = Color.valueOf("50766A");
+            color = NyfalisColors.acidRainColour;
 
-            yspeed = 6f;
+            yspeed = 10f;
             sizeMin = 10f;
-            density = 1000f;
-            soundVol = 0.3f;
+            density = 1500f;
+            soundVol = 0.2f;
             splashTimeScale = 25f;
         }};
 
@@ -204,6 +204,7 @@ public class NyfalisAttributeWeather {
                 if(damageBlock > 0)Groups.build.each(b ->{
                     if(b.team == Team.derelict) return;
                     b.damage(damageBlock);
+                    NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
                 });
                 /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
                 if(damageUnits > 0)Groups.unit.each(u -> u.damage(damageUnits));

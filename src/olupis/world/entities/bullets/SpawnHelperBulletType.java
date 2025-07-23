@@ -18,7 +18,7 @@ import olupis.world.entities.units.*;
 import static mindustry.Vars.*;
 
 public class SpawnHelperBulletType extends BasicBulletType {
-    public boolean hasParent = false, eventMake = true;
+    public boolean hasParent = false, eventMake = true, targetsFlames = false;
     public BulletType alternateType;
     public float unitRange = -1;
     public @Nullable Cons<Unit> handler = null;

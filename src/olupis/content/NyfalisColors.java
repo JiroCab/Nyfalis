@@ -17,6 +17,7 @@ public class NyfalisColors{
 		darkerTone = Color.valueOf("#292a2c"),
 
 		glowPlantLight =  Color.valueOf("A0A54D").a(0.5f),
+		glowPlantLightSofter =  Color.valueOf("A0A54D").a(0.20f),
 
 		rustyBullet = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.5f).a(1),
 		rustyBulletBack = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.5f).a(1),
@@ -26,7 +27,9 @@ public class NyfalisColors{
 		alcoBulletBack = new Color().set(alcoAlloy.color).lerp(Pal.bulletYellowBack, 0.25f).a(1),
 
 		floodLightColor = new Color().set(Color.white).a(0.2f),
-		turretLightColor = new Color().set(Color.white).a(0.35f)
+		turretLightColor = new Color().set(Color.white).a(0.35f),
+
+        acidRainColour = Color.valueOf("50766A").a(0.7f);
 	 ;
 
     public  static  Color[]

@@ -69,7 +69,7 @@ public class NyfalisFxs extends Fx {
             Draw.z(z);
         }),
 
-        oilyFlame = new Effect(10f, e -> {
+        oilyFlame = new Effect(60f, e -> {
                 color(Color.valueOf("912a13"), Pal.darkFlame, e.fin());
 
                 randLenVectors(e.id, 3, 5f + e.fin() * 5f, (x, y) -> {
@@ -81,7 +81,7 @@ public class NyfalisFxs extends Fx {
                 Drawf.light(e.x, e.y, 40f * e.fslope(), Color.valueOf("806f2c"), 2f);
             }),
 
-        lubeFlame = new Effect(10f, e -> {
+        lubeFlame = new Effect(60f, e -> {
             color(Color.valueOf("806f2c"), Pal.lightFlame, e.fin());
 
             randLenVectors(e.id, 8, 3f + e.fin() * 4f, (x, y) -> {
@@ -398,6 +398,14 @@ public class NyfalisFxs extends Fx {
             randLenVectors(e.id, 2, 1f + e.fin() * 2f, (x, y) -> {
                 Fill.poly(e.x, e.y, 3, e.fout() * 2.3f + 0.5f);
             });
+        }),
+
+        acidRainDamage = new Effect(10, e -> {
+            if(!(e.data instanceof Block block)) return;
+
+            mixcol(e.color, 1f);
+            alpha(e.fout());
+            Draw.rect(block.fullIcon, e.x, e.y);
         })
 
     ;

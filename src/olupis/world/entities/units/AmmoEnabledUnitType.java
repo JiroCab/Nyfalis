@@ -92,7 +92,10 @@ public class AmmoEnabledUnitType extends  NyfalisUnitType{
             table.row();
             table.table().left().growX().update(i -> {
                 i.left().clear();
-                if(ai.inoperable){
+                if(ai.targetOverriden && ai.tarFire != null){
+                    i.add(Core.bundle.get("rules.fire")  + Iconc.statusBurning  + (Core.settings.getBool("console") ? "[lightgray] (" +Mathf.round(ai.tarFire.x/8f) + "," + Math.round(ai.tarFire.y/8f) + ")[]"  : "")) ;
+                }
+                else if(ai.inoperable){
                     i.add(Core.bundle.get("nyfalis-ai-inoperable"));
                 }
             });

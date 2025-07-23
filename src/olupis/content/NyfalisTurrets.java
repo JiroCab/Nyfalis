@@ -720,9 +720,9 @@ public class NyfalisTurrets {
             consumePower(1f);
             lightColor = turretLightColor;
             outlineColor = nyfalisBlockOutlineColour;
-            researchCost = with(rustyIron, 100, lead, 100);
+            researchCost = with(rustyIron, 500, iron, 500, copper, 500);
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
-            requirements(Category.turret, with(quartz, 25, iron, 30));
+            requirements(Category.turret, with(quartz, 25, iron, 30, lead, 30));
 
         }};
 
@@ -1285,7 +1285,6 @@ public class NyfalisTurrets {
         };
 
         porcupine = new NyfalisLiquidTurret("porcupine"){{
-            //TODO: check for clear path to unit
             targetAir = displayAmmoMultiplier = false;
             emitLight = angleCheck = true;
             loopSound = Sounds.none;
@@ -1346,9 +1345,10 @@ public class NyfalisTurrets {
                                 under = true;
                                 layerOffset = -0.1f;
                                 progress = PartProgress.smoothReload;
-                                moveX = -4;
+                                y = -0.5f;
+                                moveX = 4;
                                 moveY = 4;
-                                moves.add(new PartMove(PartProgress.recoil, 4f, -4f, 0));
+                                moves.add(new PartMove(PartProgress.recoil, -4f, -4f, -10));
                             }}, new RegionPart("-front-l"){{
                                 mirror = false;
                                 under = true;
@@ -1362,9 +1362,10 @@ public class NyfalisTurrets {
                                 under = true;
                                 layerOffset = -0.1f;
                                 progress = PartProgress.smoothReload;
+                                y = -0.5f;
                                 moveX = -4;
                                 moveY = 4;
-                                moves.add(new PartMove(PartProgress.recoil, 4f, -4f, 0));
+                                moves.add(new PartMove(PartProgress.recoil, 4f, -4f, 10));
                             }});
                         }}
                 );
@@ -1372,6 +1373,7 @@ public class NyfalisTurrets {
 
             ammo(
                 steam, new BarrelBulletType(6f, 100){{
+                    displayAmmoMultiplier = false;
                     collidesTiles = hitFires = true;
                     max = 30;
                     height = 10f;
@@ -1401,6 +1403,7 @@ public class NyfalisTurrets {
                     }};
                 }},
                 heavyOil, new BarrelBulletType(4f, 300){{
+                    displayAmmoMultiplier = false;
                     bounceOnEnemyWalls = collidesTiles = true;
                     max = 30;
                     height = 10f;
@@ -1425,29 +1428,30 @@ public class NyfalisTurrets {
                     }};
                 }},
                 lubricant, new BarrelBulletType(4, 150){{
-                        collidesTiles = true;
-                        maxBounces = 5;
-                        height = 10f;
-                        width = 16f;
-                        lifetime = 200f;
-                        knockback= 2f;
-                        inaccuracy= 10f;
-                        homingDelay = bounceDelay = 15;
-                        trailInterval = trailParam = 1.5f;
-                        homingPower = 0.3f;
-                        homingRange = 50f;
-                        buildingDamageMultiplier = 0.8f;
-                        ammoMultiplier = 0.065f;
-                        shootEffect = smokeEffect = Fx.none;
-                        frontColor = new Color().set(Pal.bulletYellowBack).lerp(lubricant.color, 0.3f).a(1);
-                        backColor = new Color().set(Pal.bulletYellow).lerp(lubricant.color, 0.3f).a(1);
-                        fragBullets = 1;
-                        fragBullet = new FirePuddleBulletType(50,60){{
-                            splashDelay = 5;
-                            splashAmount = 8;
-                            specialEffect = NyfalisFxs.lubeFlame;
-                        }};
-                    }}
+                    displayAmmoMultiplier = false;
+                    collidesTiles = true;
+                    maxBounces = 5;
+                    height = 10f;
+                    width = 16f;
+                    lifetime = 200f;
+                    knockback= 2f;
+                    inaccuracy= 10f;
+                    homingDelay = bounceDelay = 15;
+                    trailInterval = trailParam = 1.5f;
+                    homingPower = 0.3f;
+                    homingRange = 50f;
+                    buildingDamageMultiplier = 0.8f;
+                    ammoMultiplier = 0.065f;
+                    shootEffect = smokeEffect = Fx.none;
+                    frontColor = new Color().set(Pal.bulletYellowBack).lerp(lubricant.color, 0.3f).a(1);
+                    backColor = new Color().set(Pal.bulletYellow).lerp(lubricant.color, 0.3f).a(1);
+                    fragBullets = 1;
+                    fragBullet = new FirePuddleBulletType(50,60){{
+                        splashDelay = 5;
+                        splashAmount = 8;
+                        specialEffect = NyfalisFxs.lubeFlame;
+                    }};
+                }}
             );
             limitRange(2f);
         }};
@@ -1476,11 +1480,13 @@ public class NyfalisTurrets {
                     ammoMultiplier = 1f;
                     spawnUnit = mite;
                     unitRange = 650;
+                    targetsFlames = true;
                 }},
                 silicon, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     unitRange = 650;
+                    collidesAir = false;
                     spawnUnit = lice;
                 }},
                 cobalt, new SpawnHelperBulletType(){{
