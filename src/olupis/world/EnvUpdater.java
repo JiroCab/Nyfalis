@@ -1,66 +1,64 @@
 package olupis.world;
 
 import arc.*;
-import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.async.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.io.*;
 import mindustry.world.*;
+
+import java.io.*;
+import java.util.Arrays;
 
 import static mindustry.Vars.*;
 
 /** Yes, this class has race conditions and possibly memory leaks, cry about it */
 public class EnvUpdater implements AsyncProcess{
     public static ObjectMap<String, ObjectSet<Block>> blacklists = new ObjectMap<>();
-
     public static byte[][] data = new byte[][]{};
-    public static TaskQueue tasks = new TaskQueue();
 
+    // a queue for stuff that has to be done on the main thread
+    public static TaskQueue tasks = new TaskQueue();
     // array noting whether the tile is an instance of UpdatingEnvironment
     public static boolean[] infested = new boolean[]{};
     // array of original tile IDs
     public static short[][] replacementMap = new short[][]{};
-    // list of tiles to set blocks on, per block type
-    public static IntSeq[] queue = new IntSeq[]{};
-    // block layer cache
-    public static byte[] layer = new byte[]{};
+    // list of tiles to set blocks on, per block type & layer
+    public static IntSeq[][] queue = new IntSeq[][]{};
     // prop count for various floors
     private static short[] props = new short[]{};
 
     // cache
-    static Tile lookup;
+    static Tile lookup, ret;
     static boolean state;
-    static int index;
+    static int space, wsize;
+    static float wwidth, wheight;
 
     static final int csize = 3;
-    static int space;
-    int wsize;
+
 
     public static void load(){
         Events.on(EventType.ContentInitEvent.class, e ->
             Core.app.post(() -> {
-                queue = new IntSeq[content.blocks().size];
-                layer = new byte[content.blocks().size];
+                queue = new IntSeq[content.blocks().size][csize];
 
-                for(int i = 0; i < queue.length; i++){
-                    queue[i] = new IntSeq();
-
-                    Block b = content.block(i);
-                    layer[i] = (byte) (
-                        b.isOverlay() ? 1
-                        : b.isFloor() ? 0
-                        : 2
-                    );
-                }
+                for(int id = 0; id < queue.length; id++)
+                    for(int i = 0; i < csize; i ++)
+                        queue[id][i] = new IntSeq();
             })
         );
+
+        SaveVersion.addCustomChunk("nyf-io", new EnvUpdaterIO());
     }
 
     @Override
     public void init(){
         wsize = world.width() * world.height();
+
+        wwidth = (world.width() - 1) * tilesize;
+        wheight = (world.height() - 1) * tilesize;
 
         props = new short[content.blocks().size];
         data = new byte[wsize][csize];
@@ -68,42 +66,44 @@ public class EnvUpdater implements AsyncProcess{
         replacementMap = new short[wsize][csize];
 
         for(int i = 0; i < wsize; i++){
-            Tile tile = world.tiles.geti(i);
+            Arrays.fill(replacementMap[i], Short.MIN_VALUE);
+            lookup = world.tiles.geti(i);
 
             // cleanup & setup
-            if(tile.floor() instanceof UpdatingEnvironment e){
-                if(!e.isValid(tile)){
-                    tile.setFloorNet(e.replacement(), tile.overlay());
-                    return;
+            if(lookup.floor() instanceof UpdatingEnvironment e){
+                if(!e.isValid(lookup)){
+                    lookup.setFloorNet(e.replacement(), lookup.overlay());
+                    continue;
                 }
 
                 replacementMap[i][0] = e.replacement().id;
-            }else replacementMap[i][0] = -1;
+            }
 
-            if(tile.overlay() instanceof UpdatingEnvironment e){
-                if(!e.isValid(tile)){
-                    tile.setOverlayNet(e.replacement());
-                    return;
+            if(lookup.overlay() instanceof UpdatingEnvironment e){
+                if(!e.isValid(lookup)){
+                    lookup.setOverlayNet(e.replacement());
+                    continue;
                 }
 
                 replacementMap[i][1] = e.replacement().id;
-            }else replacementMap[i][1] = -1;
+            }
 
-            if(tile.block() instanceof UpdatingEnvironment e){
-                if(!e.isValid(tile)){
-                    tile.setNet(e.replacement());
-                    return;
+            if(lookup.block() instanceof UpdatingEnvironment e){
+                if(!e.isValid(lookup)){
+                    lookup.setNet(e.replacement());
+                    continue;
                 }
 
                 replacementMap[i][2] = e.replacement().id;
-            }else replacementMap[i][2] = -1;
+            }
 
-            if(!tile.block().isStatic())
+            if(!lookup.block().isStatic())
                 space++;
         }
 
         for(int i = 0; i < queue.length; i++)
-            queue[i].clear();
+            for(int idx = 0; idx < csize; idx++)
+                queue[i][idx].clear();
     }
 
     @Override
@@ -136,18 +136,22 @@ public class EnvUpdater implements AsyncProcess{
         tasks.run();
 
         for(int i = 0; i < queue.length; i++){
-            if(queue[i].size <= 0) continue;
+            int index = i;
 
-            index = i;
-            queue[index].chunked(200, t -> {
-                switch(layer[index]){
-                    case 0 -> Call.setTileFloors(content.block(index), t);
-                    case 1 -> Call.setTileOverlays(content.block(index), t);
-                    case 2 -> Call.setTileBlocks(content.block(index), Team.derelict, t);
-                }
-            });
+            if(queue[i][0].size > 0){
+                queue[i][0].chunked(200, tiles -> Call.setTileFloors(content.block(index), tiles));
+                queue[i][0].clear();
+            }
 
-            queue[i].clear();
+            if(queue[i][1].size > 0){
+                queue[i][1].chunked(200, tiles -> Call.setTileOverlays(content.block(index), tiles));
+                queue[i][1].clear();
+            }
+
+            if(queue[i][2].size > 0){
+                queue[i][2].chunked(200, tiles -> Call.setTileBlocks(content.block(index), Team.derelict, tiles));
+                queue[i][2].clear();
+            }
         }
     }
 
@@ -159,28 +163,43 @@ public class EnvUpdater implements AsyncProcess{
         return props[id] < limit + (scaling * space);
     }
 
-    public static Tile closestInfested(int x, int y, int radius, int height, int width){
-        return closestInfested(x, y, radius, height, width, 0);
+    /** Gets an infested tile within the specified radius, if one exists <br/>All variables are in world units */
+    public static Tile getInfested(float x, float y, float radius){
+        return getInfested(x, y, radius, 0f);
     }
 
-    public static Tile closestInfested(int x, int y, int radius, int height, int width, int radiusMin){
-        for(int dx = Math.max(x - radius, 0); dx <= Math.min(x + radius, width - 1); dx++)
-            for(int dy = Math.max(y - radius, 0); dy <= Math.min(y + radius, height - 1); dy++)
-                if(Mathf.within(dx, dy, x, y, radius) && !Mathf.within(dx, dy, x, y, radiusMin) && infested[dx + dy * width])
-                    return world.tile(dx, dy);
+    /** Gets an infested tile that's within the specified radius but not within the offset, if one exists <br/>All variables are in world units */
+    public static Tile getInfested(float x, float y, float radius, float offset){
+        for(float dx = Math.max(x - radius, 0); dx <= Math.min(x + radius, wwidth); dx += tilesize){
+            for(float dy = Math.max(y - radius, 0); dy <= Math.min(y + radius, wheight); dy += tilesize){
+                ret = world.tileWorld(dx, dy);
+                if(ret.build == null && ret.within(x, y, radius) && (offset <= 0f || !ret.within(x, y, offset)) && infested[ret.array()])
+                    return ret;
+            }
+        }
+
         return null;
     }
 
-    //TODO: possibly broken, fix later on
+    // using the queue in this method is unnecessary, all this stuff is done on the main thread anyway
     public static void resetTile(Tile tile){
         if(tile == null) return;
 
-        int idx = tile.array(), pos = tile.pos();
-        for(int i = 0; i < csize; i++){
-            int id = replacementMap[idx][i];
-            if(id >= 0)
-                queue[id].addUnique(pos);
-        }
+        tile.getLinkedTiles(t -> {
+            int idx = t.array(), arr;
+
+            arr = replacementMap[idx][0];
+            if(arr >= 0)
+                t.setFloorNet(content.block(arr), t.overlay());
+
+            arr = replacementMap[idx][1];
+            if(arr >= 0)
+                t.setOverlayNet(content.block(arr));
+
+            arr = replacementMap[idx][2];
+            if(arr >= 0)
+                t.setNet(content.block(arr));
+        });
     }
 
     public static ObjectSet<Block> blacklist(String key){
@@ -193,5 +212,32 @@ public class EnvUpdater implements AsyncProcess{
         boolean isValid(Tile tile);
 
         Block replacement();
+    }
+
+    // save chunk - only writing the necessary stuff, everything else gets recreated
+    public static class EnvUpdaterIO implements SaveFileReader.CustomChunk{
+        @Override
+        public void write(DataOutput stream) throws IOException{
+            // version for later use
+            stream.write(1);
+
+            for(int i = 0; i < wsize; i++)
+                for(int idx = 0; idx < csize; idx++)
+                    stream.writeShort(replacementMap[i][idx]);
+        }
+
+        @Override
+        public void read(DataInput stream) throws IOException{
+            byte ver = stream.readByte();
+
+            for(int i = 0; i < wsize; i++)
+                for(int idx = 0; idx < csize; idx++)
+                    replacementMap[i][idx] = stream.readShort();
+        }
+
+        @Override
+        public boolean writeNet(){
+            return false;
+        }
     }
 }

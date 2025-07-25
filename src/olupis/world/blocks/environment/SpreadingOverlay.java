@@ -20,6 +20,8 @@ import static mindustry.Vars.*;
 import static olupis.world.EnvUpdater.*;
 
 public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironment{
+    public static final int arrayID = 1;
+
     /** Default replacement block */
     public Block replacement = Blocks.air;
     /** The amount of times the chance must be rolled */
@@ -39,12 +41,15 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     /** Spreading blacklist */
     public ObjectSet<Block> blacklist = ObjectSet.with(Blocks.coreZone);
     public String blacklistKey = "default";
-    public Func<Block, Boolean> filter = t ->
-        !blacklist(blacklistKey).contains(t)
-        && !t.isStatic()
-        && !(t instanceof SpreadingOverlay)
-        && !(t instanceof SpreadingOre)
-        && !(t instanceof Floor f && f.isLiquid);
+    public Func<Block, Boolean>
+        validator = t ->
+            !blacklist(blacklistKey).contains(t)
+            && !t.isStatic()
+            && !(t instanceof Floor f && f.isLiquid),
+        filter = t ->
+            validator.get(t)
+            && !(t instanceof SpreadingOverlay)
+            && !(t instanceof SpreadingOre);
 
     /** A list of replacements for floors, stock block first, then replacement */
     public OrderedMap<Block, Block> replacements = new OrderedMap<>();
@@ -161,10 +166,10 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         if(net.client()) return;
 
         if(Mathf.chance(spreadChance))
-            ++data[key][0];
+            ++data[key][arrayID];
 
-        if(data[key][0] >= spreadTries){
-            data[key][0] = 0;
+        if(data[key][arrayID] >= spreadTries){
+            data[key][arrayID] = 0;
 
             if(next != null){
                 if(upgradeEffect != null){
@@ -176,15 +181,11 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                 if(spreadSound != null)
                     tasks.post(() -> Call.soundAt(spreadSound, tile.worldx(), tile.worldy(), 1f, 1f));
 
-                tasks.post(() ->
-                    queue[next.id].add(tile.pos())
-                );
+                queue[next.id][arrayID].add(tile.pos());
 
                 if(props.size > 0 && canSpawn(id, propLimit, dynamicLimit) && Mathf.chance(spawnChance)){
-                    tasks.post(() -> {
-                        addProp(id);
-                        queue[props.random().id].add(tile.pos());
-                    });
+                    addProp(id);
+                    queue[props.random().id][2].add(tile.pos());
                 }
             }
 
@@ -197,9 +198,9 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                     if(replaces(near)) continue;
 
                     if(canSpread(near)){
-                        if(replacementMap[near.array()][1] == -1)
-                            replacementMap[key][1] = near.overlayID();
-                        queue[id].add(near.pos());
+                        if(replacementMap[near.array()][arrayID] <= -1)
+                            replacementMap[near.array()][arrayID] = near.overlayID();
+                        queue[id][arrayID].add(near.pos());
 
                         if(spreadEffect != null)
                             tasks.post(() -> Call.effect(spreadEffect, near.worldx(), near.worldy(), 0, Color.white));
@@ -211,6 +212,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
     public boolean replaces(Tile tile){
         boolean replaces = false;
+        int array = tile.array();
         short id;
 
         Block block = replacements.get(tile.floor());
@@ -218,9 +220,9 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
             replaces = true;
 
             id = tile.floorID();
-            if(replacementMap[tile.array()][layer[id]] == -1)
-                replacementMap[tile.array()][layer[id]] = id;
-            queue[block.id].add(tile.pos());
+            if(replacementMap[array][0] == -1)
+                replacementMap[array][0] = id;
+            queue[block.id][0].add(tile.pos());
         }
 
         block = replacements.get(tile.overlay());
@@ -228,9 +230,9 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
             replaces = true;
 
             id = tile.overlayID();
-            if(replacementMap[tile.array()][layer[id]] == -1)
-                replacementMap[tile.array()][layer[id]] = id;
-            queue[block.id].add(tile.pos());
+            if(replacementMap[array][1] == -1)
+                replacementMap[array][1] = id;
+            queue[block.id][1].add(tile.pos());
         }
 
         block = replacements.get(tile.block());
@@ -238,9 +240,9 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
             replaces = true;
 
             id = tile.blockID();
-            if(replacementMap[tile.array()][layer[id]] == -1)
-                replacementMap[tile.array()][layer[id]] = id;
-            queue[block.id].add(tile.pos());
+            if(replacementMap[array][2] <= -1)
+                replacementMap[array][2] = id;
+            queue[block.id][2].add(tile.pos());
         }
 
         return replaces;
@@ -255,7 +257,11 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     }
 
     public boolean isValid(Tile tile){
-        return canSpread(tile);
+        return(
+            validator.get(tile.floor())
+            && validator.get(tile.overlay())
+            && validator.get(tile.block())
+        );
     }
 
     public Block replacement(){

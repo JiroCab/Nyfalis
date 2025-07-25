@@ -1,17 +1,19 @@
 package olupis.world.blocks.environment;
 
 import arc.graphics.*;
-import arc.math.Mathf;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 
-import static mindustry.Vars.net;
+import static mindustry.Vars.*;
 import static olupis.world.EnvUpdater.*;
 
 public class GrowingWall extends StaticWall implements UpdatingEnvironment{
+    public static final int arrayID = 2;
+
     /** The amount of times the chance must be rolled */
     public int growTries = 3;
     /** Base chance for the tile to try to grow, updated every second */
@@ -32,10 +34,10 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
         if(net.client()) return;
 
         if(Mathf.chance(growChance))
-            ++data[key][0];
+            ++data[key][arrayID];
 
-        if(data[key][0] >= growTries){
-            data[key][0] = 0;
+        if(data[key][arrayID] >= growTries){
+            data[key][arrayID] = 0;
 
             if(next != null){
                 if(growEffect != null){
@@ -44,9 +46,7 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
                     );
                 }
 
-                tasks.post(() ->
-                    queue[next.id].add(tile.pos())
-                );
+                queue[next.id][arrayID].add(tile.pos());
             }
         }
     }

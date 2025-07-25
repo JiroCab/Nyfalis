@@ -14,6 +14,8 @@ import static mindustry.Vars.*;
 
 /** This class as a whole is now only for auto-generation */
 public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
+    public static final int arrayID = 1;
+
     public SpreadingOverlay parent;
     public Block next = null;
     public Block set = null;
@@ -40,10 +42,10 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
         if(net.client()) return;
 
         if(Mathf.chance(parent.spreadChance))
-            ++data[key][0];
+            ++data[key][arrayID];
 
-        if(data[key][0] >= parent.spreadTries){
-            data[key][0] = 0;
+        if(data[key][arrayID] >= parent.spreadTries){
+            data[key][arrayID] = 0;
 
             if(next != null){
                 if(parent.upgradeEffect != null){
@@ -55,15 +57,11 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
                 if(parent.spreadSound != null)
                     tasks.post(() -> Call.soundAt(parent.spreadSound, tile.worldx(), tile.worldy(), 1f, 1f));
 
-                tasks.post(() ->
-                    queue[next.id].add(tile.pos())
-                );
+                queue[next.id][arrayID].add(tile.pos());
 
                 if(parent.oresSpawnsProps && parent.props.size > 0 && canSpawn(id, parent.propLimit, parent.dynamicLimit) && Mathf.chance(parent.spawnChance)){
-                    tasks.post(() -> {
-                        addProp(id);
-                        queue[parent.props.random().id].add(tile.pos());
-                    });
+                    addProp(id);
+                    queue[parent.props.random().id][2].add(tile.pos());
                 }
             }
 
@@ -76,9 +74,9 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
                     if(parent.replaces(near)) continue;
 
                     if(parent.canSpread(near)){
-                        if(replacementMap[near.array()][1] == -1)
-                            replacementMap[key][1] = near.overlayID();
-                        queue[id].add(near.pos());
+                        if(replacementMap[near.array()][arrayID] <= -1)
+                            replacementMap[near.array()][arrayID] = near.overlayID();
+                        queue[parent.id][arrayID].add(near.pos());
 
                         if(parent.spreadEffect != null)
                             tasks.post(() -> Call.effect(parent.spreadEffect, near.worldx(), near.worldy(), 0, Color.white));

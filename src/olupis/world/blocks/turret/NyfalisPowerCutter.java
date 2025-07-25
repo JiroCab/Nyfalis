@@ -1,8 +1,6 @@
 package olupis.world.blocks.turret;
 
 import arc.math.*;
-import arc.util.*;
-import mindustry.*;
 import mindustry.entities.bullet.*;
 import mindustry.world.*;
 
@@ -26,7 +24,7 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
             super.updateTile();
 
             if(target == null){
-                Tile t = closestInfes();
+                Tile t = getInfested(x, y, range, minRange);
                 if(t == null) return;
 
                 targetPos.set(t);
@@ -44,15 +42,10 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
             }
         }
 
-        //Debuging
-        public @Nullable Tile closestInfes(){
-            return closestInfested(tileX(), tileY(), (int) range / tilesize, world.width(), world.height(), (int)(minRange / tilesize));
-        }
-
         @Override
         protected void shoot(BulletType type){
-            Tile t = Vars.world.tiles.getc(Math.round((targetPos.x + snipSize) /8), Math.round(targetPos.y /8));
-            if(t != null && t.within(this, Mathf.round(range + 8, tilesize)) && !t.within(this, Mathf.round(minRange + 8, tilesize))){
+            Tile t = world.tileWorld(targetPos.x, targetPos.y);
+            if(t != null){
                 resetTile(t);
                 target = null;
             }
