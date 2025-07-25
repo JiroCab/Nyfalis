@@ -351,7 +351,7 @@ public class NyfalisUnitType extends UnitType {
     public void updatePayload(Unit unit){
         //AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
-        if(unit.isCommandable() && unit.command().stance == holdFire) return;
+        if(unit.isCommandable() && unit.command().hasStance(holdFire)) return;
 
         if(!(unit instanceof Payloadc c)) return;
         if(c.payloads().isEmpty()) return;

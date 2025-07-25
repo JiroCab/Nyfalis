@@ -7,7 +7,6 @@ import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ai.*;
-import mindustry.ai.types.*;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.game.*;
@@ -60,8 +59,7 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
                 u.command().commandPosition(unit.command().targetPos);
                 if(unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisDeployCommand) u.command().command(UnitCommand.moveCommand);
             }
-            //copy parent's stance
-            if(unit.controller() instanceof CommandAI pi && u.type.stances.contains(pi.stance) && unit.controller() instanceof CommandAI ai) ai.stance = pi.stance;
+            //todo maybe? copy parent's stance
 
             Events.fire(new EventType.UnitCreateEvent(u, null, unit));
 

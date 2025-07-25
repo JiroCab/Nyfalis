@@ -83,12 +83,11 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         return Math.max(height, water);
     }
 
+
     @Override
-    public Color getColor(Vec3 position){
+    public void getColor(Vec3 position, Color out){
         Block block = getBlock(position);
-        //replace salt with sand color
-        if(block == salt) return sand.mapColor;
-        return Tmp.c1.set(block.mapColor).a(1f - block.albedo);
+        out.set(block.mapColor).a(1f - block.albedo);
     }
 
     @Override

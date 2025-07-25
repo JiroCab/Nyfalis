@@ -5,7 +5,6 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.async.*;
-import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
@@ -161,9 +160,13 @@ public class EnvUpdater implements AsyncProcess{
     }
 
     public static Tile closestInfested(int x, int y, int radius, int height, int width){
+        return closestInfested(x, y, radius, height, width, 0);
+    }
+
+    public static Tile closestInfested(int x, int y, int radius, int height, int width, int radiusMin){
         for(int dx = Math.max(x - radius, 0); dx <= Math.min(x + radius, width - 1); dx++)
             for(int dy = Math.max(y - radius, 0); dy <= Math.min(y + radius, height - 1); dy++)
-                if(Mathf.within(dx, dy, x, y, radius) && infested[dx + dy * width])
+                if(Mathf.within(dx, dy, x, y, radius) && !Mathf.within(dx, dy, x, y, radiusMin) && infested[dx + dy * width])
                     return world.tile(dx, dy);
         return null;
     }
