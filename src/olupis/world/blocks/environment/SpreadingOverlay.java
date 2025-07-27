@@ -3,7 +3,6 @@ package olupis.world.blocks.environment;
 import arc.*;
 import arc.audio.*;
 import arc.func.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
@@ -15,8 +14,9 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.content.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.net;
 import static olupis.world.EnvUpdater.*;
 
 public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironment{
@@ -34,9 +34,9 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     /** The sound played when this spreads */
     public Sound spreadSound = null;
     /** An effect spawned at the target tile when spreading */
-    public Effect spreadEffect = null,
+    public Effect spreadEffect = NyfalisFxs.mossSpread, //NyfalisFxs.highYieldExplosive,
     /** An effect this spawns when it upgrades */
-    upgradeEffect = null;
+    upgradeEffect = NyfalisFxs.mossStageUp; //NyfalisFxs.impactReactorExplosion;
 
     /** Spreading blacklist */
     public ObjectSet<Block> blacklist = ObjectSet.with(Blocks.coreZone);
@@ -174,7 +174,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
             if(next != null){
                 if(upgradeEffect != null){
                     tasks.post(() ->
-                        Call.effect(upgradeEffect, tile.worldx(), tile.worldy(), 0, Color.clear)
+                        Call.effect(upgradeEffect, tile.worldx(), tile.worldy(), 0, tile.floor().mapColor, tile.floor())
                     );
                 }
 
@@ -203,7 +203,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                         queue[id][arrayID].add(near.pos());
 
                         if(spreadEffect != null)
-                            tasks.post(() -> Call.effect(spreadEffect, near.worldx(), near.worldy(), 0, Color.white));
+                            tasks.post(() -> Call.effect(spreadEffect, near.worldx(), near.worldy(), 0, near.floor().mapColor));
                     }
                 }
             }

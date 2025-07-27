@@ -792,6 +792,7 @@ public class NyfalisBlocks {
             next = mossiestStoneWall;
         }};
 
+        //NyfalisBlocks.mycelium.spreadChance = 1
         mycelium = new SpreadingOverlay("mossy-overlay", 3){{
             spread = true;
 

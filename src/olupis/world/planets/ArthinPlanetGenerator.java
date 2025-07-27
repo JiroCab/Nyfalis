@@ -32,12 +32,12 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
 
     Block[][] arr =
             {
-                    {ice, dirt, stone, deepwater, redSandSnow , yellowGrass,},
-                    { stone, yellowGrass , mossierStone, deepwater, ice, hardenMud},
-                    { mossierStone, stone, dirt, deepwater, yellowGrass, mossierStone},
-                    { yellowGrass, dirt, redSand, deepwater, redSand, mossierStone },
-                    {redSandSnow, redSand, mossyStone, deepwater, ice, deepwater},
-                    {redSandSnow, mossierStone, stone, dirt, ice, redSandSnow},
+                    {mossierStone, algaeWater, mud, mossyDirt, mossStone},
+                    { mossierStone, dirt, water, algaeWater, mossyDirt, mossStone},
+                    {mossStone, water, mud,  algaeWater, mossyDirt},
+                    {moss, algaeWater, algaeWaterDeep, water, dirt, moss},
+                    {deepwater, algaeWater, mossyDirt, mossyStone, stone},
+                    {dirt, stone, mossyDirt, mud, mossyStone, mossierStone, mossierStone}
             };
 
     ObjectMap<Block, Block> dec = ObjectMap.of(
@@ -65,7 +65,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         return res % 2 == 0 ? res : res + 1;
     }
 
-    float water = 1.8f / arr[0].length;
+    float waterf = 1.8f / arr[0].length;
 
     float rawHeight(Vec3 position){
         position = Tmp.v33.set(position).scl(scl);
@@ -80,7 +80,7 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
     @Override
     public float getHeight(Vec3 position){
         float height = rawHeight(position);
-        return Math.max(height, water);
+        return Math.max(height, waterf);
     }
 
 
@@ -558,6 +558,11 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         }
 
         //ehh to lazy
+        for(int xi = 0; xi < 4; xi++){
+            for(int yi = 0; yi < 4; yi++){
+                tiles.get(spawn.x +xi, spawn.y + xi).setFloor(Mathf.randomBoolean(0.7f) ?metalFloor.asFloor() :  rustedMetal.asFloor());
+            }
+        }
         tiles.get(spawn.x, spawn.y).setFloor(coreZone.asFloor());
         tiles.get(spawn.x +1, spawn.y).setFloor(coreZone.asFloor());
         tiles.get(spawn.x +1, spawn.y +1).setFloor(coreZone.asFloor());

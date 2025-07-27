@@ -1,6 +1,5 @@
 package olupis.world.blocks.environment;
 
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import mindustry.gen.*;
@@ -9,8 +8,8 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
 
+import static mindustry.Vars.net;
 import static olupis.world.EnvUpdater.*;
-import static mindustry.Vars.*;
 
 /** This class as a whole is now only for auto-generation */
 public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
@@ -50,7 +49,7 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
             if(next != null){
                 if(parent.upgradeEffect != null){
                     tasks.post(() ->
-                        Call.effect(parent.upgradeEffect, tile.worldx(), tile.worldy(), 0, Color.clear)
+                        Call.effect(parent.upgradeEffect, tile.worldx(), tile.worldy(), 0, tile.block().mapColor, tile.floor())
                     );
                 }
 
@@ -79,7 +78,7 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
                         queue[parent.id][arrayID].add(near.pos());
 
                         if(parent.spreadEffect != null)
-                            tasks.post(() -> Call.effect(parent.spreadEffect, near.worldx(), near.worldy(), 0, Color.white));
+                            tasks.post(() -> Call.effect(parent.spreadEffect, near.worldx(), near.worldy(), 0, near.block().mapColor, tile.floor()));
                     }
                 }
             }

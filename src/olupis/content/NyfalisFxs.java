@@ -406,7 +406,17 @@ public class NyfalisFxs extends Fx {
             mixcol(e.color, 1f);
             alpha(e.fout());
             Draw.rect(block.fullIcon, e.x, e.y);
-        })
+        }),
+
+        mossStageUp = new  Effect(15f, e -> {
+            float scl = Math.max(e.rotation, 1);
+            color(Tmp.c1.set(e.color).mul(1.1f));
+            randLenVectors(e.id, 6, 19f * e.finpow() * scl, (x, y) -> {
+                Drawf.tri(e.x, e.y, e.fout() * 3.5f * scl + 0.3f, 30f * e.fout(), e.rotation);
+            });
+        }).layer(Layer.debris),
+
+        mossSpread = new MultiEffect(mossStageUp, acidRainDamage).layer(Layer.debris);
 
     ;
 
