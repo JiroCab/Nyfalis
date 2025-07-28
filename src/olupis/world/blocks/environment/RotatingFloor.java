@@ -15,10 +15,12 @@ public class RotatingFloor extends Floor {
     public void drawBase(Tile tile){
         //delegates to entity unless it is null
         Mathf.rand.setSeed(tile.pos());
-        Draw.rect(variants == 0 ? region :
-                variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))],
-                tile.worldx(), tile.worldy(), Math.round(Mathf.randomSeed(tile.pos(),0, 3)) * 90f )
-        ;
+        Draw.rect(
+            variants == 0 ? region : variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))],
+            tile.worldx(),
+            tile.worldy(),
+            Mathf.randomSeed(tile.pos(),0, 3) * 90f
+        );
 
         Draw.alpha(1f);
         drawEdges(tile);

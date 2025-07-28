@@ -8,7 +8,7 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
 
-import static mindustry.Vars.net;
+import static mindustry.Vars.*;
 import static olupis.world.EnvUpdater.*;
 
 /** This class as a whole is now only for auto-generation */
@@ -48,9 +48,10 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
 
             if(next != null){
                 if(parent.upgradeEffect != null){
-                    tasks.post(() ->
-                        Call.effect(parent.upgradeEffect, tile.worldx(), tile.worldy(), 0, tile.block().mapColor, tile.floor())
-                    );
+                    tasks.post(() -> {
+                        parent.upgradeEffect.at(tile.worldx(), tile.worldy(), 0f, tile.floor().mapColor, tile.floor());
+                        Call.effect(parent.upgradeEffect, tile.worldx(), tile.worldy(), 0, tile.floor().mapColor, tile.floor());
+                    });
                 }
 
                 if(parent.spreadSound != null)
@@ -77,8 +78,12 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
                             replacementMap[near.array()][arrayID] = near.overlayID();
                         queue[parent.id][arrayID].add(near.pos());
 
-                        if(parent.spreadEffect != null)
-                            tasks.post(() -> Call.effect(parent.spreadEffect, near.worldx(), near.worldy(), 0, near.block().mapColor, tile.floor()));
+                        if(parent.spreadEffect != null){
+                            tasks.post(() ->{
+                                parent.spreadEffect.at(tile.worldx(), tile.worldy(), near.floor().mapColor);
+                                Call.effect(parent.spreadEffect, near.worldx(), near.worldy(), 0, near.floor().mapColor);
+                            });
+                        }
                     }
                 }
             }

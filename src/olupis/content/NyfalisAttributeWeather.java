@@ -15,6 +15,7 @@ import mindustry.world.meta.*;
 import olupis.world.*;
 import olupis.world.blocks.environment.*;
 
+import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static olupis.content.NyfalisBlocks.*;
 
@@ -167,7 +168,7 @@ public class NyfalisAttributeWeather {
     public static class AcidRainWeather extends RainWeather{
         public float damageDelay = 1.5f * Time.toMinutes, regrowDelay = 3f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f,
                             regrowPercent = 0.005f;
-        boolean coolDown = false, coolDownRegrow = false;
+        Interval delayer = new Interval(2);
 
         public AcidRainWeather(String name){
             super(name);
@@ -175,68 +176,62 @@ public class NyfalisAttributeWeather {
 
         @Override
         public void update(WeatherState state){
-            applyDamage();
-            regrow();
+            if(delayer.get(regrowDelay))
+                regrow();
+            if(delayer.get(1, damageDelay))
+                applyDamage();
         }
 
         public void regrow(){
-            if(coolDownRegrow) return;
-            Time.run(regrowDelay, () ->{
-                for(Tile t : Vars.world.tiles){
-                    boolean grow = Mathf.randomBoolean(regrowPercent);
-                    if(grow && t.block() instanceof SprigProp){
-                        NyfWorldFuckingHelper.growSprigs(t);
-                        continue;
-                    }
-                    if(t.solid()) continue;
+            boolean grow;
 
-                    if(grow) NyfWorldFuckingHelper.placeSprigs(t);
+            for(int i = 0; i < world.width() * world.height(); i++){
+                grow = Mathf.randomBoolean(regrowPercent);
+
+                if(grow && world.tiles.geti(i).block() instanceof SprigProp){
+                    NyfWorldFuckingHelper.growSprigs(world.tiles.geti(i));
+                    continue;
                 }
-                coolDownRegrow = false;
-            });
-            coolDownRegrow = true;
+
+                if(grow)
+                    NyfWorldFuckingHelper.placeSprigs(world.tiles.geti(i));
+            }
         }
 
         public void applyDamage(){
-            if(coolDown) return;
-            coolDown = true;
-            Time.run(damageDelay, () ->{
-                if(damageBlock > 0)Groups.build.each(b ->{
-                    if(b.team == Team.derelict) return;
+            if(damageBlock > 0){
+                Groups.build.each(b -> b.team != Team.derelict, b -> {
                     b.damage(damageBlock);
                     NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
                 });
-                /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
-                if(damageUnits > 0)Groups.unit.each(u -> u.damage(damageUnits));
-                coolDown = false;
-            });
+            }
+
+            /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
+            if(damageUnits > 0)
+                Groups.unit.each(u -> u.damage(damageUnits));
         }
     }
 
-    public static class  DamgingParticleWeather extends ParticleWeather{
+    public static class DamgingParticleWeather extends ParticleWeather{
         public float damageDelay = 1.5f * Time.toMinutes, damageBlock = 1f, damageUnits = 5f;
-        boolean coolDown = false;
+        Interval delayer = new Interval();
 
         public DamgingParticleWeather(String name){
             super(name);
         }
 
-
         @Override
         public void update(WeatherState state){
             super.update(state);
 
-            if(coolDown) return;
-            coolDown = true;
-            Time.run(damageDelay, () ->{
-                if(damageBlock > 0)Groups.build.each(b ->{
-                    if(b.team == Team.derelict) return;
-                    b.damage(damageBlock);
-                });
+            if(delayer.get(damageDelay)){
+                if(damageBlock > 0)
+                    Groups.build.each(b -> b.team == Team.derelict, b -> b.damage(damageBlock));
+
                 /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
-                if(damageUnits > 0)Groups.unit.each(u -> u.damage(damageUnits));
-                coolDown = false;
-            });
+                if(damageUnits > 0)
+                    Groups.unit.each(u -> u.damage(damageUnits));
+            }
         }
     }
 

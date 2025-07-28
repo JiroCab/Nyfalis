@@ -1,6 +1,5 @@
 package olupis.world.blocks.environment;
 
-import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -41,9 +40,10 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
 
             if(next != null){
                 if(growEffect != null){
-                    tasks.post(() ->
-                        Call.effect(growEffect, tile.worldx(), tile.worldy(), 0, Color.clear)
-                    );
+                    tasks.post(() -> {
+                        growEffect.at(tile.worldx(), tile.worldy(), 0f, tile.block().mapColor, tile.block());
+                        Call.effect(growEffect, tile.worldx(), tile.worldy(), 0f, tile.block().mapColor, tile.block());
+                    });
                 }
 
                 queue[next.id][arrayID].add(tile.pos());
