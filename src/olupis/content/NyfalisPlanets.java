@@ -59,8 +59,8 @@ public class NyfalisPlanets {
             unlockedOnLand.addAll(NyfalisBlocks.coreRemnant, NyfalisItemsLiquid.rustyIron);
             meshLoader = () -> new HexMesh(this, 7);
             cloudMeshLoader = () -> new MultiMesh(
-                    new HexSkyMesh(this, 11, 0.7f, 0.13f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.9f, 0.38f),
-                new HexSkyMesh(this, 1, 0.2f, 0.16f, 5, Pal.regen.cpy().lerp(Color.valueOf("D7F5DC"), 0.55f).a(0.55f), 2, 0.45f, 1f, 0.41f)
+                new HexSkyMesh(this, 11, 0.7f, 0.06f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.4f, 0.38f),
+                new HexSkyMesh(this, 1, 0.2f, 0.08f, 5, Pal.regen.cpy().lerp(Color.valueOf("D7F5DC"), 0.55f).a(0.55f), 2, 0.45f, 0.5f, 0.41f)
             );
         }};
 
@@ -80,6 +80,11 @@ public class NyfalisPlanets {
             defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             iconColor = NyfalisItemsLiquid.condensedBiomatter.color;
             meshLoader = () -> new HexMesh(this, 5);
+
+            cloudMeshLoader = () -> new MultiMesh(
+                new HexSkyMesh(this, 11, 0.7f, 0.13f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.9f, 0.38f),
+                new HexSkyMesh(this, 1, 0.2f, 0.16f, 5, Pal.regen.cpy().lerp(Color.valueOf("D7F5DC"), 0.55f).a(0.55f), 2, 0.45f, 1f, 0.41f)
+            );
         }};
 
         spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{

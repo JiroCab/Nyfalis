@@ -2,6 +2,7 @@ package olupis.content;
 
 import arc.func.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.type.*;
@@ -30,14 +31,20 @@ public class NyfalisSectors {
             waterFeatures = Seq.with(kelp, redCorals, blueCorals, greenCorals),
             treesGreen = Seq.with(nyfalisTree, mossTree, mossDeadTree, mossTree),
             treesYellow = Seq.with(yellowTree, yellowTreeBlooming, mossDeadTree, mossTree),
-            treesAll = Seq.with(treesGreen).addAll(treesYellow),
+            treesDead = Seq.with(deadTree, mossDeadTree),
+            treesAll = Seq.with(treesGreen).addAll(treesYellow).add(treesDead),
             solidMossYellow = Seq.with(yellowShrubs, yellowShrubsCrooked, yellowShrubsIrregular, yellowTree, yellowTreeBlooming),
             solidMossYellowAll = Seq.with(solidMossYellow).addAll(yellowTree),
             solidShurbsGrass = Seq.with(greenShrubsIrregular, greenShrubsCrooked),
             overlayFlowers = Seq.with(glowSprouts, lumaSprouts),
             sprigs = Seq.with(grassSprig, mossSprig, yellowSprig, glowSprig, lumaSprig),
-            grasses = Seq.with(Blocks.grass, forestGrass, frozenGrass),
-            luma = Seq.with(lumaGrass, lumaGrassWater)
+            grasses = Seq.with(Blocks.grass, forestGrass),
+            grassesAll = Seq.with(Blocks.grass, forestGrass, frozenGrass),
+            luma = Seq.with(lumaGrass, lumaGrassWater),
+            waters = Seq.with(Blocks.water, Blocks.deepwater, algaeWater, algaeWaterDeep),
+            soils = Seq.with(Blocks.dirt, Blocks.mud, pumiceFloor),
+            metals = Seq.with(Blocks.metalFloor, Blocks.metalFloorDamaged, rustyFloor, rustFloor),
+            ruins = Seq.with(rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, ironRouter)
     ;
 
     public static final Seq<SectorPreset> nyfalisSectorRequirement = Seq.with(ironCurtain, glasierSea, conciditRuins);
@@ -160,6 +167,8 @@ public class NyfalisSectors {
         else r.dropZoneRadius = dzRadius;
         r.enemyCoreBuildRadius = 650f;
         r.env = nyfalis.defaultEnv;
+        r.showSpawns = true;
+        r.waveSpacing = 3.5f * Time.toMinutes;
 
         if(startItems.length >= 1)r.loadout.set(startItems);
     }

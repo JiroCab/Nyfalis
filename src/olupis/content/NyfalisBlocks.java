@@ -72,7 +72,7 @@ public class NyfalisBlocks {
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, dirtVent,
         redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
-        beachSandFloor, gypsumFloor, pumiceFloor, galenaFLoor, rustyFloor, rustFloor, forestGrass,
+        beachSandFloor, gypsumFloor, pumiceFloor, galenaFloor, rustyFloor, rustFloor, forestGrass,
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop, slopDeep, lubricantPool,
@@ -206,7 +206,7 @@ public class NyfalisBlocks {
         gypsumFloor = new Floor("gypsum-floor") {{
             variants = 4;
         }};
-        galenaFLoor = new Floor("galena-floor") {{
+        galenaFloor = new Floor("galena-floor") {{
             variants = 4;
         }};
         pumiceFloor = new Floor("pumice-floor") {{
@@ -584,7 +584,7 @@ public class NyfalisBlocks {
             variants = 2;
         }};
         galenaBoulder = new Prop("galena-boulder") {{
-            galenaFLoor.asFloor().decoration = this;
+            galenaFloor.asFloor().decoration = this;
             variants = 2;
         }};
         pumiceBoulder = new Prop("pumice-boulder") {{
@@ -669,21 +669,27 @@ public class NyfalisBlocks {
         //endregion
         //region Walls
         beachSandWall = new StaticWall("beach-wall") {{
+            beachSandFloor.asFloor().wall = this;
             variants = 3;
         }};
         gypsumWall = new StaticWall("gypsum-wall") {{
+            gypsumFloor.asFloor().wall = this;
             variants = 3;
         }};
         gypsumRubble = new TallBlock("gypsum-rubble") {{
+            gypsumFloor.asFloor().decoration = this;
             variants = 2;
         }};
         galenaWall = new StaticWall("galena-wall") {{
+            galenaFloor.asFloor().wall = this;
             variants = 3;
         }};
         pumiceWall = new StaticWall("pumice-wall") {{
+            pumiceFloor.asFloor().wall = this;
             variants = 3;
         }};
         pumiceRubble = new StaticTree("pumice-rubble") {{
+            pumiceFloor.asFloor().decoration = this;
             variants = 2;
         }};
         redDune = new VeryStaticWall("red-dune-wall") {{
@@ -697,10 +703,13 @@ public class NyfalisBlocks {
         }};
 
         lumaWall = new StaticTree("luma-wall") {{
+            lumaGrass.asFloor().wall = this;
             variants = 2;
         }};
 
         rustedMetal = new StaticWall("rusted-metal") {{
+            rustFloor.asFloor().wall = this;
+            rustyFloor.asFloor().wall = this;
             variants = 2;
         }};
 
@@ -752,30 +761,30 @@ public class NyfalisBlocks {
 
         //endregion
         //region Trees
-        nyfalisTree = new TreeBlock("olupis-tree"){{
+        nyfalisTree = new TrasngenderTreeBlock("olupis-tree"){{
             variants = 2;
         }};
-        mossTree = new TreeBlock("moss-tree"){{
+        mossTree = new TrasngenderTreeBlock("moss-tree"){{
             variants = 2;
         }};
-        pinkTree = new TreeBlock("pink-tree"){{
+        pinkTree = new TrasngenderTreeBlock("pink-tree"){{
             variants = 2;
         }};
-        yellowTree = new TreeBlock("yellow-tree");
-        yellowTreeBlooming = new TreeBlock("yellow-tree-blooming"){{
+        yellowTree = new TrasngenderTreeBlock("yellow-tree");
+        yellowTreeBlooming = new TrasngenderTreeBlock("yellow-tree-blooming"){{
             variants = 2;
         }};
-        infernalMegaBloom = new TreeBlock("infernal-megabloom"){{
+        infernalMegaBloom = new TrasngenderTreeBlock("infernal-megabloom"){{
             variants = 4;
             clipSize = 128f;
         }};
-        orangeTree = new TreeBlock("orange-tree"){{
+        orangeTree = new TrasngenderTreeBlock("orange-tree"){{
             variants = 3;
         }};
-        deadTree = new TreeBlock("dead-tree"){{
+        deadTree = new TrasngenderTreeBlock("dead-tree"){{
             variants = 2;
         }};
-        mossDeadTree = new TreeBlock("moss-dead-tree"){{
+        mossDeadTree = new TrasngenderTreeBlock("moss-dead-tree"){{
             variants = 2;
         }};
 
@@ -850,6 +859,18 @@ public class NyfalisBlocks {
             status = StatusEffects.corroded;
         }};
 
+        //endregion
+        //region Misc
+        if(headless) return;
+        cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
+        cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);
+        cinderBloomiest.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.25f);
+        mossyStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.75f);
+        mossierStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.5f);
+        mossiestStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.25f);
+        mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
+        frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
+        coralReef.mapColor = deepwater.mapColor;
         //endregion
     }
 
@@ -2756,16 +2777,5 @@ public class NyfalisBlocks {
 
         unitReplicator.replacement = NyfalisBlocks.rustyScrapWallHumongous;
         unitReplicatorSmall.replacement = NyfalisBlocks.rustyScrapWallGigantic;
-
-        if(headless) return;
-        cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
-        cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);
-        cinderBloomiest.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.25f);
-        mossyStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.75f);
-        mossierStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.5f);
-        mossiestStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.25f);
-        mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
-        frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
-        coralReef.mapColor = deepwater.mapColor;
     }
 }

@@ -1,6 +1,8 @@
 package olupis.world;
 
 import arc.func.*;
+import arc.graphics.*;
+import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
@@ -15,7 +17,8 @@ import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisSectors.*;
 
 public class NyfWorldFuckingHelper{
-    /** @return whether any raycasted tiles match the filter */
+    /*== Gameplay Helpers ==*/
+    /** returns whether any raycasted tiles match the filter */
     public static boolean rayCheck(Healthc build, Posc entity, Func<Block, Boolean> filter){
         Seq<Block> set = new Seq<>(false);
 
@@ -33,8 +36,7 @@ public class NyfWorldFuckingHelper{
 
     // no longer assumes the solids do not exist
     public static void placeSprigs(Tile t){
-        if(t == null || (t.block() != Blocks.air && !t.block().alwaysReplace))
-            return;
+        if(t == null || (t.block() != Blocks.air && !t.block().alwaysReplace)) return;
 
         Floor fl = t.floor();
         t.setNet(
@@ -47,6 +49,8 @@ public class NyfWorldFuckingHelper{
         );
     }
 
+
+    /*== Weather helpers ==*/
     public static void growSprigs(Tile t){
         if(t.block() instanceof SprigProp sp){
             t.setNet(sp.replacement);
@@ -60,5 +64,36 @@ public class NyfWorldFuckingHelper{
         if(floor instanceof SpreadingOverlay f)
             return f.replacements.get(ore, ore);
         return ore;
+    }
+
+
+
+    /* == Planet gen helpers==*/
+    public static void  noiseColourRaw(float noise, Block block, Color out){
+        if(mossGreenAll.contains(block)) noiseColour(noise, mossGreen, out, block);
+        else if(grassesAll.contains(block)) noiseColour(noise, grasses, out, block);
+        else if(waters.contains(block)) noiseColour(noise, waters, out, block);
+        else if(soils.contains(block)) noiseColour(noise, soils, out, block);
+        else out.set(block.mapColor).a(1f - block.albedo);
+    }
+
+    public static void noiseColour(float noise, Seq<Block> in, Color out, Block block){
+        int c = (int)Mathf.lerp(0, in.size, noise);
+        Block bl = in.get(c);
+
+        if(soils.contains(bl)) out.set(bl.mapColor).lerp(mossGreen.random().mapColor, 0.5f).a(1f - bl.albedo);
+        else out.set(bl.mapColor).a(1f - block.albedo);
+    }
+
+    public static Block getVentEqv(Block blk){
+        if(blk instanceof SteamVent) return blk;
+        if(mossGreenAll.contains(blk)) return mossyVent;
+        if(blk == Blocks.dirt) return dirtVent;
+        if(blk == hardenMud) return hardenMuddyVent;
+        if(blk == Blocks.grass) return grassyVent;
+        if(blk == Blocks.snow || blk == Blocks.iceSnow) return snowVent;
+        if(blk == redSand || blk == redSandSnow) return redSandVent;
+
+        return Blocks.arkyicVent;
     }
 }

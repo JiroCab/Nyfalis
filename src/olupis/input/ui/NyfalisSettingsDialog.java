@@ -47,6 +47,7 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
             table.checkPref("nyfalis-cloud-shadows", true);
+            table.checkPref("nyfalis-qolTreeTrans", true);
             table.checkPref("nyfalis-display-bat-helper", false, val -> {
                 for(UnitType b : NyfalisUnits.batHelpers){
                     b.hidden = !val;
