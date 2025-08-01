@@ -14,14 +14,16 @@ import mindustry.ui.Bar;
 import mindustry.world.blocks.production.BurstDrill;
 
 public class BoostableBurstDrill extends BurstDrill {
+    public float liqMul = 1.89f;
     public Liquid boostLiquid = Liquids.water;
     public int topVariant = 0;
     public TextureRegion[] topRegions, topInvertedRegions;
 
 
-    public BoostableBurstDrill(String name)
-    {
+    public BoostableBurstDrill(String name){
         super(name);
+        //donot, bugs out
+        liquidBoostIntensity = 1f;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class BoostableBurstDrill extends BurstDrill {
 
 
         addBar("drillspeed", (DrillBuild e) ->{
-            int b = e.liquids.get(boostLiquid) > 0 ? 2 : 1;
+            float b = e.liquids.get(boostLiquid) > 0 ? liqMul : 1;
             return new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.lastDrillSpeed * 60 * e.timeScale() * b, 2)), () -> Pal.ammo, () -> e.warmup);
         });
     }
@@ -97,7 +99,7 @@ public class BoostableBurstDrill extends BurstDrill {
             }
 
             if(dominantItems > 0 && progress >= drillTime && items.total() < itemCapacity){
-                int b = liquids.get(boostLiquid) > 0 ? 2 : 1;
+                float b = liquids.get(boostLiquid) > 0 ? liqMul : 1;
                 for(int i = 0; i < dominantItems * b; i++){
                     offload(dominantItem);
                 }

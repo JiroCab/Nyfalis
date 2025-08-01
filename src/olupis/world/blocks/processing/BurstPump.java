@@ -11,7 +11,7 @@ import arc.struct.ObjectFloatMap;
 import arc.util.Strings;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
-import mindustry.gen.Sounds;
+import mindustry.gen.*;
 import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
@@ -52,7 +52,7 @@ public class BurstPump extends Pump {
         //replace dynamic output bar with own custom bar
         addLiquidBar((PumpBuild build) -> build.liquidDrop);
         addBar("drillspeed", (BurstPump.BurstPumpBuild e) ->
-                new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.lastPumpSpeed * 60 * e.timeScale(), 2)), () -> Pal.ammo, () -> e.warmup));
+                new Bar(() -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.liquids.currentAmount() < liquidCapacity ? e.amount * e.lastPumpSpeed * 60 * e.timeScale() : 0f, 0)), () -> Pal.ammo, () -> e.warmup));
     }
     @Override
     public void drawPlace(int x,int y,int rotation,boolean valid) {
@@ -77,7 +77,9 @@ public class BurstPump extends Pump {
         }
 
         if(liquidDrop != null){
-            float width = drawPlaceText(Core.bundle.formatFloat("bar.pumpspeed", amount * pumpAmount*60/pumpTime, 0), x, y, valid);
+            float width = drawPlaceText(
+                Core.bundle.format("bar.pumpspeed", Strings.fixed(amount * pumpAmount,0 ) +Iconc.liquid+ " + " +  (Strings.fixed(amount * leakAmount * 60f, 0)))
+                , x, y, valid);
             float dx = x * tilesize + offset - width/2f - 4f, dy = y * tilesize + offset + size * tilesize / 2f + 5, s = iconSmall / 4f;
             float ratio = (float)liquidDrop.fullIcon.width / liquidDrop.fullIcon.height;
             Draw.mixcol(Color.darkGray, 1f);
@@ -91,7 +93,7 @@ public class BurstPump extends Pump {
     public void setStats(){
         super.setStats();
         stats.remove(Stat.output);
-        stats.add(Stat.output, ((pumpAmount / pumpTime) + leakAmount) * 60f , StatUnit.liquidSecond);
+        stats.add(Stat.output, Strings.fixed(pumpAmount * size* size,0)+ Iconc.liquid + " + " +Strings.fixed(leakAmount * size  * size * 60, 0) + " "+  StatUnit.liquidSecond.localized());
     }
 
     public class BurstPumpBuild extends PumpBuild{
@@ -101,51 +103,51 @@ public class BurstPump extends Pump {
         public float progress, warmup, timePumped, lastPumpSpeed;
 
 
-            @Override
-            public void updateTile(){
-                if (liquidDrop == null) return;
+        @Override
+        public void updateTile(){
+            if (liquidDrop == null) return;
 
-                //if(invertTime > 0f) invertTime -= delta() / invertedTime;
-                smoothProgress = Mathf.lerpDelta(smoothProgress, progress / (pumpTime - 20f), 0.1f);
+            //if(invertTime > 0f) invertTime -= delta() / invertedTime;
+            smoothProgress = Mathf.lerpDelta(smoothProgress, progress / (pumpTime - 20f), 0.1f);
 
-                if (timer(timerDump, dumpTime)){
-                    dumpLiquid(liquidDrop, 1.5f);
-                }
+            if (timer(timerDump, dumpTime)){
+                dumpLiquid(liquidDrop, 1.5f);
+            }
 
-                float pumpTime = getPumpTime(liquidDrop);
-                smoothProgress = Mathf.lerpDelta(smoothProgress, progress/(pumpTime - 20f), 0.1f);
+            float pumpTime = getPumpTime(liquidDrop);
+            smoothProgress = Mathf.lerpDelta(smoothProgress, progress/(pumpTime - 20f), 0.1f);
 
-                if(liquids.currentAmount() < liquidCapacity && efficiency > 0 ){
-                    warmup = Mathf.approachDelta(warmup, progress/pumpTime, 0.01f);
-                    float speed = efficiency;
+            if(liquids.currentAmount() < liquidCapacity && efficiency > 0 ){
+                warmup = Mathf.approachDelta(warmup, progress/pumpTime, 0.01f);
+                float speed = efficiency;
 
-                    timePumped += speedCurve.apply(progress/pumpTime) * speed;
-                    lastPumpSpeed = 1f / pumpTime * speed;
-                    progress += delta() * speed;
-                } else  {
-                    warmup = Mathf.approachDelta(warmup, 0f, 0.01f);
-                    return;
-                }
-                if (liquids.currentAmount() < liquidCapacity){
-                    if(progress >= pumpTime ){
-                        float emptySpaceLiquid = liquidCapacity - liquids.get(liquidDrop);
-                        //float maxPump = Math.min(liquidCapacity - liquids.get(liquidDrop) + (liquidCapacity / 2.5f), amount * pumpAmount * edelta());
-                        liquids.add(liquidDrop,Math.min(pumpAmount,emptySpaceLiquid));
-                        //invertedTime is not used anywhere
-                        //invertedTime = 1f;
-                        progress %= pumpTime;
-                        if(wasVisible){
-                            Effect.shake(shake, shake, this);
-                            drillSound.at(x, y, 1f + Mathf.range(drillSoundPitchRand), drillSoundVolume);
-                            pumpEffect.at(x + Mathf.range(pumpEffectRnd), y + Mathf.range(pumpEffectRnd), liquidDrop.color);
-                        }
-                    } else{
-                          /*keep a very small amount output but keep the bursts as a main
-                               so its not annoying gameplay wise */
-                        liquids.add(liquidDrop, leakAmount);
-                        lastPumpSpeed = leakAmount;
+                timePumped += speedCurve.apply(progress/pumpTime) * speed;
+                lastPumpSpeed = 1f / pumpTime * speed;
+                progress += delta() * speed;
+            } else  {
+                warmup = Mathf.approachDelta(warmup, 0f, 0.01f);
+                return;
+            }
+            if (liquids.currentAmount() < liquidCapacity){
+                if(progress >= pumpTime ){
+                    float emptySpaceLiquid = liquidCapacity - liquids.get(liquidDrop);
+                    //float maxPump = Math.min(liquidCapacity - liquids.get(liquidDrop) + (liquidCapacity / 2.5f), amount * pumpAmount * edelta());
+                    liquids.add(liquidDrop,Math.min(pumpAmount,emptySpaceLiquid));
+                    //invertedTime is not used anywhere
+                    //invertedTime = 1f;
+                    progress %= pumpTime;
+                    if(wasVisible){
+                        Effect.shake(shake, shake, this);
+                        drillSound.at(x, y, 1f + Mathf.range(drillSoundPitchRand), drillSoundVolume);
+                        pumpEffect.at(x + Mathf.range(pumpEffectRnd), y + Mathf.range(pumpEffectRnd), liquidDrop.color);
                     }
                 }
+
+                float maxPump = Math.min(liquidCapacity - liquids.get(liquidDrop), amount * leakAmount * edelta());
+                liquids.add(liquidDrop, maxPump);
+                lastPumpSpeed += leakAmount;
+
             }
         }
+    }
 }

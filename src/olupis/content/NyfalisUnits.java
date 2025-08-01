@@ -1429,7 +1429,7 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
             abilities.addAll(
                 new CarrierResupplyAbility(2),
-                new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 0f, 0, -10f)
+                new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 10, 0, 8f)
             );
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-warden-point-defense"){{
                 x = 0;

@@ -677,7 +677,6 @@ public class NyfalisBlocks {
             variants = 3;
         }};
         gypsumRubble = new TallBlock("gypsum-rubble") {{
-            gypsumFloor.asFloor().decoration = this;
             variants = 2;
         }};
         galenaWall = new StaticWall("galena-wall") {{
@@ -689,7 +688,6 @@ public class NyfalisBlocks {
             variants = 3;
         }};
         pumiceRubble = new StaticTree("pumice-rubble") {{
-            pumiceFloor.asFloor().decoration = this;
             variants = 2;
         }};
         redDune = new VeryStaticWall("red-dune-wall") {{
@@ -1044,12 +1042,13 @@ public class NyfalisBlocks {
 
             tier = 1;
             size = 3;
+            liquidCapacity  = 10;
             drillTime = 60f * 8.5f;
             variants = topVariant = 3;
 
             drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             consumePower(10f/60f);
-            consumeLiquid(Liquids.water, 0.05f).boost();
+            consumeLiquid(Liquids.water, 5f/ 60f).boost();
             requirements(Category.production, with(rustyIron, 15    ));
         }};
 
@@ -1058,14 +1057,15 @@ public class NyfalisBlocks {
             hasPower = true;
             tier = 2;
             size = 3;
-            drillTime = 60f * 5f;
-
+            drillTime = 60f * 4.03f;
+            liquidCapacity  = 10;
+            liquidBoostIntensity = 1.21f;
 
             envEnabled ^= Env.space;
             consumePower(50f/60f);
             consumeLiquid(NyfalisItemsLiquid.steam, 0.05f);
             researchCost = with(iron, 300, lead, 700);
-            consumeLiquid(Liquids.slag, 0.06f).boost();
+            consumeLiquid(Liquids.slag, 5/ 60f).boost();
             requirements(Category.production, with( iron, 40, lead, 20));
         }};
 
@@ -1155,8 +1155,8 @@ public class NyfalisBlocks {
             squareSprite = false;
             alwaysUnlocked = true;
             size = 1;
-            liquidCapacity = 10f;
-            pumpAmount = 0.06f;
+            liquidCapacity = 15f;
+            pumpAmount = 4f / 60f;
             buildCostMultiplier = 1.5f;
             requirements(Category.liquid, with(rustyIron, 1, lead, 3));
         }};
@@ -1164,25 +1164,26 @@ public class NyfalisBlocks {
         ironPump = new Pump("iron-pump"){{
             squareSprite = false;
             size = 2;
-            liquidCapacity = 20f;
-            pumpAmount = 0.08f;
+            liquidCapacity = 40f;
+            pumpAmount = (10f / size) / 60f;
             buildCostMultiplier = 2.1f;
-            researchCost = with(lead, 500, iron, 100, copper, 500);
-            requirements(Category.liquid, with(iron, 20, lead, 30, copper, 30));
+            researchCost = with(quartz, 500, iron, 100, copper, 500);
+            requirements(Category.liquid, with(iron, 20, quartz, 30, copper, 30));
         }};
 
+        //NyfalisBlocks.displacementPump.pumpTime
         displacementPump = new BurstPump("displacement-pump"){{
             squareSprite = false;
 
             size = 3;
-            pumpTime = 310;
+            pumpTime = 60f* 10f;
             dumpScale = 1.3f;
-            leakAmount = 0.02f;
-            pumpAmount = 140f;
-            liquidCapacity = 300f;
+            leakAmount = 4.5f / 60f;
+            pumpAmount = (150f/ size);
+            liquidCapacity = 500f;
             consumePower(25f/60f);
-            researchCost = with(iron, 250, lead, 800, graphite, 250, rustyIron, 800);
-            requirements(Category.liquid, with(iron, 15, graphite, 15, lead, 30, rustyIron, 30));
+            researchCost = with(iron, 250, alcoAlloy, 800, graphite, 250, rustyIron, 800);
+            requirements(Category.liquid, with(iron, 15, graphite, 15, alcoAlloy, 30, rustyIron, 30));
         }};
 
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{
@@ -1190,10 +1191,10 @@ public class NyfalisBlocks {
             leakAmount = 0.1f;
             pumpTime = 320;
             pumpAmount = 200f;
-            liquidCapacity = 400f;
+            liquidCapacity = 1000f;
             consumePower(70f/60f);
-            researchCost = with(iron, 500, lead, 1000, graphite, 250, silicon, 250);
-            requirements(Category.liquid, with(iron, 30, graphite, 30, lead, 75, silicon, 30));
+            researchCost = with(iron, 3000, aluminum, 3000, graphite, 3000, silicon, 3000);
+            requirements(Category.liquid, with(iron, 30, graphite, 30, aluminum, 75, silicon, 30));
         }};
 
         leadPipe = new Conduit("lead-pipe"){{
