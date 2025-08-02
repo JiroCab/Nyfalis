@@ -111,7 +111,7 @@ public class NyfalisBlocks {
         leadPipe, ironPipe, pipeRouter, pipeJunction, pipeBridge, displacementPump, massDisplacementPump, ironPump, rustyPump, fortifiedTank, fortifiedCanister,
         steamBoiler, Liquifier, oilSeparator, lubricantMixer, demulsifier,
 
-        wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine, biomassGenerator,
+        wire, wireBridge, superConductors, windMills, hydroMill, hydroElectricGenerator, quartzBattery, mirror, solarTower, steamTurbine, biomassGenerator, steamyGenerator,
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
@@ -2085,14 +2085,18 @@ public class NyfalisBlocks {
             requirements(Category.power, with(quartz, 100, lead, 100, silicon, 100));
         }};
 
-        steamTurbine = new ConsumeGenerator("steam-turbine"){{
-            size = 6;
-            powerProduction = 300f/60f;
-            liquidCapacity = 40;
-
-            consumeLiquid(NyfalisItemsLiquid.steam, 24f/60f);
-            consumeLiquid(oil, 20f / 60f).boost();
-            requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
+        steamyGenerator = new AttribueOrConsumeGenrator("steam-generator"){{
+            requirements(Category.power, with(Items.copper, 35, rustyIron, 25, Items.lead, 40, iron, 30));
+            passiveGenAmmount = 0.083f;
+            powerProduction = 5.5f;
+            itemDuration = 90f;
+            hasLiquids = true;
+            size = 2;
+            attribute = Attribute.steam;
+            generateEffect = Fx.generatespark;
+            consumeLiquid(NyfalisItemsLiquid.steam, 20f / 60f);
+            ambientSound = Sounds.smelter;
+            ambientSoundVolume = 0.06f;
         }};
 
         biomassGenerator = new GenericCrafterWithPower("biomass-generator"){{
@@ -2108,8 +2112,16 @@ public class NyfalisBlocks {
             researchCost = with(iron, 500, Items.lead, 1000, quartz, 500);
             requirements(Category.power, with(iron, 50, lead, 100, quartz, 50));
         }};
-        //TODO: Solar receiver & Mirror -> Super structure `Mirror(s)->Redirector->Solar tower+water=steam->steam turbine(s)`
-        // Mirror -> SolarTower -> Heat + water-> SteamTurbine -> power
+
+        steamTurbine = new ConsumeGenerator("steam-turbine"){{
+            size = 6;
+            powerProduction = 300f/60f;
+            liquidCapacity = 40;
+
+            consumeLiquid(NyfalisItemsLiquid.steam, 24f/60f);
+            consumeLiquid(oil, 20f / 60f).boost();
+            requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
+        }};
 
         //endregion
         //region Wall
