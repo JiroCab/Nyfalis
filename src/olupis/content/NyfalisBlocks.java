@@ -1867,12 +1867,13 @@ public class NyfalisBlocks {
         //region Mines
         heavyMine = new ShockMine("heavy-mine"){{
             requirements(Category.effect, ItemStack.with(Items.lead, 25, aluminum, 12));
-            hasShadow = false;
+            hasShadow = rebuildable = false;
+            floating = placeableLiquid = true;
+            instantDeconstruct = true; //statra nerf
             size = 1;
             health = 100;
             damage = tileDamage = tendrils = length = 0;
             shots = 1;
-            rebuildable = false;
             bullet = new ExplosionBulletType(250, 20*8){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;
@@ -1892,15 +1893,17 @@ public class NyfalisBlocks {
                 }};
             }};
         }};
+
         glitchMine = new ShockMine("glitch-mine"){{
-            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, cobalt, 12}));
-            hasShadow = false;
+            requirements(Category.effect, ItemStack.with(Items.lead, 25, cobalt, 12));
+            hasShadow = rebuildable = false;
+            floating = placeableLiquid = true;
+            instantDeconstruct = true; //statra nerf
             size = 1;
             health = 60;
             armor = 2;
             damage = tileDamage = tendrils = length = 0;
             shots = 1;
-            rebuildable = false;
             bullet = new ExplosionBulletType(80, 5*8){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;
@@ -1921,13 +1924,14 @@ public class NyfalisBlocks {
             }};
         }};
         fragMine = new ShockMine("frag-mine"){{
-            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, quartz, 12}));
-            hasShadow = false;
+            requirements(Category.effect, ItemStack.with(Items.lead, 25, quartz, 12));
+            hasShadow = rebuildable = false;
+            floating = placeableLiquid = true;
+            instantDeconstruct = true; //statra nerf
             size = 1;
             health = 40;
             damage = tileDamage = tendrils = length = 0;
             shots = 1;
-            rebuildable = false;
             bullet = new ExplosionBulletType(100, 10*8){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;
@@ -1946,13 +1950,14 @@ public class NyfalisBlocks {
             }};
         }};
         mossMine = new ShockMine("moss-mine"){{
-            requirements(Category.effect, ItemStack.with(new Object[]{Items.lead, 25, condensedBiomatter, 12}));
-            hasShadow = false;
+            requirements(Category.effect, ItemStack.with(Items.lead, 25, condensedBiomatter, 12));
+            hasShadow = rebuildable = false;
+            floating = placeableLiquid = true;
+            instantDeconstruct = true; //statra nerf
             size = 1;
             health = 20;
             damage = tileDamage = tendrils = length = 0;
             shots = 1;
-            rebuildable = false;
             bullet = new ExplosionBulletType(50, 15*8){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;

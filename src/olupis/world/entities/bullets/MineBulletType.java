@@ -62,7 +62,7 @@ public class MineBulletType extends BulletType{
         //just in case
         if(tile == null) return;
         boolean occupied = Groups.unit.intersect(b.x, b.y, 1, 1).contains(Unitc::isGrounded)
-                || !Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false) ;  //Dont spawn mines at the enemy core!
+                || !Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false, false) ;  //Dont spawn mines at the enemy core!
 
         if (createChance){
             float createChanceRan = Mathf.random(0.01f,0.99f);
@@ -80,7 +80,7 @@ public class MineBulletType extends BulletType{
     }
 
     public void placeBlock(Bullet b, Tile tile, boolean occupied){
-        if(tile.block() == Blocks.air && !tile.floor().isLiquid){
+        if(tile.block() == Blocks.air && (!tile.floor().isLiquid || mine.placeableLiquid)){
             if(!occupied){
                 tile.setNet(mine, b.team, (int) b.rotation()/90);
                 placeEffect.at(b.x, b.y, mine.size);

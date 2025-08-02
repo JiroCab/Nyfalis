@@ -408,6 +408,18 @@ public class NyfalisFxs extends Fx {
             Draw.rect(block.fullIcon, e.x, e.y);
         }),
 
+        startaBulletMine = new Effect(13, e -> {
+            color(Color.white, e.color, e.fin());
+            stroke(0.6f + e.fout() * 1.7f);
+            rand.setSeed(e.id);
+
+            for(int i = 0; i < 2; i++){
+                float rot = e.rotation + 180f;
+                v.trns(rot, e.fin() * 19f);
+                lineAngle(e.x + v.x, e.y + v.y, rot, e.fout() * 5 + 1.5f);
+            }
+
+        }),
         mossStageUp = new  Effect(15f, e -> {
             float scl = Math.max(e.rotation, 1);
             color(Tmp.c1.set(e.color).mul(1.1f));

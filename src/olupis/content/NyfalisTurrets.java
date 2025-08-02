@@ -29,6 +29,7 @@ import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.parts.*;
 
+import static arc.Core.atlas;
 import static mindustry.Vars.headless;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
@@ -42,7 +43,6 @@ public class NyfalisTurrets {
     public static boolean cascadeAlt;
     public static Color cascadeColor = updateColor();
     public static Effect cascadeEffect = updateTrail();
-
     public static void LoadTurrets(){
 
         //region Turrets
@@ -726,6 +726,44 @@ public class NyfalisTurrets {
 
         }};
 
+        /* makes it easier and rushie too lazy to copy paste values to each bullets*/
+        BulletType strataProjectile= new BulletType(){{
+            speed = 1.5f;
+            homingPower = 0.2f;
+            homingRange = 200f;
+            homingDelay = 10;
+
+            damage = 0;
+            lifetime = 210f; //330;
+            scaleLife = true;
+            collidesAir = collidesGround = false;
+
+            trailWidth = 1f;
+            trailLength = 8;
+            hitEffect = cascadeEffect;
+
+            despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
+                sizeTo = 3.75f;
+                colorFrom = colorTo = iron.color;
+                lifetime = 2f;
+            }});
+            trailRotation = true;
+            trailEffect =NyfalisFxs.startaBulletMine;
+            fragBullets = 1;
+            fragRandomSpread = 0;
+            fragSpread = 360;
+
+        }
+
+            @Override
+            public void draw(Bullet b){
+                Lines.stroke(1f, b.type.trailColor);
+                Draw.rect(atlas.white(), b.x, b.y, 3, 3, b.rotation() + 45f);
+                Draw.reset();
+                super.draw(b);
+            }
+        };
+
         //TODO: Mixed items can stop firing at all
         strata = new NyfalisItemTurret("strata"){{
 
@@ -736,36 +774,12 @@ public class NyfalisTurrets {
                     fragRandomSpread = 3;
                     fragSpread = 5;
                     fragVelocityMin = 0.6f;
+                    fragVelocityMax = 1.1f;
 
-                    fragBullet = new BulletType(){{
-                        width  = 30f;
-                        height = 37f;
-                        homingPower = 0.2f;
-                        homingRange = 200f;
-                        homingDelay = 10;
-
-                        damage = 0;
-                        lifetime = 330;
-                        scaleLife = true;
-                        scaleLife = true;
-                        collidesAir = collidesGround = false;
-                        hitColor = trailColor = iron.color;
-                        trailWidth = 1f;
-                        trailLength = 4;
-                        hitEffect = cascadeEffect;
-
-                        despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
-                            sizeTo = 3.75f;
-                            colorFrom = colorTo = iron.color;
-                            lifetime = 2f;
-                        }});
-                        trailRotation = true;
-                        trailEffect = Fx.disperseTrail;
-                        fragBullets = 1;
-                        fragRandomSpread = 0;
-                        fragSpread = 360;
-                        fragBullet = new MineBulletType(NyfalisBlocks.heavyMine,Fx.ballfire, 0.80f);
-                    }};
+                    var sp = strataProjectile.copy();
+                    sp.fragBullet = new MineBulletType(NyfalisBlocks.heavyMine,Fx.ballfire, 0.80f);
+                    sp.hitColor = sp.trailColor = aluminum.color;
+                    fragBullet = sp;
                 }},
                 cobalt, new BasicBulletType(0,0){{
                     lifetime = 0;
@@ -773,71 +787,26 @@ public class NyfalisTurrets {
                     fragRandomSpread = 3;
                     fragSpread = 5;
                     fragVelocityMin = 0.6f;
+                    fragVelocityMax = 1.1f;
 
-                    fragBullet = new BulletType(){{
-                        width  = 30f;
-                        height = 37f;
-                        homingPower = 0.2f;
-                        homingRange = 200f;
-                        homingDelay = 10;
-
-                        damage = 0;
-                        lifetime = 330;
-                        scaleLife = true;
-                        collidesAir = collidesGround = false;
-                        hitColor = trailColor = cobalt.color;
-                        trailWidth = 1f;
-                        trailLength = 4;
-                        hitEffect = cascadeEffect;
-
-                        despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
-                            sizeTo = 3.75f;
-                            colorFrom = colorTo = cobalt.color;
-                            lifetime = 2f;
-                        }});
-                        trailRotation = true;
-                        trailEffect = Fx.disperseTrail;
-                        fragBullets = 1;
-                        fragRandomSpread = 0;
-                        fragSpread = 360;
-                        fragBullet = new MineBulletType(NyfalisBlocks.glitchMine,Fx.ballfire, 0.55f);
-                    }};
+                    var sp = strataProjectile.copy();
+                    sp.hitColor = sp.trailColor = cobalt.color;
+                    sp.fragBullet = new MineBulletType(NyfalisBlocks.glitchMine,Fx.ballfire, 0.80f);
+                    fragBullet = sp;
                 }},
                 quartz, new BasicBulletType(0,0){{
-                lifetime = 0;
-                fragBullets = 20;
-                fragRandomSpread = 3;
-                fragSpread = 5;
-                fragVelocityMin = 0.6f;
+                    lifetime = 0;
+                    fragBullets = 20;
+                    fragRandomSpread = 3;
+                    fragSpread = 5;
+                    fragVelocityMin = 0.6f;
+                    fragVelocityMax = 1.1f;
 
-                    fragBullet = new BulletType(){{
-                        width  = 30f;
-                        height = 37f;
-                        homingPower = 0.2f;
-                        homingRange = 200f;
-                        homingDelay = 10;
+                    var sp = strataProjectile.copy();
+                    sp.hitColor = sp.trailColor = quartz.color;
+                    sp.fragBullet = new MineBulletType(fragMine,Fx.ballfire, 0.80f);
+                    fragBullet = sp;
 
-                        damage = 0;
-                        lifetime = 330;
-                        scaleLife = true;
-                        collidesAir = collidesGround = false;
-                        hitColor = trailColor = quartz.color;
-                        trailWidth = 1f;
-                        trailLength = 4;
-                        hitEffect = cascadeEffect;
-
-                        despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
-                            sizeTo = 3.75f;
-                            colorFrom = colorTo = quartz.color;
-                            lifetime = 2f;
-                        }});
-                        trailRotation = true;
-                        trailEffect = Fx.disperseTrail;
-                        fragBullets = 1;
-                        fragRandomSpread = 0;
-                        fragSpread = 360;
-                        fragBullet = new MineBulletType(NyfalisBlocks.fragMine,Fx.ballfire, 0.65f);
-                    }};
                 }},
                 condensedBiomatter, new BasicBulletType(0,0){{
                     lifetime = 0;
@@ -845,56 +814,17 @@ public class NyfalisTurrets {
                     fragRandomSpread = 3;
                     fragSpread = 5;
                     fragVelocityMin = 0.6f;
+                    fragVelocityMax = 1.1f;
 
-                    fragBullet = new BulletType(){{
-                        width  = 30f;
-                        height = 37f;
-                        homingPower = 0.2f;
-                        homingRange = 200f;
-                        homingDelay = 10;
-
-                        damage = 0;
-                        lifetime = 330;
-                        scaleLife = true;
-                        collidesAir = collidesGround = false;
-                        hitColor = trailColor = condensedBiomatter.color;
-                        trailWidth = 1f;
-                        trailLength = 4;
-                        hitEffect = cascadeEffect;
-
-                        despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
-                            sizeTo = 3.75f;
-                            colorFrom = colorTo = condensedBiomatter.color;
-                            lifetime = 2f;
-                        }});
-                        trailRotation = true;
-                        trailEffect = Fx.disperseTrail;
-                        fragBullets = 1;
-                        fragRandomSpread = 0;
-                        fragSpread = 360;
-                        fragBullet = new MineBulletType(NyfalisBlocks.mossMine,Fx.ballfire, 0.50f);
-                    }};
+                    var sp = strataProjectile;
+                    sp.hitColor = sp.trailColor = condensedBiomatter.color;
+                    sp.fragBullet = new MineBulletType(mossMine,Fx.ballfire, 0.80f);
+                    fragBullet = sp;
                 }}
             );
+
             statsBlocksOnly = true;
             drawer = new DrawTurret(){{
-                targetAir = false;
-                shootCone = 360;
-                inaccuracy = 0;
-                size = 3;
-                recoil = 0;
-                lockRotation = true;
-                rotateDraw = false;
-                shootY = 0;
-                range = 320f;
-                trackingRange = 350f;
-                minRange = 200f;
-                drawMinRange = true;
-                predictTarget = true;
-                health = 1500;
-                fogRadius = 13;
-                coolantMultiplier = 7.5f;
-                reload = 12*16;
                 parts.addAll(
                 new RegionPart("-piston"){{
                     layerOffset = 3;
@@ -905,14 +835,29 @@ public class NyfalisTurrets {
                 }}
                 );
             }};
+
+            targetAir = rotateDraw = false;
+            lockRotation = drawMinRange = predictTarget = true;
+            shootCone = 360;
+            inaccuracy = 0;
+            size = 3;
+            recoil = 0;
+            shootY = 0;
+            range = 350f;
+            trackingRange = 370f;
+            minRange = 200f;
+            health = 1500;
+            fogRadius = 13;
+            coolantMultiplier = 7.5f;
+            reload = 12 * 16;
             fogRadiusMultiplier = 0.75f;
             ammoPerShot = 24;
             loopSound = Sounds.release;
             outlineColor = nyfalisBlockOutlineColour;
+            shootSound = NyfalisSounds.cncRa2DestoryerOsprey;
             researchCost = with(iron, 500, copper, 500, silicon, 300, quartz, 500);
             coolant = consume(new ConsumeLubricant(35f / 60f));
             requirements(Category.turret, with(iron, 100, copper, 150, silicon, 50, quartz, 100));
-
         }};
 
         aegis = new AirPriorityItemTurret("aegis"){
