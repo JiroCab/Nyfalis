@@ -581,8 +581,8 @@ public class NyfalisTurrets {
                     buildingDamageMultiplier = 0.35f;
                     shootEffect = smokeEffect = Fx.none;
                     trailEffect = Fx.artilleryTrail;
-                    backColor = new Color().set(silicon.color).lerp(Pal.bulletYellowBack, 0.1f);
-                    frontColor = new Color().set(silicon.color).lerp(Pal.bulletYellow, 0.3f);
+                    backColor = Pal.siliconAmmoBack;
+                    frontColor = Pal.siliconAmmoFront;
                 }},
                 graphite, new BarrelBulletType(5f, 70, "bullet"){{
                     artilleryTrail = hitProjectiles = false;

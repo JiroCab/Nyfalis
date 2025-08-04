@@ -329,6 +329,8 @@ public class NyfalisUnitType extends UnitType {
             unit.team.id,
             unit.elevation(),
             partAmmo(unit),
+            Mathf.clamp(Math.abs(unit.vel().len2() / unit.type.speed)),
+            unit.speed(),
             onWater(unit) ? 1 : 0,
             0,
             unit instanceof Payloadc p ? p.payloads().size : 0

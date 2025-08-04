@@ -73,6 +73,8 @@ public  class NyfalisWeapon extends Weapon {
             unit.team.id,
             unit.elevation(),
             ammop,
+            Mathf.clamp(Math.abs(unit.vel().len2() / unit.type.speed)),
+            unit.speed(),
             NyfalisUnitType.onWater(unit) ? 1 : 0,
             0,
             unit instanceof Payloadc p ? p.payloads().size : 0

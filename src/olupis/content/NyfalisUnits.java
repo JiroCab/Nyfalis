@@ -37,6 +37,8 @@ import olupis.world.entities.weapons.*;
 
 import java.util.*;
 
+import static arc.graphics.g2d.Draw.color;
+import static arc.graphics.g2d.Lines.stroke;
 import static mindustry.Vars.*;
 import static mindustry.content.Items.*;
 import static olupis.content.NyfalisColors.*;
@@ -259,6 +261,31 @@ public class NyfalisUnits {
                     }};
                 }};
             }});
+            parts.addAll(
+                new ThrusterPartOwO(){{
+                    under = mirror = true;
+                    y = -4f;
+                    x = 8f;
+                    xScl = yScl = 0;
+                    moveY = -6.1f;
+                    rotation = 90;
+                    moveRot = 0;
+                    layerOffset = -1f;
+                    progress = NyfPartParms.NyfPartProgress.speedP;
+                    moves.addAll(new PartMove(NyfPartParms.NyfPartProgress.speedP, 0, 0, -1, -1,  1));
+                }},
+                new RegionPart("-booster"){{
+                    under = mirror = true;
+                    y = -4f;
+                    x = 8f;
+                    moveY = -3.5f;
+                    layerOffset = -0.02f;
+                    moveRot = 45f;
+                    heatProgress = progress = NyfPartParms.NyfPartProgress.speedP;
+                }}
+
+            );
+
         }};
 
         // falcon -> infintode lightning ability/tesla ultimate - fast-ish no collision bullet that zaps targets
@@ -1062,6 +1089,63 @@ public class NyfalisUnits {
                 new SnekWeapon(""){{
                     x = 0f;
                     y = 10f;
+                    reload = 60 * 1.5f;
+                    shootY = 1.5f;
+                    shootCone = 30f;
+                    rotateSpeed = 15f;
+                    rotationLimit = 180;
+                    weaponSegmentParent = 1;
+                    autoTarget = mirror = top = false;
+                    rotate = controllable = parentizeEffects = true;
+                    shootSound = Sounds.tractorbeam;
+                    ejectEffect = Fx.casing1;
+                    bullet = new RollBulletType(4.5f, 100){{
+                        status = StatusEffects.slow;
+                        collidesAir = ricochetHoming = false;
+                        artilleryTrail = true;
+                        width = 40f;
+                        height = 11f;
+                        lifetime = 50f;
+                        knockback = 4.5f;
+                        ammoMultiplier = 2;
+                        homingPower = 0.3f;
+                        artilleryTrailSize = 2;
+                        homingRange = 50f;
+                        reloadMultiplier = 1.15f;
+                        statusDuration = 60f * 2f;
+                        buildingDamageMultiplier = 0.35f;
+                        shootEffect = smokeEffect = Fx.none;
+                        trailEffect = Fx.artilleryTrail;
+                        backColor = Pal.siliconAmmoBack;
+                        frontColor = Pal.siliconAmmoFront;
+                    }};
+                }});
+        }};
+
+        goliath = new SnekUnitType("goliath"){{
+            constructor = CrawlUnit::create;
+            accel = 1f;
+            armor = 5;
+            hitSize = 11f;
+            health = 1600;
+            segments = 3;
+            speed = 2f;
+            segmentScl = 7f;
+            rotateSpeed = 10f;
+            legMoveSpace = 1.2f;
+            crushDamage = 0.2f;
+            segmentMaxRot = 80f;
+            crawlSlowdown = 0.4f;
+            segmentRotSpeed = 5f;
+            crawlSlowdownFrac = 1f;
+            drownTimeMultiplier = 4f;
+            omniMovement = drawBody =  false;
+            allowLegStep = canDash = canCharge = true;
+
+            weapons.addAll(
+                new SnekWeapon(""){{
+                    x = 0f;
+                    y = 10f;
                     reload = 0.5f;
                     shootY = 1.5f;
                     shootCone = 30f;
@@ -1544,31 +1628,65 @@ public class NyfalisUnits {
                 new Weapon("olupis-dark-pew"){{
                     x = 0;
                     y = 5f;
-                    reload = 15f;
+                    reload = 60* 5;
                     rotate = true;
                     top = alternate = mirror = false;
                     ejectEffect = Fx.casing1;
                     parts.addAll(
                     );
-                    bullet = new TracterBeamBullet(){{
+                    bullet = new RailBulletType(){{
+                        length = 160f;
                         continuous = true;
                         shake = 0f;
-                        width = 0.3f;
                         length = 100f;
                         lifetime = 20;
-                        lightStroke = 10;
-                        damage = 40 / 12f;
-                        statusDuration = 60f;
-                        absMag = absScl = 0f;
-                        statusOnOwner = true;
+                        damage = 60f;
+                        statusDuration = 60f * 5f;
                         layer = Layer.groundUnit - 0.01f;
+                        hitEffect = endEffect = Fx.hitBulletColor;
 
                         status = NyfalisStatusEffects.marked;
+                        endEffect = new Effect(14f, e -> {
+                            color(e.color);
+                            Drawf.tri(e.x, e.y, e.fout() * 1.5f, 5f, e.rotation);
+                        });
 
+                        shootEffect = new Effect(10, e -> {
+                            color(e.color);
+                            float w = 1.2f + 7 * e.fout();
+
+                            Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
+                            color(e.color);
+
+                            for(int i : Mathf.signs){
+                                Drawf.tri(e.x, e.y, w * 0.9f, 18f * e.fout(), e.rotation + i * 90f);
+                            }
+
+                            Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+                        });
+
+                        lineEffect = new Effect(20f, e -> {
+                            if(!(e.data instanceof Vec2 v)) return;
+
+                            color(e.color);
+                            stroke(e.fout() * 0.9f + 0.6f);
+
+                            Fx.rand.setSeed(e.id);
+                            for(int i = 0; i < 7; i++){
+                                Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
+                                Lines.lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                            }
+
+                            e.scaled(14f, b -> {
+                                stroke(b.fout() * 1.5f);
+                                color(e.color);
+                                Lines.line(e.x, e.y, v.x, v.y);
+                            });
+                        });
                         incendChance = incendSpread = 0f;
                         smokeEffect = shootEffect = Fx.none;
                         chargeEffect = hitEffect = NyfalisFxs.hitTracter;
-                        colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Pal.accent};
+                        hitColor = Pal.accent;
                     }};
             }},
                 new LaserPointerPointDefenceWeapon("olupis-Lexington-point-defense"){{
