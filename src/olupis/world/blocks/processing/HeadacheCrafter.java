@@ -10,6 +10,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.core.*;
 import mindustry.ctype.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -27,8 +28,7 @@ public class HeadacheCrafter  extends GenericCrafter{
     private static TextField search;
     private static int rowCount;
 
-    //TODO Stats to display each plan
-
+    //Todo: actually use power
     public HeadacheCrafter(String name){
         super(name);
         configurable = true;
@@ -43,7 +43,7 @@ public class HeadacheCrafter  extends GenericCrafter{
             }
             build.planSelected = plans.get(i).unlockedNowHost() ? i : -1;
         });
-
+        
 
         configClear((HeadacheCrafterBuild build) -> build.planSelected = 0);
     }
@@ -51,6 +51,8 @@ public class HeadacheCrafter  extends GenericCrafter{
     @Override
     public void setStats(){
         super.setStats();
+        stats.remove(Stat.output);
+        stats.remove(Stat.productionTime);
         stats.add(Stat.output, table -> {
             table.row();
 
@@ -59,28 +61,33 @@ public class HeadacheCrafter  extends GenericCrafter{
                 nu.table(Styles.grayPanel, b -> {
 
                     //TODO THIS NO WORK LOL
-                    if(pl.isVisible()){
+                    if(state.rules.bannedBlocks.contains(pl) && !state.rules.blockWhitelist){
+                        b.table(e -> {
+                            e.image(Icon.cancel.getRegion()).color(Color.scarlet).scaling(Scaling.bounded).row();
+                        }).center();
 
                         b.table(e -> {
-                            if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
-                            if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(StatValues.displayLiquid(stack.liquid, 0, false)).pad(5).row();
-                        }).left();
-                        b.image(Icon.cancel.getRegion()).color(Color.scarlet).center();
-                        b.table(e -> {
                             if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
-                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(StatValues.displayLiquid(stack.liquid, 0, false)).pad(5).row();
-                        }).right();
+                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01, false)).pad(5).row();
+                        }).padLeft(5f);
                     }else {
                         b.table(e -> {
                             if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).row();
-                            if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(StatValues.displayLiquid(stack.liquid, stack.amount, true)).pad(5).row();
+                            if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).pad(5).row();
+                            if(pl.powerIn > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerIn * 60f) + "[lightgray] " + StatUnit.perSecond.localized());
+                        }).left().padLeft(5f);
 
-                        }).left();
-                        b.image(Icon.right.getRegion()).center();
+                        b.table(e -> {
+                            e.image(Icon.right.getRegion()).scaling(Scaling.bounded).row();
+                            e.add("[lightgray]" + Strings.autoFixed(pl.time /60f, 2) + StatUnit.perSecond.localized());
+
+                        }).center().growX().pad(3f);
+
                         b.table(e -> {
                             if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).row();
-                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(StatValues.displayLiquid(stack.liquid, stack.amount, true)).pad(5).row();
-                        }).right();
+                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).pad(5).row();
+                            if(pl.powerOut > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerOut * 60f) + "[lightgray] " + StatUnit.perSecond.localized());
+                        }).right().padRight(5f);
                     }
                 }).growX().pad(5).row();
             })).growX();
@@ -312,4 +319,28 @@ public class HeadacheCrafter  extends GenericCrafter{
         table.top().add(main);
     }
 
+    public static Table displayLiquid(Liquid liquid, float amount, boolean perSecond){
+        Table t = new Table();
+
+        t.add(new Stack(){{
+            add(new Image(liquid.uiIcon).setScaling(Scaling.fit));
+
+            if(amount >= 1){
+                Table t = new Table().left().bottom();
+                t.add(Strings.autoFixed(amount, 2)).style(Styles.outlineLabel);
+                add(t);
+            }
+        }}).size(iconMed).padRight(1  + (amount != 0 ? (Strings.autoFixed(amount, 2).length() - 1) * 2.5f : 0)).with(s -> StatValues.withTooltip(s, liquid, false));
+
+        if(amount <= -1)return t;
+        t.table(ta ->{
+            ta.add(liquid.localizedName);
+            if(perSecond && amount != 0){
+                ta.row();
+                ta.add(StatUnit.perSecond.localized()).padLeft(2).padRight(5).color(Color.lightGray).style(Styles.outlineLabel);
+            }
+        });
+
+        return t;
+    }
 }

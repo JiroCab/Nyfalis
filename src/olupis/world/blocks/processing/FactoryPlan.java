@@ -19,14 +19,17 @@ public class FactoryPlan extends Block{
     public float time;
     public @Nullable ItemStack[] input, output;
     public @Nullable LiquidStack[] outputLiquid, inputLiquid;
+    public int powerIn = 0, powerOut = 0;
 
-    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid){
+    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, int powerIn, int powerOut){
         super(name);
         this.time = time;
         this.input = input;
         this.output = output;
         this.inputLiquid = inputLiquid;
         this.outputLiquid = outputLiquid;
+        this.powerIn = powerIn;
+        this.powerOut = powerOut;
 
         health = 1;
         update = true;
@@ -37,8 +40,8 @@ public class FactoryPlan extends Block{
         if(this.output == null)this.output = ItemStack.empty;
     }
 
-    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output){
-        this(name, time,input, output, null, null);
+    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid){
+        this(name, time,input, output, inputLiquid, outputLiquid, 0, 0);
     }
 
     public FactoryPlan(String name){

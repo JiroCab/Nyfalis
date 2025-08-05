@@ -2096,7 +2096,7 @@ public class NyfalisBlocks {
             powerProduction = 5.5f;
             itemDuration = 90f;
             hasLiquids = true;
-            size = 2;
+            size = 3;
             attribute = Attribute.steam;
             generateEffect = Fx.generatespark;
             consumeLiquid(NyfalisItemsLiquid.steam, 20f / 60f);
