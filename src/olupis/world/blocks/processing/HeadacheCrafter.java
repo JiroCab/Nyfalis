@@ -94,13 +94,21 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         super.init();
 
+        Seq<ItemStack> outputs = new Seq<>();
         for( FactoryPlan plan : plans ){
             if(plan.inputLiquid != null){
                 for(LiquidStack stack : plan.inputLiquid){
                     liquidFilter[stack.liquid.id] = true;
                 }
             }
-        };
+            if(plan.output != null){
+                for(ItemStack stack : plan.output){
+                        outputs.add(stack.copy());
+                }
+            }
+        }
+        outputItems  = new ItemStack[outputs.size];
+        for(int is = 0; is < outputs.size; is++) outputItems[is] = outputs.get(is);
     }
 
     public class HeadacheCrafterBuild extends GenericCrafterBuild{
@@ -108,12 +116,14 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         @Override
         public void updateTile(){
+            dumpOutputs();
             if(plans.size <= 0 || planSelected == -1) return;
             if(planSelected > plans.size) planSelected = 0;
 
             FactoryPlan plan = plans.get(planSelected);
             if(!plan.unlockedNowHost()) planSelected = -1;
             if(planSelected <= -1) return;
+
 
             if(efficiency > 0){
                 progress += getProgressIncrease(plan.time);
@@ -140,8 +150,6 @@ public class HeadacheCrafter  extends GenericCrafter{
             if(progress >= 1f){
                 craft();
             }
-
-            dumpOutputs();
         }
 
         @Override

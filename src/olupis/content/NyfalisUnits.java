@@ -1099,27 +1099,48 @@ public class NyfalisUnits {
                     rotate = controllable = parentizeEffects = true;
                     shootSound = Sounds.tractorbeam;
                     ejectEffect = Fx.casing1;
-                    bullet = new RollBulletType(4.5f, 100){{
+                    bullet = new RollBulletType(4.5f, 70){{
                         status = StatusEffects.slow;
                         collidesAir = ricochetHoming = false;
                         artilleryTrail = true;
-                        width = 40f;
-                        height = 11f;
-                        lifetime = 50f;
+                        width = 35f;
+                        height = 10f;
+                        lifetime = 35f;
                         knockback = 4.5f;
                         ammoMultiplier = 2;
                         homingPower = 0.3f;
                         artilleryTrailSize = 2;
-                        homingRange = 50f;
-                        reloadMultiplier = 1.15f;
-                        statusDuration = 60f * 2f;
+                        homingRange = 80f;
+                        statusDuration = 60f;
                         buildingDamageMultiplier = 0.35f;
                         shootEffect = smokeEffect = Fx.none;
                         trailEffect = Fx.artilleryTrail;
                         backColor = Pal.siliconAmmoBack;
                         frontColor = Pal.siliconAmmoFront;
                     }};
-                }});
+                }},
+                new SnekWeapon("olupis-dark-pew"){{
+                    x = y = 0f;
+                    inaccuracy  = 3f;
+                    reload = 30f;
+                    shootY = 4.5f;
+                    weaponSegmentParent = 3;
+                    mirror = false;
+                    rotate = true;
+                    ejectEffect = Fx.casing1;
+                    bullet = new ArtilleryBulletType(3f, 14){{
+                        width = 7f;
+                        height = 9f;
+                        trailSize = 3f;
+                        lifetime = 50f;
+                        splashDamage = 2f;
+                        splashDamageRadius = 25f * 0.75f;
+                        collidesAir = false;
+                        frontColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellow, 0.8f);
+                        backColor = new Color().set(rustyIron.color).lerp(Pal.bulletYellowBack, 0.8f);
+                    }};
+                }}
+            );
         }};
 
         goliath = new SnekUnitType("goliath"){{
