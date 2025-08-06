@@ -1869,7 +1869,7 @@ public class NyfalisBlocks {
         heavyMine = new ShockMine("heavy-mine"){{
             requirements(Category.effect, ItemStack.with(Items.lead, 25, aluminum, 12));
             hasShadow = rebuildable = false;
-            floating = placeableLiquid = true;
+            floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
             size = 1;
             health = 100;
@@ -1898,7 +1898,7 @@ public class NyfalisBlocks {
         glitchMine = new ShockMine("glitch-mine"){{
             requirements(Category.effect, ItemStack.with(Items.lead, 25, cobalt, 12));
             hasShadow = rebuildable = false;
-            floating = placeableLiquid = true;
+            floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
             size = 1;
             health = 60;
@@ -1927,7 +1927,7 @@ public class NyfalisBlocks {
         fragMine = new ShockMine("frag-mine"){{
             requirements(Category.effect, ItemStack.with(Items.lead, 25, quartz, 12));
             hasShadow = rebuildable = false;
-            floating = placeableLiquid = true;
+            floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
             size = 1;
             health = 40;
@@ -1953,7 +1953,7 @@ public class NyfalisBlocks {
         mossMine = new ShockMine("moss-mine"){{
             requirements(Category.effect, ItemStack.with(Items.lead, 25, condensedBiomatter, 12));
             hasShadow = rebuildable = false;
-            floating = placeableLiquid = true;
+            floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
             size = 1;
             health = 20;

@@ -373,7 +373,7 @@ public class NyfalisUnitType extends UnitType {
                 Weapon[] get = NyfalisUnits.payloadWeaponIndex.get(u.type);
                 for(int i = 0; i < get.length; i++){
                     Weapon weapon = get[i];
-                    Log.err(i + " " + weapon.flipSprite);
+                    //Log.err(i + " " + weapon.flipSprite);
                 }
 
                 m[0] = 0;

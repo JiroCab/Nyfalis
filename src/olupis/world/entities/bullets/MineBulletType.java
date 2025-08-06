@@ -2,6 +2,7 @@ package olupis.world.entities.bullets;
 
 import arc.audio.Sound;
 import arc.math.Mathf;
+import arc.util.*;
 import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.core.World;
@@ -18,7 +19,7 @@ public class MineBulletType extends BulletType{
     public Block mine;
     public Sound creationSound = Sounds.mineDeploy, creationFailureSound = Sounds.boom;
 
-    public boolean createChance, failureShoot = true, allowKillShooter = false;
+    public boolean createChance, failureShoot = true, allowKillShooter = false, nearbyPlace = true;
     public float createChancePercent;
     public float soundsVolume = 0.75f;
 
@@ -61,6 +62,23 @@ public class MineBulletType extends BulletType{
         Tile tile = world.tile((int)b.x/8, (int)b.y/8);
         //just in case
         if(tile == null) return;
+        if(nearbyPlace){
+            boolean free = Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false, false);
+            if(!free){
+                for(int i = -1; i < 1; i++){
+                    for(int j = -1; j < 1; j++){
+                        Tile t = world.tile((int)b.x/8 + i, (int)b.y/8 + j);
+                        if(t == null) continue;
+                        if(t.block() != Blocks.air){
+                            tile = t;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
         boolean occupied = Groups.unit.intersect(b.x, b.y, 1, 1).contains(Unitc::isGrounded)
                 || !Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false, false) ;  //Dont spawn mines at the enemy core!
 

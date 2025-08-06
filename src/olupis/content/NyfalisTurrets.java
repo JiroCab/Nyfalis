@@ -29,7 +29,6 @@ import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.parts.*;
 
-import static arc.Core.atlas;
 import static mindustry.Vars.headless;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
@@ -727,16 +726,16 @@ public class NyfalisTurrets {
         }};
 
         /* makes it easier and rushie too lazy to copy paste values to each bullets*/
-        BulletType strataProjectile= new BulletType(){{
+        ShappedBulletType strataProjectile= new ShappedBulletType(){{
             speed = 1.5f;
             homingPower = 0.2f;
             homingRange = 200f;
-            homingDelay = 10;
+            homingDelay = 1;
 
             damage = 0;
             lifetime = 210f; //330;
             scaleLife = true;
-            collidesAir = collidesGround = false;
+            collidesAir = collidesGround = drawOut =false;
 
             trailWidth = 1f;
             trailLength = 8;
@@ -753,16 +752,7 @@ public class NyfalisTurrets {
             fragRandomSpread = 0;
             fragSpread = 360;
 
-        }
-
-            @Override
-            public void draw(Bullet b){
-                Lines.stroke(1f, b.type.trailColor);
-                Draw.rect(atlas.white(), b.x, b.y, 3, 3, b.rotation() + 45f);
-                Draw.reset();
-                super.draw(b);
-            }
-        };
+        }};
 
         //TODO: Mixed items can stop firing at all
         strata = new NyfalisItemTurret("strata"){{
@@ -776,9 +766,12 @@ public class NyfalisTurrets {
                     fragVelocityMin = 0.6f;
                     fragVelocityMax = 1.1f;
 
-                    var sp = strataProjectile.copy();
+                    ShappedBulletType sp = (ShappedBulletType)strataProjectile.copy();
+                    sp.shapeIn = 2;
+                    sp.rotIn = 0;
+                    sp.widthIn = sp.heightIn = 4f;
                     sp.fragBullet = new MineBulletType(NyfalisBlocks.heavyMine,Fx.ballfire, 0.80f);
-                    sp.hitColor = sp.trailColor = aluminum.color;
+                    sp.hitColor = sp.trailColor = sp.colourIn = sp.colourOut = aluminum.color;
                     fragBullet = sp;
                 }},
                 cobalt, new BasicBulletType(0,0){{
@@ -789,8 +782,8 @@ public class NyfalisTurrets {
                     fragVelocityMin = 0.6f;
                     fragVelocityMax = 1.1f;
 
-                    var sp = strataProjectile.copy();
-                    sp.hitColor = sp.trailColor = cobalt.color;
+                    ShappedBulletType sp = (ShappedBulletType)strataProjectile.copy();
+                    sp.hitColor = sp.trailColor = sp.colourIn = sp.colourOut = cobalt.color;
                     sp.fragBullet = new MineBulletType(NyfalisBlocks.glitchMine,Fx.ballfire, 0.80f);
                     fragBullet = sp;
                 }},
@@ -802,8 +795,8 @@ public class NyfalisTurrets {
                     fragVelocityMin = 0.6f;
                     fragVelocityMax = 1.1f;
 
-                    var sp = strataProjectile.copy();
-                    sp.hitColor = sp.trailColor = quartz.color;
+                    ShappedBulletType sp = (ShappedBulletType)strataProjectile.copy();
+                    sp.hitColor = sp.trailColor = sp.colourIn = sp.colourOut = quartz.color;
                     sp.fragBullet = new MineBulletType(fragMine,Fx.ballfire, 0.80f);
                     fragBullet = sp;
 
@@ -817,7 +810,9 @@ public class NyfalisTurrets {
                     fragVelocityMax = 1.1f;
 
                     var sp = strataProjectile;
-                    sp.hitColor = sp.trailColor = condensedBiomatter.color;
+                    sp.shapeIn = sp.shapeOut = 1;
+                    sp.widthIn = 1f;
+                    sp.hitColor = sp.trailColor = sp.colourIn = sp.colourOut = condensedBiomatter.color;
                     sp.fragBullet = new MineBulletType(mossMine,Fx.ballfire, 0.80f);
                     fragBullet = sp;
                 }}
@@ -838,8 +833,8 @@ public class NyfalisTurrets {
 
             targetAir = rotateDraw = false;
             lockRotation = drawMinRange = predictTarget = true;
-            shootCone = 360;
-            inaccuracy = 0;
+            shootCone = 60;
+            inaccuracy = 2f;
             size = 3;
             recoil = 0;
             shootY = 0;
