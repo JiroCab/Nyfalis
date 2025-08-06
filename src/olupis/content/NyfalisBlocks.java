@@ -886,6 +886,7 @@ public class NyfalisBlocks {
 
         ironConveyor = new PowerConveyor("iron-conveyor"){{
             hasPower = conductivePower = consumesPower = noUpdateDisabled = true;
+            variants = 1;
 
             health = 70;
             speed = 0.03f;

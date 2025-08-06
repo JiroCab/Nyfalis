@@ -43,7 +43,7 @@ public class HeadacheCrafter  extends GenericCrafter{
             }
             build.planSelected = plans.get(i).unlockedNowHost() ? i : -1;
         });
-        
+
 
         configClear((HeadacheCrafterBuild build) -> build.planSelected = 0);
     }
