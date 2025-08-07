@@ -291,7 +291,7 @@ public class NyfalisUnits {
         // falcon -> infintode lightning ability/tesla ultimate - fast-ish no collision bullet that zaps targets
         falcon = new NyfalisUnitType("falcon"){{
             armor = 5f;
-            hitSize = 20f;
+            hitSize = 28f;
             drag = 0.05f;
             speed = 2.7f;
             accel = 0.07f;
@@ -366,7 +366,7 @@ public class NyfalisUnits {
         // vortex -> gun/Siege ship inspired by Thor gunships of cnc:mental omega
         vortex = new NyfalisUnitType("vortex"){{
             armor = 10f;
-            hitSize = 25f;
+            hitSize = 32;
             drag = 0.05f;
             speed = 1.8f;
             accel = 0.07f;
@@ -384,7 +384,30 @@ public class NyfalisUnits {
             aiController = WaveAiHandler::new;
             defaultCommand = NyfalisUnitCommands.circleCommand;
             setEnginesMirror(
-            new UnitEngine(33 / 4f, -67 / 4f, 4.5f, 300f)
+                new UnitEngine(33 / 4f, -89 / 4f, 4.5f, 300f)
+            );
+            parts.addAll(
+                new ThrusterPartOwO(){{
+                    under = mirror = true;
+                    y = 0f;
+                    x = 18;
+                    xScl = yScl = 0;
+                    moveX = 6.1f;
+                    rotation = 45;
+                    layerOffset = -1f;
+                    progress = NyfPartParms.NyfPartProgress.speedP;
+                    moves.addAll(new PartMove(NyfPartParms.NyfPartProgress.speedP, 0, 0, -1, -1,  0));
+                }},
+                new RegionPart(){{
+                    name = "olupis-striker-booster";
+                    under = mirror = true;
+                    y = 0;
+                    x = 18f;
+                    moveX = 3.5f;
+                    layerOffset = -0.02f;
+                    heatProgress = progress = NyfPartParms.NyfPartProgress.speedP;
+                }}
+
             );
 
             weapons.add(new Weapon(){{
@@ -815,7 +838,7 @@ public class NyfalisUnits {
             }});
         }};
 
-        //re.gioner - shotgun aircraft!
+        //re.gioner - flak aircraft!
         regioner = new NyfalisUnitType("regioner"){{
             drag = 0.05f;
             accel = 0.10f;
@@ -826,7 +849,7 @@ public class NyfalisUnits {
             itemCapacity = 25;
             engineOffset = 4.6f;
             armor = speed = 3f;
-            hitSize = 12f;
+            hitSize = 9f;
 
 
             constructor = UnitEntity::create;
@@ -834,26 +857,48 @@ public class NyfalisUnits {
             lowAltitude = flying = canGuardUnits = waveHunts =true;
 
             weapons.add(new Weapon("olupis-regioner-weapon"){{
-                top = alternate = false;
+                top  = false;
                 y = 0.9f;
                 x = -3.6f;
                 recoil = 0.47f;
-                reload = 13f;
+                reload = 23f;
                 shootCone = 65f;
                 baseRotation = -7f;
                 ejectEffect = Fx.none;
-                shoot = new ShootSpread(5, 2f);
 
                 showStatSprite = false;
-                bullet = new BasicBulletType(2f, 4f, "olupis-triangle-bullet"){{
-                    width = 6;
-                    height = 8f;
-                    lifetime = 20f;
+                bullet = new ShappedBulletType(){{
+                    speed = 1.5f;
+                    damage = 10f;
+                    lifetime = 35f;
+                    widthIn = heightIn = 2.5f;
                     buildingDamageMultiplier = 0.3f;
 
-                    frontColor = NyfalisColors.rustyBullet;
-                    hitEffect = despawnEffect = NyfalisFxs.scatterDebris;
-                    backColor = NyfalisColors.rustyBulletBack;
+                    hitEffect = despawnEffect =NyfalisFxs.hollowPointHitSmall;
+                    colourIn= ironBullet;
+                    colourOut = ironBulletBack;
+                    trailColor = rustyBulletBack;
+                    trailWidth = 1f;
+                    trailLength = 8;
+
+                    pierce = true;
+                    pierceCap = 2;
+                    fragBullets = 3;
+                    pierceFragCap = 1;
+
+                    fragBullet = new ShappedBulletType(){{
+                        drawOut =false;
+                        rotIn = 0f;
+                        speed = 1f;
+                        shapeIn = 2;
+                        damage = 4f;
+                        widthIn  = 2.5f;
+                        heightIn = 3.4f;
+                        lifetime = 20f;
+                        hitEffect = despawnEffect = Fx.none;
+                        buildingDamageMultiplier = 0.3f;
+                        colourIn = rustyBullet;
+                    }};
                 }};
             }});
         }};
@@ -864,10 +909,10 @@ public class NyfalisUnits {
             accel = 0.05f;
             health = 1000;
             fogRadius = 10f;
-            engineSize = 1.6f;
+            engineSize = 2f;
+            engineOffset = 7.5f;
             rotateSpeed = 19f;
-            itemCapacity = 25;
-            engineOffset = 4.6f;
+            itemCapacity = 25;;
             armor = speed = 3f;
             hitSize = 12f;
             ammoZ = Layer.flyingUnitLow;
@@ -880,14 +925,15 @@ public class NyfalisUnits {
             lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = true;
 
             weapons.addAll(
-                new NyfalisWeapon("olupis-regioner-weapon"){{
-                    alternate = mirror =  false;
-                    rotate = alwaysUseAmmo = true;
-                    x = y = 0;
+                new NyfalisWeapon("olupis-district pew"){{
+                    alternate = mirror =   top =  false;
+                    rotate = alwaysUseAmmo =true;
+                    x = 0f;
+                    y = 3.1f;
+                    layerOffset = -0.01f;
                     recoil = 0.47f;
                     reload = 30f;
                     shootCone = 65f;
-                    baseRotation = -7f;
                     ejectEffect = Fx.none;
 
                     showStatSprite = false;
@@ -896,7 +942,6 @@ public class NyfalisUnits {
                         lifetime = 30f;
                         width = height = 7f;
                         splashDamage = 1f;
-                        layerOffset = 0.05f;
                         splashDamageRadius = 5f * 0.75f;
                         frontColor = NyfalisColors.ironBullet;
                         backColor = NyfalisColors.ironBulletBack;
@@ -905,7 +950,7 @@ public class NyfalisUnits {
                         collidesAir = false;
                     }};
                 }},
-                new Weapon("olupis-zoner-weapon"){{
+                new Weapon(""){{
                     alternate = mirror = useAmmo = false;
                     rotate = true;
                     x = 0;
@@ -932,6 +977,17 @@ public class NyfalisUnits {
                     }};
                 }}
             );
+
+            parts.add(new ThrusterPartOwO(){{
+                under = true;
+                y = -8f;
+                height = 7f;
+                rotation = 90;
+                layerOffset = -1f;
+                xScl = yScl = moveRot = 0;
+                progress = NyfPartParms.NyfPartProgress.speedP;
+                moves.addAll(new PartMove(NyfPartParms.NyfPartProgress.speedP, 0, 0, -1, -1,  0));
+            }});
         }};
 
         //division -> Fighter-bomber, cnc Zero hour china mig style weapon

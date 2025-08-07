@@ -115,7 +115,7 @@ public class NyfalisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        mushBlender, rustElectrolyzer, hydrochloricGraphitePress, ironSieve, siliconArcSmelter, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible,
+        rustElectrolyzer, ironSieve, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator, alternateAmalgamator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
@@ -131,6 +131,7 @@ public class NyfalisBlocks {
     ; //endregion
     public static UnstablePowerTurret cascade;
     public static Replicator unitReplicator, unitReplicatorSmall;
+    public static NyfLegacyBlock  hydrochloricGraphitePress, siliconArcSmelter, mushBlender;
     public static FactoryPlan emptyPlan, graphitePlan, siliconPlan;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
@@ -1402,27 +1403,9 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 30, rustyIron, 30, quartz, 25, cobalt, 25));
         }};
 
-        hydrochloricGraphitePress  = new GenericCrafter("hydro-graphite-press"){{
+        //pard of the compoundCrucible
+        hydrochloricGraphitePress  = new NyfLegacyBlock("hydro-graphite-press"){{
             hasItems = hasLiquids = hasPower = true;
-
-            size = 3;
-            craftTime = 50f;
-            itemCapacity = 20;
-            liquidCapacity = 20;
-            buildCostMultiplier = 0.5f;
-            craftEffect = Fx.pulverizeMedium;
-
-            drawer = new DrawMulti(
-                    new DrawRegion("-bottom"),
-                    new DrawLiquidTile(NyfalisItemsLiquid.steam),
-                    new DrawLiquidTile(Liquids.oil, 10f),
-                    new DrawDefault()
-            );
-            consumePower(30f/60f);
-            outputItem = new ItemStack(Items.graphite, 1);
-            researchCost = with(lead, 650,  iron, 250, rustyIron, 650);
-            requirements(Category.crafting, with(iron, 10, lead, 50, rustyIron, 40));
-            consumeLiquids(LiquidStack.with(Liquids.oil, 10f / 60f, NyfalisItemsLiquid.steam, 10f/60f));
         }};
 
         siliconKiln = new GenericCrafter("silicon-kiln"){{
@@ -1441,17 +1424,9 @@ public class NyfalisBlocks {
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("ffef99")));
         }};
 
-        siliconArcSmelter = new GenericCrafter("silicon-arc-smelters") {{
+        //pard of the compoundCrucible
+        siliconArcSmelter = new NyfLegacyBlock("silicon-arc-smelters"){{
             hasPower= hasItems = true;
-            size = 4;
-            craftTime = 30f;
-            itemCapacity = 30;
-            liquidCapacity = 15f;
-
-            consumePower(70f/60f);
-            outputItem = new ItemStack(silicon, 3);
-            consumeItems(with(quartz, 2, graphite, 1));
-            requirements(Category.crafting, with(lead, 65, iron, 65, graphite, 15, silicon, 15, cobalt, 15));
         }};
 
         inductionSmelter = new SeparatorWithLiquidOutput("induction-smelter"){{
@@ -1480,27 +1455,9 @@ public class NyfalisBlocks {
             );
         }};
 
-        mushBlender = new GenericCrafter("mush-blender"){{
+        //replaced by slop
+        mushBlender = new NyfLegacyBlock("mush-blender"){{
             hasLiquids = hasPower = true;
-            size = 2;
-            health = 320;
-            craftTime = 2 * 60f;
-            liquidCapacity = 30;
-
-            craftEffect = Fx.none;
-            drawer = new DrawMulti(
-                new DrawRegion("-bottom"),
-                new DrawLiquidTile(),
-                new DrawPistons(){{
-                    sinMag = 1f;
-                }},
-                new DrawDefault()
-            );
-            consumePower(35f /60f);
-            consumeItem(condensedBiomatter, 1);
-            researchCost = with(iron, 250, lead, 500, copper, 250);
-            outputLiquid = new LiquidStack(oil, 20f / 60f);
-            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25));
         }};
 
         siliconPlan = new FactoryPlan("silicon-plan", 60f * 3f, with(ash, 2, quartz, 2), with(silicon, 2), LiquidStack.with(Liquids.oil, 20 / 60f), null);
@@ -2796,5 +2753,8 @@ public class NyfalisBlocks {
 
         unitReplicator.replacement = NyfalisBlocks.rustyScrapWallHumongous;
         unitReplicatorSmall.replacement = NyfalisBlocks.rustyScrapWallGigantic;
+        siliconArcSmelter.replacement = compoundCrucible;
+        hydrochloricGraphitePress.replacement = compoundCrucible;
+        mushBlender.replacement = rustyScrapWallLarge;
     }
 }

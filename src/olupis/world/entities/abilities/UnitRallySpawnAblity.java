@@ -85,9 +85,10 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
             Draw.xscl *= xScl + gx;
             Draw.yscl *= yScl + gy;
 
-            if(Units.canCreate(unit.team, this.unit))Drawf.construct(x, y, this.unit.fullIcon, unit.rotation - 90 + frot, prog, 1f, timer);
-            else Draw.rect(this.unit.fullIcon, x, y, unit.rotation - 90 + frot);
+            if(prog >= 1) Draw.rect(this.unit.fullIcon, x, y, unit.rotation - 90 + frot);
+            else Drawf.construct(x, y, this.unit.fullIcon, unit.rotation - 90 + frot, prog, 1f, timer);
         });
+        Draw.reset();
     }
 
     @Override

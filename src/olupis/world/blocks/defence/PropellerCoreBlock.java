@@ -280,7 +280,7 @@ public class PropellerCoreBlock extends CoreBlock  {
                         if(Units.canCreate(team, spawns) && !net.client()){
                             Unit unit = spawns.spawn(team, fx, fy);
                             unit.rotation = Angles.angle(fx, fy, x, y);
-                            unit.command().command(command == null && unit.type.defaultCommand != null ? unit.type.defaultCommand : command);
+                            if(unit.isCommandable())unit.command().command(command == null && unit.type.defaultCommand != null ? unit.type.defaultCommand : command);
                             Fx.spawn.at(unit);
                             Events.fire(new EventType.UnitCreateEvent(unit, this));
                             consume();
