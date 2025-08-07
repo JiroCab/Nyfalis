@@ -233,18 +233,10 @@ public class NyfalisTechTree {
                                 node(biomassGenerator, () ->{
 
                                 });
-                                node(mushBlender, () ->{
 
-                                });
                             });
                             node(siliconKiln, ()->{
-                                node(hydrochloricGraphitePress, Seq.with(new Objectives.OnSector(dyingForest)), ()->{
-                                    node(siliconArcSmelter , Seq.with(
-                                            new  Objectives.Research(hydrochloricGraphitePress)
-                                    ), ()->{
 
-                                    });
-                                });
                             });
                             node(inductionSmelter, Seq.with(new Objectives.Research(alcoAlloy)), () -> {
                                 node(rustEngraver, () ->{
