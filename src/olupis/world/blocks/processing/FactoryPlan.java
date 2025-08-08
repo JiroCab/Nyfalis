@@ -19,9 +19,9 @@ public class FactoryPlan extends Block{
     public float time;
     public @Nullable ItemStack[] input, output;
     public @Nullable LiquidStack[] outputLiquid, inputLiquid;
-    public int powerIn = 0, powerOut = 0;
+    public float powerIn = 0, powerOut = 0;
 
-    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, int powerIn, int powerOut){
+    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
         super(name);
         this.time = time;
         this.input = input;

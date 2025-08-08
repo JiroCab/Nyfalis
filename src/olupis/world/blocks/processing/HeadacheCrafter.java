@@ -10,7 +10,6 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.core.*;
 import mindustry.ctype.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -28,10 +27,9 @@ public class HeadacheCrafter  extends GenericCrafter{
     private static TextField search;
     private static int rowCount;
 
-    //Todo: actually use power
     public HeadacheCrafter(String name){
         super(name);
-        configurable = true;
+        configurable = hasPower = outputsPower  =  true;
         acceptsItems = true;
 
         config(Integer.class, (HeadacheCrafterBuild build, Integer i) -> {
@@ -44,6 +42,7 @@ public class HeadacheCrafter  extends GenericCrafter{
             build.planSelected = plans.get(i).unlockedNowHost() ? i : -1;
         });
 
+        consumePowerDynamic((HeadacheCrafterBuild b) -> !b.invalidPlan()? plans.get(b.planSelected).powerIn * b.efficiency : 0f);
 
         configClear((HeadacheCrafterBuild build) -> build.planSelected = 0);
     }
@@ -96,8 +95,8 @@ public class HeadacheCrafter  extends GenericCrafter{
 
     @Override
     public void init(){
-        consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).input : ItemStack.empty));
-        consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> e.planSelected != -1 ? plans.get(e.planSelected).inputLiquid : LiquidStack.empty));
+        consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> !e.invalidPlan()  ? plans.get(e.planSelected).input : ItemStack.empty));
+        consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> !e.invalidPlan() ? plans.get(e.planSelected).inputLiquid : LiquidStack.empty));
 
         super.init();
 
@@ -120,12 +119,13 @@ public class HeadacheCrafter  extends GenericCrafter{
 
     public class HeadacheCrafterBuild extends GenericCrafterBuild{
         public int planSelected = -1;
+        public float peekEff;
 
         @Override
         public void updateTile(){
             dumpOutputs();
-            if(plans.size <= 0 || planSelected == -1) return;
-            if(planSelected > plans.size) planSelected = 0;
+            if(plans.size <= 0 || invalidPlan()) return;
+            if(planSelected > plans.size || planSelected <= -1) planSelected = 0;
 
             FactoryPlan plan = plans.get(planSelected);
             if(!plan.unlockedNowHost()) planSelected = -1;
@@ -179,13 +179,24 @@ public class HeadacheCrafter  extends GenericCrafter{
         }
 
         @Override
+        public float getPowerProduction(){
+            if(!enabled || invalidPlan()) return 0f;
+
+            return plans.get(planSelected).powerOut * efficiency;
+        }
+
+        public boolean invalidPlan(){
+            return planSelected <= -1 || planSelected >= plans.size || plans.get(planSelected) == null;
+        }
+
+        @Override
         public void buildConfiguration(Table table){
 
             if(getLivePlans().size >= 1){
                 buildTable(HeadacheCrafter.this,
                 table,
                 getLivePlans(),
-                () -> planSelected <= -1 ? null: plans.get(planSelected),
+                () -> invalidPlan() ? null: plans.get(planSelected),
                 p -> {
                     int i  = plans.indexOf(f -> f  == p);
                    configure(i);
@@ -216,7 +227,7 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         @Override
         public Object config(){
-            return planSelected >= 0 ? plans.get(planSelected) : null;
+            return !invalidPlan() ? plans.get(planSelected) : null;
         }
 
         @Override

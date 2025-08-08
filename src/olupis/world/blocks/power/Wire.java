@@ -1,23 +1,19 @@
 package olupis.world.blocks.power;
 
-import arc.Core;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
-import arc.struct.Seq;
-import arc.util.Nullable;
-import mindustry.entities.TargetPriority;
-import mindustry.entities.units.BuildPlan;
-import mindustry.gen.Sounds;
-import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.blocks.Autotiler;
+import arc.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.entities.*;
+import mindustry.entities.units.*;
+import mindustry.world.*;
+import mindustry.world.blocks.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.BlockGroup;
-import mindustry.world.meta.BlockStatus;
-import olupis.content.NyfalisBlocks;
-import olupis.input.NyfalisPlacement;
+import mindustry.world.meta.*;
+import olupis.content.*;
+import olupis.input.*;
 
 import static mindustry.Vars.headless;
 
@@ -28,11 +24,9 @@ public class Wire extends Battery implements Autotiler {
     public Wire(String name){
         super(name);
         consumesPower = outputsPower = drawDisabled = allowDiagonal = solid = false;
-        underBullets = replaceable = conveyorPlacement = true;
+        underBullets = replaceable = conveyorPlacement = update =  true;
         priority = TargetPriority.transport;
         group = BlockGroup.power;
-
-        ambientSound = Sounds.spark;
     }
 
     @Override
@@ -95,7 +89,6 @@ public class Wire extends Battery implements Autotiler {
 
             drawTeamTop();
         }
-
 
         @Override
         public void onProximityUpdate() {

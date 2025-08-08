@@ -1461,12 +1461,13 @@ public class NyfalisBlocks {
         }};
 
         siliconPlan = new FactoryPlan("silicon-plan", 60f * 3f, with(ash, 2, quartz, 2), with(silicon, 2), LiquidStack.with(Liquids.oil, 20 / 60f), null);
-        graphitePlan = new FactoryPlan("graphite-plan", 60f * 3f, with(ash, 3), with(graphite, 3), LiquidStack.with(Liquids.oil, 25 / 60f), null);
+        graphitePlan = new FactoryPlan("graphite-plan", 60f * 3f, with(ash, 3), with(graphite, 3), LiquidStack.with(Liquids.oil, 25 / 60f), null, 45f / 60f, 0);
 
         compoundCrucible = new HeadacheCrafter("compound-crucible"){{
+            outputsPower = true;
             size = 3;
             plans = Seq.with(graphitePlan, siliconPlan);
-            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, alcoAlloy, 20));
+            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, quartz, 20));
         }};
 
         ironSieve  = new Separator("iron-sieve"){{
@@ -1939,13 +1940,13 @@ public class NyfalisBlocks {
         NyfalisTurrets.LoadTurrets();
         //region Power
         wire = new Wire("wire"){{
-            floating = placeableLiquid = consumesPower = outputsPower = true;
+            floating = placeableLiquid = consumesPower = hasPower = conductivePower = true;
             solid = false;
             armor = 1f;
             health = 55;
             baseExplosiveness = 0.5f;
             //TODO: if possible 1 capacity & power usage, this only does usage
-            consume(new ConsumePower(1/60f, 1f, false));
+            consume(new ConsumePower(1/60f, 1f, true));
             researchCost = with(rustyIron, 20, lead, 20);
             requirements(Category.power, with(rustyIron, 1, lead, 2));
         }};
