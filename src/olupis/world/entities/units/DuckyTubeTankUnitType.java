@@ -14,6 +14,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
+import olupis.world.*;
 import olupis.world.entities.parts.*;
 
 import java.util.*;

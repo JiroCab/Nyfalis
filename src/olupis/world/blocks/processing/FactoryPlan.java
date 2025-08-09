@@ -20,8 +20,9 @@ public class FactoryPlan extends Block{
     public @Nullable ItemStack[] input, output;
     public @Nullable LiquidStack[] outputLiquid, inputLiquid;
     public float powerIn = 0, powerOut = 0;
+    public @Nullable String overlay;
 
-    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
+    public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
         super(name);
         this.time = time;
         this.input = input;
@@ -30,8 +31,10 @@ public class FactoryPlan extends Block{
         this.outputLiquid = outputLiquid;
         this.powerIn = powerIn;
         this.powerOut = powerOut;
+        this.overlay = overlay;
 
         health = 1;
+        variants = 1;
         update = true;
         rebuildable = false;
         requirements(Category.logic, BuildVisibility.worldProcessorOnly, with());
@@ -40,8 +43,15 @@ public class FactoryPlan extends Block{
         if(this.output == null)this.output = ItemStack.empty;
     }
 
+    public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
+        this(name, "", time,input, output, inputLiquid, outputLiquid, powerIn, powerOut);
+    }
+
     public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid){
-        this(name, time,input, output, inputLiquid, outputLiquid, 0, 0);
+        this(name, "", time,input, output, inputLiquid, outputLiquid, 0, 0);
+    }
+    public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid){
+        this(name, overlay, time,input, output, inputLiquid, outputLiquid, 0, 0);
     }
 
     public FactoryPlan(String name){

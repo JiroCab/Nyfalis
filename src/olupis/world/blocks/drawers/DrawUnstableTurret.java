@@ -1,4 +1,4 @@
-package olupis.world.entities.parts;
+package olupis.world.blocks.drawers;
 
 import arc.Core;
 import arc.graphics.g2d.Draw;
@@ -13,6 +13,7 @@ import mindustry.type.Liquid;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 import olupis.world.blocks.turret.UnstablePowerTurret;
+import olupis.world.entities.parts.*;
 
 import java.util.Iterator;
 

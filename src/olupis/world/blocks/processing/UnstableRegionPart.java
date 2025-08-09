@@ -1,4 +1,4 @@
-package olupis.world.entities.parts;
+package olupis.world.blocks.processing;
 
 import arc.Core;
 import arc.func.Boolf;
@@ -13,10 +13,11 @@ import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import olupis.world.blocks.turret.UnstablePowerTurret;
+import olupis.world.entities.parts.*;
 
 import java.util.Iterator;
 
-public class UnstableRegionPart extends UnstableDrawPart {
+public class UnstableRegionPart extends UnstableDrawPart{
     public TextureRegion overheatHeat;
     public TextureRegion lights;
 

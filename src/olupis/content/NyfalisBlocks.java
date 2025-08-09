@@ -34,6 +34,7 @@ import mindustry.world.meta.*;
 import olupis.input.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
+import olupis.world.blocks.drawers.*;
 import olupis.world.blocks.environment.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
@@ -42,7 +43,6 @@ import olupis.world.blocks.turret.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.consumer.*;
 import olupis.world.entities.bullets.*;
-import olupis.world.entities.parts.*;
 import olupis.world.entities.pattern.*;
 
 import static arc.graphics.g2d.Draw.color;
@@ -1460,14 +1460,16 @@ public class NyfalisBlocks {
             hasLiquids = hasPower = true;
         }};
 
-        siliconPlan = new FactoryPlan("silicon-plan", 60f * 3f, with(ash, 2, quartz, 2), with(silicon, 2), LiquidStack.with(Liquids.oil, 20 / 60f), null);
-        graphitePlan = new FactoryPlan("graphite-plan", 60f * 3f, with(ash, 3), with(graphite, 3), LiquidStack.with(Liquids.oil, 25 / 60f), null, 45f / 60f, 0);
+        siliconPlan = new FactoryPlan("silicon-plan", "-silicon", 60f * 3f, with(ash, 2, quartz, 2), with(silicon, 2), LiquidStack.with(Liquids.oil, 20 / 60f), null);
+        graphitePlan = new FactoryPlan("graphite-plan", "-graphite", 60f * 3f, with(ash, 3), with(graphite, 3), LiquidStack.with(Liquids.oil, 25 / 60f), null, 45f / 60f, 0);
 
         compoundCrucible = new HeadacheCrafter("compound-crucible"){{
             outputsPower = true;
+            craftEffect = Fx.pulverizeMedium;
             size = 3;
             plans = Seq.with(graphitePlan, siliconPlan);
-            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, quartz, 20));
+            drawer = new DrawMulti(new DrawDefault(),new PlanDrawer(), new DrawFlame(Color.valueOf("ffef99")){{flameRadius = 5f; flameRadiusIn = 3.7f;}});
+            requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, quartz, 50));
         }};
 
         ironSieve  = new Separator("iron-sieve"){{

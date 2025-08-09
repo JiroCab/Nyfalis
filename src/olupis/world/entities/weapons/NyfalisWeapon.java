@@ -11,7 +11,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import olupis.content.*;
 import olupis.input.*;
-import olupis.world.entities.parts.*;
+import olupis.world.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;

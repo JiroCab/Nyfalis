@@ -1,4 +1,4 @@
-package olupis.world.entities.parts;
+package olupis.world.blocks.drawers;
 
 import arc.graphics.g2d.*;
 import mindustry.gen.*;

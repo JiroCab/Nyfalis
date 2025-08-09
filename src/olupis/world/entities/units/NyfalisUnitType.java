@@ -30,11 +30,11 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.input.*;
+import olupis.world.*;
 import olupis.world.ai.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.entities.*;
-import olupis.world.entities.parts.*;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;

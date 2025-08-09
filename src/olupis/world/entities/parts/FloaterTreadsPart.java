@@ -9,7 +9,8 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.part.*;
 import mindustry.graphics.*;
-import olupis.world.entities.parts.NyfPartParms.*;
+import olupis.world.*;
+import olupis.world.NyfPartParms.*;
 
 public class FloaterTreadsPart extends RegionPart {
 	//todo: actually make the treads rects

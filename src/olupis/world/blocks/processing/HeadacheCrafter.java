@@ -17,7 +17,9 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import olupis.world.blocks.drawers.*;
 
 import static mindustry.Vars.*;
 
@@ -45,6 +47,10 @@ public class HeadacheCrafter  extends GenericCrafter{
         consumePowerDynamic((HeadacheCrafterBuild b) -> !b.invalidPlan()? plans.get(b.planSelected).powerIn * b.efficiency : 0f);
 
         configClear((HeadacheCrafterBuild build) -> build.planSelected = 0);
+
+        drawer =
+
+        new DrawMulti(new DrawDefault(),new PlanDrawer());
     }
 
     @Override
@@ -258,6 +264,10 @@ public class HeadacheCrafter  extends GenericCrafter{
         public BlockStatus status(){
             if(planSelected <= -1) return BlockStatus.noOutput;
             return super.status();
+        }
+
+        public FactoryPlan getPlanSelected(){
+            return plans.get(planSelected);
         }
     }
 

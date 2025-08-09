@@ -23,11 +23,12 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.world.blocks.defence.*;
+import olupis.world.blocks.drawers.*;
+import olupis.world.blocks.processing.*;
 import olupis.world.blocks.turret.*;
 import olupis.world.consumer.*;
 import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
-import olupis.world.entities.parts.*;
 
 import static mindustry.Vars.headless;
 import static mindustry.content.Items.*;

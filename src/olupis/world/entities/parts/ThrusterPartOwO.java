@@ -9,7 +9,7 @@ import mindustry.entities.part.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
 
-import static olupis.world.entities.parts.NyfPartParms.nyfparams;
+import static olupis.world.NyfPartParms.nyfparams;
 
 public class ThrusterPartOwO extends DrawPart{
     protected PartParams childParam = new PartParams();

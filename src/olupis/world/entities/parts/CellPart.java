@@ -8,7 +8,7 @@ import arc.util.Tmp;
 import mindustry.entities.part.RegionPart;
 import mindustry.game.Team;
 
-import static olupis.world.entities.parts.NyfPartParms.nyfparams;
+import static olupis.world.NyfPartParms.nyfparams;
 
 public class CellPart extends RegionPart {
 

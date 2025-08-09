@@ -13,8 +13,8 @@ import mindustry.world.blocks.power.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import olupis.world.blocks.drawers.*;
 import olupis.world.consumer.*;
-import olupis.world.entities.parts.*;
 
 public class WindMill extends PowerGenerator {
     //ThermalGenerator but Attribute multiples a base number and doesn't require the attribute tiles

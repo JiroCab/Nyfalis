@@ -1,4 +1,4 @@
-package olupis.world.entities.parts;
+package olupis.world;
 
 import mindustry.entities.part.DrawPart;
 

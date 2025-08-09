@@ -21,8 +21,8 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
+import olupis.world.blocks.drawers.*;
 import olupis.world.entities.*;
-import olupis.world.entities.parts.*;
 
 import static mindustry.Vars.world;
 

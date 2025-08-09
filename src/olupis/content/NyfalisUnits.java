@@ -27,6 +27,7 @@ import mindustry.type.ammo.*;
 import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
 import olupis.input.*;
+import olupis.world.*;
 import olupis.world.ai.*;
 import olupis.world.entities.abilities.*;
 import olupis.world.entities.bullets.*;
