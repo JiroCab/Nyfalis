@@ -5,13 +5,13 @@ import mindustry.gen.*;
 import olupis.content.*;
 import olupis.world.entities.units.*;
 
-public class TonkNaval extends LegsUnit{
+public class TonkNavalUnitClass extends LegsUnit implements Hitboxc{
 
-    public static TonkNaval create() {
-        return new TonkNaval();
+    public static TonkNavalUnitClass create() {
+        return new TonkNavalUnitClass();
     }
 
-    protected TonkNaval(){
+    protected TonkNavalUnitClass(){
         super();
     }
 

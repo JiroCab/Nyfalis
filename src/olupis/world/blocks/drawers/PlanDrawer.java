@@ -24,17 +24,13 @@ public class PlanDrawer  extends DrawRegion{
 
     @Override
     public void load(Block block){
-        if(!(block instanceof HeadacheCrafter hc)){
-            Log.err(block.name + " not a headache crafter");
-            return;
-        }
+        if(!(block instanceof HeadacheCrafter hc)) return;
 
         variantRegions = new TextureRegion[hc.plans.size][1];
         for(int i = 0; i < hc.plans.size; i++){
             FactoryPlan plan = hc.plans.get(i);
             variantRegions[i] = new TextureRegion[plan.variants];
             for(int j = 0; j < plan.variants; j++){
-                Log.err(block.name + plan.overlay + (j + 1) + " " + variantRegions[i][j]);
                 variantRegions[i][j] = Core.atlas.find(block.name + plan.overlay + (j + 1));
             }
         }

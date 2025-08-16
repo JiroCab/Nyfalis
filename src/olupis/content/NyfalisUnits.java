@@ -996,44 +996,63 @@ public class NyfalisUnits {
         //region Ground - Snek
         venom = new SnekUnitType("venom"){{
             constructor = CrawlUnit::create;
-            armor = 2;
+            armor = 3;
             accel = 2.5f;
             health = 250;
-            speed = 2.2f;
-            segments = 7;
-            segmentScl = 8f;
+            speed = 2f;
             rotateSpeed = 10f;
             itemCapacity = 20;
             legMoveSpace = 1.1f;
             crushDamage = 0.1f;
-            segmentMaxRot = 80f;
             hitSize = 12f;
             crawlSlowdown = 0.2f;
-            segmentRotSpeed = 5f;
             crawlSlowdownFrac = 1f;
             drownTimeMultiplier = 4f;
-            omniMovement = drawBody = false;
-            allowLegStep = canCharge = true;
 
-           weapons.addAll(new SnekWeapon("olupis-dark-pew"){{
-                x = y = 0f;
-                inaccuracy  = 3f;
-                reload = 40f;
-                shootY = 4.5f;
-                shoot.shots = 3;
-                shoot.shotDelay = 4f;
-                weaponSegmentParent = 3;
-                mirror = false;
-                rotate = true;
-                ejectEffect = Fx.casing1;
-                bullet = new BasicBulletType(2.5f, 9f){{
-                    width = 7f;
-                    height = 9f;
-                    shrinkX = 25f /60;
-                    shrinkY = 35f /60;
-                    lifetime = 50f;
-                }};
-            }});
+            segments = 13;
+            segmentScl = 100;
+            segmentMag = 4.5f;
+            segmentPhase = 60;
+            sinOffset = -135;
+            segmentRotSpeed = 5f;
+
+            segmentMaxRot = 160f;
+            spriteBasic(2, 0, new int[]{1, 3});
+            generateOffsets(4.5f);
+
+            omniMovement = drawBody = false;
+            allowLegStep = canCharge = alternateDraw = true;
+
+            int[] ps = new int[]{1, 6, 12};
+            for(int i = 0; i < 3; i++){
+                int finalI = i;
+                weapons.addAll(
+                    new SnekWeapon("olupis-dark-pew"){{
+                        y = x = 0f;
+                        inaccuracy  = 3f;
+                        reload = 40f;
+                        shootY = 4.5f;
+                        weaponSegmentParent = ps[finalI];
+                        mirror = false;
+                        rotate =  true;
+                        if(finalI == 0)parts.addAll(
+                        new RegionPart(){{
+                            name = "olupis-dark-tur";
+                            mirror = false;
+                            y = 1;
+
+                        }});
+                        ejectEffect = Fx.casing1;
+                        bullet = new BasicBulletType(2.5f, 9f){{
+                            width = 7f;
+                            height = 9f;
+                            shrinkX = 25f /60;
+                            shrinkY = 35f /60;
+                            lifetime = 50f;
+                        }};
+                    }}
+                );
+            }
         }};
 
         serpent = new SnekUnitType("serpent"){{
@@ -1042,29 +1061,36 @@ public class NyfalisUnits {
             armor = 7;
             hitSize = 12f;
             health = 550;
-            segments = 8;
             speed = 1.70f;
-            segmentScl = 7f;
             rotateSpeed = 15f;
             legMoveSpace = 1.2f;
             crushDamage = 0.35f;
-            segmentMaxRot = 80f;
             crawlSlowdown = 0.6f;
-            segmentRotSpeed = 5f;
             crawlSlowdownFrac = 0.75f;
             drownTimeMultiplier = 4f;
             omniMovement = drawBody =  false;
-            allowLegStep = canDash = canCharge = true;
+            allowLegStep = canDash = canCharge = alternateDraw = true;
+
+            segments = 12;
+            segmentScl = 100;
+            segmentMag = 4.5f;
+            segmentPhase = 60;
+            sinOffset = -135;
+            crawlTimeMul = 10f;
+            segmentRotSpeed = 5f;
+            segmentMaxRot = 160f;
+            spriteBasic(1, 0, new int[]{2, 3});
+            generateOffsets(6.2f);
 
            weapons.addAll(
                new SnekWeapon(""){{
                    x = 0f;
-                   y = 13.5f;
+                   y = 4.5f;
                    recoil = 0f;
                    shootY = 0f;
                    reload = 11f;
                    shootCone = 45f;
-                   weaponSegmentParent = 7;
+                   weaponSegmentParent = 11;
                    ejectEffect = Fx.none;
                    shootSound = Sounds.none;
                    top = mirror = false;
@@ -1097,14 +1123,30 @@ public class NyfalisUnits {
                        }}
                    );
                }},
+                new SnekPointDefence("cleroi-point-defense"){{
+               x = y = 0f;
+               reload = 18f;
+
+               targetInterval = 9f;
+               targetSwitchInterval = 12f;
+               recoil = 0.5f;
+
+               bullet = new BulletType(){{
+                   shootSound = Sounds.lasershoot;
+                   shootEffect = Fx.sparkShoot;
+                   hitEffect = Fx.pointHit;
+                   maxRange = 85f;
+                   damage = 43f;
+               }};
+           }},
                new SnekWeapon(""){{ // dash
                     x = 0f;
                     y = -13f;
                     reload = 35f;
                     shootCone = 360f;
                     baseRotation = 180f;
-                    minShootVelocity = 0.1f; //So they don't dash while on the target or something
-                    weaponSegmentParent = 1;
+                    minShootVelocity = 0.15f; //So they don't dash while on the target or something
+                    weaponSegmentParent = 0;
                     ignoreRotation = dashShoot = dashExclusive = partialControl = weaponIconUseFullString = true;
                     rotate = alternate = mirror = aiControllable = false;
                     ejectEffect = Fx.casing1;
@@ -1630,7 +1672,7 @@ public class NyfalisUnits {
             immunities.add(StatusEffects.wet);
             rotateMoveFirst = canDeploy = naval = hovering =  true;
             canDrown = ammoDepletesOverTime = omniMovement = killOnAmmoDepletion = legPhysicsLayer = allowLegStep = false;
-            constructor = TonkNaval::create; //Legged so it doesnt slow down in deep water
+            constructor = TonkNavalUnitClass::create; //Legged so it doesnt slow down in deep water
             pathCost = NyfalisPathfind.costPreferTrackedNaval;
 
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-guardian-point-defense"){{
