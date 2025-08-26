@@ -67,7 +67,7 @@ public class NyfalisBlocks {
         glowSprouts, lumaSprouts, redCorals, blueCorals, greenCorals, kelp,
 
         /*Floors*/
-        redSand, riverSand, lumaGrass, yellowGrass, pinkGrass, mossyDirt,  hardenMud, mossyhardenMud, muddyGrass,
+        redSand, riverSand, lumaGrass, yellowGrass, pinkGrass, mossierDirt, mossyDirt,  hardenMud, mossyhardenMud, muddyGrass,
         frozenGrass, frozenDirt, frozenMud, crackedIce, redSandSnow, snowySand, frozenTar, frozenSlop,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, dirtVent,
@@ -134,7 +134,7 @@ public class NyfalisBlocks {
     public static NyfLegacyBlock  hydrochloricGraphitePress, siliconArcSmelter, mushBlender;
     public static FactoryPlan emptyPlan, graphitePlan, siliconPlan;
 
-    public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;;
+    public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;
     public static ObjectSet<Block>
             nyfalisBuildBlockSet = new ObjectSet<>(), sandBoxBlocks = new ObjectSet<>(), nyfalisCores = new ObjectSet<>(), allNyfalisBlocks = new ObjectSet<>(), hiddenNyfalisBlocks = new ObjectSet<>(),
             rainRegrowables = new ObjectSet<>(), spreadingTiles = new ObjectSet<>(), vents = new ObjectSet<>(),
@@ -303,6 +303,10 @@ public class NyfalisBlocks {
             attributes.set(Attribute.water, 0.1f);
         }};
 
+        mossierDirt = new RotatingFloor("mossier-dirt") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
         mossyDirt = new RotatingFloor("mossy-dirt") {{
             attributes.set(bio, 0.1f);
             attributes.set(Attribute.water, 0.1f);
@@ -867,6 +871,7 @@ public class NyfalisBlocks {
         mossyStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.75f);
         mossierStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.5f);
         mossiestStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.25f);
+        mossierDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
         mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
         frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
         coralReef.mapColor = deepwater.mapColor;
@@ -2751,7 +2756,7 @@ public class NyfalisBlocks {
 
         nyfalisCores.addAll(coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant);
 
-        rainRegrowables.addAll(grass, moss, mossierStone, mossyStone, yellowGrass, cinderBloomGrass, cinderBloomiest, cinderBloomiest, mossyDirt, frozenDirt, frozenGrass, frozenSlop);
+        rainRegrowables.addAll(grass, moss, mossierStone, mossyStone, yellowGrass, cinderBloomGrass, cinderBloomiest, cinderBloomiest, mossierDirt, mossyDirt, frozenDirt, frozenGrass, frozenSlop);
         spreadingTiles.addAll(mycelium, yourcelium, ourcelium, theircelium);
 
         unitReplicator.replacement = NyfalisBlocks.rustyScrapWallHumongous;
