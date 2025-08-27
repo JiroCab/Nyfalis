@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -42,7 +43,7 @@ public class NyfalisStatusEffects {
         //cobalt debuffs
         corupt = new StatusEffect("corupt"){
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 if(unit.type.canBoost && !unit.type.flying) unit.elevation = Math.max(unit.elevation - 0.1f * Time.delta, 0f);
                 if(unit.hasEffect(malfuct)){
                     unit.unapply(this);
@@ -81,7 +82,7 @@ public class NyfalisStatusEffects {
         malfuct = new StatusEffect("malfuct"){
             final float dmg = 4;
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
                 if(unit.isShooting()) unit.damagePierce(dmg);
                 if(unit.type.canBoost && !unit.type.flying) unit.elevation = Math.max(unit.elevation - 0.1f * Time.delta, 0f);
                 if(unit.hasEffect(corupt)){
@@ -145,7 +146,8 @@ public class NyfalisStatusEffects {
             }
 
             @Override
-            public void update(Unit unit, float time){
+            public void update(Unit unit, StatusEntry entry){
+                float time = entry.time;
                 if (!U.containsKey(unit))
                     start(unit,time);
                 if (unitTime.get(unit) < time)

@@ -5,6 +5,7 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -20,16 +21,16 @@ public class TrackedSatusEffect extends StatusEffect{
     }
 
     @Override
-    public void update(Unit unit, float time){
-        super.update(unit, time);
+    public void update(Unit unit, StatusEntry entry){
+        super.update(unit, entry);
 
         if(valueMap.get(unit, ObjectFloatMap::new).size > 0){
             ObjectFloatMap<Unit> ref = valueMap.get(unit);
 
             var it = ref.iterator();
             while(it.hasNext()){
-                var entry = it.next();
-                if(Time.time >= entry.value)
+                var en = it.next();
+                if(Time.time >= en.value)
                     it.remove();
             }
 

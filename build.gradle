@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id("fr.xpdustry.toxopid") version "3.2.0"
+    id("com.xpdustry.toxopid") version "4.1.2"
     id 'maven-publish'
 }
 
@@ -15,18 +15,17 @@ sourceSets.main.java.srcDirs = ["src"]
 
 
 
-import fr.xpdustry.toxopid.spec.ModPlatform
+import com.xpdustry.toxopid.spec.ModPlatform
 
 repositories{
     mavenCentral()
     maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven { url 'https://jitpack.io' }
-    anukenJitpack()
 }
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v150.1'
+    mindustryVersion = 'v151.1'
     jabelVersion = "93fde537c7"
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
@@ -51,7 +50,8 @@ dependencies{
     compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
-    //mindustryDependencies()
+    compileOnly(toxopid.dependencies.mindustryCore)
+    compileOnly(toxopid.dependencies.arcCore)
 }
 
 
@@ -131,7 +131,7 @@ task deploy(type: Jar){
 
 
 task runClientwithLocalMods{
-    dependsOn runMindustryClient{
+    dependsOn runMindustryDesktop{
         mods.setFrom (tasks.jar, project.file("./build/libs/mods/a.jar"), project.file("./build/libs/mods/b.zip"), project.file("./build/libs/mods/c.zip"), project.file("./build/libs/mods/t.zip"))
     }
 

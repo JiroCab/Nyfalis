@@ -10,18 +10,20 @@ import mindustry.graphics.CacheLayer;
 import static mindustry.Vars.renderer;
 
 public class NyfalisShaders {
-    public static NyfalisSurfaceShader slop;
-    public static CacheLayer slopC;
+    public static NyfalisSurfaceShader slop, algae;
+    public static CacheLayer slopC, algaeC;
 
     public static void LoadShaders(){
         if(!Vars.headless){
             slop = new NyfalisSurfaceShader("slop");
+            algae = new NyfalisSurfaceShader("algae");
         }
     }
 
     public static void LoadCacheLayer(){
         CacheLayer.addLast(
-            slopC = new CacheLayer.ShaderLayer(slop)
+            slopC = new CacheLayer.ShaderLayer(slop),
+            algaeC = new CacheLayer.ShaderLayer(algae)
         );
     }
 

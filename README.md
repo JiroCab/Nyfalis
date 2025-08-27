@@ -10,7 +10,7 @@ otherwise use [GitHub Actions](https://github.com/JiroCab/Olupis/actions) for re
 See [change logs here](https://github.com/JiroCab/Olupis/blob/main/changelog.txt).
 
 Building Locally works the same as most other mods,  use `./gradlew jar` or `./gradlew deploy`.
-alternatively you may use [Toxopid](https://github.com/Xpdustry/Toxopid) with `./gradlew runMindustryClient ` , `./gradlew runMindustryServer`.
+alternatively you may use [Toxopid](https://github.com/Xpdustry/Toxopid) with `./gradlew runMindustryDesktop ` , `./gradlew runMindustryServer`.
 you can figure out the rest, you got this, you're a smart cookie
 
 [Discord server](https://discord.gg/S8wuZAF4ZZ) to talk and complain about the mod.

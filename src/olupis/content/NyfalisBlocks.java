@@ -449,6 +449,7 @@ public class NyfalisBlocks {
             lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
+        //Todo: fragment doesnt blend well with water/tiles under water
         algaeWater = new Floor("mossy-water") {{
             isLiquid = supportsOverlay = true;
 
@@ -458,7 +459,8 @@ public class NyfalisBlocks {
             speedMultiplier = 0.8f;
             status = StatusEffects.wet;
             liquidDrop = Liquids.water;
-            cacheLayer = CacheLayer.water;
+            cacheLayer = NyfalisShaders.algaeC;
+            blendGroup = water;
         }};
 
         algaeWaterDeep = new Floor("mossy-water-deep") {{ //Remind rushie to update the bundles thx -past rushie
@@ -471,7 +473,8 @@ public class NyfalisBlocks {
             isLiquid = supportsOverlay = true;
             liquidDrop = Liquids.water;
             status = StatusEffects.wet;
-            cacheLayer = CacheLayer.water;
+            cacheLayer = NyfalisShaders.algaeC;
+            blendGroup = water;
         }};
 
         pinkGrassWater = new Floor("pink-grass-water") {{
