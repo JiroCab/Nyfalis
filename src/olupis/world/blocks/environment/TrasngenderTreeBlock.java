@@ -31,7 +31,7 @@ public class TrasngenderTreeBlock extends TreeBlock{
         float alpha = 1f;
         if(Core.settings.getBool("nyfalis-qolTreeTrans")){
             if(Vars.player.unit() != null && tile.within(Vars.player.unit(), transRange))
-                alpha = Mathf.lerp(0.1f, 1, tile.dst(Vars.player.unit()) / transRange);
+                    alpha = Mathf.lerp(0.1f, 1, tile.dst(Vars.player.unit()) / transRange);
                 Vec2 mouse = Core.input.mouseWorld(Core.input.mouseX(), Core.input.mouseY());
                 Tile t = Vars.world.tileWorld(mouse.x, mouse.y);
 

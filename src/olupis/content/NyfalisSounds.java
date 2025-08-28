@@ -22,7 +22,8 @@ public class NyfalisSounds {
             sawActiveLoop = new Sound(),
             sawCollision = new Sound(),
             snip = new Sound(),
-            cncRa2DestoryerOsprey = new Sound(),
+            cncRa2DestroyerOsprey = new Sound(),
+            cncZhQuadPew = new Sound(),
 
 
             barrelLaunch = new Sound(),
@@ -54,7 +55,8 @@ public class NyfalisSounds {
         space = tree.loadSound("space");
         space2 = tree.loadSound("space2");
         mossSpread = tree.loadSound("moss-spread");
-        cncRa2DestoryerOsprey = tree.loadSound("cnc-ra2-destoryer-osprey");
+        cncRa2DestroyerOsprey = tree.loadSound("cnc-ra2-destoryer-osprey");
+        cncZhQuadPew = tree.loadSound("cnc-zh-quad-pew");
 
         spaces = Seq.with(space, space2);
     }

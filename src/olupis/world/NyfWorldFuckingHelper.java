@@ -3,12 +3,14 @@ package olupis.world;
 import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.world.blocks.environment.*;
@@ -95,5 +97,20 @@ public class NyfWorldFuckingHelper{
         if(blk == redSand || blk == redSandSnow) return redSandVent;
 
         return Blocks.arkyicVent;
+    }
+
+    /* == Rendering helpers == */
+    private static Vec2 vector = new Vec2();
+    public static void spikesTri(float x, float y, float radius, float length, int spikes, float rot, float width){
+        vector.set(0, 1);
+        float step = 360f / spikes;
+
+        for(int i = 0; i < spikes; i++){
+            vector.trns(i * step + rot, radius);
+            float x1 = vector.x, y1 = vector.y;
+            vector.setLength(radius + length);
+
+            Drawf.tri(x + x1, y + y1, width, length, Angles.angle(x, y, x + x1, y + y1));
+        }
     }
 }

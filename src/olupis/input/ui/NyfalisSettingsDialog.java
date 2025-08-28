@@ -52,6 +52,9 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-green-name", true);
             table.checkPref("nyfalis-cloud-shadows", true);
             table.checkPref("nyfalis-qolTreeTrans", true);
+            table.sliderPref("nyfalis-pdl-status-trans",25, 0, 100, 1, i -> i == 0 ? "@off" : i + "%");
+            table.sliderPref("nyfalis-pdl-status-range",5, 0, 21, 1, i -> i == 0 ? "@off" : i == 21 ? "@yes" : i + "%");
+            table.checkPref("nyfalis-pdl-status-anyteam", false);
 
             table.pref(new CollapserSetting("div-gameplay", 6));
             table.checkPref("nyfalis-sandbox-super-weapon-cap", false);

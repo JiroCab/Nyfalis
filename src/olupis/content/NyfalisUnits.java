@@ -622,7 +622,7 @@ public class NyfalisUnits {
                     x = 0;
                     shootCone = 15f;
                     ejectEffect = Fx.casing1;
-                    shootSound = Sounds.missile;
+                    shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
 
                     shoot = new ShootSpread(5, 5);
 
@@ -655,7 +655,7 @@ public class NyfalisUnits {
                     rotate = alwaysRotate = true;
                     top = alternate = mirror = false;
 
-                    shootSound = Sounds.shootAlt;
+                    shootSound = Sounds.missile;
                     float cx = -4.2f, mx = 0.8f, cy = 2.8f, r = 1;
                     parts.addAll(
                         new RegionPart("olupis-acerodon-weapon"){{
@@ -866,6 +866,7 @@ public class NyfalisUnits {
                 shootCone = 65f;
                 baseRotation = -7f;
                 ejectEffect = Fx.none;
+                shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
 
                 showStatSprite = false;
                 bullet = new ShappedBulletType(){{
@@ -968,6 +969,7 @@ public class NyfalisUnits {
                     shoot = sht;
 
                     showStatSprite = false;
+                    shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
                     bullet = new BasicBulletType(5f, 4f, "olupis-triangle-bullet"){{
                         width = 4;
                         height = 6f;
@@ -1635,7 +1637,8 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
             abilities.addAll(
                 new CarrierResupplyAbility(2),
-                new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 10, 0, 8f)
+                new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 10, 0, 8f),
+                new PointDefenceIndicatorAbility(160, false)
             );
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-warden-point-defense"){{
                 x = 0;
@@ -1700,11 +1703,17 @@ public class NyfalisUnits {
             }});
             abilities.addAll(
                 new CarrierResupplyAbility(3),
-                new UnitRallySpawnAblity(district, 60f * 30f, 5.5f, 0,0, 15f, true){{
+                new PointDefenceIndicatorAbility(320, true),
+                new UnitRallySpawnAblity(district, 60f * 30f, 6f, 0,0, 15f, true){{
                     displayBars = false;
                     display = false;
+                    xScl = yScl = 0.1f;
+                    growX = growY = -0.9f;
                 }},
-                new UnitRallySpawnAblity(district, 60f * 30f, -5.5f, 0, 0, 15f, true)
+                new UnitRallySpawnAblity(district, 60f * 30f, -6f, 0, 0, 15f, true){{
+                    xScl = yScl = 0.1f;
+                    growX = growY = -0.9f;
+                }}
             );
             parts.addAll(
                     new FloaterTreadsPart("-treads"){{
@@ -1834,6 +1843,7 @@ public class NyfalisUnits {
             ;
             abilities.addAll(
                 new CarrierResupplyAbility(4),
+            new PointDefenceIndicatorAbility(350, true),
                 new ShieldArcAbility(){{
                     radius = 36f;
                     angle = 82f;
@@ -1914,10 +1924,13 @@ public class NyfalisUnits {
                 rotationLimit = 45f;
                 targetInterval = 10f;
                 targetSwitchInterval = 20f;
+                soundPitchMax = 1.4f;
+                soundPitchMin = 1f;
 
                 autoTarget = rotate = partialControl = weaponIconUseFullString = true;
                 mirror = controllable = false;
                 weaponIconString = "olupis-bay-ui-front";
+                shootSound = NyfalisSounds.cncZhQuadPew;
                 bullet = new BasicBulletType(2.5f, 10){{
                     width = 3f;
                     height = 20f;
@@ -1991,6 +2004,8 @@ public class NyfalisUnits {
                     shootY = 5.3f;
                     inaccuracy = 8f;
                     rotateSpeed = 3f;
+                    soundPitchMax = 1.4f;
+                    soundPitchMin = 1f;
                     rotate = true;
                     mirror = false;
                     shootSound = Sounds.shoot;
@@ -2006,7 +2021,7 @@ public class NyfalisUnits {
                             progress = PartProgress.recoil;
                             moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
                     }}); }
-
+                    shootSound = NyfalisSounds.cncZhQuadPew;
                     bullet = new BasicBulletType(2.5f, 8, "olupis-diamond-bullet"){{
                         width = 3f;
                         height = 17f;
@@ -2083,7 +2098,7 @@ public class NyfalisUnits {
                     layerOffset = 0.01f;
                     rotateSpeed = 5f;
                     ejectEffect = Fx.casing1;
-                    shootSound = NyfalisSounds.cncRa2DestoryerOsprey;
+                    shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
                     bullet = new CappedIntervalBullet(3f, 14){{
                         width = 4f;
                         height = 20f;

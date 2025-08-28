@@ -128,7 +128,7 @@ public class NyfalisTurrets {
             range = 180;
             fogRadius = 140;
             shootCone = 5f;
-            shootSound = NyfalisSounds.cncRa2DestoryerOsprey;
+            shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
             ammoUseEffect = Fx.casing1;
             shootEffect = Fx.shootLiquid;
             health = 350;
@@ -850,7 +850,7 @@ public class NyfalisTurrets {
             ammoPerShot = 24;
             loopSound = Sounds.release;
             outlineColor = nyfalisBlockOutlineColour;
-            shootSound = NyfalisSounds.cncRa2DestoryerOsprey;
+            shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
             researchCost = with(iron, 500, copper, 500, silicon, 300, quartz, 500);
             coolant = consume(new ConsumeLubricant(35f / 60f));
             requirements(Category.turret, with(iron, 100, copper, 150, silicon, 50, quartz, 100));

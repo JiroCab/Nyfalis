@@ -75,7 +75,7 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
         //hide the unit when trying to posses otherwise it looks weird lol
         if(!headless && control.input.selectedUnit() == unit && Core.input.keyDown(Binding.control)) return;
 
-        Draw.draw(Draw.z(), () -> {
+        Draw.draw(Layer.groundUnit + 0.3f, () -> {
             float prog = timer / spawnTime, inv = invertMove ? 1f  :0f ,progf =  inv - moveInterp.apply(prog);
             float sx = spawnX + Mathf.lerp(0, moveSpawnX, progf), sy = spawnY + Mathf.lerp(0, moveSpawnY, progf),
                     invG = invertGrow ? 1f  :0f, sclProg = invG - growInterp.apply(prog), gx = growX * sclProg, gy = growY * sclProg,
