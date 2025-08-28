@@ -38,32 +38,40 @@ public class NyfalisSettingsDialog {
 
         ui.settings.addCategory("@category.nyfalis.name", Icon.effect, table -> {
             /*Note: please order this from least to most invasive changes, thanks! but sliders are 1st*/
+            table.pref(new CollapserSetting("div-audio", 6));
+
             if(musicModPresent)table.pref(new CollapserSetting("disclaimer-button", 4));
             else{
                 table.sliderPref("nyfalis-beep-volume",-1, -1, 100, 1, i -> i == -1 ? "@nyfalis-beep-volume.def" : i + "%");
                 table.checkPref("nyfalis-space-sfx", false);
             }
-            table.checkPref("nyfalis-disclaimer", true);
+            table.checkPref("nyfalis-rainbow-music", false);
+
+            table.pref(new CollapserSetting("div-visuals", 6));
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
             table.checkPref("nyfalis-cloud-shadows", true);
             table.checkPref("nyfalis-qolTreeTrans", true);
+
+            table.pref(new CollapserSetting("div-gameplay", 6));
+            table.checkPref("nyfalis-sandbox-super-weapon-cap", false);
+            //table.checkPref("nyfalis-bread-gun", false); TODO: full removal
+            table.checkPref("nyfalis-auto-ban", true);
             table.checkPref("nyfalis-display-bat-helper", false, val -> {
                 for(UnitType b : NyfalisUnits.batHelpers){
                     b.hidden = !val;
                 }
             });
-            table.checkPref("nyfalis-sandbox-super-weapon-cap", false);
-            table.checkPref("nyfalis-rainbow-music", false);
-            table.checkPref("nyfalis-auto-ban", true);
-            table.checkPref("nyfalis-bread-gun", false);
 
-
+            table.pref(new CollapserSetting("div-other", 6));
+            table.checkPref("nyfalis-disclaimer", true);
             table.pref(new CollapserSetting("nyfalis-debug-button") );
 
+
             table.pref(new CollapserSetting("disclaimer-button", 2));
-            table.pref(new CollapserSetting("data-buttons", 1));
-            table.pref(new CollapserSetting("discord-and-music-mod-button", 3) );
+            table.pref(new CollapserSetting("discord-and-music-mod-button", 1) );
+            table.pref(new CollapserSetting("div-data", 6));
+            table.pref(new CollapserSetting("data-buttons", 3));
         });
     }
 
@@ -145,7 +153,16 @@ public class NyfalisSettingsDialog {
             else if(type == 3)addDataButtons(table);
             else if(type == 4)addSoundButton(table, false);
             else if(type == 5)addSoundButton(table, true);
-            else { //Haha, was the effort Worth it? probably not -Rushie
+            else if(type == 6){
+                table.table(t -> {
+                    t.defaults().center();
+                    Label title = new Label(() -> name.replace("div-", "@nyfalis-")) ;
+                    title.setAlignment(Align.center);
+                    t.add(title).growX().center().color(Pal.stat).align(Align.center).row();
+                    t.image().color(Color.lightGray).height(3f).center().color(Pal.stat).growX().row();
+                }).padTop(10).padBottom(10f).growX().row();
+
+            }else { //Haha, was the effort Worth it? probably not -Rushie
                 settings.defaults("nyfalis-debug", false);
                 CheckBox box = new CheckBox("@nyfalis-debug");
 

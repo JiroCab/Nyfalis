@@ -29,7 +29,8 @@ public class NyfalisColors{
 		floodLightColor = new Color().set(Color.white).a(0.2f),
 		turretLightColor = new Color().set(Color.white).a(0.35f),
 
-        acidRainColour = Color.valueOf("50766A").a(0.7f);
+        acidRainColour = Color.valueOf("50766A").a(0.7f),
+        altStatColour = Color.valueOf("63553B")
 	 ;
 
     public  static  Color[]

@@ -16,6 +16,9 @@ varying vec2 v_texCoords;
 const float mscl = 40.0;
 const float mth = 8.0;
 
+const float minf = 0.35;
+#define S3 vec3(35.0, 40.0, 80.0) / 100.0
+
 void main() {
     vec2 c = v_texCoords;
     vec2 v = vec2(1.0/u_resolution.x, 1.0/u_resolution.y);
@@ -35,6 +38,11 @@ void main() {
     );
 
     vec3 color = sampled.rgb * vec3(0.9, 0.9, 1.0);
+
+    //Override black failed blending this with this
+    if(color.r <= (minf) && color.g <= minf && color.b <= (minf + 0.03)){
+        color = S3;
+    }
 
     float tester = mod(
         (coords.x + coords.y + 1.1 + sin(stime / 8.0 + coords.x/5.0 - coords.y/100.0)) +

@@ -78,7 +78,7 @@ public class NyfalisBlocks {
         redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop, slopDeep, lubricantPool,
 
         /*props*/
-        yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly,
+        yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly, lilypad,
         grassSprig, mossSprig, yellowSprig, glowSprig, lumaSprig,
         beachSandBoulder, gypsumBoulder, pumiceBoulder, galenaBoulder, rustyBoulder,
 
@@ -459,7 +459,7 @@ public class NyfalisBlocks {
             speedMultiplier = 0.8f;
             status = StatusEffects.wet;
             liquidDrop = Liquids.water;
-            cacheLayer = NyfalisShaders.algaeC;
+            cacheLayer = CacheLayer.water; //cacheLayer = NyfalisShaders.algaeC;
             blendGroup = water;
         }};
 
@@ -473,7 +473,7 @@ public class NyfalisBlocks {
             isLiquid = supportsOverlay = true;
             liquidDrop = Liquids.water;
             status = StatusEffects.wet;
-            cacheLayer = NyfalisShaders.algaeC;
+            cacheLayer = CacheLayer.water; //cacheLayer = NyfalisShaders.algaeC;
             blendGroup = water;
         }};
 
@@ -639,6 +639,14 @@ public class NyfalisBlocks {
             floating = placeableLiquid = emitLight = true;
             breakSound = Sounds.plantBreak;
         }};
+
+        lilypad = new RotatingProp("lilypad") {{
+            variants = 3;
+            largeVariants = 6;
+            customShadow = floating = placeableLiquid = true;
+            breakSound = Sounds.plantBreak;
+        }};
+
 
         //Rain stage grows of props
         grassSprig = new SprigProp("grass-sprig") {{

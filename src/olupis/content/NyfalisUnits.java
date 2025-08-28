@@ -930,7 +930,8 @@ public class NyfalisUnits {
                     alternate = mirror =   top =  false;
                     rotate = alwaysUseAmmo =true;
                     x = 0f;
-                    y = 3.1f;
+                    y = 2.1f;
+                    shootY = 8f;
                     layerOffset = -0.01f;
                     recoil = 0.47f;
                     reload = 30f;
@@ -956,6 +957,7 @@ public class NyfalisUnits {
                     rotate = true;
                     x = 0;
                     y = 3;
+                    shootY = 6;
                     reload = 15f;
                     recoil = 0.47f;
                     shootCone = 65f;
