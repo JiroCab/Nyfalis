@@ -9,6 +9,7 @@ import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.world.*;
 
 public class TrasngenderTreeBlock extends TreeBlock{
     public float transRange = Vars.tilesize * 5;
@@ -30,15 +31,7 @@ public class TrasngenderTreeBlock extends TreeBlock{
 
         float alpha = 1f;
         if(Core.settings.getBool("nyfalis-qolTreeTrans")){
-            if(Vars.player.unit() != null && tile.within(Vars.player.unit(), transRange))
-                    alpha = Mathf.lerp(0.1f, 1, tile.dst(Vars.player.unit()) / transRange);
-                Vec2 mouse = Core.input.mouseWorld(Core.input.mouseX(), Core.input.mouseY());
-                Tile t = Vars.world.tileWorld(mouse.x, mouse.y);
-
-                if(t != null && t.within(tile, transRange)){
-                    float aa = Mathf.lerp(0.1f, 1, tile.dst(t) / transRange);
-                    alpha = Math.min(alpha, aa);
-            }
+            alpha = NyfWorldFuckingHelper.withinMouseOrUnitRangeF(tile, transRange);
         }
 
         float

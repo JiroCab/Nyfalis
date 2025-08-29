@@ -33,6 +33,16 @@ public class NyfalisSettingsDialog {
     }
     public static boolean musicModPresent = false;
 
+    public static float pdlStatusGiverTrans, pdlStatusGiverRange;
+    public static boolean pdlStatusGiverAnyTeam, pdlStatusGiverSimple;
+
+    public static void updateSettings(){ //moved here so settings are checked per tick not per draw
+      pdlStatusGiverTrans = Core.settings.getInt("nyfalis-pdl-status-trans")  / 100f;
+      pdlStatusGiverRange = Core.settings.getInt("nyfalis-pdl-status-range");
+      pdlStatusGiverAnyTeam = !Core.settings.getBool("nyfalis-pdl-status-anyteam");
+      pdlStatusGiverSimple = Core.settings.getBool("nyfalis-pdl-status-simple");
+    }
+
     public void BuildDialog(){
         musicModPresent =  mods.locateMod("nyfalis-music") != null;
 
@@ -52,9 +62,10 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-green-name", true);
             table.checkPref("nyfalis-cloud-shadows", true);
             table.checkPref("nyfalis-qolTreeTrans", true);
-            table.sliderPref("nyfalis-pdl-status-trans",25, 0, 100, 1, i -> i == 0 ? "@off" : i + "%");
-            table.sliderPref("nyfalis-pdl-status-range",5, 0, 21, 1, i -> i == 0 ? "@off" : i == 21 ? "@yes" : i + "%");
+            table.sliderPref("nyfalis-pdl-status-trans",15, 0, 100, 1, i -> i == 0 ? "@off" : i + "%");
+            table.sliderPref("nyfalis-pdl-status-range",25, 0, 51, 1, i -> i == 0 ? "@off" : i == 51 ? "@yes" : i + " " + Core.bundle.get("unit.blocks"));
             table.checkPref("nyfalis-pdl-status-anyteam", false);
+            table.checkPref("nyfalis-pdl-status-simple", false);
 
             table.pref(new CollapserSetting("div-gameplay", 6));
             table.checkPref("nyfalis-sandbox-super-weapon-cap", false);

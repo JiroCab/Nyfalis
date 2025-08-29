@@ -14,6 +14,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.mod.*;
 import mindustry.type.*;
+import mindustry.type.Weather.*;
 import mindustry.world.*;
 import olupis.content.*;
 import olupis.input.*;
@@ -97,22 +98,20 @@ public class NyfalisMain extends Mod{
             if(state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet())){
                 if(state.rules.blockWhitelist) state.rules.blockWhitelist = false;
             }
-            Events.on(EventType.SectorLaunchEvent.class, e -> {
-                //When launching, prevents exporting to items to where you launched from if it's out of range
-                if(NyfalisPlanets.isNyfalianPlanet(e.sector.planet) && !e.sector.near().contains(e.sector.info.destination)) e.sector.info.destination = e.sector;
-            });
             if(headless)return;
             NyfalisStartUpUis.rebuildDebugTable();
 
-            Events.on(EventType.TurnEvent.class, e -> {
-                sectorPostTurn();
-            });
             //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
             if( Core.settings.getBool("nyfalis-debug")) NyfalisStartUpUis.buildDebugUI(Vars.ui.hudGroup);
             soundHandler.replaceSoundHandler();
         });
 
+        Events.on(EventType.SectorLaunchEvent.class, e -> {
+            //When launching, prevents exporting to items to where you launched from if it's out of range
+            if(NyfalisPlanets.isNyfalianPlanet(e.sector.planet) && !e.sector.near().contains(e.sector.info.destination)) e.sector.info.destination = e.sector;
+        });
         if(headless)return;
+        Events.on(EventType.TurnEvent.class, e -> sectorPostTurn());
         Events.on(EventType.SectorCaptureEvent.class, event -> {
             for (Building b : Groups.build)
                 if (b instanceof Replicator.ReplicatorBuild r) {
@@ -169,6 +168,10 @@ public class NyfalisMain extends Mod{
             if(e.bullet.owner instanceof  Statusc s ){
                 s.apply(NyfalisStatusEffects.concentrated);
             }
+        });
+
+        Events.run(Trigger.update, () -> {
+            NyfalisSettingsDialog.updateSettings();
         });
     }
 

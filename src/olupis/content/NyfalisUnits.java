@@ -1638,7 +1638,7 @@ public class NyfalisUnits {
             abilities.addAll(
                 new CarrierResupplyAbility(2),
                 new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 10, 0, 8f),
-                new PointDefenceIndicatorAbility(160, false)
+                new PointDefenceIndicatorAbility(160, 1)
             );
             weapons.add(new LaserPointerPointDefenceWeapon("olupis-warden-point-defense"){{
                 x = 0;
@@ -1703,7 +1703,7 @@ public class NyfalisUnits {
             }});
             abilities.addAll(
                 new CarrierResupplyAbility(3),
-                new PointDefenceIndicatorAbility(320, true),
+                new PointDefenceIndicatorAbility(320, 2),
                 new UnitRallySpawnAblity(district, 60f * 30f, 6f, 0,0, 15f, true){{
                     displayBars = false;
                     display = false;
@@ -1843,7 +1843,7 @@ public class NyfalisUnits {
             ;
             abilities.addAll(
                 new CarrierResupplyAbility(4),
-            new PointDefenceIndicatorAbility(350, true),
+            new PointDefenceIndicatorAbility(350, 2),
                 new ShieldArcAbility(){{
                     radius = 36f;
                     angle = 82f;

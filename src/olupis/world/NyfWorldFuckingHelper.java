@@ -1,5 +1,6 @@
 package olupis.world;
 
+import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
@@ -19,7 +20,7 @@ import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisSectors.*;
 
 public class NyfWorldFuckingHelper{
-    /*== Gameplay Helpers ==*/
+    //region == Gameplay Helpers ==
     /** returns whether any raycasted tiles match the filter */
     public static boolean rayCheck(Healthc build, Posc entity, Func<Block, Boolean> filter){
         Seq<Block> set = new Seq<>(false);
@@ -35,6 +36,24 @@ public class NyfWorldFuckingHelper{
 
         return set.contains(filter::get);
     }
+
+    public static float withinMouseOrUnitRangeF(Position tar, float range){
+        if(Vars.player.unit() != null && Vars.player.unit().within(tar, range)) return Mathf.lerp(0.1f, 1, tar.dst(Vars.player.unit()) / range);
+
+        Vec2 mouse = Core.input.mouseWorld(Core.input.mouseX(), Core.input.mouseY());
+        Tile t = Vars.world.tileWorld(mouse.x, mouse.y);
+
+        if(t != null && t.within(tar, range)) return Mathf.lerp(0.1f, 1, tar.dst(t) / range);
+
+        return 0f;
+    }
+
+    public static boolean withinMouseOrUnitRange(Position tar, float range){
+        return withinMouseOrUnitRangeF(tar, range) > 0;
+    }
+
+    //endregion
+    // region == Weather helpers
 
     // no longer assumes the solids do not exist
     public static void placeSprigs(Tile t){
@@ -52,7 +71,7 @@ public class NyfWorldFuckingHelper{
     }
 
 
-    /*== Weather helpers ==*/
+
     public static void growSprigs(Tile t){
         if(t.block() instanceof SprigProp sp){
             t.setNet(sp.replacement);
@@ -70,7 +89,8 @@ public class NyfWorldFuckingHelper{
 
 
 
-    /* == Planet gen helpers==*/
+    //endregion
+    // region == Planet gen helpers==
     public static void  noiseColourRaw(float noise, Block block, Color out){
         if(mossGreenAll.contains(block)) noiseColour(noise, mossGreen, out, block);
         else if(grassesAll.contains(block)) noiseColour(noise, grasses, out, block);
@@ -99,11 +119,17 @@ public class NyfWorldFuckingHelper{
         return Blocks.arkyicVent;
     }
 
-    /* == Rendering helpers == */
+    //endregion
+    // region  == Rendering helpers ==
     private static Vec2 vector = new Vec2();
+
     public static void spikesTri(float x, float y, float radius, float length, int spikes, float rot, float width){
+        spikesTri(x, y, radius, length, spikes, rot, width, 0);
+    }
+
+    public static void spikesTri(float x, float y, float radius, float length, int spikes, float rot, float width, float offset){
         vector.set(0, 1);
-        float step = 360f / spikes;
+        float step = (360f / spikes) + offset;
 
         for(int i = 0; i < spikes; i++){
             vector.trns(i * step + rot, radius);
@@ -113,4 +139,5 @@ public class NyfWorldFuckingHelper{
             Drawf.tri(x + x1, y + y1, width, length, Angles.angle(x, y, x + x1, y + y1));
         }
     }
+    //engregion
 }
