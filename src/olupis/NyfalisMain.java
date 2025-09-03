@@ -16,6 +16,7 @@ import mindustry.mod.*;
 import mindustry.type.*;
 import mindustry.type.Weather.*;
 import mindustry.world.*;
+import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.input.*;
 import olupis.input.ui.*;

@@ -35,6 +35,7 @@ import olupis.world.ai.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.entities.*;
+import olupis.world.entities.entities.*;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;
@@ -333,7 +334,7 @@ public class NyfalisUnitType extends UnitType {
             unit.speed(),
             onWater(unit) ? 1 : 0,
             0,
-            unit instanceof Payloadc p ? p.payloads().size : 0
+            unit instanceof OnePayloadUnitClass po ? (po.hasPayload() ? 1 : 0) : unit instanceof Payloadc p ? p.payloadUsed() / player.unit().type().payloadCapacity : 0
         );
 
     }

@@ -40,4 +40,8 @@ public class OnePayloadUnitClass extends PayloadUnit{
         return this.type.pickupUnits && this.payloadUsed() + unit.hitSize * unit.hitSize <= this.type.payloadCapacity + 0.001F && unit.team == this.team() && unit.isAI();
     }
 
+    @Override
+    public float payloadUsed(){
+        return payloads.isEmpty() ? 0 : this.type.payloadCapacity;
+    }
 }

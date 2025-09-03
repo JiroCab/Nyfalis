@@ -12,6 +12,7 @@ import mindustry.type.*;
 import olupis.content.*;
 import olupis.input.*;
 import olupis.world.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
@@ -74,7 +75,7 @@ public  class NyfalisWeapon extends Weapon {
             unit.speed(),
             NyfalisUnitType.onWater(unit) ? 1 : 0,
             0,
-            unit instanceof Payloadc p ? p.payloads().size : 0
+            unit instanceof OnePayloadUnitClass po ? (po.hasPayload() ? 1 : 0) : unit instanceof Payloadc p ? p.payloadUsed() / player.unit().type().payloadCapacity : 0
             );
         }
     }

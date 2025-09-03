@@ -150,9 +150,10 @@ public class NyfalisUnits {
                     pierceCap = 2;
                     lightStroke = 10;
                     frontLength = 10f;
-                    damage = 15 / 12f;
+                    damage = 20 / 12f;
                     homingPower = 0.06f;
                     buildingDamageMultiplier = 1.1f;
+                    incendAmount = -1;
                     incendChance = incendSpread = 0f;
                     pierce = true;
                     removeAfterPierce = false;
@@ -1004,7 +1005,7 @@ public class NyfalisUnits {
             accel = 2.5f;
             health = 250;
             speed = 2f;
-            rotateSpeed = 10f;
+            rotateSpeed = 7.5f;
             itemCapacity = 20;
             legMoveSpace = 1.1f;
             crushDamage = 0.1f;
@@ -1013,7 +1014,7 @@ public class NyfalisUnits {
             crawlSlowdownFrac = 1f;
             drownTimeMultiplier = 4f;
 
-            segments = 13;
+            segments = 30;
             segmentScl = 100;
             segmentMag = 4.5f;
             segmentPhase = 60;
@@ -1025,7 +1026,8 @@ public class NyfalisUnits {
             generateOffsets(4.5f);
 
             omniMovement = drawBody = false;
-            allowLegStep = canCharge = alternateDraw = true;
+            allowLegStep = canCharge =  true;
+            drawType = 1;
 
             int[] ps = new int[]{1, 6, 12};
             for(int i = 0; i < 3; i++){
@@ -1073,7 +1075,8 @@ public class NyfalisUnits {
             crawlSlowdownFrac = 0.75f;
             drownTimeMultiplier = 4f;
             omniMovement = drawBody =  false;
-            allowLegStep = canDash = canCharge = alternateDraw = true;
+            allowLegStep = canDash = canCharge = true;
+            drawType = 2;
 
             segments = 12;
             segmentScl = 100;
@@ -2681,10 +2684,10 @@ public class NyfalisUnits {
                         under = false;
                         layerOffset = 2;
 
-                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f;
+                        heatProgress = p -> Mathf.cos(Time.time / 10) / 2 + 0.5f * (2 * NyfPartParms.nyfparams.paylCount);
                         heatColor = Color.valueOf("3ed09a");
                         y = -3.5f;
-                        moves.add(new PartMove(p ->( Mathf.cos(Time.time) / 2 + 0.5f), 0, 0, 360f));
+                        moves.add(new PartMove(p ->( Mathf.cos(Time.time / 30) / 2 + 0.5f) * (1- NyfPartParms.nyfparams.paylCount), 0, 0, 360f));
                     }}
             );
             weapons.add(new NyfalisWeapon(""){{

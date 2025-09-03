@@ -116,11 +116,11 @@ public class SnekWeapon extends NyfalisWeapon {
 
     public float[] seg (Unit unit){
         if (unit instanceof Crawlc crawl && unit.type instanceof  SnekUnitType type) {
-            float  off = type.alternateDraw ? type.sinOffset : 0,
+            float  off = type.drawType == 2 ? type.sinOffset : 0,
             crawlTime = crawl instanceof Segmentc seg && seg.headSegment() instanceof Crawlc head ? head.crawlTime() + seg.segmentIndex() * type.segmentPhase * type.segments* type.crawlTimeMul : crawl.crawlTime() * type.crawlTimeMul,
             trns = Mathf.sin(crawlTime + weaponSegmentParent * type.segmentPhase, type.segmentScl, type.segmentMag),
             rot = Mathf.slerp(crawl.segmentRot(), unit.rotation, weaponSegmentParent / (type.segments - 1f)),
-            so = type.alternateDraw ? type.spriteOffsets[weaponSegmentParent] : 0;
+            so = type.drawType == 2 ? type.spriteOffsets[weaponSegmentParent] : 0;
             return new float[]{
                 Angles.trnsx(rot + off, trns) + Angles.trnsx(rot, so),
                 Angles.trnsy(rot + off, trns) + Angles.trnsy(rot, so)

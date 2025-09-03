@@ -7,13 +7,18 @@ import arc.util.*;
 import mindustry.gen.*;
 import olupis.world.ai.*;
 
+import java.util.*;
+
 /*ehehe snek*/
 public class SnekUnitType extends NyfalisUnitType{
     public boolean customShadow = true;
-    public boolean alternateDraw = false;
+    public byte drawType = 0;
     public float sinOffset = 45, crawlTimeMul = 6f;
     @Nullable public int[] sprites;
     @Nullable public float[] spriteOffsets;
+    HashMap<Unit, float[]> rotationBuffer = new HashMap<>();
+    HashMap<Unit, Integer> rotationUpdate = new HashMap<>();
+    public int rotdelay = 0;
 
     public SnekUnitType(String name){
         super(name);
@@ -24,7 +29,7 @@ public class SnekUnitType extends NyfalisUnitType{
     public void load(){
         super.load();
 
-        if(alternateDraw){
+        if(drawType == 2){
             if(sprites == null || sprites.length < segments)
                 throw new IllegalArgumentException(name + " \"sprites\" isn't set properly!");
 
@@ -74,8 +79,59 @@ public class SnekUnitType extends NyfalisUnitType{
 
     @Override
     public void drawCrawl(Crawlc crawl){
-        if(!alternateDraw) super.drawCrawl(crawl);
-        else {
+
+        if(drawType == 1){
+            Unit unit = (Unit)crawl;
+            applyColor(unit);
+
+            if(!rotationBuffer.containsKey(unit)) rotationBuffer.put(unit, new float[segments]);
+            if(!rotationUpdate.containsKey(unit)) rotationUpdate.put(unit, 0);
+
+            super.update(unit);
+
+            if(unit.moving()){
+            if(rotationUpdate.get(unit) >= rotdelay){
+                rotationUpdate.put(unit, 0);
+                float[] in = rotationBuffer.get(unit), out = new float[segments ];
+
+                out[segments -1] =   unit.rotation;;
+
+                for(int s = 1; s < segments; s++){
+                    out[segments - s -1] = in[segments - s ];
+                }
+                rotationBuffer.put(unit, out);
+            } else  rotationUpdate.put(unit, rotationUpdate.get(unit) +1);
+            }
+
+            for(int p = 0; p < 2; p++){
+                TextureRegion[] regions = p == 0 ? segmentOutlineRegions : segmentRegions;
+
+                for(int i = 0; i < segments; i++){
+
+                    float
+
+                    //at segment 0, rotation = segmentRot, but at the last segment it is rotation
+                    rot =  rotationBuffer.get(unit)[i],
+                    tx = unit.x + Angles.trnsx(rot, spriteOffsets[i]),
+                    ty = unit.y + Angles.trnsy(rot, spriteOffsets[i]);
+
+                    //todo: make segments point towards the next one
+                    Draw.rect(regions[sprites[i]], tx, ty, rot - 90);
+
+                    // Draws the cells
+                    if(drawCell && p != 0 && segmentCellRegions[sprites[i]].found()){
+                        Draw.color(cellColor(unit));
+                        Draw.rect(segmentCellRegions[sprites[i]], tx, ty, rot - 90);
+                        Draw.reset();
+                    }
+                }
+            }
+
+
+
+        }
+
+        else if (drawType == 2) {
             Unit unit = (Unit)crawl;
             applyColor(unit);
 
@@ -110,6 +166,7 @@ public class SnekUnitType extends NyfalisUnitType{
 
             Draw.reset();
         }
+        else super.drawCrawl(crawl);
     }
 
 }

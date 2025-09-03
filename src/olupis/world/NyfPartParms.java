@@ -6,10 +6,10 @@ public class NyfPartParms {
     public static final NyfPartParms.NyfPartParams nyfparams = new NyfPartParms.NyfPartParams();
 
     public static class NyfPartParams{
-        public int team, paylCount;
-        public float health,elevation, ammo, floating, treads, speedR, speed;
+        public int team;
+        public float health,elevation, ammo, floating, treads, speedR, speed, paylCount;
 
-        public NyfPartParams set(float health, int team, float elevation, float ammo, float speed, float speedR, float floating, float treads, int paylCount){
+        public NyfPartParams set(float health, int team, float elevation, float ammo, float speed, float speedR, float floating, float treads, float paylCount){
             this.health = health;
             this.team = team;
             this.elevation = elevation;
@@ -40,10 +40,11 @@ public class NyfPartParms {
         ;
 
         DrawPart.PartProgress
-                elevationP = p-> nyfparams.elevation,
-                floatingP = p-> nyfparams.floating,
-                speedP = p-> nyfparams.speed,
-                treadsP = p-> nyfparams.treads
+            elevationP = p-> nyfparams.elevation,
+            floatingP = p-> nyfparams.floating,
+            speedP = p-> nyfparams.speed,
+            treadsP = p-> nyfparams.treads,
+            payCountP = p -> nyfparams.paylCount
         ;
 
         float get(NyfPartParams p);

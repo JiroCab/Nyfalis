@@ -15,6 +15,7 @@ import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 import olupis.world.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.parts.*;
 
 import java.util.*;
@@ -104,7 +105,7 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
         unit.speed(),
         fetchFloating(unit),
         treadTracker.getOrDefault(unit, 0f),
-        unit instanceof Payloadc p ? p.payloads().size : 0
+        unit instanceof OnePayloadUnitClass po ? (po.hasPayload() ? 1 : 0) : unit instanceof Payloadc p ? p.payloadUsed() / player.unit().type().payloadCapacity : 0
         );
     }
 

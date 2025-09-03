@@ -15,6 +15,7 @@ public class NyfalisPackets {
         Net.registerPacket(NyfalisSyncOtherSettingsPacket::new);
         Net.registerPacket(NyfalisDebugPackets::new);
         Net.registerPacket(ConstructorCheatConfigPacket::new);
+        Net.registerPacket(NyfalisNetRedirectPaylodPacket::new);
 
         /*Too lazy to make a new class lmao*/
         if(headless) return;

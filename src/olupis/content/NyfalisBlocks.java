@@ -17,6 +17,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.campaign.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
@@ -34,6 +35,7 @@ import mindustry.world.meta.*;
 import olupis.input.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
+import olupis.world.blocks.distribution.LimitedLandingPad.*;
 import olupis.world.blocks.drawers.*;
 import olupis.world.blocks.environment.*;
 import olupis.world.blocks.misc.*;
@@ -115,12 +117,12 @@ public class NyfalisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        rustElectrolyzer, ironSieve, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible,
+        rustElectrolyzer, ironSieve, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible, compontePrinter,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator, alternateAmalgamator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
         heavyMine,fragMine,glitchMine,mossMine,
-        coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant, coreParagon, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator,
+        coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant, coreParagon, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator, deliveryReciver,
         mendFieldProjector, taurus, lamp, ladar, search,
         cutboi, superextendocutboi,
 
@@ -1488,6 +1490,8 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, quartz, 50));
         }};
 
+        //componentPrinter -> used for all things items for unit production
+
         ironSieve  = new Separator("iron-sieve"){{
             //not to be confused with iron shiv
             hasPower = hasItems = true;
@@ -2640,14 +2644,26 @@ public class NyfalisBlocks {
                     new DrawDefault(),
                     new DrawPistons()
             );
-            requirements(Category.effect, BuildVisibility.campaignOnly, with(rustyIron, 75, iron, 50, silicon, 50, cobalt, 10));
+            requirements(Category.effect, BuildVisibility.notLegacyLaunchPadOnly, with(rustyIron, 75, iron, 50, silicon, 50, cobalt, 10));
+        }};
+
+        deliveryReciver = new LimitedLandingPad("delivery-receiver"){{
+            size = 5;
+            itemCapacity = 100;
+            cooldownTime = 60f;
+            buildCostMultiplier = 0.5f;
+            liquidCapacity = 3000f;
+            consumeLiquidAmount = 1500f;
+            consumeLiquid = NyfalisItemsLiquid.steam;
+            coolingEffect = new RadialEffect(Fx.steamCoolSmoke, 4, 90f, 9.5f, 180f);
+            requirements(Category.effect, BuildVisibility.notLegacyLaunchPadOnly, with(rustyIron, 75, iron, 50, silicon, 50, cobalt, 10));
         }};
 
         deliveryTerminal = new DeliveryTerminal("delivery-terminal"){{
             size = 2;
             buildCostMultiplier = 0.5f;
             toggleEffect = Fx.flakExplosionBig;
-            requirements(Category.effect, BuildVisibility.campaignOnly, with(rustyIron, 150, iron, 100, lead, 150));
+            requirements(Category.effect, BuildVisibility.notLegacyLaunchPadOnly, with(rustyIron, 150, iron, 100, lead, 150));
         }};
 
         lightWall = new PrivilegedLightBlock("light-wall"){{
@@ -2733,6 +2749,7 @@ public class NyfalisBlocks {
             fogRadius = 20;
         }};
 
+        if(headless) return;
     }
 
     public static void NyfalisBlocksPlacementFix(){
@@ -2775,5 +2792,9 @@ public class NyfalisBlocks {
         siliconArcSmelter.replacement = compoundCrucible;
         hydrochloricGraphitePress.replacement = compoundCrucible;
         mushBlender.replacement = rustyScrapWallLarge;
+
+        if(headless)return;
+
+        ((LimitedLandingPad) deliveryReciver).podRegion = ((LimitedLaunchPad) deliveryCannon).podRegion;
     }
 }

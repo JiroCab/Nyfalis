@@ -4,10 +4,13 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
+import mindustry.ai.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -34,6 +37,7 @@ public class MechPad extends Block {
     public StatusEffect alternateStatus = NyfalisStatusEffects.alternate;
     public @Nullable String boosterDesc;
     public int minAltTier = 2, maxAltTier = Integer.MAX_VALUE;
+    public Seq<UnitCommand> blackListed = Seq.with(UnitCommand.moveCommand, UnitCommand.enterPayloadCommand);
 
     @Override
     public void setStats(){
@@ -67,6 +71,10 @@ public class MechPad extends Block {
         public int readUnitId = -1;
         public Seq<ArticulatorBuild> modules = new Seq<>();
         public @Nullable Unit slave;
+        //Don't bother saving this in the block since it should be saved with the unit anyway, unless the unit isnt alive then ughh fuck
+        public @Nullable  Seq<Position> lastCommandQueue = new Seq<>(5);
+        public @Nullable UnitCommand lastCommad;
+        public @Nullable Bits lastStances;
 
         @Override
         public Seq<ArticulatorBuild> getModules(){
@@ -90,10 +98,22 @@ public class MechPad extends Block {
                     slave.rotation = 90f;
                     slave.add();
                     readUnitId = slave.id;
+                    if(slave.isCommandable()){
+                        if(lastCommad != null)slave.command().command(lastCommad);
+                        if(lastStances != null) slave.command().stances = lastStances;
+                        if(lastCommandQueue != null) for(Position c : lastCommandQueue) slave.command().commandQueue(c);
+                    }
                 }
             }
 
             if (slave != null){
+                if(slave.isCommandable() && !blackListed.contains(unit().command().command)){
+                    lastCommandQueue = slave.command().commandQueue;
+
+                    lastCommad = slave.command().command;
+                    lastStances = slave.command().stances;
+                }
+
                 if(efficiency >=  lowPowerThreshold){
                     if(hasUpgrade())slave.apply(alternateStatus, 1 * Time.toSeconds);
                     else slave.unapply(alternateStatus);
@@ -142,7 +162,7 @@ public class MechPad extends Block {
         }
 
         public byte version() {
-            return 1;
+            return 2;
         }
 
         @Override
