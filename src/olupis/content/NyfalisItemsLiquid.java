@@ -9,7 +9,18 @@ import static mindustry.content.Items.*;
 
 public class NyfalisItemsLiquid {
 
-    public static Item condensedBiomatter, rustyIron, iron, cobalt, quartz, alcoAlloy, aluminum, ash, cryoRods, steel, silicatePowder, powerAmmoItem;
+    public static Item
+        //ores
+        rustyIron, iron, cobalt, quartz, alcoAlloy,
+        // other raw
+        condensedBiomatter,
+        // manufactured
+        aluminum, ash,
+        //unit component
+        computeModule, patchyShielding, amplePlating,
+        //internal
+        powerAmmoItem;
+
     public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam, lubricant, emulsiveSlop;
 
@@ -53,6 +64,27 @@ public class NyfalisItemsLiquid {
         ash = new Item("ash", Color.valueOf("4B4B4B")){{
             flammability = 1f;
         }};
+
+        //endregion
+        //region unit component
+
+        computeModule = new Item("compute-module", Color.valueOf("989AA4")) {{
+            hardness = 1;
+            healthScaling = 0.30f;
+        }};
+
+        patchyShielding = new Item("patchy-shielding", Color.valueOf("989AA4")) {{
+            hardness = 1;
+            healthScaling = 0.30f;
+        }};
+
+        amplePlating = new Item("ample-plating", Color.valueOf("989AA4")) {{
+            hardness = 2;
+            healthScaling = 0.60f;
+        }};
+
+
+        //endregion
 
         nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum);
         nyfalisItems.add(nyfalisOnlyItems);

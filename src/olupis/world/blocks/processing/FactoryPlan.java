@@ -53,6 +53,13 @@ public class FactoryPlan extends Block{
     public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid){
         this(name, overlay, time,input, output, inputLiquid, outputLiquid, 0, 0);
     }
+    public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output){
+        this(name, overlay, time,input, output, null, null, 0, 0);
+    }
+
+    public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output, float powerIn, float powerOut){
+        this(name, overlay, time,input, output, null, null, powerIn, powerOut);
+    }
 
     public FactoryPlan(String name){
         super(name);

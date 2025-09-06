@@ -44,7 +44,7 @@ import static mindustry.ai.UnitStance.holdFire;
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
     public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false, canCharge = false,
-                           constructHideDefault = false, customMineAi = false, waveHunts = false, cantMove = false, AiCircleBomb = false;
+                            constructHideDefault = false, customMineAi = false, waveHunts = false, cantMove = false, AiCircleBomb = false, borrows = false;
     /*Makes (legged) units boost automatically regardless of Ai*/
     public boolean alwaysBoostOnSolid = false;
     /*Replace Move Command to a custom one*/
@@ -74,7 +74,7 @@ public class NyfalisUnitType extends UnitType {
     public float secondaryLightRadius = lightRadius  * 2;
     public StatusEffect payloadUpdateSE = StatusEffects.none, payloadDisarmSE = StatusEffects.disarmed;
 
-    public TextureRegion bossRegion;
+    public TextureRegion bossRegion, borrowRegion;
 
     //TODO: This is a mess, mostly a proof of concept please replace
 
@@ -286,6 +286,8 @@ public class NyfalisUnitType extends UnitType {
     public void load() {
         super.load();
         bossRegion = Core.atlas.find(name + "-boss", name);
+        borrowRegion = Core.atlas.find(name + "-borrowed", name);
+
     }
 
     public float partAmmo(Unit unit){
@@ -296,6 +298,22 @@ public class NyfalisUnitType extends UnitType {
     public void drawLight(Unit unit){
         if(lightRadius > 0) Drawf.light(unit.x, unit.y, lightRadius, lightColor, lightOpacity);
         if(secondaryLightRadius > 0) Drawf.light(unit.x, unit.y, secondaryLightRadius, secondaryLightColor, secondaryLightColor.a);
+    }
+
+
+    @Override
+    public <T extends Unit&Legsc> void drawLegs(T unit){
+        if(borrows && unit.hasEffect(deployEffect)){
+            applyColor(unit);
+
+            Color mix = Pal.darkestestGray;
+            if(unit.floorOn() != null) mix.set(unit.floorOn().mapColor).lerp(Color.black, 0.45f);
+            Draw.color(mix, 0.8f);
+            Draw.scl(1.1f, 1.1f);
+            Draw.rect(borrowRegion, unit.x, unit.y, unit.rotation - 90);
+
+            Draw.reset();
+        }else super.drawLegs(unit);
     }
 
     @Override

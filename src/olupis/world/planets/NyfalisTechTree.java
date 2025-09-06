@@ -126,19 +126,6 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(venom, Seq.with(
-                        new  Objectives.Research(groundConstruct)
-                ), () -> {
-                    node(serpent, Seq.with(
-                            new  Objectives.Research(alternateArticulator)
-                    ), () -> {
-                        node(reaper, Seq.with(
-                        new  Objectives.Research(adaptiveFabricator)
-                        ), () -> {
-
-                        });
-                    });
-                });
                 node(supella, Seq.with(
                         new  Objectives.Research(groundConstruct)
                 ), () -> {
@@ -258,15 +245,7 @@ public class NyfalisTechTree {
                             });
                         });
                         node(taurus ,Seq.with(new Objectives.Research(sanctuary)), ()->{
-                            node(lamp, () ->{
-                                node(ladar, Seq.with(
-                                new  Objectives.Research(hydrochloricGraphitePress)
-                                ), () -> {
-                                    node(search, () ->{
 
-                                    });
-                                });
-                            });
                         });
                     });
                 });
@@ -375,8 +354,10 @@ public class NyfalisTechTree {
 
                             });
                             node(deliveryCannon, () ->{
-                                node(deliveryTerminal, () ->{
+                                node(deliveryReciver, () ->{
+                                    node(deliveryTerminal, () -> {
 
+                                    });
                                 });
                             });
                         });
@@ -405,14 +386,16 @@ public class NyfalisTechTree {
                         });
                     });
                     node(slash, ()->{
-                        node(shredder, ()->{
-                            node(porcupine, ()->{
-                                node(hive, ()->{
+                        node(cutboi, () -> {
+                            node(shredder, ()->{
+                                node(porcupine, ()->{
+                                    node(hive, ()->{
+
+                                    });
+                                });
+                                node(laceration, () -> {
 
                                 });
-                            });
-                            node(laceration, () -> {
-
                             });
                         });
                     });
@@ -447,47 +430,56 @@ public class NyfalisTechTree {
                             });
                         });
                     });
+                    node(lamp, () -> {
+                        node(ladar, ()->{
+                            node(search, ()->{
+
+                            });
+                        });
+                    });
                 });
 
                 node(unitReplicatorSmall, Seq.with(new Objectives.OnSector(terrarootCaves)),()->{
-                    node(construct, Seq.with(new Objectives.Research(ironRouter), new Objectives.OnSector(dyingForest)), ()->{
-                        node(groundConstruct,
-                            Seq.with(new Objectives.Research(iron))
-                        , () ->{
+                    node(construct, Seq.with(new Objectives.Research(componentPrinter), new Objectives.OnSector(dyingForest)), ()->{
+                        node(groundConstruct, Seq.with(new Objectives.Research(iron)), () ->{
                             node(arialConstruct, Seq.with(new Objectives.SectorComplete(dyingForest)), () ->{
                                 node(navalConstruct, () ->{
+                                    node(alternateArticulator,  Seq.with(new  Objectives.SectorComplete(abandonedPayloadTerminal)), () -> {
+                                        node(adaptiveFabricator,  Seq.with(new  Objectives.SectorComplete(conservatorium)), () -> {
+                                            node(alternateAmalgamator, () -> {
 
-                                });
-                            });
-                        });
-                        node(fortifiedPayloadConveyor, () -> {
-                            node(fortifiedPayloadConveyor, () -> {
-
-                            });
-                        });
-                        node(repairPin, () -> {
-                            node(scoutPad,  Seq.with(
-                                    new  Objectives.OnSector(glasierSea)
-                            ), () -> {
-
-                            });
-                            node(alternateArticulator,  Seq.with(
-                                    new  Objectives.SectorComplete(abandonedPayloadTerminal)
-                            ), () -> {
-                                node(adaptiveFabricator,  Seq.with(
-                                new  Objectives.SectorComplete(conservatorium)
-                                ), () -> {
-                                    node(alternateAmalgamator, () -> {
-
+                                            });
+                                            });
+                                        });
                                     });
                                 });
                             });
                         });
 
-                        node(unitReplicator,  Seq.with(new Objectives.OnSector(dyingForest)),()->{
+                    node(repairPin, () -> {
 
+                    });
+
+                    node(componentPrinter,  Seq.with(new Objectives.Research(ironRouter)), () -> {
+                        node(computeModulePlan);
+                        node(patchyShielding, () -> {
+                            node(amplePlating);
                         });
                     });
+
+                    node(unitReplicator,  Seq.with(new Objectives.OnSector(dyingForest)),()->{
+
+                    });
+                    node(fortifiedPayloadConveyor, Seq.with(new Objectives.OnSector(abandonedPayloadTerminal)), () -> {
+                        node(fortifiedPayloadConveyor, () -> {
+                            node(scoutPad,  Seq.with(
+                            new  Objectives.OnSector(glasierSea)
+                            ), () -> {
+
+
+                            });
+                        });
+                        });
                 });
 
                 node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{

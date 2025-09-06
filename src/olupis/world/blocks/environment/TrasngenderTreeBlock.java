@@ -31,7 +31,7 @@ public class TrasngenderTreeBlock extends TreeBlock{
 
         float alpha = 1f;
         if(Core.settings.getBool("nyfalis-qolTreeTrans")){
-            alpha = 1f - NyfWorldFuckingHelper.withinMouseOrUnitRangeF(tile, transRange);
+            alpha = NyfWorldFuckingHelper.withinMouseOrUnitRangeF(tile, transRange);
         }
 
         float

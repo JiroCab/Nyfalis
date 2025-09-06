@@ -101,8 +101,8 @@ public class HeadacheCrafter  extends GenericCrafter{
 
     @Override
     public void init(){
-        consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> !e.invalidPlan()  ? plans.get(e.planSelected).input : ItemStack.empty));
-        consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> !e.invalidPlan() ? plans.get(e.planSelected).inputLiquid : LiquidStack.empty));
+        consume(new ConsumeItemDynamic((HeadacheCrafterBuild e) -> !e.invalidPlan() && e.getPlanSelected().input != null ? e.getPlanSelected().input : ItemStack.empty));
+        consume(new ConsumeLiquidsDynamic((HeadacheCrafterBuild e) -> !e.invalidPlan() && e.getPlanSelected().inputLiquid != null ? e.getPlanSelected().inputLiquid : LiquidStack.empty));
 
         super.init();
 

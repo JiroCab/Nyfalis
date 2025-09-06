@@ -66,6 +66,8 @@ public class NyfalisUnits {
         /*Ground units*/
         //siege / roach
         supella, germanica , luridiblatta , vaga , parcoblatta, //smallest cockroaches
+        //defensive borrow crab
+        spur,
 
         /*naval*/
         //carriers-support
@@ -1603,6 +1605,49 @@ public class NyfalisUnits {
                 new DeathStatusAbility(NyfalisStatusEffects.comradery)
             );
         }};
+        //endregion
+        //region Ground - Krab
+        spur = new NyfalisUnitType("spur"){{
+            constructor = LegsUnit::create;
+            borrows = canDeploy = true;
+            deployEffect = NyfalisStatusEffects.deployed;
+
+            armor = 2;
+            hitSize = 8;
+            health = 300;
+            speed = 0.65f;
+            engineSize = -1;
+            rotateSpeed = 1.72f;
+            weapons.addAll(
+            new NyfalisWeapon("", true, true){{
+                x = 0f;
+                y = 0.4f;
+                reload = 35;
+                shake = 0.4f;
+                recoil = 1f;
+                shootY = 0.5f;
+                shootCone = 55f;
+                rotateSpeed = 10f;
+                rotationLimit = 90f;
+                autoTarget = rotate = partialControl = true;
+                mirror = controllable = top = false;
+                bullet = new CappedIntervalBullet(4.5f, 30){{
+                    width = 4f;
+                    height = 20f;
+                    lifetime = 60f;
+                    knockback = 0.2f;
+
+                    collidesAir = false;
+                    hitEffect = despawnEffect = Fx.hitBulletColor;
+                    hitColor = backColor = trailColor = rustyBulletBack;
+                    frontColor =  rustyBullet;
+                }};
+            }}
+            );
+            setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
+
+        }};
+
         //endregion
         //region Naval - Carrier
         sentry = new NyfalisUnitType("sentry"){{

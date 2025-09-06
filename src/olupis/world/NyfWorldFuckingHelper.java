@@ -38,14 +38,15 @@ public class NyfWorldFuckingHelper{
     }
 
     public static float withinMouseOrUnitRangeF(Position tar, float range){
-        if(Vars.player.unit() != null && Vars.player.unit().within(tar, range)) return Mathf.lerp(0.1f, 1, tar.dst(Vars.player.unit()) / range);
+        float out = 1;
+        if(Vars.player.unit() != null && Vars.player.unit().within(tar, range)) out = Mathf.lerp(0.1f, 1, tar.dst(Vars.player.unit()) / range);
 
         Vec2 mouse = Core.input.mouseWorld(Core.input.mouseX(), Core.input.mouseY());
         Tile t = Vars.world.tileWorld(mouse.x, mouse.y);
 
-        if(t != null && t.within(tar, range)) return Mathf.lerp(0.1f, 1, tar.dst(t) / range);
+        if(t != null && t.within(tar, range)) out = Math.min(out, Mathf.lerp(0.1f, 1, tar.dst(t) / range));
 
-        return 0f;
+        return out;
     }
 
     public static boolean withinMouseOrUnitRange(Position tar, float range){
