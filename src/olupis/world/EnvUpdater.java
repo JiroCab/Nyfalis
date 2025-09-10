@@ -237,8 +237,8 @@ public class EnvUpdater implements AsyncProcess{
         public void write(DataOutput stream) throws IOException{
             stream.writeByte(1);
 
-            stream.writeByte(replacementMap != null ? 1 : 0);
-            if(replacementMap != null){
+            stream.writeBoolean(ready);
+            if(ready){
                 stream.writeInt(wsize);
                 stream.writeByte(csize);
                 for(int i = 0; i < wsize; i++)
@@ -251,7 +251,7 @@ public class EnvUpdater implements AsyncProcess{
         public void read(DataInput stream) throws IOException{
             byte version = stream.readByte();
 
-            if(stream.readByte() > 0){
+            if(stream.readBoolean()){
                 int readw = stream.readInt();
                 byte readc = stream.readByte();
                 for(int i = 0; i < readw; i++)
