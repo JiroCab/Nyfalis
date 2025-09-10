@@ -33,7 +33,7 @@ public class EnvUpdater implements AsyncProcess{
 
     // cache
     static Tile lookup, ret;
-    static boolean state;
+    static boolean state, ready;
     static int space, wsize;
     static float wwidth, wheight;
 
@@ -51,11 +51,14 @@ public class EnvUpdater implements AsyncProcess{
             })
         );
 
-        SaveVersion.addCustomChunk("nyf-io", new EnvUpdaterIO());
+        SaveVersion.addCustomChunk("nyf-env-io", new EnvUpdaterIO());
     }
 
     @Override
     public void init(){
+        ready = false;
+        if(Vars.state.isEditor()) return;
+
         wsize = world.width() * world.height();
 
         wwidth = (world.width() - 1) * tilesize;
@@ -105,6 +108,8 @@ public class EnvUpdater implements AsyncProcess{
         for(int i = 0; i < queue.length; i++)
             for(int idx = 0; idx < csize; idx++)
                 queue[i][idx].clear();
+
+        ready = true;
     }
 
     @Override
@@ -134,8 +139,9 @@ public class EnvUpdater implements AsyncProcess{
 
     @Override
     public void end(){
-        tasks.run();
+        if(!ready) return;
 
+        tasks.run();
         for(int i = 0; i < queue.length; i++){
             int index = i;
 
@@ -154,6 +160,16 @@ public class EnvUpdater implements AsyncProcess{
                 queue[i][2].clear();
             }
         }
+    }
+
+    @Override
+    public void reset(){
+        ready = false;
+    }
+
+    @Override
+    public boolean shouldProcess(){
+        return ready;
     }
 
     public static void addProp(int id){
@@ -219,23 +235,29 @@ public class EnvUpdater implements AsyncProcess{
     public static class EnvUpdaterIO implements SaveFileReader.CustomChunk{
         @Override
         public void write(DataOutput stream) throws IOException{
-            // version for later use
-            stream.write(1);
+            stream.writeByte(1);
 
-            wsize = Vars.state.map.width * Vars.state.map.height;
-
-            for(int i = 0; i < wsize; i++)
-                for(int idx = 0; idx < csize; idx++)
-                    stream.writeShort(replacementMap[i][idx]);
+            stream.writeByte(replacementMap != null ? 1 : 0);
+            if(replacementMap != null){
+                stream.writeInt(wsize);
+                stream.writeByte(csize);
+                for(int i = 0; i < wsize; i++)
+                    for(int idx = 0; idx < csize; idx++)
+                        stream.writeShort(replacementMap[i][idx]);
+            }
         }
 
         @Override
         public void read(DataInput stream) throws IOException{
-            byte ver = stream.readByte();
-            wsize = Vars.state.map.width * Vars.state.map.height;
-            for(int i = 0; i < wsize; i++)
-                for(int idx = 0; idx < csize; idx++)
-                    replacementMap[i][idx] = stream.readShort();
+            byte version = stream.readByte();
+
+            if(stream.readByte() > 0){
+                int readw = stream.readInt();
+                byte readc = stream.readByte();
+                for(int i = 0; i < readw; i++)
+                    for(int idx = 0; idx < readc; idx++)
+                        replacementMap[i][idx] = stream.readShort();
+            }
         }
 
         @Override
