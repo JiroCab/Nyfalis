@@ -12,16 +12,13 @@ public class NyfalisPathfind {
     public static final Pathfinder.PathCost
         costLeggedNaval =(team, tile) ->
             PathTile.legSolid(tile) ? impassable : 1 +
-                PathTile.health(tile) * 5 +
                 (PathTile.solid(tile) ? 3 : 0) +
                 (PathTile.nearLegSolid(tile) ? 3 : 0),
 
         //TODO: still broken
         costSnek =(team, tile) ->
-        (PathTile.legSolid(tile)) ? impassable :
-        (PathTile.solid(tile)) ? impassable :
+        (PathTile.legSolid(tile)) ? wallImpassableCap :
 
-        (PathTile.solid(tile) && PathTile.team(tile) != team? 0 : 3)+
         PathTile.health(tile) * 5 +
         (PathTile.nearSolid(tile) ? 2 : 0) +
         (PathTile.liquid(tile) ? 2 : 0) +

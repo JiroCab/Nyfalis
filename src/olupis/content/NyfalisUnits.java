@@ -1619,30 +1619,55 @@ public class NyfalisUnits {
             engineSize = -1;
             rotateSpeed = 1.72f;
             weapons.addAll(
-            new NyfalisWeapon("", true, true){{
-                x = 0f;
-                y = 0.4f;
-                reload = 35;
-                shake = 0.4f;
-                recoil = 1f;
-                shootY = 0.5f;
-                shootCone = 55f;
-                rotateSpeed = 10f;
-                rotationLimit = 90f;
-                autoTarget = rotate = partialControl = true;
-                mirror = controllable = top = false;
-                bullet = new CappedIntervalBullet(4.5f, 30){{
-                    width = 4f;
-                    height = 20f;
-                    lifetime = 60f;
-                    knockback = 0.2f;
+                new NyfalisWeapon(""){{
+                    x = -0.1f;
+                    y = 1.25f;
+                    shootX = 6f;
+                    reload = 20f;
+                    shootCone = 15f;
+                    top = borrowShoot = false;
+                    unBorrowShoot = true;
+                    ejectEffect = Fx.casing1;
+                    parts.addAll(
+                        new RegionPart("olupis-supella-sidewep"){{
+                        var p = PartProgress.warmup.add(-1f);
+                        heatProgress = progress =p.mul(-1);
+                        moveRot = 35f;
+                        moveY = -0.8f;
+                        moveX = -0.17f;
 
-                    collidesAir = false;
-                    hitEffect = despawnEffect = Fx.hitBulletColor;
-                    hitColor = backColor = trailColor = rustyBulletBack;
-                    frontColor =  rustyBullet;
-                }};
-            }}
+                    }}
+                    );
+                    bullet = new BasicBulletType(3f, 7){{
+                        width = 5f;
+                        height = 7f;
+                        lifetime = 45;
+                    }};
+                }},
+                new NyfalisWeapon(""){{
+                    x = 0f;
+                    y = 0.4f;
+                    reload = 35;
+                    shake = 0.4f;
+                    recoil = 1f;
+                    shootY = 0.5f;
+                    shootCone = 55f;
+                    rotateSpeed = 10f;
+                    rotationLimit = 90f;
+                    rotate = borrowShoot  = true;
+                    mirror = top = unBorrowShoot = false;
+                    bullet = new CappedIntervalBullet(4.5f, 30){{
+                        width = 4f;
+                        height = 20f;
+                        lifetime = 60f;
+                        knockback = 0.2f;
+
+                        collidesAir = false;
+                        hitEffect = despawnEffect = Fx.hitBulletColor;
+                        hitColor = backColor = trailColor = rustyBulletBack;
+                        frontColor =  rustyBullet;
+                    }};
+                }}
             );
             setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
 

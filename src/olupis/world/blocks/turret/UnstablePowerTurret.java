@@ -24,7 +24,8 @@ import olupis.content.*;
 import olupis.world.blocks.drawers.*;
 import olupis.world.entities.*;
 
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
 
 public class UnstablePowerTurret extends PowerTurret {
 
@@ -73,7 +74,7 @@ public class UnstablePowerTurret extends PowerTurret {
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
-        Drawf.dashCircle(x, y, explosionRadius, Color.red);
+        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, explosionRadius * tilesize, Color.red);
     }
 
     public class UnstablePowerTurretBuild extends PowerTurretBuild{

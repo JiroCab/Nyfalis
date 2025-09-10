@@ -897,7 +897,6 @@ public class NyfalisBlocks {
         //region Distribution
         rustyIronConveyor = new VaraintConveryor("rusty-iron-conveyor"){{
             variants = 4;
-            alwaysUnlocked = true;
             health = 45;
             speed = 0.025f;
             displayedSpeed = 3.8f;
@@ -1060,7 +1059,6 @@ public class NyfalisBlocks {
             hasPower = true;
             squareSprite = false;
             itemCapacity = 25;
-            alwaysUnlocked = true;
 
             tier = 1;
             size = 3;
@@ -1175,7 +1173,6 @@ public class NyfalisBlocks {
         //region Liquid
         rustyPump = new Pump("rusty-pump"){{
             squareSprite = false;
-            alwaysUnlocked = true;
             size = 1;
             liquidCapacity = 15f;
             pumpAmount = 4f / 60f;
@@ -1221,7 +1218,6 @@ public class NyfalisBlocks {
 
         leadPipe = new Conduit("lead-pipe"){{
             leaks = underBullets = true;
-            alwaysUnlocked = true;
 
             health = 70;
             liquidCapacity = 2f;

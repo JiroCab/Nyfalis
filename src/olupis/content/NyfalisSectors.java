@@ -57,9 +57,9 @@ public class NyfalisSectors {
             alwaysUnlocked = overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchSchematics = false;
 
-            captureWave = 15;
+            captureWave = 17;
             difficulty = 1;
-            rules = commonRules(captureWave);
+            rules = commonRules(captureWave, ItemStack.with());
         }};
 
         terrarootCaves = new SectorPreset("terraroot-caves", arthin, 31){{

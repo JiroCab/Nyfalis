@@ -19,11 +19,11 @@ import static mindustry.Vars.*;
 
 public  class NyfalisWeapon extends Weapon {
     public boolean
-            /*Determines if the weapon can shoot while boosting or not*/
-            boostShoot = true, groundShoot = true,
+    /*Determines if the weapon can shoot while boosting or not*/
+    boostShoot = true, groundShoot = true,
     /*Allows weapon to be shot by the player when Ai is not using it*/
     partialControl = false,
-            idlePrefRot = true, alwaysRotate = false,
+    idlePrefRot = true, alwaysRotate = false,
     /*Shoot while dash command is selected*/
     dashShoot = false, dashExclusive = false,
     /*Check for angle to target before shooting */
@@ -36,7 +36,9 @@ public  class NyfalisWeapon extends Weapon {
     statsBlocksOnly = false,
     /*Check for ammo regardless of the rule*/
     alwaysUseAmmo = false,
-    statusOnlyOnHit = false
+    statusOnlyOnHit = false,
+    /*Determines if the weapon can shoot while Borrowed or not*/
+    borrowShoot = true, unBorrowShoot = true;
     ;
     /*Margin where when a weapon can fire while transition from ground to air*/
     public  float boostedEvaluation = 0.95f, groundedEvaluation = 0.05f;
@@ -87,9 +89,14 @@ public  class NyfalisWeapon extends Weapon {
             mount.reload = reload;
         }
 
-        boolean can = !unit.disarmed
-                && (unit.onSolid() && fireOverSolids || !unit.onSolid()) && (!unit.type.canBoost ||
-                (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation));
+        //this is mess
+        boolean can =
+            !unit.disarmed
+            && (unit.onSolid() && fireOverSolids || !unit.onSolid()) && (!unit.type.canBoost ||
+            (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation));
+
+        if(unit.type instanceof  NyfalisUnitType nyf && nyf.borrows ) can = can && ((unit.hasEffect(nyf.deployEffect) && borrowShoot) || unBorrowShoot);
+
         float lastReload = mount.reload;
         mount.reload =Math.max(mount.reload - Time.delta *unit.reloadMultiplier,0);
         mount.recoil = Mathf.approachDelta(mount.recoil,0,unit.reloadMultiplier /recoilTime);

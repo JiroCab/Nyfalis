@@ -3,6 +3,7 @@ package olupis.world;
 import arc.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.async.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -221,6 +222,8 @@ public class EnvUpdater implements AsyncProcess{
             // version for later use
             stream.write(1);
 
+            wsize = Vars.state.map.width * Vars.state.map.height;
+
             for(int i = 0; i < wsize; i++)
                 for(int idx = 0; idx < csize; idx++)
                     stream.writeShort(replacementMap[i][idx]);
@@ -229,7 +232,7 @@ public class EnvUpdater implements AsyncProcess{
         @Override
         public void read(DataInput stream) throws IOException{
             byte ver = stream.readByte();
-
+            wsize = Vars.state.map.width * Vars.state.map.height;
             for(int i = 0; i < wsize; i++)
                 for(int idx = 0; idx < csize; idx++)
                     replacementMap[i][idx] = stream.readShort();
