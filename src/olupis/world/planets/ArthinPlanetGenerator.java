@@ -4,13 +4,21 @@ import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.struct.ObjectIntMap.*;
 import arc.util.*;
 import arc.util.noise.*;
+import mindustry.*;
 import mindustry.ai.*;
 import mindustry.content.*;
+import mindustry.core.*;
+import mindustry.core.World.*;
+import mindustry.ctype.*;
 import mindustry.game.*;
+import mindustry.io.*;
+import mindustry.maps.*;
 import mindustry.maps.generators.*;
 import mindustry.type.*;
+import mindustry.type.Weather.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
@@ -710,4 +718,76 @@ public class ArthinPlanetGenerator extends PlanetGenerator{
         }
     }
 
+    @Override
+    public void addWeather(Sector sector, Rules rules){
+        //prefer custom weather set by mapmakers
+        if(sector.preset != null){
+            rules.weather = sector.preset.generator.map.rules().weather.copy();
+            if(rules.weather.size >= 1) return;
+        }
+
+        //apply weather based on terrain
+        ObjectIntMap<Block> floorc = new ObjectIntMap<>();
+        ObjectSet<UnlockableContent> content = new ObjectSet<>();
+
+        for(Tile tile : world.tiles){
+            if(world.getDarkness(tile.x, tile.y) >= 3){
+                continue;
+            }
+
+            Liquid liquid = tile.floor().liquidDrop;
+            if(tile.floor().itemDrop != null) content.add(tile.floor().itemDrop);
+            if(tile.overlay().itemDrop != null) content.add(tile.overlay().itemDrop);
+            if(liquid != null) content.add(liquid);
+
+            if(!tile.block().isStatic()){
+                floorc.increment(tile.floor());
+                if(tile.overlay() != Blocks.air){
+                    floorc.increment(tile.overlay());
+                }
+            }
+        }
+
+        //sort counts in descending order
+        Seq<Entry<Block>> entries = floorc.entries().toArray();
+        entries.sort(e -> -e.value);
+        //remove all blocks occurring < 30 times - unimportant
+        entries.removeAll(e -> e.value < 30);
+
+        Block[] floors = new Block[entries.size];
+        for(int i = 0; i < entries.size; i++){
+            floors[i] = entries.get(i).key;
+        }
+
+        //bad contains() code, but will likely never be fixed
+        boolean hasSnow = floors.length > 0 && (floors[0].name.contains("ice") || floors[0].name.contains("snow") || floors[0].name.contains("frozen"));
+        boolean hasRain = floors.length > 0 && !hasSnow && content.contains(Liquids.water) && !floors[0].name.contains("sand");
+        boolean hasDesert = floors.length > 0 && !hasSnow && !hasRain && floors[0] == Blocks.sand;
+        boolean hasSpores = floors.length > 0 && (floors[0].name.contains("calyx") || floors[0].name.contains("moss") || floors[0].name.contains("tainted"));
+
+        //constant
+        WeatherEntry ar = new WeatherEntry(NyfalisAttributeWeather.acidRain);
+        ar.minDuration = (10 + Mathf.randomSeed(sector.id, 1, 10)) * Time.toMinutes;
+        ar.maxDuration = (20 + Mathf.randomSeed(sector.id, 2, 20)) * Time.toMinutes;
+        ar.minFrequency = (10 + Mathf.randomSeed(sector.id, 5, 16)) * Time.toMinutes;
+        ar.maxFrequency = (70 + Mathf.randomSeed(sector.id, 3, 21)) * Time.toMinutes;
+        rules.weather.add(ar);
+
+        if(hasSnow){
+            rules.weather.add(new WeatherEntry(Weathers.snow));
+        }
+
+        if(hasRain){
+            rules.weather.add(new WeatherEntry(Weathers.rain));
+            rules.weather.add(new WeatherEntry(Weathers.fog));
+        }
+
+        if(hasDesert){
+            rules.weather.add(new WeatherEntry(Weathers.sandstorm));
+        }
+
+        if(hasSpores){
+            rules.weather.add(new WeatherEntry(NyfalisAttributeWeather.mossMist));
+        }
+    }
 }

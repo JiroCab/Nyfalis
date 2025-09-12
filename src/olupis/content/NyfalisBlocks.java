@@ -2422,7 +2422,7 @@ public class NyfalisBlocks {
             size = 2;
             fogRadius = 16;
             lightRadius = 130f;
-            rotateSpeed = 20f;
+            rotateSpeed = 10f;
             glowMag = glowScl = 0f;
             discoveryTime = 60f * 40f;
             consumePower(240f/60f);
@@ -2443,7 +2443,7 @@ public class NyfalisBlocks {
             consumePower(400/60f);
             type = ladarHelper;
             glowColor = Color.valueOf("00000000");
-            requirements(Category.effect, with(Items.lead, 60, cobalt, 50, iron, 10));
+            requirements(Category.effect, with(Items.lead, 60, cobalt, 50, iron, 10, quartz, 30));
         }};
 
         //Healing turret that has ammo and water to heal better

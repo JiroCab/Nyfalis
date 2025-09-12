@@ -6,6 +6,7 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.type.*;
+import mindustry.type.Weather.*;
 import mindustry.world.*;
 
 import static olupis.content.NyfalisBlocks.*;
@@ -23,6 +24,7 @@ public class NyfalisSectors {
          dormantCell, forestOfHope
     ;
 
+     //region sec gen helpers
     public static final Seq<Block> //Used by the planet generators, Not in NyfalisBLock so it's not null
             mossGreen = Seq.with(mossStone, mossyStone, mossierStone, mossiestStone),
             mossGreenExtra = Seq.with(mossyDirt, mossyhardenMud, mossyVent),
@@ -45,7 +47,7 @@ public class NyfalisSectors {
             soils = Seq.with(Blocks.dirt, Blocks.mud, pumiceFloor),
             metals = Seq.with(Blocks.metalFloor, Blocks.metalFloorDamaged, rustyFloor, rustFloor),
             ruins = Seq.with(rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, ironRouter)
-    ;
+    ; //endregion
 
     public static final Seq<SectorPreset> nyfalisSectorRequirement = Seq.with(ironCurtain, glasierSea, conciditRuins);
 

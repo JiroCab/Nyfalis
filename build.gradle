@@ -50,7 +50,7 @@ dependencies{
     compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
 
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
-    compileOnly(toxopid.dependencies.mindustryCore)
+    //compileOnly(toxopid.dependencies.mindustryCore)
     compileOnly(toxopid.dependencies.arcCore)
 }
 
