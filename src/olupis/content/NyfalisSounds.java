@@ -73,8 +73,8 @@ public class NyfalisSounds {
         if (Core.settings.getBool("nyfalis-music-only")) return true;
         if (Core.settings.getBool("nyfalis-music") && state.isCampaign()){
             Planet sector = state.getSector().planet;
-            if(sector == arthin) return true;
-            if(sector == spelta) return true;
+            if(sector == seredris) return true;
+            if(sector == vorgin) return true;
             return sector == nyfalis;
         }
         if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun) return false;

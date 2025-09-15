@@ -15,6 +15,9 @@ import mindustry.world.meta.*;
 import olupis.world.*;
 import olupis.world.blocks.environment.*;
 
+import javax.swing.GroupLayout.*;
+import java.util.*;
+
 import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static olupis.content.NyfalisBlocks.*;
@@ -108,61 +111,15 @@ public class NyfalisAttributeWeather {
             baseSpeed = 0.03f;
         }};
 
-
-        //TODO: decide whether the trans of this can be changed playerside
-        cloudShadow = new ParticleWeather("cloud-shadow"){{
-                duration = 15f * Time.toMinutes;
-                noiseLayers = 3;
-                noiseLayerAlphaM = 0.4f;
-                noiseLayerSpeedM = 2f;
-                noiseLayerSclM = 0.6f;
-                baseSpeed = 0.035f;
-                color = noiseColor = Color.grays(0.1f);
-                noiseScale = 1100f;
-                noisePath = "clouds";
-                drawParticles = false;
-                drawNoise = true;
-                useWindVector = false;
-                xspeed = 1f;
-                yspeed = 0.01f;
-                opacityMultiplier = 0.47f;
-                maxAlpha = 0.8f;
-            }
-            @Override
-            public void drawOver(WeatherState state){
-                if(!Core.settings.getBool("nyfalis-cloud-shadows"))return;
-                float windx, windy;
-                if(useWindVector){
-                    float speed = baseSpeed * state.intensity;
-                    windx = state.windVector.x * speed;
-                    windy = state.windVector.y * speed;
-                }else{
-                    windx = this.xspeed;
-                    windy = this.yspeed;
-                }
-
-                if(drawNoise){
-                    if(noise == null){
-                        noise = Core.assets.get("sprites/" + noisePath + ".png", Texture.class);
-                        noise.setWrap(Texture.TextureWrap.repeat);
-                        noise.setFilter(Texture.TextureFilter.linear);
-                    }
-
-                    float sspeed = 1f, sscl = 1f, salpha = 1f, offset = 0f;
-                    Color col = Tmp.c1.set(noiseColor);
-                    for(int i = 0; i < noiseLayers; i++){
-                        drawNoise(noise, noiseColor, noiseScale * sscl, state.opacity * salpha * opacityMultiplier, sspeed * (useWindVector ? 1f : baseSpeed), state.intensity, windx, windy, offset);
-                        sspeed *= noiseLayerSpeedM;
-                        salpha *= noiseLayerAlphaM;
-                        sscl *= noiseLayerSclM;
-                        offset += 0.29f;
-                        col.mul(noiseLayerColorM);
-                    }
-                }
-
-                if(drawParticles){drawParticles(region, color, sizeMin, sizeMax, density, state.intensity, state.opacity, windx, windy, minAlpha, maxAlpha, sinSclMin, sinSclMax, sinMagMin, sinMagMax, randomParticleRotation);}
-            }
-        };
+//        //Just left here to be removed
+//        cloudShadow = new ParticleWeather("cloud-shadow"){
+//            @Override
+//            public void updateEffect(WeatherState state){
+//                super.updateEffect(state);
+//                for(WeatherEntry w : Vars.state.rules.weather) if(w.weather.type == cloudShadow) Vars.state.rules.weather.remove(w);
+//                for(WeatherState w : Groups.weather) if(w.weather.type == cloudShadow) Groups.weather.remove(w);
+//            }
+//        };
     }
 
     public static class AcidRainWeather extends RainWeather{

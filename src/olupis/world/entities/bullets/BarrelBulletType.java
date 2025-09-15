@@ -38,6 +38,10 @@ public class BarrelBulletType extends RollBulletType{
         if (!justBounced.containsKey(b.id)) justBounced.put(b.id, false);
         if (!currentHp.containsKey(b.id)) currentHp.put(b.id, max);
 
+        if(hitFires && Fires.has(b.tileX(), b.tileY() )){
+            b.remove();
+        }
+
         if (bounceOnWalls&&b.time >= bounceDelay && !justBounced.get(b.id)) {
             if(b.x <= -1  || b.y <= -1 || b.x > Vars.world.unitWidth() ||  b.y > Vars.world.unitHeight()) {
                 if (bounces.get(b.id) < maxBounces) {
@@ -46,7 +50,9 @@ public class BarrelBulletType extends RollBulletType{
                     justBounced.replace(b.id, true);
                 } else  b.remove();
             }else Units.nearbyBuildings(b.x,b.y,b.hitSize*3,bl -> {
-                if (bl.block.solid) {
+                if(hitFires && Fires.has(bl.tileOn().x, bl.tileOn().y)){
+                    b.remove();
+                }else if (bl.block.solid) {
                     if (bl.team == b.team) {
                         if (bounces.get(b.id) < maxBounces) {
                             b.vel.setAngle((b.angleTo(bl) + 180) + Mathf.random(-50,50));
@@ -71,10 +77,6 @@ public class BarrelBulletType extends RollBulletType{
                 }
             });
         } else justBounced.replace(b.id, false);
-
-        if(hitFires && Fires.has(b.tileX(), b.tileY() )){
-            b.remove();
-        }
 
         float[] tarSize ={b.hitSize};
         Teamc tar = findTarget(b, tarSize);

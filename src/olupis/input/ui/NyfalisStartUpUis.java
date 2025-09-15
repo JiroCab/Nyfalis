@@ -188,7 +188,6 @@ public class NyfalisStartUpUis {
 
     public static void loadHints(){
         ui.hints.hints.addAll(new HintsFragment.Hint() {
-            final Seq<UnitType> coreUnits = Seq.with(NyfalisUnits.gnat, NyfalisUnits.pedicia, NyfalisUnits.phorid) ;
             @Override
             public String name() {return "hint.nyflais-command";}
 
@@ -214,10 +213,10 @@ public class NyfalisStartUpUis {
             public String text() {return Core.bundle.get("hint.nyflais-end-of-content.text");}
 
             @Override
-            public boolean complete() {return state.isCampaign() && state.getSector().preset == NyfalisSectors.conservatorium && state.getSector().isCaptured();}
+            public boolean complete() {return state.isCampaign() &&  (state.getPlanet() == NyfalisPlanets.nyfalis || state.getPlanet() == NyfalisPlanets.vorgin);}
 
             @Override
-            public boolean show() {return state.isCampaign() && state.getSector().preset == NyfalisSectors.conservatorium;}
+            public boolean show() {return state.isCampaign() && (state.getPlanet() == NyfalisPlanets.nyfalis || state.getPlanet() == NyfalisPlanets.vorgin);}
 
             @Override
             public int order() {return 6;}

@@ -16,11 +16,11 @@ public class NyfalisSectors {
     public static final float sectorVersion = 1.2f;
 
     public static SectorPreset
-        /*Arthin / Seredris*/
+        /*Seredris*/
         sanctuary, dyingForest, terrarootCaves, muddyLakes, ironCurtain, glasierSea, abandonedPayloadTerminal, conciditRuins, coldFlats,
         /*Nyfalis*/
         conservatorium, forestOfSerenity,
-        /*Spelta / Vorgin*/
+        /*Vorgin*/
          dormantCell, forestOfHope
     ;
 
@@ -49,13 +49,10 @@ public class NyfalisSectors {
             ruins = Seq.with(rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, ironRouter)
     ; //endregion
 
-    public static final Seq<SectorPreset> nyfalisSectorRequirement = Seq.with(ironCurtain, glasierSea, conciditRuins);
-
-
     public static void LoadSectors(){
 
         //region Seredris
-        sanctuary = new SectorPreset("sanctuary", arthin, 2){{
+        sanctuary = new SectorPreset("sanctuary", seredris, 2){{
             alwaysUnlocked = overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchSchematics = false;
 
@@ -64,7 +61,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with());
         }};
 
-        terrarootCaves = new SectorPreset("terraroot-caves", arthin, 31){{
+        terrarootCaves = new SectorPreset("terraroot-caves", seredris, 31){{
             overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
@@ -73,7 +70,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 300, Items.lead, 200));
         }};
 
-        muddyLakes = new SectorPreset("muddy-lakes", arthin, 21){{
+        muddyLakes = new SectorPreset("muddy-lakes", seredris, 21){{
             addStartingItems  = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics = false;
 
@@ -82,7 +79,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 500, Items.lead, 500));
         }};
 
-        dyingForest = new SectorPreset("dying-forest", arthin, 10){{
+        dyingForest = new SectorPreset("dying-forest", seredris, 10){{
             overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics  = false;
 
@@ -91,7 +88,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(Items.copper, 75, NyfalisItemsLiquid.rustyIron,300, Items.lead, 300, NyfalisItemsLiquid.iron, 250));
         }};
 
-        glasierSea = new SectorPreset("glasier-sea", arthin, 7){{
+        glasierSea = new SectorPreset("glasier-sea", seredris, 7){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -99,7 +96,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1200, Items.lead, 1200, NyfalisItemsLiquid.iron, 200, Items.copper, 300,  Items.graphite, 200));
         }};
 
-        conciditRuins = new SectorPreset("concidit-ruins", arthin, 6){{
+        conciditRuins = new SectorPreset("concidit-ruins", seredris, 6){{
             addStartingItems = overrideLaunchDefaults = true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -107,7 +104,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 200, Items.lead, 200, NyfalisItemsLiquid.iron, 50));
         }};
 
-        coldFlats = new SectorPreset("cold-flats", arthin, 29){{
+        coldFlats = new SectorPreset("cold-flats", seredris, 29){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -116,7 +113,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 1000, Items.lead, 1000,Items.copper, 500, NyfalisItemsLiquid.iron, 550));
         }};
 
-        ironCurtain = new SectorPreset("iron-curtain", arthin, 11){{
+        ironCurtain = new SectorPreset("iron-curtain", seredris, 11){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -125,7 +122,7 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 100, Items.lead, 100));
         }};
 
-        abandonedPayloadTerminal = new SectorPreset("abandoned-payload-terminal", arthin, 0){{
+        abandonedPayloadTerminal = new SectorPreset("abandoned-payload-terminal", seredris, 0){{
             addStartingItems = overrideLaunchDefaults =  true;
             allowLaunchLoadout = allowLaunchSchematics =  false;
 
@@ -150,13 +147,13 @@ public class NyfalisSectors {
 
         //endregion
         //region Vorgin
-        dormantCell = new SectorPreset("dorment-cell", spelta, 1){{
+        dormantCell = new SectorPreset("dorment-cell", vorgin, 1){{
             /*Yes this map's lore may or may not be a reference to command and conquer*/
             difficulty = 4;
             rules = commonRules(captureWave);
         }};
 
-        forestOfHope = new SectorPreset("forest-of-hope", spelta,  4){{
+        forestOfHope = new SectorPreset("forest-of-hope", vorgin,  4){{
             difficulty = 2;
             rules = commonRules(captureWave);
         }};

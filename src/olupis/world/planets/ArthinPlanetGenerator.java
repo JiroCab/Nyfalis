@@ -29,7 +29,7 @@ import static mindustry.content.Blocks.*;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisSectors.*;
 
-public class ArthinPlanetGenerator extends PlanetGenerator{
+public class SeredrisPlanetGenerator extends PlanetGenerator{
     //alternate, less direct generation (wip)
     public static boolean alt = false;
 

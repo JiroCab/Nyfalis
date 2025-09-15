@@ -8,7 +8,7 @@ import olupis.world.blocks.defence.ItemUnitTurret.*;
 import olupis.world.blocks.distribution.*;
 import olupis.world.blocks.distribution.DeliveryTerminal.*;
 
-public class NyfalisNetRedirectPaylodPacket extends NyfalisSyncOtherSettingsPacket{
+public class NyfalisNetRedirectPaylodPacket extends Packet{
     private byte[] DATA;
     public DeliveryTerminalBuild build;
 

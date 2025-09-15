@@ -13,7 +13,7 @@ import mindustry.world.meta.*;
 import olupis.world.planets.*;
 
 public class NyfalisPlanets {
-    public static Planet nyfalis, arthin, spelta, system;
+    public static Planet nyfalis, seredris, vorgin, system;
     private static final Seq<Sector> systemSector = new Seq<>();
     public static final Seq<Planet> planetList = new Seq<>();
 
@@ -65,7 +65,7 @@ public class NyfalisPlanets {
         }};
 
         //1st moon
-        arthin = new Planet("arthin", NyfalisPlanets.nyfalis, 1.1f, 1){{
+        seredris = new Planet("seredris", NyfalisPlanets.nyfalis, 1.1f, 1){{
             accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = allowWaveSimulation = true;
 
             startSector = 2;
@@ -76,7 +76,7 @@ public class NyfalisPlanets {
             setDefRules(this);
             systemSector.add(sectors);
             defaultCore = NyfalisBlocks.coreRemnant;
-            generator = new ArthinPlanetGenerator();
+            generator = new SeredrisPlanetGenerator();
             defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             iconColor = NyfalisItemsLiquid.condensedBiomatter.color;
             meshLoader = () -> new HexMesh(this, 5);
@@ -87,7 +87,7 @@ public class NyfalisPlanets {
             );
         }};
 
-        spelta = new Planet("spelta", NyfalisPlanets.nyfalis, 0.9f, 2){{
+        vorgin = new Planet("vorgin", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
             clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= allowWaveSimulation = allowCampaignRules = true;
 
@@ -96,7 +96,7 @@ public class NyfalisPlanets {
             icon = "effect";
             setDefRules(this);
             systemSector.add(sectors);
-            generator = new SpeltaPlanetGenerator();
+            generator = new VorginPlanetGenerator();
             defaultCore = NyfalisBlocks.coreRemnant;
             iconColor = NyfalisBlocks.pinkTree.mapColor;
             defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
@@ -138,21 +138,21 @@ public class NyfalisPlanets {
          systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
          finalSectors.add(systemSector);
         system.sectors.set(finalSectors);
-        planetList.add(nyfalis, arthin, spelta, system);
+        planetList.add(nyfalis, seredris, vorgin, system);
     }
 
     public static boolean isNyfalianPlanet (Planet planet){
         if (planet == null) return false;
-        if (planet == arthin) return true;
-        if (planet == spelta) return true;
+        if (planet == seredris) return true;
+        if (planet == vorgin) return true;
         return planet == nyfalis;
     }
 
 
     public static void unlockPlanets(){
-        if(nyfalis.alwaysUnlocked && spelta.alwaysUnlocked) return;
+        if(nyfalis.alwaysUnlocked && vorgin.alwaysUnlocked) return;
         nyfalisCheck();
-        speltaCheck();
+        vorginCheck();
     }
 
     public static void nyfalisCheck(){
@@ -163,11 +163,11 @@ public class NyfalisPlanets {
         }
     }
 
-    public static void speltaCheck(){
+    public static void vorginCheck(){
         if(NyfalisSectors.forestOfHope.unlocked()){
-            Log.info("Spelta Check passed!");
-            spelta.quietUnlock();
-            spelta.alwaysUnlocked = spelta.visible = true;
+            Log.info("Vorgin Check passed!");
+            vorgin.quietUnlock();
+            vorgin.alwaysUnlocked = vorgin.visible = true;
         }
     }
 }

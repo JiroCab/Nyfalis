@@ -14,11 +14,12 @@ import static olupis.content.NyfalisSectors.*;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisTechTree {
+    TechTree.TechNode[] parentSector = new TechTree.TechNode[3];
 
     public static void load(){
         system.techTree = nodeRoot("olupis", coreRemnant, () -> {
             node(system, () -> {
-                node(arthin, () ->{
+                node(seredris, () ->{
                     node(sanctuary, () -> {
                         node(terrarootCaves,
                                 Seq.with(new Objectives.SectorComplete(sanctuary)),
@@ -63,7 +64,7 @@ public class NyfalisTechTree {
                         });
                     });
                 });
-                node(spelta, Seq.with(
+                node(vorgin, Seq.with(
                         new Objectives.SectorComplete(sanctuary), new  Objectives.Research(groundConstruct)
                 ), () ->{
                     node(forestOfHope, Seq.with(
@@ -544,6 +545,6 @@ public class NyfalisTechTree {
 
         });
 
-        arthin.techTree = nyfalis.techTree = spelta.techTree = system.techTree;
+        seredris.techTree = nyfalis.techTree = vorgin.techTree = system.techTree;
     }
 }

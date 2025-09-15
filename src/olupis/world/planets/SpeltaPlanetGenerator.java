@@ -23,7 +23,7 @@ import olupis.content.*;
 
 import static mindustry.Vars.*;
 
-public class SpeltaPlanetGenerator extends PlanetGenerator{
+public class VorginPlanetGenerator extends PlanetGenerator{
     //alternate, less direct generation (wip)
     public static boolean alt = false;
 

@@ -61,6 +61,7 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
             table.checkPref("nyfalis-cloud-shadows", true);
+            table.checkPref("nyfalis-cloud-shadows-other", false);
             table.checkPref("nyfalis-qolTreeTrans", true);
             table.sliderPref("nyfalis-pdl-status-trans",15, 0, 100, 1, i -> i == 0 ? "@off" : i + "%");
             table.sliderPref("nyfalis-pdl-status-range",25, 0, 51, 1, i -> i == 0 ? "@off" : i == 51 ? "@yes" : i + " " + Core.bundle.get("unit.blocks"));

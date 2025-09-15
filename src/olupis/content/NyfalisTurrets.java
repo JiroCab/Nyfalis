@@ -134,6 +134,8 @@ public class NyfalisTurrets {
             health = 350;
             inaccuracy = 5f;
             rotateSpeed = 15f;
+            lightRadius = 150;
+            lightColor = floodLightColor;
             researchCostMultiplier = 0.05f;
             coolantMultiplier = 3f;
             drawer = new DrawTurret("iron-"){{
@@ -404,75 +406,6 @@ public class NyfalisTurrets {
             }
         };
 
-        if(Core.settings.getBool("nyfalis-bread-gun")){
-            superextendocutboi = new NyfalisPowerTurret("superextendocutboi"){{
-                reload = 300;
-                recoilTime = 30;
-                shootY = 0;
-                inaccuracy = 0.5f;
-                rotateSpeed = 3f;
-                minWarmup = 0.9f;
-                smokeEffect = shootEffect =  Fx.none;
-
-                shootType = new LaserBulletType(){{
-                    lifetime = 4f; // op cuz funni
-                    length = 800;
-                    width = 0;
-                    damage = 100000;
-                    trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
-                }};
-                drawer = new DrawTurret("iron-"){{
-                    targetAir = false;
-                    emitLight = true;
-
-                    size = 2;
-                    recoil = 0;
-                    armor = 2f;
-                    range = 800f;
-                    health = 3000;
-                    fogRadius = 13;
-                    lightRadius = 37;
-                    shootCone = 180f;
-                    liquidCapacity = 5f;
-                    coolantMultiplier = 3f;
-
-                    parts.addAll(
-                            new RegionPart("-blade"){{
-                                layer = Layer.legUnit + 0.1f;
-                                mirror = true;
-                                under = true;
-                                progress = PartProgress.warmup;
-                                y = 5;
-                                moveY = 480;
-                                moveRot = -45;
-                                moves.add(new PartMove(PartProgress.recoil, 0, 0, 45f));
-                            }}
-                    );
-                    for(int i = 0; i < 60; i++){
-                        int finalI = i;
-                        boolean isOdd = finalI % 2 != 0;
-                        parts.add(new RegionPart("-truss"){{
-                            progress = PartProgress.warmup;
-                            mirror = true;
-                            under = false;
-                            y = 5;
-                            x = 4;
-                            moveY = 8f * finalI;
-                            moveRot = isOdd ? -45 : 45;
-                            layer = Layer.legUnit + 0.2f;
-                        }});
-                    }
-                }};
-                lightColor = turretLightColor;
-                outlineColor = nyfalisBlockOutlineColour;
-                shootSound = NyfalisSounds.snip;
-                coolant = consume(new ConsumeLubricant(15f / 60f));
-                consumePower(20f / 60f);
-                researchCost = with(iron, 200, copper, 150);
-                requirements(Category.turret, with(iron, 60, copper, 50));
-
-            }};
-        }
 
         shredder = new NyfalisItemTurret("shredder"){{
             targetAir = false;
@@ -1838,7 +1771,7 @@ public class NyfalisTurrets {
                 parts.addAll(
                 new UnstableRegionPart(""),
 
-                    new UnstableRegionPart("-crest" +  "-l",  "-bread", b -> cascadeAlt){{
+                    new UnstableRegionPart("-crest" +  "-l",   b -> cascadeAlt){{
                         mirror = false;
                         moveRot = 25f;
                         moveX = -6;
@@ -1850,7 +1783,7 @@ public class NyfalisTurrets {
                         heatColor = cascadeColor;
                     }},
 
-                    new UnstableRegionPart("-blade" + "-l", "-bread", b -> cascadeAlt){{
+                    new UnstableRegionPart("-blade" + "-l",  b -> cascadeAlt){{
                         outlineLayerOffset = -2.99f;
                         layerOffset = 2;
                         mirror = false;
@@ -1861,7 +1794,7 @@ public class NyfalisTurrets {
 
                         heatColor = cascadeColor;
                     }},
-                    new UnstableRegionPart("-crest" + "-l", "-bread", b -> cascadeAlt){{
+                    new UnstableRegionPart("-crest" + "-l",  b -> cascadeAlt){{
                         mirror = false;
                         moveRot = -175f;
                         moveX = 2;
@@ -1872,7 +1805,7 @@ public class NyfalisTurrets {
                         under = true;
                         heatColor = cascadeColor;
                     }},
-                    new UnstableRegionPart("-crest" +  "-r", "-bread", b -> cascadeAlt){{
+                    new UnstableRegionPart("-crest" +  "-r",  b -> cascadeAlt){{
                         mirror = false;
                         moveRot = -25f;
                         moveX = 6;
@@ -1883,7 +1816,7 @@ public class NyfalisTurrets {
 
                         heatColor = cascadeColor;
                     }},
-                    new UnstableRegionPart("-blade"+ "-r", "-bread", b -> cascadeAlt){{
+                    new UnstableRegionPart("-blade"+ "-r",  b -> cascadeAlt){{
                         outlineLayerOffset = -2.99f;
                         layerOffset = 2;
                         mirror = false;
@@ -1893,7 +1826,7 @@ public class NyfalisTurrets {
                         under = true;
                         heatColor = cascadeColor;
                     }},
-                    new UnstableRegionPart("-crest"  +  "-r", "-bread", b -> cascadeAlt){{
+                    new UnstableRegionPart("-crest"  +  "-r",  b -> cascadeAlt){{
                             mirror = false;
                             moveRot = 175f;
                             moveY = 2f;
@@ -2037,28 +1970,7 @@ public class NyfalisTurrets {
         //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
         //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
     }
-
-    public static void dynamicTurretContent(){
-
-        cascade.consumePower(17 * (cascadeAlt ? 4f : 1f));
-        cascade.range = (55f * 8f) * (cascadeAlt ? 2f : 1f);
-        cascade.explosionRadius = 25 * (cascadeAlt ? 4f : 1f);
-        cascade.explosionDamage = 1000 * (cascadeAlt ? 4f : 1f);
-        cascade.limitRange(-1f);
-        if(!headless)dynamicTurretContentClient();
-    }
-
-    public static void dynamicTurretContentClient(){
-        String cascadeName = cascadeAlt ? "PH-cascade" : "cascade";
-        cascade.region = Core.atlas.find("olupis-" + cascadeName, "olupis-cascade");
-        cascade.uiIcon = cascade.fullIcon = Core.atlas.find("olupis-" + cascadeName + "-ui");
-
-        cascade.localizedName = Core.bundle.get(cascade.getContentType() + ".olupis-"  + cascadeName + ".name");
-        cascade.details = Core.bundle.getOrNull(cascade.getContentType() + ".olupis-" + cascadeName + ".details");
-
-        cascadeColor = updateColor();
-        cascadeEffect = updateTrail();
-    }
+    
 
 
     public static Color updateColor(){

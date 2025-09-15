@@ -1,6 +1,8 @@
 package olupis;
 
 import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.scene.style.*;
 import arc.struct.*;
 import arc.util.*;
@@ -14,16 +16,13 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.mod.*;
 import mindustry.type.*;
-import mindustry.type.Weather.*;
 import mindustry.world.*;
-import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.input.*;
 import olupis.input.ui.*;
 import olupis.world.*;
 import olupis.world.ai.*;
 import olupis.world.blocks.unit.*;
-import olupis.world.entities.packets.*;
 import olupis.world.planets.*;
 
 import java.util.*;
@@ -37,7 +36,8 @@ public class NyfalisMain extends Mod{
     public static LimitedLauncherSelect sectorSelect;
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
-    public static boolean shownWarning = false, incompatible = false;
+    public static boolean shownWarning = false, incompatible = false, nyfalianPlanet = false;
+    public @Nullable Texture cloudNoise;
 
     @Override
     public void loadContent(){
@@ -77,21 +77,18 @@ public class NyfalisMain extends Mod{
         //Load sounds once they're added to the file tree
         Events.on(FileTreeInitEvent.class, e -> Core.app.post(NyfalisSounds::LoadSounds));
 
-        Events.on(EventType.WorldLoadBeginEvent.class, I -> {
-            if(net.server() || !net.active()){
-                NyfalisTurrets.cascadeAlt = Core.settings.getBool("nyfalis-bread-gun");
-                NyfalisTurrets.dynamicTurretContent();
-
-                NyfalisSyncOtherSettingsPacket packet = new NyfalisSyncOtherSettingsPacket();
-                packet.cascadeBread = NyfalisTurrets.cascadeAlt;
-                Vars.net.send(packet, true);
-            }if(net.client())Call.serverPacketReliable("olupis-getsettings", "");
-
-        });
 
         Events.on(EventType.WorldLoadEvent.class, l ->{
             /*Delayed since custom games, for some reason needs it*/
             Time.run(0.5f * Time.toSeconds, NyfalisMain::sandBoxCheck);
+            nyfalianPlanet = false;
+            if(isNyfalianPlanet(state.getPlanet())) nyfalianPlanet = true;
+            else for(Block c : NyfalisBlocks.nyfalisCores){
+                if(indexer.isBlockPresent(c)){
+                    nyfalianPlanet = true;
+                    break;
+                }
+            }
 
             //Clean up of the old system of banning stuff
             NyfalisPlanets.unlockPlanets();
@@ -142,9 +139,9 @@ public class NyfalisMain extends Mod{
                 setDefRules(planet);
             }
 
-            arthin.uiIcon = bush.fullIcon;
+            seredris.uiIcon = bush.fullIcon;
             nyfalis.uiIcon = redSandBoulder.fullIcon;
-            spelta.uiIcon = pinkTree.fullIcon;
+            vorgin.uiIcon = pinkTree.fullIcon;
             system.uiIcon = Icon.planet.getRegion();
             if(Core.settings.getBool("nyfalis-debug")){
                 Log.debug("Nfyalis Debug is on! Nya~");
@@ -171,8 +168,34 @@ public class NyfalisMain extends Mod{
             }
         });
 
-        Events.run(Trigger.update, () -> {
-            NyfalisSettingsDialog.updateSettings();
+        Events.run(Trigger.update, () -> NyfalisSettingsDialog.updateSettings());
+
+        Events.run(Trigger.draw, () -> {
+            if(nyfalianPlanet){
+                if(!Core.settings.getBool("nyfalis-cloud-shadows")) return;
+            } else {
+                if(!Core.settings.getBool("nyfalis-cloud-shadows-others")) return;
+            }
+
+
+            if(cloudNoise == null){
+                cloudNoise = Core.assets.get("sprites/clouds.png", Texture.class);
+                cloudNoise.setWrap(Texture.TextureWrap.repeat);
+                cloudNoise.setFilter(Texture.TextureFilter.linear);
+            }
+
+            final float[] sspeed = {1f}, sscl = { 1f }, salpha = { 1f }, offset = { 0f };
+            Color col = Tmp.c1.set(Color.grays(0.1f));
+            Draw.z(Layer.weather - 2f);
+            for(int i = 0; i < 3; i++){
+                Weather.drawNoise(cloudNoise, Color.grays(0.1f), 1100f * sscl[0], salpha[0] * 0.27f, sspeed[0] *  0.035f, 1, 1.1f, 0.5f, offset[0]);
+                sspeed[0] *= 2;
+                salpha[0] *= 0.4f;
+                sscl[0] *= 2;
+                offset[0] += 0.29f;
+                col.mul(1);
+            }
+            Draw.reset();
         });
     }
 
@@ -220,8 +243,21 @@ public class NyfalisMain extends Mod{
     }
 
 
-    public static void  globalLoadEvent(){
+    public static void globalLoadEvent(){
         NyfalisUnits.GenerateWeapons();
+
+        for(SectorPreset sector : content.sectors()){
+            if(sector.planet == nyfalis){
+                sector.databaseTabs.remove(vorgin);
+                sector.databaseTabs.remove(seredris);
+            }else if(sector.planet == vorgin){
+                sector.databaseTabs.remove(nyfalis);
+                sector.databaseTabs.remove(seredris);
+            }else if(sector.planet == seredris){
+                sector.databaseTabs.remove(nyfalis);
+                sector.databaseTabs.remove(vorgin);
+            }
+        }
 
         try{
             asyncCore.processes.add(new EnvUpdater());
@@ -280,11 +316,6 @@ public class NyfalisMain extends Mod{
         if(state.isCampaign()){ Planet sector = state.getSector().planet;
             if(NyfalisPlanets.isNyfalianPlanet(sector)){
                 changed = true;
-                if(!state.rules.weather.contains(w -> w.weather ==  NyfalisAttributeWeather.cloudShadow)){
-                    state.rules.weather.add(new Weather.WeatherEntry(NyfalisAttributeWeather.cloudShadow));
-                    Log.info("(Nyfalis) Cloud shadows weather added!");
-
-                }
             }
         }
         if(state.rules.env == defaultEnv && state.getPlanet() == Planets.sun){
