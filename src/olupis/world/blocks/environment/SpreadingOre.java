@@ -75,7 +75,7 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
 
                     if(parent.canSpread(near)){
                         if(replacementMap[near.array()][arrayID] <= -1)
-                            replacementMap[near.array()][arrayID] = near.overlayID();
+                            replacementMap[near.array()][arrayID] = index(near.overlay());
                         queue[parent.id][arrayID].add(near.pos());
 
                         if(parent.spreadEffect != null){

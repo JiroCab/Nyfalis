@@ -199,7 +199,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
                     if(canSpread(near)){
                         if(replacementMap[near.array()][arrayID] <= -1)
-                            replacementMap[near.array()][arrayID] = near.overlayID();
+                            replacementMap[near.array()][arrayID] = index(near.overlay());
                         queue[id][arrayID].add(near.pos());
 
                         if(spreadEffect != null){
@@ -223,7 +223,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         if(block != null){
             replaces = true;
 
-            id = tile.floorID();
+            id = index(tile.floor());
             if(replacementMap[array][0] == -1)
                 replacementMap[array][0] = id;
             queue[block.id][0].add(tile.pos());
@@ -233,7 +233,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         if(block != null){
             replaces = true;
 
-            id = tile.overlayID();
+            id = index(tile.overlay());
             if(replacementMap[array][1] == -1)
                 replacementMap[array][1] = id;
             queue[block.id][1].add(tile.pos());
@@ -243,7 +243,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         if(block != null){
             replaces = true;
 
-            id = tile.blockID();
+            id = index(tile.block());
             if(replacementMap[array][2] <= -1)
                 replacementMap[array][2] = id;
             queue[block.id][2].add(tile.pos());

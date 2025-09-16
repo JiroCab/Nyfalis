@@ -5,6 +5,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.async.*;
+import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.io.*;
@@ -18,6 +19,7 @@ import static mindustry.Vars.*;
 /** Yes, this class has race conditions and possibly memory leaks, cry about it */
 public class EnvUpdater implements AsyncProcess{
     public static ObjectMap<String, ObjectSet<Block>> blacklists = new ObjectMap<>();
+    public static Seq<Block> env = new Seq<>();
     public static byte[][] data = new byte[][]{};
 
     // a queue for stuff that has to be done on the main thread
@@ -72,6 +74,10 @@ public class EnvUpdater implements AsyncProcess{
         for(int i = 0; i < wsize; i++){
             Arrays.fill(replacementMap[i], Short.MIN_VALUE);
             lookup = world.tiles.geti(i);
+
+            env.addUnique(lookup.floor());
+            env.addUnique(lookup.overlay());
+            env.addUnique(lookup.block());
 
             // cleanup & setup
             if(lookup.floor() instanceof UpdatingEnvironment e){
@@ -180,6 +186,16 @@ public class EnvUpdater implements AsyncProcess{
         return props[id] < limit + (scaling * space);
     }
 
+    public static short index(Block key){
+        short idx = (short) env.indexOf(key);
+        if(idx < 0){
+            env.add(key);
+            idx = (short) env.size;
+        }
+
+        return idx;
+    }
+
     /** Gets an infested tile within the specified radius, if one exists <br/>All variables are in world units */
     public static Tile getInfested(float x, float y, float radius){
         return getInfested(x, y, radius, 0f);
@@ -235,12 +251,20 @@ public class EnvUpdater implements AsyncProcess{
     public static class EnvUpdaterIO implements SaveFileReader.CustomChunk{
         @Override
         public void write(DataOutput stream) throws IOException{
-            stream.writeByte(1);
+            stream.writeByte(2);
 
             stream.writeBoolean(ready);
             if(ready){
                 stream.writeInt(wsize);
                 stream.writeByte(csize);
+
+                StringBuilder map = new StringBuilder();
+                for(int i = 0; i < env.size; i++)
+                    map.append(env.get(i).name).append("=").append(i).append(":");
+
+                map.setLength(map.length() - 1);
+                stream.writeUTF(map.toString());
+
                 for(int i = 0; i < wsize; i++)
                     for(int idx = 0; idx < csize; idx++)
                         stream.writeShort(replacementMap[i][idx]);
@@ -254,10 +278,40 @@ public class EnvUpdater implements AsyncProcess{
             if(stream.readBoolean()){
                 int readw = stream.readInt();
                 byte readc = stream.readByte();
-                for(int i = 0; i < readw; i++)
-                    for(int idx = 0; idx < readc; idx++)
-                        replacementMap[i][idx] = stream.readShort();
+
+                // old saves remain readable
+                if(version == 1){
+                    for(int i = 0; i < readw; i++)
+                        for(int idx = 0; idx < readc; idx++)
+                            replacementMap[i][idx] = stream.readShort();
+                }
+
+                if(version == 2){
+                    String[] entries = stream.readUTF().split(":");
+                    ObjectMap<Short, Block> map = new ObjectMap<>();
+
+                    for(int i = 0; i < entries.length; i++){
+                        String[] entry = entries[i].split("=");
+                        if(entry.length == 2){
+                            Block b = content.block(entry[0]);
+                            if(b == null)
+                                b = Blocks.air;
+
+                            short id = (short) Strings.parseInt(entry[1], -1);
+                            map.put(id, b);
+                        }
+                    }
+
+                    for(int i = 0; i < readw; i++)
+                        for(int idx = 0; idx < readc; idx++)
+                            replacementMap[i][idx] = getID(stream.readShort(), map);
+                }
             }
+        }
+
+        public short getID(short idx, ObjectMap<Short, Block> map){
+            Block b = map.get(idx, Blocks.air);
+            return b == Blocks.air ? -1 : b.id;
         }
 
         @Override
