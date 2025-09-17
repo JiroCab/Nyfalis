@@ -3,6 +3,7 @@ package olupis;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.scene.style.*;
 import arc.struct.*;
 import arc.util.*;
@@ -16,6 +17,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.mod.*;
 import mindustry.type.*;
+import mindustry.type.weather.*;
 import mindustry.world.*;
 import olupis.content.*;
 import olupis.input.*;
@@ -38,6 +40,7 @@ public class NyfalisMain extends Mod{
     public NyfalisSettingsDialog nyfalisSettings;
     public static boolean shownWarning = false, incompatible = false, nyfalianPlanet = false;
     public @Nullable Texture cloudNoise;
+    public static float  floodPlaneLevel = 0.30f;
 
     @Override
     public void loadContent(){
@@ -89,6 +92,7 @@ public class NyfalisMain extends Mod{
                     break;
                 }
             }
+            floodPlaneLevel = 0.30f;
 
             //Clean up of the old system of banning stuff
             NyfalisPlanets.unlockPlanets();
@@ -168,7 +172,22 @@ public class NyfalisMain extends Mod{
             }
         });
 
-        Events.run(Trigger.update, () -> NyfalisSettingsDialog.updateSettings());
+        Events.run(EventType.Trigger.update, () -> {
+            NyfalisSettingsDialog.updateSettings();
+
+            if(state.isPaused() || !renderer.animateWater )  return;
+            if(Groups.weather.contains(w -> w.weather instanceof RainWeather)){
+                int cnt = 0;
+                float avrg = 0f;
+
+                for(WeatherState w : Groups.weather){
+                    if(!(w.weather instanceof RainWeather)) continue;
+                    cnt++;
+                    avrg += w.intensity;
+                }
+                floodPlaneLevel = Mathf.lerpDelta(floodPlaneLevel, Math.max(0.30f, avrg/cnt), 0.0025f);
+            }
+        });
 
         Events.run(Trigger.draw, () -> {
             if(nyfalianPlanet){

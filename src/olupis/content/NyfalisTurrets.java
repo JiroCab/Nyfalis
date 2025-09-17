@@ -30,7 +30,6 @@ import olupis.world.consumer.*;
 import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
 
-import static mindustry.Vars.headless;
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
 import static olupis.content.NyfalisBlocks.*;
@@ -407,7 +406,7 @@ public class NyfalisTurrets {
         };
 
 
-        shredder = new NyfalisItemTurret("shredder"){{
+        shredder = new LineOfSightItemTurret("shredder"){{
             targetAir = false;
             emitLight = angleCheck = true;
 
@@ -1158,7 +1157,7 @@ public class NyfalisTurrets {
             }
         };
 
-        porcupine = new NyfalisLiquidTurret("porcupine"){{
+        porcupine = new LineOfSightLiquidTurret("porcupine"){{
             targetAir = displayAmmoMultiplier = false;
             emitLight = angleCheck = true;
             loopSound = Sounds.none;

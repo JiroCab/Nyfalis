@@ -72,6 +72,7 @@ public class NyfalisBlocks {
         redSand, riverSand, lumaGrass, yellowGrass, pinkGrass, mossierDirt, mossyDirt,  hardenMud, mossyhardenMud, muddyGrass,
         frozenGrass, frozenDirt, frozenMud, crackedIce, redSandSnow, snowySand, frozenTar, frozenSlop,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
+        mudFloodPlane, stoneFloodPlane, mossyFloodPlane, sandyFloodPlane,
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, dirtVent,
         redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
         beachSandFloor, gypsumFloor, pumiceFloor, galenaFloor, rustyFloor, rustFloor, forestGrass,
@@ -202,6 +203,7 @@ public class NyfalisBlocks {
 
         //endregion
         // region Floors
+        //todo: maybe reaarange these to be grouped by type
         beachSandFloor = new Floor("beach-sand-floor") {{
             itemDrop = Items.sand;
             playerUnmineable = true;
@@ -409,6 +411,36 @@ public class NyfalisBlocks {
             effectColor = Color.white;
             parent = blendGroup = dirt;
             attributes.set(Attribute.steam, 1f);
+        }};
+
+        mudFloodPlane = new Floor("mud-plane") {{
+            speedMultiplier = 0.7f;
+            variants = 3;
+            statusDuration = 15f;
+            status = StatusEffects.muddy;
+            attributes.set(Attribute.water, 1f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
+        }};
+
+        stoneFloodPlane = new Floor("stone-plane") {{
+            variants = 3;
+            attributes.set(Attribute.water, 0.25f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
+        }};
+
+        mossyFloodPlane = new Floor("mossy-plane") {{
+            variants = 3;
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.5f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
+        }};
+
+        sandyFloodPlane= new Floor("river-sand-plane") {{
+            variants = 3;
+            itemDrop = Items.sand;
+            attributes.set(Attribute.oil, 1.2f);
+            attributes.set(Attribute.water, 25f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
         }};
 
         //endregion
