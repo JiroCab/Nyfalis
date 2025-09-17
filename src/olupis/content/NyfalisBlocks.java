@@ -203,37 +203,49 @@ public class NyfalisBlocks {
 
         //endregion
         // region Floors
-        //todo: maybe reaarange these to be grouped by type
+        // region > watered sands
+        snowySand = new Floor("snowy-sand") {{
+            attributes.set(Attribute.water, 0.1f);
+            variants = 3;
+        }};
+
         beachSandFloor = new Floor("beach-sand-floor") {{
             itemDrop = Items.sand;
             playerUnmineable = true;
             variants = 4;
             attributes.set(Attribute.oil, 0.75f);
         }};
-        gypsumFloor = new Floor("gypsum-floor") {{
-            variants = 4;
+
+        riverSand = new Floor("river-sand") {{
+            itemDrop = Items.sand;
+            attributes.set(Attribute.oil, 1.2f);
         }};
-        galenaFloor = new Floor("galena-floor") {{
-            variants = 4;
+
+        sandyFloodPlane= new Floor("river-sand-plane") {{
+            variants = 3;
+            itemDrop = Items.sand;
+            attributes.set(Attribute.oil, 1.2f);
+            attributes.set(Attribute.water, 25f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
         }};
-        pumiceFloor = new Floor("pumice-floor") {{
-            variants = 4;
+        // endregion
+        // region > red sand
+        redSandWater = new Floor("red-sand-water") {{
+            isLiquid = supportsOverlay = true;
+
+            variants = 0;
+            albedo = 0.9f;
+            statusDuration = 50f;
+            speedMultiplier = 0.8f;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
         }};
-        rustyFloor = new Floor("rusty-floor") {{
-            variants = 4;
-            blendGroup = metalFloor;
-        }};
-        rustFloor = new Floor("rust-floor") {{
-            variants = 4;
-        }};
+        
         redSand = new Floor("red-sand-floor") {{
             itemDrop = Items.sand;
             playerUnmineable = true;
             attributes.set(Attribute.oil, 1.5f);
-        }};
-        riverSand = new Floor("river-sand") {{
-            itemDrop = Items.sand;
-            attributes.set(Attribute.oil, 1.2f);
         }};
 
         redSandSnow = new Floor("red-sand-snow") {{
@@ -242,16 +254,92 @@ public class NyfalisBlocks {
             attributes.set(Attribute.oil, 1.5f);
         }};
 
+        redSandVent = new SteamVent("red-sand-vent") {{
+            effectColor = Color.white;
+            parent = blendGroup = redSand;
+            attributes.set(Attribute.steam, 1f);
+        }};
+        //endregion
+        //region > ore stones
+        gypsumFloor = new Floor("gypsum-floor") {{
+            variants = 4;
+        }};
+
+        galenaFloor = new Floor("galena-floor") {{
+            variants = 4;
+        }};
+
+        pumiceFloor = new Floor("pumice-floor") {{
+            variants = 4;
+        }};
+        //endregion
+        // region > metal & rusts
+        rustyFloor = new Floor("rusty-floor") {{
+            variants = 4;
+            blendGroup = metalFloor;
+        }};
+
+        rustFloor = new Floor("rust-floor") {{
+            variants = 4;
+        }};
+        //endregion
+        //region > grasses
+        grassyVent = new SteamVent("grassy-vent") {{
+            effectColor = Color.white;
+            parent = blendGroup = grass;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
+        forestGrass = new Floor("forest-grass") {{
+            attributes.set(Attribute.water, 0.1f);
+            variants = 3;
+        }};
+
+        lumaGrassWater = new Floor("luma-grass-water") {{
+            isLiquid = supportsOverlay = true;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
+            statusDuration = 50f;
+            speedMultiplier = 0.8f;
+            cacheLayer = CacheLayer.water;
+            variants = 0;
+            albedo = 0.9f;
+        }};
+
         lumaGrass = new Floor("luma-grass") {{
             variants = 3;
             attributes.set(bio, 0.08f);
             attributes.set(Attribute.water, 0.15f);
         }};
 
+        yellowMossyWater = new Floor("yellow-mossy-water") {{
+            isLiquid = supportsOverlay = true;
+
+            variants = 0;
+            albedo = 0.9f;
+            statusDuration = 50f;
+            speedMultiplier = 0.8f;
+            status = StatusEffects.wet;
+            liquidDrop = Liquids.water;
+            cacheLayer = CacheLayer.water;
+        }};
+
         yellowGrass = new Floor("yellow-grass") {{
             variants = 4;
             attributes.set(bio, 0.08f);
             attributes.set(Attribute.water, 0.15f);
+        }};
+
+        pinkGrassWater = new Floor("pink-grass-water") {{
+            isLiquid = supportsOverlay = true;
+
+            statusDuration = 50f;
+            speedMultiplier = 0.8f;
+            variants = 0;
+            albedo = 0.9f;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
         }};
 
         pinkGrass = new Floor("pink-grass") {{
@@ -265,7 +353,8 @@ public class NyfalisBlocks {
             attributes.set(bio, 0.08f);
             wall = shrubs;
         }};
-
+        //endregion
+        //region > cinder bloom
         cinderBloomy = new Floor("cinder-bloomy") {{
             variants = 3;
             attributes.set(bio, 0.03f);
@@ -288,204 +377,8 @@ public class NyfalisBlocks {
             attributes.set(bio, 0.06f);
             attributes.set(Attribute.water, 0.25f);
         }};
-
-        mossyStone = new RotatingFloor("mossy-stone") {{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-
-        mossierStone = new RotatingFloor("mossier-stone") {{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-
-        mossiestStone = new RotatingFloor("mossiest-stone") {{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-
-        mossStone = new Floor("moss-stone") {{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-
-        mossierDirt = new RotatingFloor("mossier-dirt") {{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-        mossyDirt = new RotatingFloor("mossy-dirt") {{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-
-        frozenDirt = new Floor("frozen-dirt") {{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.3f);
-        }};
-
-        frozenMud = new Floor("frozen-mud") {{
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.3f);
-        }};
-
-        hardenMud = new Floor("harden-mud") {{
-            attributes.set(Attribute.water, 0.1f);
-            variants = 3;
-        }};
-
-        frozenTar = new Floor("frozen-tar") {{
-            attributes.set(Attribute.water, 0.3f);
-            attributes.set(Attribute.oil, 1.2f);
-            variants = 3;
-        }};
-
-        frozenSlop = new Floor("frozen-slop") {{
-            attributes.set(Attribute.water, 0.6f);
-            attributes.set(Attribute.oil, 0.6f);
-            variants = 3;
-        }};
-
-        snowySand = new Floor("snowy-sand") {{
-            attributes.set(Attribute.water, 0.1f);
-            variants = 3;
-        }};
-
-        crackedIce = new Floor("cracked-ice") {{
-            attributes.set(Attribute.water, 0.3f);
-            variants = 3;
-        }};
-        forestGrass = new Floor("forest-grass") {{
-            attributes.set(Attribute.water, 0.1f);
-            variants = 3;
-        }};
-
-        mossyhardenMud = new RotatingFloor("mossy-harden-mud") {{
-            attributes.set(bio, 0.2f);
-            attributes.set(Attribute.water, 0.1f);
-        }};
-
-        grassyVent = new SteamVent("grassy-vent") {{
-            effectColor = Color.white;
-            parent = blendGroup = grass;
-            attributes.set(Attribute.steam, 1f);
-        }};
-
-        mossyVent = new SteamVent("mossy-vent") {{
-            effectColor = Color.white;
-            parent = blendGroup = mossStone;
-            attributes.set(Attribute.steam, 1f);
-        }};
-
-        stoneVent = new SteamVent("stone-vent") {{
-            effectColor = Color.white;
-            parent = blendGroup = stone;
-            attributes.set(Attribute.steam, 1f);
-        }};
-
-        hardenMuddyVent = new SteamVent("harden-muddy-vent") {{
-            effectColor = Color.white;
-            parent = blendGroup = hardenMud;
-            attributes.set(Attribute.steam, 1f);
-        }};
-
-        basaltVent = new SteamVent("basalt-vent") {{
-            effectColor = Color.white;
-            parent = blendGroup = basalt;
-            attributes.set(Attribute.steam, 1f);
-        }};
-
-        snowVent = new SteamVent("snow-vent") {{
-            effectColor = Color.white;
-            parent = blendGroup = snow;
-            attributes.set(Attribute.steam, 1f);
-        }};
-
-        redSandVent = new SteamVent("red-sand-vent") {{
-            effectColor = Color.white;
-            parent = blendGroup = redSand;
-            attributes.set(Attribute.steam, 1f);
-        }};
-
-        dirtVent = new SteamVent("dirt-vent") {{
-            variants = 3;
-            effectColor = Color.white;
-            parent = blendGroup = dirt;
-            attributes.set(Attribute.steam, 1f);
-        }};
-
-        mudFloodPlane = new Floor("mud-plane") {{
-            speedMultiplier = 0.7f;
-            variants = 3;
-            statusDuration = 15f;
-            status = StatusEffects.muddy;
-            attributes.set(Attribute.water, 1f);
-            cacheLayer = NyfalisShaders.floodPlaneC;
-        }};
-
-        stoneFloodPlane = new Floor("stone-plane") {{
-            variants = 3;
-            attributes.set(Attribute.water, 0.25f);
-            cacheLayer = NyfalisShaders.floodPlaneC;
-        }};
-
-        mossyFloodPlane = new Floor("mossy-plane") {{
-            variants = 3;
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.5f);
-            cacheLayer = NyfalisShaders.floodPlaneC;
-        }};
-
-        sandyFloodPlane= new Floor("river-sand-plane") {{
-            variants = 3;
-            itemDrop = Items.sand;
-            attributes.set(Attribute.oil, 1.2f);
-            attributes.set(Attribute.water, 25f);
-            cacheLayer = NyfalisShaders.floodPlaneC;
-        }};
-
         //endregion
-        //region Liquid floor
-
-        redSandWater = new Floor("red-sand-water") {{
-            isLiquid = supportsOverlay = true;
-
-            variants = 0;
-            albedo = 0.9f;
-            statusDuration = 50f;
-            speedMultiplier = 0.8f;
-            liquidDrop = Liquids.water;
-            status = StatusEffects.wet;
-            cacheLayer = CacheLayer.water;
-        }};
-
-        lumaGrassWater = new Floor("luma-grass-water") {{
-            isLiquid = supportsOverlay = true;
-            liquidDrop = Liquids.water;
-            status = StatusEffects.wet;
-            statusDuration = 50f;
-            speedMultiplier = 0.8f;
-            cacheLayer = CacheLayer.water;
-            variants = 0;
-            albedo = 0.9f;
-        }};
-
-        brimstoneSlag = new Floor("brimstone-slag") {{
-            isLiquid = emitLight = true;
-
-            variants = 0;
-            drownTime = 30f;
-            lightRadius = 40f;
-            statusDuration = 240f;
-            speedMultiplier = 0.19f;
-            liquidDrop = Liquids.slag;
-            damageTaken = 9999999f;
-            status = StatusEffects.melting;
-            cacheLayer = CacheLayer.slag;
-            attributes.set(Attribute.heat, 0.90f);
-            lightColor = Color.valueOf("D54B3B").a(0.38f);
-        }};
-
-        //Todo: fragment doesnt blend well with water/tiles under water
+        //region > moss Stone
         algaeWater = new Floor("mossy-water") {{
             isLiquid = supportsOverlay = true;
 
@@ -513,43 +406,131 @@ public class NyfalisBlocks {
             blendGroup = water;
         }};
 
-        pinkGrassWater = new Floor("pink-grass-water") {{
-            isLiquid = supportsOverlay = true;
-
-            statusDuration = 50f;
-            speedMultiplier = 0.8f;
-            variants = 0;
-            albedo = 0.9f;
-            liquidDrop = Liquids.water;
-            status = StatusEffects.wet;
-            cacheLayer = CacheLayer.water;
+        mossyStone = new RotatingFloor("mossy-stone") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
         }};
 
-        yellowMossyWater = new Floor("yellow-mossy-water") {{
-            isLiquid = supportsOverlay = true;
-
-            variants = 0;
-            albedo = 0.9f;
-            statusDuration = 50f;
-            speedMultiplier = 0.8f;
-            status = StatusEffects.wet;
-            liquidDrop = Liquids.water;
-            cacheLayer = CacheLayer.water;
+        mossierStone = new RotatingFloor("mossier-stone") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
         }};
 
-        coralReef = new Floor("coral-reef") {{
-            variants = 0;
-            albedo = 0.9f;
-            drownTime = 200f;
-            statusDuration = 120f;
-            liquidMultiplier = 1.5f;
-            speedMultiplier = 0.2f;
-            isLiquid = supportsOverlay = true;
-            liquidDrop = Liquids.water;
-            status = StatusEffects.wet;
-            cacheLayer = CacheLayer.water;
+        mossiestStone = new RotatingFloor("mossiest-stone") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
         }};
 
+        mossStone = new Floor("moss-stone") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+
+        mossyDirt = new RotatingFloor("mossy-dirt") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+
+        mossierDirt = new RotatingFloor("mossier-dirt") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+
+        mossyFloodPlane = new Floor("mossy-plane") {{
+            variants = 3;
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.5f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
+        }};
+
+        mossyhardenMud = new RotatingFloor("mossy-harden-mud") {{
+            attributes.set(bio, 0.2f);
+            attributes.set(Attribute.water, 0.1f);
+        }};
+        //endregion
+        //region > dirt
+        frozenDirt = new Floor("frozen-dirt") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.3f);
+        }};
+
+        dirtVent = new SteamVent("dirt-vent") {{
+            variants = 3;
+            effectColor = Color.white;
+            parent = blendGroup = dirt;
+            attributes.set(Attribute.steam, 1f);
+        }};
+        //endregion
+        //region > muds
+        frozenMud = new Floor("frozen-mud") {{
+            attributes.set(bio, 0.1f);
+            attributes.set(Attribute.water, 0.3f);
+        }};
+
+        mudFloodPlane = new Floor("mud-plane") {{
+            speedMultiplier = 0.7f;
+            variants = 3;
+            statusDuration = 15f;
+            status = StatusEffects.muddy;
+            attributes.set(Attribute.water, 1f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
+        }};
+
+        hardenMud = new Floor("harden-mud") {{
+            attributes.set(Attribute.water, 0.1f);
+            variants = 3;
+        }};
+
+        hardenMuddyVent = new SteamVent("harden-muddy-vent") {{
+            effectColor = Color.white;
+            parent = blendGroup = hardenMud;
+            attributes.set(Attribute.steam, 1f);
+        }};
+        //endregion
+        //region > stones
+        stoneFloodPlane = new Floor("stone-plane") {{
+            variants = 3;
+            attributes.set(Attribute.water, 0.25f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
+        }};
+
+        stoneVent = new SteamVent("stone-vent") {{
+            effectColor = Color.white;
+            parent = blendGroup = stone;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
+        basaltVent = new SteamVent("basalt-vent") {{
+            effectColor = Color.white;
+            parent = blendGroup = basalt;
+            attributes.set(Attribute.steam, 1f);
+        }};
+        //endregion
+        //region > frozen
+        crackedIce = new Floor("cracked-ice") {{
+            attributes.set(Attribute.water, 0.3f);
+            variants = 3;
+        }};
+
+        snowVent = new SteamVent("snow-vent") {{
+            effectColor = Color.white;
+            parent = blendGroup = snow;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
+        frozenTar = new Floor("frozen-tar") {{
+            attributes.set(Attribute.water, 0.3f);
+            attributes.set(Attribute.oil, 1.2f);
+            variants = 3;
+        }};
+
+        frozenSlop = new Floor("frozen-slop") {{
+            attributes.set(Attribute.water, 0.6f);
+            attributes.set(Attribute.oil, 0.6f);
+            variants = 3;
+        }};
+        // endregion
+        //region > special liquid floors
         slop = new Floor("slop") {{
             isLiquid = supportsOverlay = true;
 
@@ -575,6 +556,35 @@ public class NyfalisBlocks {
             cacheLayer = NyfalisShaders.slopC;
             status = NyfalisStatusEffects.sloppy;
             walkEffect = NyfalisFxs.bubbleSlow;
+        }};
+
+        coralReef = new Floor("coral-reef") {{
+            variants = 0;
+            albedo = 0.9f;
+            drownTime = 200f;
+            statusDuration = 120f;
+            liquidMultiplier = 1.5f;
+            speedMultiplier = 0.2f;
+            isLiquid = supportsOverlay = true;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
+        }};
+
+        brimstoneSlag = new Floor("brimstone-slag") {{
+            isLiquid = emitLight = true;
+
+            variants = 0;
+            drownTime = 30f;
+            lightRadius = 40f;
+            statusDuration = 240f;
+            speedMultiplier = 0.19f;
+            liquidDrop = Liquids.slag;
+            damageTaken = 9999999f;
+            status = StatusEffects.melting;
+            cacheLayer = CacheLayer.slag;
+            attributes.set(Attribute.heat, 0.90f);
+            lightColor = Color.valueOf("D54B3B").a(0.38f);
         }};
 
         lubricantPool = new Floor("lubricant-pool") {{
