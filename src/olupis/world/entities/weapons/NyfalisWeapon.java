@@ -12,6 +12,7 @@ import mindustry.type.*;
 import olupis.content.*;
 import olupis.input.*;
 import olupis.world.*;
+import olupis.world.entities.bullets.*;
 import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
 
@@ -287,7 +288,8 @@ public  class NyfalisWeapon extends Weapon {
         bulletX = bulletX(unit, mount),
         bulletY = bulletY(unit, mount),
         shootAngle = bulletRotation(unit, mount, bulletX, bulletY) + angleOffset,
-        lifeScl = bullet.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, mount.aimX, mount.aimY) / bullet.range) : 1f,
+        ran = bullet instanceof EffectivenessMissleType m  && m.maxRangeLifeScale? bullet.maxRange: bullet.range,
+        lifeScl = bullet.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, mount.aimX, mount.aimY) / ran) : 1f,
         angle = shootAngle + Mathf.range(inaccuracy + bullet.inaccuracy);
 
         Entityc shooter = unit.controller() instanceof MissileAI ai ? ai.shooter : unit; //Pass the missile's shooter down to its bullets

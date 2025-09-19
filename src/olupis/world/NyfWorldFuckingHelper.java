@@ -53,6 +53,27 @@ public class NyfWorldFuckingHelper{
         return withinMouseOrUnitRangeF(tar, range) > 0;
     }
 
+    public static Building nearby( Building build, int rotation) {
+        switch (rotation) {
+            case 0:
+                build = Vars.world.build(build.tileX() + build.block.size, build.tileY());
+                break;
+            case 1:
+                build = Vars.world.build(build.tileX(), build.tileY() + build.block.size);
+                break;
+            case 2:
+                build = Vars.world.build(build.tileX() - build.block.size, build.tileY());
+                break;
+            case 3:
+                build = Vars.world.build(build.tileX(), build.tileY() - build.block.size );
+                break;
+            default:
+                build = null;
+        }
+
+        return build;
+    }
+    
     //endregion
     // region == Weather helpers
 
@@ -128,9 +149,9 @@ public class NyfWorldFuckingHelper{
         spikesTri(x, y, radius, length, spikes, rot, width, 0);
     }
 
-    public static void spikesTri(float x, float y, float radius, float length, int spikes, float rot, float width, float offset){
+    public static void spikesTri(float x, float y, float radius, float length, int spikes, float rot, float width, float size){
         vector.set(0, 1);
-        float step = (360f / spikes) + offset;
+        float step = (360f / spikes) + size;
 
         for(int i = 0; i < spikes; i++){
             vector.trns(i * step + rot, radius);

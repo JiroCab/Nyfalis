@@ -203,6 +203,9 @@ public class NyfalisBlocks {
 
         //endregion
         // region Floors
+        /*In each group it should be sorted in the following:
+        * Liquid/wet > normal > vent  || sub-grouped tiles with ther varaints */
+
         // region > watered sands
         snowySand = new Floor("snowy-sand") {{
             attributes.set(Attribute.water, 0.1f);
@@ -241,7 +244,7 @@ public class NyfalisBlocks {
             status = StatusEffects.wet;
             cacheLayer = CacheLayer.water;
         }};
-        
+
         redSand = new Floor("red-sand-floor") {{
             itemDrop = Items.sand;
             playerUnmineable = true;
@@ -598,6 +601,7 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
+        //endregion
         //endregion
         //region Props
         yellowBush = new Prop("yellow-bush") {{
@@ -2239,9 +2243,10 @@ public class NyfalisBlocks {
         }};
 
         cobaltWall = new PoweredLightingWall("cobalt-wall"){{
-            conductivePower = consumesPower = update = true;
+            conductivePower = consumesPower = update = invertedBlending = true;
             vanillaLightning = false;
             size = 1;
+            variantsSide = 1;
             health = 1200;
             buildCostMultiplier = 0.7f;
             lightningChancePowered = 0.06f;
@@ -2255,6 +2260,7 @@ public class NyfalisBlocks {
             conductivePower = consumesPower = update = true;
             vanillaLightning = false;
 
+            variantsSide = 1;
             size = 2;
             health = 1200 * 4;
             buildCostMultiplier = 0.7f;

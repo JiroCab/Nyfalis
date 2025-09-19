@@ -13,7 +13,7 @@ import mindustry.world.blocks.distribution.*;
 import static mindustry.Vars.*;
 
 public class VaraintConveryor extends Conveyor{
-    TextureRegion[][] sideRegions;
+    public TextureRegion[][] sideRegions;
 
     public VaraintConveryor(String name){
         super(name);

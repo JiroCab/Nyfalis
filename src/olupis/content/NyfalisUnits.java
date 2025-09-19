@@ -2283,6 +2283,94 @@ public class NyfalisUnits {
             ;
         }};
 
+        vanguard = new NyfalisUnitType("vanguard"){{
+            armor = 5f;
+            hitSize = 20f;
+            health = 1000;
+            trailScl = 1.5f;
+            trailLength = 22;
+            waveTrailX = 7f;
+            waveTrailY = -9f;
+            itemCapacity = 60;
+            constructor = bay.constructor;
+            range = Vars.tilesize *  80f;
+                weapons.addAll(
+                    new NyfalisWeapon(){{
+                        x = 7;
+                        y = 0;
+                        reload = 500f;
+                        shootCone = 360f;
+                        rotate = alternate = false;
+
+                        ejectEffect = Fx.casing1;
+                        bullet = new EffectivenessMissleType(0.01f, 50f){{
+                            keepVelocity = false;
+                            drag = -0.105f;
+                            lifetime = 90f;
+                            fragBullets = 1;
+                            trailLength = 5;
+                            trailWidth = 5f;
+                            height = width = 20f;
+                            homingPower = 0.5f;
+                            homingRange = 860;
+                            maxRange = 240;
+                            hitSound = NyfalisSounds.cncRa3V4MissLand4;
+                            shootStatus = StatusEffects.unmoving;
+                            shootStatusDuration = 60f;
+                            rangeOverride = Vars.tilesize *  86f;
+                            homingExtendedRange = -1;
+                            shootEffect = despawnEffect = hitEffect = Fx.flakExplosion;
+                            fragBullet = new DistanceScalingBulletType(300, 20){{
+                                trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                                maxDst = 80 * Vars.tilesize;
+                                minDst = 55 * Vars.tilesize;
+                                killShooter = collidesAir = false;
+                                fragBullets = 0;
+                                minDmgMul = 0.3f;
+                            }};
+
+                        }};
+                }},
+                    new NyfalisWeapon("olupis-dark-tur"){{
+                        x = 0f;
+                        y = 6.5f;
+                        reload = 8f;
+                        inaccuracy = 4f;
+                        shootCone = 30f;
+                        rotateSpeed = 10f;
+                        targetInterval = 10f;
+                        targetSwitchInterval = 20f;
+                        soundPitchMax = 1.4f;
+                        soundPitchMin = 1f;
+
+                        autoTarget = rotate = partialControl = weaponIconUseFullString = true;
+                        mirror = controllable = false;
+                        weaponIconString = "olupis-bay-ui-front";
+                        shootSound = NyfalisSounds.cncZhQuadPew;
+                        bullet = new BasicBulletType(2.5f, 10){{
+                            width = 3f;
+                            height = 20f;
+                            lifetime = 60f;
+                            collidesAir = false;
+                            frontColor = NyfalisColors.rustyBullet;
+                            backColor = NyfalisColors.rustyBulletBack;
+                            hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        }};
+                        parts.addAll(
+                            new RegionPart(){{
+                                name = "olupis-bay-ui-front";
+                                mirror = false;
+                                under = true;
+                                progress = PartProgress.recoil;
+                                y = 1;
+                                moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
+                            }}
+                        );
+                }}
+            );
+
+        }};
+
         //torret - 2 broadside cram/doom cannons (artillery )
 
         //endregion

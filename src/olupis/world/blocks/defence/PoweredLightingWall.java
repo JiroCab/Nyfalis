@@ -1,19 +1,15 @@
 package olupis.world.blocks.defence;
 
-import arc.Events;
-import arc.math.Mathf;
+import arc.*;
+import arc.math.*;
 import arc.util.*;
-import mindustry.entities.Damage;
-import mindustry.entities.Lightning;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
-import mindustry.game.EventType;
-import mindustry.game.Team;
-import mindustry.gen.Bullet;
-import mindustry.world.blocks.defense.Wall;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
+import mindustry.game.*;
+import mindustry.gen.*;
+import mindustry.world.meta.*;
 
-public class PoweredLightingWall extends Wall {
+public class PoweredLightingWall extends CTWall {
     public float lightningChancePowered = lightningChance;
     public boolean vanillaLightning = true;
     public @Nullable BulletType dischargeBullet = null;
@@ -31,7 +27,7 @@ public class PoweredLightingWall extends Wall {
         if(lightningChancePowered > 0f) stats.add(new Stat("olupis-lightningchancepowered"), lightningChancePowered * 100f, StatUnit.percent);
     }
 
-    public class PoweredLightingWallBuild extends WallBuild {
+    public class PoweredLightingWallBuild extends CTWallBuild {
 
         public void handleDmg(){
             if(lightningChance > 0f || lightningChancePowered > 0f){

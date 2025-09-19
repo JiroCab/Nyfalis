@@ -19,7 +19,7 @@ public class EffectivenessMissleType extends MissileBulletType {
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
     public float groundDamageMultiplier = 1f;
     public float groundDamageSplashMultiplier = 1f;
-    public boolean flatDamage = false, homingExtends = true;
+    public boolean flatDamage = false, homingExtends = true, maxRangeLifeScale;
     public float homingExtendedRange = 3f * tilesize;
 
     private static final Rect rect = new Rect();
@@ -48,7 +48,10 @@ public class EffectivenessMissleType extends MissileBulletType {
                 e -> e != null && e.checkTarget(collidesAir, collidesGround) && !b.hasCollided(e.id),
                 t -> t != null && collidesGround && !b.hasCollided(t.id));
             }
-            if(target != null && target.within(b, homingExtendedRange)) b.lifetime += 1;
+            if(target != null && homingExtendedRange > 0 && target.within(b, homingExtendedRange)){
+                b.lifetime += 1;
+                Log.err(b.fin() +"");
+            }
         }
     }
 
