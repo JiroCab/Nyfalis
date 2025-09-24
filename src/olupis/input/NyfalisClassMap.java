@@ -2,6 +2,7 @@ package olupis.input;
 
 import arc.struct.*;
 import mindustry.*;
+import mindustry.mod.*;
 import olupis.content.*;
 import olupis.input.ui.*;
 import olupis.world.*;

@@ -22,6 +22,8 @@ import olupis.world.ai.*;
 import olupis.world.entities.packets.*;
 import olupis.world.entities.weapons.*;
 
+import java.util.*;
+
 import static mindustry.Vars.*;
 
 /*Unit that dies when it runs out of ammo, ammo Depletes over time*/
@@ -39,7 +41,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
     public boolean miningDepletesAmmo = false;
     /*Time before depleting ammo*/
     public float ammoDepletionOffset = Time.toMinutes;
-    float startTime;
+    HashMap<Unit, Float> startTimeTracker = new HashMap<>();
     /*Being player controlled depletes ammo*/
     public boolean depleteOnInteraction = true, depleteOnInteractionUsesPassive = false;
     /*Deplete Ammo when over unit cap, Assumes ammoDepletesOverTime = true */
@@ -111,13 +113,14 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
 
     @Override
     public void update(Unit unit){
+        if(!startTimeTracker.containsKey(unit))startTimeTracker.put(unit, Time.time + (ammoDepletionOffset / 2f));
 
         boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap)), op = false;
         if(inoperableDepletes) op = (( unit.ammo >= deathThreshold && unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.inoperable) )
                             || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding())) //TODO: keep track of building prog and dont dep when no progress
                             || (unit.controller() instanceof SearchAndDestroyFlyingAi ai && ai.inoperable);
 
-        boolean shouldDeplete = ( (startTime+ ammoDepletionOffset) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
+        boolean shouldDeplete = ( startTimeTracker.get(unit) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
         if(op || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
             unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || op ? penaltyMultiplier : 1f));
         }
@@ -152,7 +155,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
         Unit unit = super.create(team);
 
         unit.ammo(ammoCapacity);
-        startTime = Time.time;
+        startTimeTracker.put(unit, Time.time + ammoDepletionOffset);
         startPos = new Vec2(unit.x /8f, unit.y /8f);
         return unit;
     }
@@ -162,7 +165,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
         this.maxRange = unitRange;
         startPos = new Vec2(startX /8f, startY /8f);
 
-        startTime = Time.time;
+        startTimeTracker.put(unit, Time.time + ammoDepletionOffset);
         unit.apply(spawnStatus, spawnStatusDuration);
         return unit;
     }

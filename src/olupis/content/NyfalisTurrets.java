@@ -48,11 +48,12 @@ public class NyfalisTurrets {
         fracture = new NyfalisItemTurret("fracture"){{
             targetAir = false;
             ammo(
-                rustyIron,  new CappedIntervalBullet(4.5f, 27){{
+                rustyIron,  new CappedIntervalBullet(4.5f, 20){{
                     width = 4f;
                     height = 20f;
                     lifetime = 60f;
-                    knockback = 0.2f;
+                    knockback = 0.1f;
+                    reloadMultiplier = 0.75f;
 
                     collidesAir = false;
                     hitEffect = despawnEffect = Fx.hitBulletColor;
@@ -1965,9 +1966,6 @@ public class NyfalisTurrets {
             }
         };
         //endregion
-
-        //TODO: Escalation - A early game rocket launcher that acts similarly to the scathe but with lower range and damage. (Decent rate of fire, weak against high health single targets, slow moving rocket, high cost but great AOE)
-        //TODO:Shatter - A weak turret that shoots a spray of glass shards at the enemy. (High rate of fire, low damage, has pierce, very low defense, low range)
     }
     
 

@@ -1,7 +1,9 @@
 package olupis.world.entities.abilities;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -10,15 +12,27 @@ import mindustry.entities.abilities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class OrblessEnergyFieldAbillity extends EnergyFieldAbility{
     private static final Seq<Healthc> all = new Seq<>();
     public boolean orb = false, displayRange  = false, parentizeEffects = true;
     public float orbLightRadius = 10f;
+    /** If positive, limits non-splash damage dealt to a fraction of the target's maximum health. */
+    public float maxDamageFraction = -1f;
 
     public OrblessEnergyFieldAbillity(float damage, float reload, float range){
         super(damage, reload, range );
+    }
+
+    @Override
+    public void addStats(Table t){
+        super.addStats(t);
+        if(maxDamageFraction  >0){
+            t.row();
+            t.add(Core.bundle.format("bullet.maxdamagefraction", Strings.autoFixed(maxDamageFraction * 100, 0)));
+        }
+
     }
 
     @Override
@@ -53,7 +67,6 @@ public class OrblessEnergyFieldAbillity extends EnergyFieldAbility{
 
         Draw.reset();
     }
-
 
     @Override
     public void update(Unit unit){
@@ -109,10 +122,13 @@ public class OrblessEnergyFieldAbillity extends EnergyFieldAbility{
                     }
                 }else{
                     anyNearby = true;
+                    float dmg = damage * state.rules.unitDamage(unit.team), shield = other instanceof Shieldc s ? Math.max(s.shield(), 0f) : 0f;;
+                    if(maxDamageFraction > 0) dmg = Math.min(dmg, (other.maxHealth() * maxDamageFraction) + shield);
+
                     if(other instanceof Building b){
-                        b.damage(unit.team, damage * state.rules.unitDamage(unit.team));
+                        b.damage(unit.team, dmg);
                     }else{
-                        other.damage(damage * state.rules.unitDamage(unit.team));
+                        other.damage(dmg);
                     }
                     if(other instanceof Statusc s){
                         s.apply(status, statusDuration);

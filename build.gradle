@@ -128,11 +128,17 @@ task deploy(type: Jar){
 //        mods.setFrom(tasks.jar, musicMod)
 //    }
 //}
-
-
+def modlib = project.file("./build/libs/mods")
 task runClientwithLocalMods{
     dependsOn runMindustryDesktop{
-        mods.setFrom (tasks.jar, project.file("./build/libs/mods/a.jar"), project.file("./build/libs/mods/b.zip"), project.file("./build/libs/mods/c.zip"), project.file("./build/libs/mods/t.zip"))
+        mods.setFrom (tasks.jar)
+        if(modlib.isDirectory()){
+            modlib.listFiles().each{ f -> {
+                if(f.isFile()) mods.from.add(f)
+            }}
+        }
+
+
     }
 
 }

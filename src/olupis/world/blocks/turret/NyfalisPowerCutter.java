@@ -47,7 +47,7 @@ public class NyfalisPowerCutter extends NyfalisPowerTurret{
             Tile t = world.tileWorld(targetPos.x, targetPos.y);
             if(t != null){
                 resetTile(t);
-                target = null;
+                //target = null;
             }
 
             super.shoot(type);

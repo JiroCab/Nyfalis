@@ -85,7 +85,7 @@ public class NyfalisMain extends Mod{
             /*Delayed since custom games, for some reason needs it*/
             Time.run(0.5f * Time.toSeconds, NyfalisMain::sandBoxCheck);
             nyfalianPlanet = false;
-            if(isNyfalianPlanet(state.getPlanet())) nyfalianPlanet = true;
+                if(isNyfalianPlanet(state.getPlanet())) nyfalianPlanet = true;
             else for(Block c : NyfalisBlocks.nyfalisCores){
                 if(indexer.isBlockPresent(c)){
                     nyfalianPlanet = true;
@@ -190,12 +190,11 @@ public class NyfalisMain extends Mod{
         });
 
         Events.run(Trigger.draw, () -> {
-            if(nyfalianPlanet){
+            if( nyfalianPlanet){
                 if(!Core.settings.getBool("nyfalis-cloud-shadows")) return;
             } else {
                 if(!Core.settings.getBool("nyfalis-cloud-shadows-others")) return;
             }
-
 
             if(cloudNoise == null){
                 cloudNoise = Core.assets.get("sprites/clouds.png", Texture.class);

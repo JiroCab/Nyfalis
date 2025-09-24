@@ -50,7 +50,6 @@ public class EffectivenessMissleType extends MissileBulletType {
             }
             if(target != null && homingExtendedRange > 0 && target.within(b, homingExtendedRange)){
                 b.lifetime += 1;
-                Log.err(b.fin() +"");
             }
         }
     }

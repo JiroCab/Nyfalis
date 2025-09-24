@@ -42,6 +42,7 @@ import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
 import olupis.world.blocks.turret.*;
+import olupis.world.blocks.turret.NyfalisItemTurret.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.consumer.*;
 import olupis.world.entities.bullets.*;
@@ -1337,7 +1338,7 @@ public class NyfalisBlocks {
         }};
 
         oilSeparator = new LegacyBlock("oil-separator"){{
-        //TODO: test
+
         }};
 
         steamBoiler = new AttributeCrafter("steam-boiler"){{
@@ -2054,8 +2055,8 @@ public class NyfalisBlocks {
             powerProduction = 20f/60f;
             attribute = Attribute.steam;
             consume(new ConsumeLubricant(15f / 60f)).boost();
-            researchCost = with(rustyIron, 20, Items.lead, 2);
-            requirements(Category.power, with(rustyIron, 35, Items.lead, 1));
+            researchCost = with(rustyIron, 20, Items.lead, 20);
+            requirements(Category.power, with(rustyIron, 35, Items.lead, 10));
         }};
 
         hydroMill = new ThermalGeneratorNoLight("hydro-mill"){{
@@ -2396,7 +2397,7 @@ public class NyfalisBlocks {
                 lifetime = 4f;
                 length = 80;
                 width = 0;
-                damage = 10;
+                damage = 20;
                 trailEffect = laserEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
             }
 

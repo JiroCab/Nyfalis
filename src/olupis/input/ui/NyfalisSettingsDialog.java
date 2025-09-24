@@ -22,7 +22,7 @@ import olupis.*;
 import olupis.content.*;
 import olupis.world.entities.packets.*;
 
-import static arc.Core.settings;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class NyfalisSettingsDialog {
@@ -37,10 +37,10 @@ public class NyfalisSettingsDialog {
     public static boolean pdlStatusGiverAnyTeam, pdlStatusGiverSimple;
 
     public static void updateSettings(){ //moved here so settings are checked per tick not per draw
-      pdlStatusGiverTrans = Core.settings.getInt("nyfalis-pdl-status-trans")  / 100f;
-      pdlStatusGiverRange = Core.settings.getInt("nyfalis-pdl-status-range");
-      pdlStatusGiverAnyTeam = !Core.settings.getBool("nyfalis-pdl-status-anyteam");
-      pdlStatusGiverSimple = Core.settings.getBool("nyfalis-pdl-status-simple");
+        pdlStatusGiverTrans = Core.settings.getInt("nyfalis-pdl-status-trans")  / 100f;
+        pdlStatusGiverRange = Core.settings.getInt("nyfalis-pdl-status-range");
+        pdlStatusGiverAnyTeam = !Core.settings.getBool("nyfalis-pdl-status-anyteam");
+        pdlStatusGiverSimple = Core.settings.getBool("nyfalis-pdl-status-simple");
     }
 
     public void BuildDialog(){
@@ -61,7 +61,7 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-green-icon", true);
             table.checkPref("nyfalis-green-name", true);
             table.checkPref("nyfalis-cloud-shadows", true);
-            table.checkPref("nyfalis-cloud-shadows-other", false);
+            table.checkPref("nyfalis-cloud-shadows-others", false);
             table.checkPref("nyfalis-qolTreeTrans", true);
             table.sliderPref("nyfalis-pdl-status-trans",15, 0, 100, 1, i -> i == 0 ? "@off" : i + "%");
             table.sliderPref("nyfalis-pdl-status-range",25, 0, 51, 1, i -> i == 0 ? "@off" : i == 51 ? "@yes" : i + " " + Core.bundle.get("unit.blocks"));
@@ -280,6 +280,9 @@ public class NyfalisSettingsDialog {
                                     if (!b.enabled && b.lastDisabler == null && b.block.supportsEnv(state.rules.env) && b.block.minfo.mod.main instanceof NyfalisMain) {
                                         b.enabled = true;
                                     }
+                                }
+                                if(input.keyDown(KeyCode.end)){
+                                    state.rules.env |= NyfalisAttributeWeather.nyfalian;
                                 }
                             }
                         });
