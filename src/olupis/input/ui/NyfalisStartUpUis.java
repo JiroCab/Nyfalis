@@ -1,6 +1,7 @@
 package olupis.input.ui;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
@@ -11,9 +12,11 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.editor.*;
 import mindustry.game.*;
+import mindustry.game.Rules.*;
 import mindustry.gen.*;
 import mindustry.input.*;
 import mindustry.type.*;
@@ -22,7 +25,6 @@ import mindustry.ui.dialogs.*;
 import mindustry.ui.fragments.*;
 import olupis.*;
 import olupis.content.*;
-import olupis.world.*;
 import olupis.world.entities.packets.*;
 
 import java.util.*;
@@ -31,7 +33,6 @@ import static mindustry.Vars.*;
 
 public class NyfalisStartUpUis {
     public static Table debugTable = new Table();
-    public boolean forceShowFunny = false;
 
     public static void  disclaimerDialog(){
         BaseDialog dialog = new BaseDialog("@nyfalis-disclaimer.name");
@@ -148,40 +149,56 @@ public class NyfalisStartUpUis {
         debugTable.reset();
         debugTable.clear();
 
-        CustomRulesDialog ruleInfo = new CustomRulesDialog();
-        WaveInfoDialog waveInfo = new WaveInfoDialog();
+        debugTable.visibility = () -> !state.isEditor() ||  !Core.settings.getBool("editor-blocks-shown");
+        if(state.isEditor()){
+            debugTable.table(Tex.pane, z -> {
+                ImageButton button = z.button(Tex.whiteui, Styles.clearNoneTogglei, 33f, () -> Call.setPlayerTeamEditor(player,  NyfUnitTeamMapper.verdantTeam))
+                .size(45f).margin(2f).get();
+                button.getImageCell().grow();
+                button.getStyle().imageUpColor = NyfUnitTeamMapper.verdantTeam.color;
+                button.update(() -> button.setChecked(player.team() ==  NyfUnitTeamMapper.verdantTeam));
+            });
 
-        debugTable.table( z -> {
-            z.button("E", Icon.export, Styles.squareTogglet, () -> {
-                if(player.admin && net.active() && net.client()){
-                    NyfalisDebugPackets packet = new NyfalisDebugPackets();
-                    packet.type = 1;
-                    Vars.net.send(packet, true);
-                } else {
-                    state.rules.blockWhitelist = true;
-                    NyfalisPlanets.nyfalis.applyRules(state.rules);
-                    NyfalisMain.sandBoxCheck();
-                    ui.paused.show();
-                }
-            }).width(77.5f).height(40f).checked(false).tooltip("Apply Nyfalis Settings/Env to current game");
-            z.button("C", Icon.down, Styles.squareTogglet, () -> {
-                if(state.isCampaign()) Logic.sectorCapture();
-                state.wave += 100;
-                for (Item i : content.items()){
-                    if(Core.input.keyDown(Binding.boost)) player.team().core().items.add(i, player.team().core().storageCapacity);
-                    else if (i.unlocked())player.team().core().items.add(i, player.team().core().storageCapacity);
-                }
-
-            }).width(77.5f).height(40f).checked(false).tooltip("Capture Sector & fill core with Items");
-            z.row();
-        }).width(155f).growY().margin(12f).checked(false).row();
-        debugTable.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
-            ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
-        }).width(155f).height(40f).margin(12f).checked(false).row();
-        debugTable.button("@editor.waves", Icon.waves, Styles.squareTogglet, waveInfo::show).width(155f).height(40f).margin(12f).checked(false);
-        if(mobile || testMobile){
             debugTable.row();
-            debugTable.add(new Element()).width(155f).height(50f).margin(12f).touchable( Touchable.disabled);
+        }
+        //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
+
+        if( Core.settings.getBool("nyfalis-debug")){
+            CustomRulesDialog ruleInfo = Reflect.get(ui.paused, "rulesDialog");
+            WaveInfoDialog waveInfo = new WaveInfoDialog();
+
+            debugTable.table( z -> {
+                z.button("E", Icon.export, Styles.squareTogglet, () -> {
+                    if(player.admin && net.active() && net.client()){
+                        NyfalisDebugPackets packet = new NyfalisDebugPackets();
+                        packet.type = 1;
+                        Vars.net.send(packet, true);
+                    } else {
+                        state.rules.blockWhitelist = true;
+                        NyfalisPlanets.nyfalis.applyRules(state.rules);
+                        NyfalisMain.sandBoxCheck();
+                        ui.paused.show();
+                    }
+                }).width(77.5f).height(40f).checked(false).tooltip("Apply Nyfalis Settings/Env to in.current game");
+                z.button("C", Icon.down, Styles.squareTogglet, () -> {
+                    if(state.isCampaign()) Logic.sectorCapture();
+                    state.wave += 100;
+                    for (Item i : content.items()){
+                        if(Core.input.keyDown(Binding.boost)) player.team().core().items.add(i, player.team().core().storageCapacity);
+                        else if (i.unlocked())player.team().core().items.add(i, player.team().core().storageCapacity);
+                    }
+
+                }).width(77.5f).height(40f).checked(false).tooltip("Capture Sector & fill core with Items");
+                z.row();
+            }).width(155f).growY().margin(12f).checked(false).row();
+            debugTable.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
+                ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
+            }).width(155f).height(40f).margin(12f).checked(false).row();
+            debugTable.button("@editor.waves", Icon.waves, Styles.squareTogglet, waveInfo::show).width(155f).height(40f).margin(12f).checked(false);
+            if(mobile || testMobile){
+                debugTable.row();
+                debugTable.add(new Element()).width(155f).height(50f).margin(12f).touchable( Touchable.disabled);
+            }
         }
         debugTable.marginBottom(200f);
     }
@@ -241,6 +258,82 @@ public class NyfalisStartUpUis {
 
             @Override
             public boolean valid() {return true;}
+        });
+    }
+
+    public static void nyfAdditionalRules(CustomRulesDialog in){
+        Seq<Runnable> additionalSetup = Reflect.get(in, "additionalSetup");
+        additionalSetup.add( () -> {
+            Rules rules = Reflect.get(in, "rules");
+            boolean[] shown = {false};
+            Table wasCurrent = in.current;
+
+            Table teamRules = new Table(); // just button and collapser in one table
+            teamRules.button(NyfUnitTeamMapper.verdantTeam.coloredName(), Icon.downOpen, Styles.togglet, () -> {
+                shown[0] = !shown[0];
+            }).marginLeft(14f).width(260f).height(55f).update(t -> {
+                ((Image)t.getChildren().get(1)).setDrawable(shown[0] ? Icon.upOpen : Icon.downOpen);
+                t.setChecked(shown[0]);
+            }).left().padBottom(2f).row();
+
+            teamRules.collapser(c -> {
+                c.left().defaults().fillX().left().pad(5);
+                in.current = c;
+                TeamRule teams = rules.teams.get(NyfUnitTeamMapper.verdantTeam);
+
+                in.table(t -> {
+                    for(int i = 0; i < 2; i++){
+                        String type = i == 1 ? "@rules.enemyteam" : "@rules.playerteam" ;
+                        int finalI = i;
+                        Cons<Team> cons;
+                        if(finalI == 1) cons = te -> rules.waveTeam = te;
+                        else cons = te -> rules.defaultTeam = te;
+
+                        if(!Core.bundle.get(type.substring(1)).toLowerCase().contains(in.ruleSearch)) return;
+                        in.current.table(ta -> {
+                            ta.left();
+                            ta.add(type).left().padRight(5).marginRight(10f);
+
+                            ta.button(Tex.whiteui, Styles.squareTogglei, 38f, () -> {
+                                cons.get(NyfUnitTeamMapper.verdantTeam);
+                            }).pad(1f).checked(b -> (finalI == 1 ? rules.waveTeam : rules.defaultTeam) == NyfUnitTeamMapper.verdantTeam).size(60f).tooltip(NyfUnitTeamMapper.verdantTeam.coloredName()).with(im -> im.getStyle().imageUpColor = NyfUnitTeamMapper.verdantTeam.color);
+                        }).row();
+                    }
+                }).padTop(0).row();
+
+                in.number("@rules.blockhealthmultiplier", f -> teams.blockHealthMultiplier = f, () -> teams.blockHealthMultiplier);
+                in.number("@rules.blockdamagemultiplier", f -> teams.blockDamageMultiplier = f, () -> teams.blockDamageMultiplier);
+
+                in.check("@rules.rtsai", b -> teams.rtsAi = b, () -> teams.rtsAi, () -> NyfUnitTeamMapper.verdantTeam != rules.defaultTeam);
+                in.numberi("@rules.rtsminsquadsize", f -> teams.rtsMinSquad = f, () -> teams.rtsMinSquad, () -> teams.rtsAi, 0, 100);
+                in.numberi("@rules.rtsmaxsquadsize", f -> teams.rtsMaxSquad = f, () -> teams.rtsMaxSquad, () -> teams.rtsAi, 1, 1000);
+                in.number("@rules.rtsminattackweight", f -> teams.rtsMinWeight = f, () -> teams.rtsMinWeight, () -> teams.rtsAi);
+
+                //disallow on Erekir (this is broken for mods I'm sure, but whatever)
+                in.check("@rules.buildai", b -> teams.buildAi = b, () -> teams.buildAi, () -> NyfUnitTeamMapper.verdantTeam != rules.defaultTeam && rules.env != Planets.erekir.defaultEnv && !rules.pvp);
+                in.number("@rules.buildaitier", false, f -> teams.buildAiTier = f, () -> teams.buildAiTier, () -> teams.buildAi && rules.env != Planets.erekir.defaultEnv && !rules.pvp, 0, 1);
+
+                in.number("@rules.extracorebuildradius", f -> teams.extraCoreBuildRadius = f * tilesize, () -> Math.min(teams.extraCoreBuildRadius / tilesize, 200), () -> !rules.polygonCoreProtection);
+
+                in.check("@rules.infiniteresources", b -> teams.infiniteResources = b, () -> teams.infiniteResources);
+                in.check("@rules.fillitems", b -> teams.fillItems = b, () -> teams.fillItems);
+                in.number("@rules.buildspeedmultiplier", f -> teams.buildSpeedMultiplier = f, () -> teams.buildSpeedMultiplier, 0.001f, 50f);
+
+                in.number("@rules.unitdamagemultiplier", f -> teams.unitDamageMultiplier = f, () -> teams.unitDamageMultiplier);
+                in.number("@rules.unitcrashdamagemultiplier", f -> teams.unitCrashDamageMultiplier = f, () -> teams.unitCrashDamageMultiplier);
+                in.number("@rules.unitminespeedmultiplier", f -> teams.unitMineSpeedMultiplier = f, () -> teams.unitMineSpeedMultiplier);
+                in.number("@rules.unitbuildspeedmultiplier", f -> teams.unitBuildSpeedMultiplier = f, () -> teams.unitBuildSpeedMultiplier, 0.001f, 50f);
+                in.number("@rules.unitcostmultiplier", f -> teams.unitCostMultiplier = f, () -> teams.unitCostMultiplier);
+                in.number("@rules.unithealthmultiplier", f -> teams.unitHealthMultiplier = f, () -> teams.unitHealthMultiplier);
+
+                if(!in.current.hasChildren()){
+                    teamRules.clear();
+                }else{
+                    wasCurrent.add(teamRules).row();
+                }
+
+                in.current = wasCurrent;
+            }, () -> shown[0]).left().growX().row();
         });
     }
 }

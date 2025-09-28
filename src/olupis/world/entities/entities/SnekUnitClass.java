@@ -8,7 +8,7 @@ public class SnekUnitClass extends CrawlUnit{
 
     @Override
     public int classId(){
-        return NyfUnitMapper.tonkNaval;
+        return NyfUnitTeamMapper.tonkNaval;
     }
 
     @Override

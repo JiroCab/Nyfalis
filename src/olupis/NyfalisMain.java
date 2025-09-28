@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.scene.style.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.Time;
 import mindustry.*;
 import mindustry.ai.*;
 import mindustry.content.*;
@@ -46,7 +47,7 @@ public class NyfalisMain extends Mod{
     public void loadContent(){
         incompatible = !(Version.number == 7 && Objects.equals(Version.type, "official"));
 
-        NyfUnitMapper.load();
+        NyfUnitTeamMapper.load();
         NyfalisShaders.LoadShaders();
         NyfalisShaders.LoadCacheLayer(); //idk when to load this so it 1st -Rushie
         NyfalisItemsLiquid.LoadItems();
@@ -103,8 +104,6 @@ public class NyfalisMain extends Mod{
             if(headless)return;
             NyfalisStartUpUis.rebuildDebugTable();
 
-            //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
-            if( Core.settings.getBool("nyfalis-debug")) NyfalisStartUpUis.buildDebugUI(Vars.ui.hudGroup);
             soundHandler.replaceSoundHandler();
         });
 
@@ -134,6 +133,18 @@ public class NyfalisMain extends Mod{
             NyfalisSettingsDialog.AddNyfalisSoundSettings();
             if(Core.settings.getBool("nyfalis-disclaimer"))NyfalisStartUpUis.disclaimerDialog();
             NyfalisStartUpUis.saveDisclaimerDialog();
+            NyfalisStartUpUis.buildDebugUI(Vars.ui.hudGroup);
+
+            //Thank you wmf for telling me this exists
+            //pause menu
+            NyfalisStartUpUis.nyfAdditionalRules(Reflect.get(ui.paused, "rulesDialog"));
+            //main menu custom game
+            NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.custom, "dialog"), "dialog"));
+            //editor > custom game
+            NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.editor, "playtestDialog"), "dialog"));
+            //editor > info > rules
+            NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.editor, "infoDialog"), "ruleInfo"));
+
 
             Vars.ui.planet.shown(() -> {
                 if(Core.settings.getBool("nyfalis-space-sfx")) Core.audio.play(NyfalisSounds.spaces.random(), Core.settings.getInt("ambientvol", 100) / 100f, 1, 0, false);
@@ -155,12 +166,6 @@ public class NyfalisMain extends Mod{
                 //ui.content.show(NyfalisUnits.resolute);
             }
             NyfalisClassMap.load(this.getClass().getPackage().getName());
-            /*For those people who don't like the name/icon or overwrites in general*/
-            if(Core.settings.getBool("nyfalis-green-icon")) Team.green.emoji = "\uf7a6";
-            if(Core.settings.getBool("nyfalis-green-name")) Team.green.name = "nyfalis-green";
-            /* uncomment when name/icon is final
-            if(Core.settings.getBool("nyfalis-blue-icon")) Team.green.name = "";
-            if(Core.settings.getBool("nyfalis-blue-name")) Team.green.name = "nyfalis-blue";*/
         });
 
         Events.on(ServerLoadEvent.class, e-> globalLoadEvent());
@@ -374,6 +379,7 @@ public class NyfalisMain extends Mod{
         NyfalisBlocks.NyfalisBlocksPlacementFix();
         nyfalisSettings = new NyfalisSettingsDialog();
         if(!headless){
+            NyfUnitTeamMapper.loadTeam();
 
             NyfalisColors.infoPanel = (TextureRegionDrawable) Tex.whiteui;
             NyfalisColors.infoPanel = (TextureRegionDrawable) NyfalisColors.infoPanel.tint(Pal.darkerGray);

@@ -17,7 +17,7 @@ public class TonkNavalUnitClass extends LegsUnit implements Hitboxc{
 
     @Override
     public int classId(){
-        return NyfUnitMapper.tonkNaval;
+        return NyfUnitTeamMapper.tonkNaval;
     }
 
     @Override

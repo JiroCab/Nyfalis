@@ -114,7 +114,7 @@ public class NyfalisPlanets {
             r.unitCrashDamageMultiplier = 0.25f;
 
             r.bannedBlocks.clear();
-            r.waveTeam = Team.green;
+            r.waveTeam = NyfUnitTeamMapper.verdantTeam;
 
             r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
             r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = r.hideBannedBlocks = true;

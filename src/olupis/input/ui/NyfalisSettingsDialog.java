@@ -58,8 +58,6 @@ public class NyfalisSettingsDialog {
             table.checkPref("nyfalis-rainbow-music", false);
 
             table.pref(new CollapserSetting("div-visuals", 6));
-            table.checkPref("nyfalis-green-icon", true);
-            table.checkPref("nyfalis-green-name", true);
             table.checkPref("nyfalis-cloud-shadows", true);
             table.checkPref("nyfalis-cloud-shadows-others", false);
             table.checkPref("nyfalis-qolTreeTrans", true);

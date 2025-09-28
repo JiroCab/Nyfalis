@@ -33,7 +33,7 @@ public class LeggedPayloadUnitClass extends LegsUnit implements Payloadc{
 
     @Override
     public int classId(){
-        return NyfUnitMapper.LeggedPayload;
+        return NyfUnitTeamMapper.LeggedPayload;
     }
 
 

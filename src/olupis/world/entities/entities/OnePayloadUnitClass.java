@@ -17,7 +17,7 @@ public class OnePayloadUnitClass extends PayloadUnit{
 
     @Override
     public int classId(){
-        return NyfUnitMapper.OnePayloadUnit;
+        return NyfUnitTeamMapper.OnePayloadUnit;
     }
 
     @Override
