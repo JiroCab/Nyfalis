@@ -61,7 +61,7 @@ import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisUnits.*;
 
 public class NyfalisBlocks {
-        //region Blocks Variables
+    //region Blocks Variables
     public static Block
         //environment
         /*Ores / SpreadingOres / Overlays */
@@ -126,7 +126,7 @@ public class NyfalisBlocks {
         heavyMine,fragMine,glitchMine,mossMine,
         coreRemnant, coreEmergent, corePrime, coreApex, coreAscendant, coreParagon, fortifiedVault, fortifiedContainer, deliveryCannon, deliveryTerminal, deliveryAccelerator, deliveryReciver,
         mendFieldProjector, taurus, lamp, ladar, search,
-        cutboi, superextendocutboi,
+        cutboi,
 
         fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
 

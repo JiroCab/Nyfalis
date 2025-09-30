@@ -20,12 +20,16 @@ import com.xpdustry.toxopid.spec.ModPlatform
 repositories{
     mavenCentral()
     maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
+    maven{ url "https://maven.xpdustry.com/mindustry" }
     maven { url 'https://jitpack.io' }
 }
 
+
+
+
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v152'
+    mindustryVersion = 'v152.2'
     jabelVersion = "93fde537c7"
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
@@ -52,6 +56,7 @@ dependencies{
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
     //compileOnly(toxopid.dependencies.mindustryCore)
     compileOnly(toxopid.dependencies.arcCore)
+    compileOnly 'com.github.EB-wilson:TooManyItems:2.5.1'
 }
 
 

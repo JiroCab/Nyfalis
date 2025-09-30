@@ -41,7 +41,7 @@ public class Replicator extends PayloadBlock {
 
         //size = 4;
         update = outputsPayload = rotate = noUpdateDisabled = clearOnDoubleTap = teamPassable = commandable = configurable = solid = true;
-        hasPower = quickRotate = destructible =  targetable = false;
+        hasPower = quickRotate = destructible =  targetable = destructible =false;
         //make sure to display large units.
 
         clipSize = 120;

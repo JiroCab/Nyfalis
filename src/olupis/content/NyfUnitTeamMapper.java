@@ -77,7 +77,7 @@ public class  NyfUnitTeamMapper{
             page = 0;
         }};
         fonts.each(f -> f.getData().setGlyph(ch, glyph));
-        
+
         team.emoji = Iconc.statusCorroded + "";
 
 

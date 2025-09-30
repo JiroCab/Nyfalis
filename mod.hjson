@@ -29,3 +29,6 @@ hidden : false
 java: true
 
 hideBrowser: false
+
+# Tmi stuff
+ recipeEntry: "olupis.tmi.NyfTmiHandler"
