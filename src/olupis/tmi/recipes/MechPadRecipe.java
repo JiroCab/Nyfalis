@@ -17,9 +17,11 @@ public class MechPadRecipe extends RecipeParser<MechPad>{
         return block instanceof MechPad;
     }
 
+    @NotNull
     @Override
-    public Seq<Recipe> parse(MechPad factory){
-        Recipe recipe = new Recipe(RecipeType.factory, getWrap(factory), 1);
+    public Seq<Recipe> parse(@NotNull MechPad factory){
+        Recipe recipe = new Recipe(RecipeType.factory, getWrap(factory), 0);
+        if(factory.consumesPower && factory.consPower != null )recipe.addMaterialFloat(PowerMark.INSTANCE, factory.consPower.usage);
         recipe.addProductionInteger(getWrap(factory.type), 1);
         return Seq.with(recipe);
     }

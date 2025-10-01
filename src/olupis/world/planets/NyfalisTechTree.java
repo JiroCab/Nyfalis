@@ -441,7 +441,7 @@ public class NyfalisTechTree {
                 });
 
                 node(unitReplicatorSmall, Seq.with(new Objectives.OnSector(terrarootCaves)),()->{
-                    node(construct, Seq.with(new Objectives.Research(componentPrinter), new Objectives.OnSector(dyingForest)), ()->{
+                    node(construct, Seq.with(new Objectives.Research(componentFabricator), new Objectives.OnSector(dyingForest)), ()->{
                         node(groundConstruct, Seq.with(new Objectives.Research(iron)), () ->{
                             node(arialConstruct, Seq.with(new Objectives.SectorComplete(dyingForest)), () ->{
                                 node(navalConstruct, () ->{
@@ -461,7 +461,7 @@ public class NyfalisTechTree {
 
                     });
 
-                    node(componentPrinter,  Seq.with(new Objectives.Research(ironRouter)), () -> {
+                    node(componentFabricator,  Seq.with(new Objectives.Research(ironRouter)), () -> {
                         node(computeModulePlan);
                         node(patchyShielding, () -> {
                             node(amplePlating);

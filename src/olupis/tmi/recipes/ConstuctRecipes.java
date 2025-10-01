@@ -10,6 +10,7 @@ import olupis.world.blocks.defence.*;
 import olupis.world.entities.bullets.*;
 import org.jetbrains.annotations.*;
 import tmi.recipe.*;
+import tmi.recipe.types.*;
 
 import java.util.*;
 
@@ -20,6 +21,7 @@ public class ConstuctRecipes extends RecipeParser<ItemUnitTurret>{
         return block instanceof ItemUnitTurret;
     }
 
+    @NotNull
     @Override
     public Seq<Recipe> parse(ItemUnitTurret factory){
         Seq <Recipe> out = new Seq<>();
@@ -34,9 +36,10 @@ public class ConstuctRecipes extends RecipeParser<ItemUnitTurret>{
             if(factory.hasAlternate && s.alternateType != null) alts.put(a.key, s.alternateType);
             Recipe recipe = new Recipe(RecipeType.factory, getWrap(factory), factory.reload *  a.value.reloadMultiplier);
 
-            for(ItemStack st :  factory.requiredItems ) recipe.addMaterial(getWrap(st.item), st.amount);
+            for(ItemStack st :  factory.requiredItems ) recipe.addMaterialInteger(getWrap(st.item), st.amount);
             recipe.addProductionInteger(getWrap(s.spawnUnit), 1);
-            recipe.addMaterial(getWrap(a.key), 1);
+            if(!(factory instanceof PowerUnitTurret p) || a.key != p.internalItem)recipe.addMaterialInteger(getWrap(a.key), 1);
+            if(factory.consumesPower && factory.consPower != null )recipe.addMaterialFloat(PowerMark.INSTANCE, factory.consPower.usage * 60);
             out.add(recipe);
         }
 
@@ -47,9 +50,10 @@ public class ConstuctRecipes extends RecipeParser<ItemUnitTurret>{
             }
             Recipe recipe = new Recipe(RecipeType.factory, getWrap(factory), factory.reload *  a.value.reloadMultiplier);
 
-            for(ItemStack st :  factory.requiredAlternate ) recipe.addMaterial(getWrap(st.item), st.amount);
+            for(ItemStack st :  factory.requiredAlternate ) recipe.addMaterialInteger(getWrap(st.item), st.amount);
             recipe.addProductionInteger(getWrap(s.spawnUnit), 1);
-            recipe.addMaterial(getWrap(a.key), 1);
+            if(!(factory instanceof PowerUnitTurret p) || a.key != p.internalItem)recipe.addMaterialInteger(getWrap(a.key), 1);
+            if(factory.consumesPower && factory.consPower != null )recipe.addMaterialFloat(PowerMark.INSTANCE, factory.consPower.usage * 60);
             out.add(recipe);}
 
 

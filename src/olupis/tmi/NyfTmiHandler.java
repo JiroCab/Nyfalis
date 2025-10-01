@@ -11,11 +11,13 @@ public class NyfTmiHandler implements RecipeEntry{
         TooManyItems.recipesManager.registerParser(new MechPadRecipe());
         TooManyItems.recipesManager.registerParser(new ConstuctRecipes());
         TooManyItems.recipesManager.registerParser(new HeadAcheRecipes());
-        Log.info("Nyfalis & Tmi has been loaded");
+        TooManyItems.recipesManager.registerParser(new UnitFabricatorRecipes());
+        TooManyItems.recipesManager.registerParser(new PropellerCoreRecipes());
+        Log.info("Nyfalis filled TMI with their recipes ;3c");
     }
 
     @Override
     public void afterInit(){
-        Log.info("Nyfalis Recipes loaded owo");
+
     }
 }

@@ -119,7 +119,7 @@ public class NyfalisBlocks {
 
         rustyWall, rustyWallLarge, rustyWallHuge, rustyWallGigantic, ironWall, ironWallLarge, rustyScrapWall, rustyScrapWallLarge, rustyScrapWallHuge, rustyScrapWallGigantic, rustyScrapWallHumongous, quartzWall, quartzWallLarge, cobaltWall, cobaltWallLarge,
 
-        rustElectrolyzer, ironSieve, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible, componentPrinter,
+        rustElectrolyzer, ironSieve, rustEngraver, pulverPress, discardDriver, siliconKiln, inductionSmelter, compoundCrucible, componentFabricator,
 
         construct, arialConstruct, groundConstruct, navalConstruct, alternateArticulator, adaptiveFabricator, alternateAmalgamator,ultimateAssembler, fortifiedPayloadConveyor, fortifiedPayloadRouter, repairPin, scoutPad, blackHoleContainer,
 
@@ -1522,7 +1522,8 @@ public class NyfalisBlocks {
         patchyShieldingPlan = new FactoryPlan("patchy-shielding-plan", "", 60f* 10f, with(copper, 5, rustyIron, 5), with(patchyShielding, 1), 1f, 0);
         amplePlatingPlan = new FactoryPlan("ample_plating-plan", "", 60f* 10f, with(aluminum, 5), with(amplePlating, 1), 80f / 60f, 0);
 
-        componentPrinter = new HeadacheCrafter("component-printer"){{
+        //componentFabricator -> used for all things items for unit production
+        componentFabricator = new HeadacheCrafter("component-fabricator"){{
             outputsPower = true;
             craftEffect = Fx.steamCoolSmoke;
             size = 3;
@@ -1548,7 +1549,6 @@ public class NyfalisBlocks {
             requirements(Category.crafting, with(iron, 25, lead, 25, copper, 25, quartz, 50));
         }};
 
-        //componentPrinter -> used for all things items for unit production
 
         ironSieve  = new Separator("iron-sieve"){{
             //not to be confused with iron shiv
