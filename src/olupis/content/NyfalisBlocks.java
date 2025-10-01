@@ -136,8 +136,8 @@ public class NyfalisBlocks {
     public static UnstablePowerTurret cascade;
     public static Replicator unitReplicator, unitReplicatorSmall;
     public static NyfLegacyBlock  hydrochloricGraphitePress, siliconArcSmelter, mushBlender;
-    public static FactoryPlan emptyPlan,
-        computeModulePlan, patchyShieldingPlan, amplePlatingPlan,
+    public static FactoryPlan
+        copperWirePlan, ironFramePlan, ceramicPlatingPlan,
         graphitePlan, siliconPlan;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;
@@ -1518,16 +1518,16 @@ public class NyfalisBlocks {
             );
         }};
 
-        computeModulePlan = new FactoryPlan("compute-module-plan", "", 60f* 10f, with(copper, 3, lead, 3), with(computeModule, 1), 1f, 0);
-        patchyShieldingPlan = new FactoryPlan("patchy-shielding-plan", "", 60f* 10f, with(copper, 5, rustyIron, 5), with(patchyShielding, 1), 1f, 0);
-        amplePlatingPlan = new FactoryPlan("ample_plating-plan", "", 60f* 10f, with(aluminum, 5), with(amplePlating, 1), 80f / 60f, 0);
+        copperWirePlan = new FactoryPlan("compute-module-plan", "", 60f* 10f, with(copper, 3, lead, 3), with(copperWire, 1), 1f, 0);
+        ironFramePlan = new FactoryPlan("patchy-shielding-plan", "", 60f* 10f, with(copper, 5, rustyIron, 5), with(ironFrame, 1), 1f, 0);
+        ceramicPlatingPlan = new FactoryPlan("ample_plating-plan", "", 60f* 10f, with(aluminum, 5), with(ceramicPlating, 1), 80f / 60f, 0);
 
         //componentFabricator -> used for all things items for unit production
         componentFabricator = new HeadacheCrafter("component-fabricator"){{
             outputsPower = true;
             craftEffect = Fx.steamCoolSmoke;
             size = 3;
-            plans = Seq.with(computeModulePlan, patchyShieldingPlan, amplePlatingPlan);
+            plans = Seq.with(copperWirePlan, ironFramePlan, ceramicPlatingPlan);
             drawer = new DrawMulti(new DrawDefault(),new PlanDrawer());
             requirements(Category.crafting, with(iron, 25, lead, 50, copper, 50, rustyIron, 50));
         }};
@@ -1634,7 +1634,7 @@ public class NyfalisBlocks {
             alwaysShooting = unitFactory = true;
             consumePower(80f / 60f);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            requiredItems = with(computeModule, 6, patchyShielding, 6);
+            requiredItems = with(copperWire, 6, ironFrame, 6);
             researchCost = with(lead, 1000, iron, 600, rustyIron, 1000);
             requirements(Category.units, with(iron, 50, lead, 50, rustyIron, 50));
         }};
@@ -1676,8 +1676,8 @@ public class NyfalisBlocks {
                 }}
             );
             alwaysShooting = unitFactory = true;
-            requiredItems = with(computeModule, 3, patchyShielding, 3);
-            requiredAlternate = with(computeModule, 10, amplePlating, 10);
+            requiredItems = with(copperWire, 3, ironFrame, 3);
+            requiredAlternate = with(copperWire, 10, ceramicPlating, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(lead, 800, copper, 800,  iron, 600);
             requirements(Category.units, with(iron, 100, lead, 100, copper, 100));
@@ -1708,8 +1708,8 @@ public class NyfalisBlocks {
                     }};
                 }}
             );
-            requiredItems = with(computeModule, 3, patchyShielding, 3);
-            requiredAlternate = with(computeModule, 10, amplePlating, 10);
+            requiredItems = with(copperWire, 3, ironFrame, 3);
+            requiredAlternate = with(copperWire, 10, ceramicPlating, 10);
             alwaysShooting = hoverShowsSpawn = arrowShootPos = unitFactory = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(rustyIron, 500, copper, 500,  iron, 300);
@@ -1752,8 +1752,8 @@ public class NyfalisBlocks {
                     }};
                 }}
             );
-            requiredItems = with(computeModule, 3, patchyShielding, 3);
-            requiredAlternate = with(computeModule, 10, amplePlating, 10);
+            requiredItems = with(copperWire, 3, ironFrame, 3);
+            requiredAlternate = with(copperWire, 10, ceramicPlating, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             alwaysShooting = hoverShowsSpawn = floating = arrowShootPos = unitFactory = true;
             researchCost = with(lead, 1500, graphite, 500,  iron, 800);
@@ -1785,7 +1785,7 @@ public class NyfalisBlocks {
             size = 6;
             liquidCapacity = 90;
             consumePower(5f);
-            consumeItems(with(computeModule, 40, patchyShielding, 40, amplePlating, 20));
+            consumeItems(with(copperWire, 40, ironFrame, 40, ceramicPlating, 20));
             consume(new ConsumeLubricant(45f / 60f));
 
             upgrades.addAll(

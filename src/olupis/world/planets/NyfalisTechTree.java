@@ -462,9 +462,9 @@ public class NyfalisTechTree {
                     });
 
                     node(componentFabricator,  Seq.with(new Objectives.Research(ironRouter)), () -> {
-                        node(computeModulePlan);
-                        node(patchyShielding, () -> {
-                            node(amplePlating);
+                        node(copperWirePlan);
+                        node(ironFrame, () -> {
+                            node(ceramicPlating);
                         });
                     });
 

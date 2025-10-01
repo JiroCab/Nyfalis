@@ -17,7 +17,7 @@ public class NyfalisItemsLiquid {
         // manufactured
         aluminum, ash,
         //unit component
-        computeModule, patchyShielding, amplePlating,
+        ironFrame, copperWire, crudeBattery, basicRotor, ironPlate, graphiteFrame, siliconCircuit, ceramicPlating, graphiteCell, electricMotor,
         //internal
         powerAmmoItem;
 
@@ -68,19 +68,59 @@ public class NyfalisItemsLiquid {
         //endregion
         //region unit component
 
-        computeModule = new Item("compute-module", Color.valueOf("989AA4")) {{
+
+        ironFrame = new Item("iron-frame", Color.valueOf("989AA4")) {{
             hardness = 1;
             healthScaling = 0.30f;
         }};
 
-        patchyShielding = new Item("patchy-shielding", Color.valueOf("989AA4")) {{
+        copperWire = new Item("copper-wire", Color.valueOf("989AA4")) {{
             hardness = 1;
             healthScaling = 0.30f;
         }};
 
-        amplePlating = new Item("ample-plating", Color.valueOf("989AA4")) {{
+        crudeBattery = new Item("crude-battery", Color.valueOf("989AA4")) {{
+            hardness = 1;
+            healthScaling = 0.30f;
+            explosiveness = 0.25f;
+        }};
+
+        basicRotor = new Item("basic-rotor", Color.valueOf("989AA4")) {{
+            hardness = 1;
+            healthScaling = 0.30f;
+            explosiveness = 0.25f;
+        }};
+
+        ironPlate = new Item("iron-plate", Color.valueOf("989AA4")) {{
             hardness = 2;
             healthScaling = 0.60f;
+        }};
+
+        graphiteFrame = new Item("graphite-frame", Color.valueOf("989AA4")) {{
+            hardness = 2;
+            healthScaling = 0.60f;
+        }};
+
+        ceramicPlating = new Item("ceramic-plating", Color.valueOf("989AA4")) {{
+            hardness = 2;
+            healthScaling = 0.60f;
+        }};
+
+        siliconCircuit = new Item("silicon-circuit", Color.valueOf("989AA4")) {{
+            hardness = 2;
+            healthScaling = 0.60f;
+        }};
+
+        graphiteCell = new Item("graphite-cell", Color.valueOf("989AA4")) {{
+            hardness = 2;
+            healthScaling = 0.60f;
+            explosiveness = 0.45f;
+        }};
+
+        electricMotor = new Item("electric-motor", Color.valueOf("989AA4")) {{
+            hardness = 2;
+            healthScaling = 0.60f;
+            explosiveness = 0.45f;
         }};
 
 
