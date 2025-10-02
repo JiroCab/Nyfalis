@@ -26,7 +26,6 @@ public class NyfalisItemsLiquid {
 
     public static  void LoadItems(){
         //region Items
-        /*Texture is from Tech reborn: https://github.com/TechReborn/TechReborn/blob/1.19/src/main/resources/assets/techreborn/textures/item/part/compressed_plantball.png*/
         condensedBiomatter = new Item("condensed-biomatter", Color.valueOf("5a9e70")) {{
             buildable = false;
 

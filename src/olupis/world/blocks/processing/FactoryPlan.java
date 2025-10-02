@@ -21,6 +21,7 @@ public class FactoryPlan extends Block{
     public @Nullable LiquidStack[] outputLiquid, inputLiquid;
     public float powerIn = 0, powerOut = 0;
     public @Nullable String overlay;
+    public TextureRegion overlayRegion, plan;
 
     public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
         super(name);
@@ -64,6 +65,7 @@ public class FactoryPlan extends Block{
     public FactoryPlan(String name){
         super(name);
         this.time = -Float.MAX_VALUE;
+        generateIcons = true;
     }
 
     public float time(){
@@ -72,18 +74,19 @@ public class FactoryPlan extends Block{
 
 
     @Override
+    protected TextureRegion[] icons(){
+        return new TextureRegion[] {plan, overlayRegion};
+    }
+
+    @Override
     public void load(){
         super.load();
 
         description = Core.bundle.get("block.olupis-factory-plan-description");
         if(Objects.equals(localizedName, name))localizedName = localizedName.replace("olupis-", Iconc.crafting + " ");
 
-        if(time == -Float.MAX_VALUE) return;
-        TextureRegion out = Core.atlas.find(name);
-        if(!Core.atlas.isFound(out)) out = getDisplayed().uiIcon;
-        fullIcon = uiIcon = out;
-        if(!Core.atlas.isFound(region)) region = fullIcon;
-
+        overlayRegion =  Core.atlas.find("olupis-plan-overlay");
+        plan = Core.atlas.find(getDisplayed().name);
     }
 
     public UnlockableContent getDisplayed(){

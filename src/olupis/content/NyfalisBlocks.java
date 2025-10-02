@@ -137,7 +137,8 @@ public class NyfalisBlocks {
     public static Replicator unitReplicator, unitReplicatorSmall;
     public static NyfLegacyBlock  hydrochloricGraphitePress, siliconArcSmelter, mushBlender;
     public static FactoryPlan
-        copperWirePlan, ironFramePlan, ceramicPlatingPlan,
+        copperWirePlan, ironFramePlan, crudeBatteryPlan, ironPlatePlan, basicRotorPlan,
+        graphiteFramePlan, ceramicPlatingPlan, siliconCircuitPlan, electricMotorPlan, graphiteCellPlan,
         graphitePlan, siliconPlan;
 
     public static Color nyfalisBlockOutlineColour = NyfalisColors.contentOutline;
@@ -1518,16 +1519,24 @@ public class NyfalisBlocks {
             );
         }};
 
-        copperWirePlan = new FactoryPlan("compute-module-plan", "", 60f* 10f, with(copper, 3, lead, 3), with(copperWire, 1), 1f, 0);
-        ironFramePlan = new FactoryPlan("patchy-shielding-plan", "", 60f* 10f, with(copper, 5, rustyIron, 5), with(ironFrame, 1), 1f, 0);
-        ceramicPlatingPlan = new FactoryPlan("ample_plating-plan", "", 60f* 10f, with(aluminum, 5), with(ceramicPlating, 1), 80f / 60f, 0);
+        copperWirePlan = new FactoryPlan("copper-wire-plan", "", 60f* 10f, with(copper, 2), with(copperWire, 1), 1f, 0);
+        ironFramePlan = new FactoryPlan("iron-frame-plan", "", 60f* 10f, with(iron, 1, rustyIron, 3), with(ironFrame, 1), 1f, 0);
+        crudeBatteryPlan = new FactoryPlan("crude-battery-plan","" ,60f* 10f, with(lead, 2, copper, 2), with(crudeBattery, 1), 1f, 0);
+        basicRotorPlan = new FactoryPlan("basic-rotor-plan","" ,60f* 10f, with(iron, 2, copper, 1), with(basicRotor, 1), 1f, 0);
+        ironPlatePlan = new FactoryPlan("iron-plate-plan","" ,60f* 10f, with(iron, 2, lead, 1), with(ironPlate, 1), 1f, 0);
+
+        graphiteFramePlan = new FactoryPlan("graphite-frame-plan", "", 60f* 10f, with(ironPlate, 2, graphite, 1), with(graphiteFrame, 1), 200f / 60f, 0);
+        siliconCircuitPlan = new FactoryPlan("silicon-circuit-plan", "", 60f* 10f, with(copperWire, 5, silicon, 1), with(siliconCircuit, 2), 200f / 60f, 0);
+        ceramicPlatingPlan = new FactoryPlan("ceramic-plate-plan", "", 60f* 10f, with(ironPlate, 2, ash, 3), with(ceramicPlating, 1), 200f / 60f, 0);
+        graphiteCellPlan = new FactoryPlan("graphite-cell-plan", "", 60f* 10f, with(crudeBattery, 1, graphite, 3), with(graphiteCell, 1), 200f / 60f, 0);
+        electricMotorPlan = new FactoryPlan("electric-motor-plan", "", 60f* 10f, with(basicRotor, 1, iron, 3, graphite, 2 ), with(electricMotor, 1), 200f / 60f, 0);
 
         //componentFabricator -> used for all things items for unit production
         componentFabricator = new HeadacheCrafter("component-fabricator"){{
             outputsPower = true;
             craftEffect = Fx.steamCoolSmoke;
             size = 3;
-            plans = Seq.with(copperWirePlan, ironFramePlan, ceramicPlatingPlan);
+            plans = Seq.with(copperWirePlan, ironFramePlan, crudeBatteryPlan, ironPlatePlan, basicRotorPlan, graphiteFramePlan, ceramicPlatingPlan, siliconCircuitPlan, electricMotorPlan, graphiteCellPlan);
             drawer = new DrawMulti(new DrawDefault(),new PlanDrawer());
             requirements(Category.crafting, with(iron, 25, lead, 50, copper, 50, rustyIron, 50));
         }};
@@ -1634,7 +1643,7 @@ public class NyfalisBlocks {
             alwaysShooting = unitFactory = true;
             consumePower(80f / 60f);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            requiredItems = with(copperWire, 6, ironFrame, 6);
+            requiredItems = with(ironFrame, 3, copperWire, 3, crudeBattery, 3, basicRotor, 3);
             researchCost = with(lead, 1000, iron, 600, rustyIron, 1000);
             requirements(Category.units, with(iron, 50, lead, 50, rustyIron, 50));
         }};
@@ -1676,8 +1685,8 @@ public class NyfalisBlocks {
                 }}
             );
             alwaysShooting = unitFactory = true;
-            requiredItems = with(copperWire, 3, ironFrame, 3);
-            requiredAlternate = with(copperWire, 10, ceramicPlating, 10);
+            requiredItems = with(ironFrame, 1, copperWire, 1, crudeBattery, 1,basicRotor ,1);
+            requiredAlternate = with(ironPlate, 3, copperWire, 3, crudeBattery, 3, basicRotor, 3);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(lead, 800, copper, 800,  iron, 600);
             requirements(Category.units, with(iron, 100, lead, 100, copper, 100));
@@ -1708,8 +1717,8 @@ public class NyfalisBlocks {
                     }};
                 }}
             );
-            requiredItems = with(copperWire, 3, ironFrame, 3);
-            requiredAlternate = with(copperWire, 10, ceramicPlating, 10);
+            requiredItems = with(ironFrame, 2, copperWire, 2, crudeBattery, 2);
+            requiredAlternate = with(ironPlate, 3, copperWire, 3, crudeBattery, 3);
             alwaysShooting = hoverShowsSpawn = arrowShootPos = unitFactory = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(rustyIron, 500, copper, 500,  iron, 300);
@@ -1752,8 +1761,8 @@ public class NyfalisBlocks {
                     }};
                 }}
             );
-            requiredItems = with(copperWire, 3, ironFrame, 3);
-            requiredAlternate = with(copperWire, 10, ceramicPlating, 10);
+            requiredItems = with(ironFrame, 2, copperWire, 1, crudeBattery, 1, basicRotor ,1);
+            requiredAlternate = with(ironPlate, 3, copperWire, 3, crudeBattery, 3, basicRotor, 3);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             alwaysShooting = hoverShowsSpawn = floating = arrowShootPos = unitFactory = true;
             researchCost = with(lead, 1500, graphite, 500,  iron, 800);

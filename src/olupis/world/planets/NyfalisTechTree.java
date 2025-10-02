@@ -461,16 +461,10 @@ public class NyfalisTechTree {
 
                     });
 
-                    node(componentFabricator,  Seq.with(new Objectives.Research(ironRouter)), () -> {
-                        node(copperWirePlan);
-                        node(ironFrame, () -> {
-                            node(ceramicPlating);
-                        });
-                    });
-
                     node(unitReplicator,  Seq.with(new Objectives.OnSector(dyingForest)),()->{
 
                     });
+
                     node(fortifiedPayloadConveyor, Seq.with(new Objectives.OnSector(abandonedPayloadTerminal)), () -> {
                         node(fortifiedPayloadConveyor, () -> {
                             node(scoutPad,  Seq.with(
@@ -481,6 +475,33 @@ public class NyfalisTechTree {
                             });
                         });
                         });
+
+                    node(componentFabricator,  Seq.with(new Objectives.Research(ironRouter)), () -> {
+                        node(ironFramePlan, () -> {
+                            node(graphiteFramePlan, ()->{
+
+                            });
+                        });
+                        node(crudeBatteryPlan, () -> {
+                            node(graphiteCellPlan, () -> {
+
+                            });
+                        });
+                        node(copperWirePlan, ()-> {
+                            node(siliconCircuitPlan,  () ->{
+
+                            });
+                        });
+                        node(basicRotorPlan, () -> {
+                            node(electricMotorPlan, () ->{
+
+                            });
+                        });
+
+                        node(ironPlatePlan, () -> {
+                            node(ceramicPlatingPlan);
+                        });
+                    });
                 });
 
                 node(fortifiedMessageBlock, Seq.with(new Objectives.Research(ironRouter)), ()->{
@@ -500,6 +521,16 @@ public class NyfalisTechTree {
                         nodeProduce(scrap, () ->{
 
                         });
+                        nodeProduce(ironFrame, () -> {
+                            nodeProduce(graphiteFrame, () -> {
+
+                            });
+                        });
+                        nodeProduce(copperWire, () ->{
+                            nodeProduce(siliconCircuit, () ->{
+
+                            });
+                        });
                     });
                     nodeProduce(lead, () ->{
                         nodeProduce(sand, () ->{
@@ -507,8 +538,23 @@ public class NyfalisTechTree {
 
                             });
                         });
+                        nodeProduce(crudeBattery, () ->{
+                            nodeProduce(graphiteCell, () ->{
+
+                            });
+                        });
+                        nodeProduce(ironPlate, () ->{
+                            nodeProduce(graphitePlan, () ->{
+
+                            });
+                        });
                     });
                     nodeProduce(iron, () ->{
+                        nodeProduce(basicRotor, () ->{
+                            nodeProduce(electricMotor, () -> {
+
+                            });
+                        });
                         nodeProduce(alcoAlloy, ()->{
                             nodeProduce(aluminum, () -> {
 

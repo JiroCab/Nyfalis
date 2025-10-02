@@ -48,7 +48,7 @@ public class NyfalisTurrets {
         fracture = new NyfalisItemTurret("fracture"){{
             targetAir = false;
             ammo(
-                rustyIron,  new CappedIntervalBullet(4.5f, 20){{
+                rustyIron,  new CappedIntervalBullet(4.5f, 18){{
                     width = 4f;
                     height = 20f;
                     lifetime = 60f;
