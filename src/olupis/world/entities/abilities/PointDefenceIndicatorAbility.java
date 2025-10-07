@@ -24,6 +24,7 @@ public class PointDefenceIndicatorAbility  extends Ability{
     public PointDefenceIndicatorAbility(float range, int type){
         this.range = range;
         this.type = type;
+        display = false;
     }
 
     public PointDefenceIndicatorAbility(){

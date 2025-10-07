@@ -17,7 +17,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.campaign.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
@@ -35,14 +34,12 @@ import mindustry.world.meta.*;
 import olupis.input.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
-import olupis.world.blocks.distribution.LimitedLandingPad.*;
 import olupis.world.blocks.drawers.*;
 import olupis.world.blocks.environment.*;
 import olupis.world.blocks.misc.*;
 import olupis.world.blocks.power.*;
 import olupis.world.blocks.processing.*;
 import olupis.world.blocks.turret.*;
-import olupis.world.blocks.turret.NyfalisItemTurret.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.consumer.*;
 import olupis.world.entities.bullets.*;
@@ -945,7 +942,8 @@ public class NyfalisBlocks {
         //region Distribution
         rustyIronConveyor = new VaraintConveryor("rusty-iron-conveyor"){{
             variants = 4;
-            health = 45;
+            health = 60;
+            armor = 1;
             speed = 0.025f;
             displayedSpeed = 3.8f;
             buildCostMultiplier = 1.5f;
@@ -2801,9 +2799,11 @@ public class NyfalisBlocks {
         //special
         scarabRadar = new Ladar("scarab-block-radar"){{
             underBullets = true;
-            health = 10;
+            health = 100;
+            armor = -2;
             size = 1;
             discoveryTime = 3400;
+            decayDelay =Mathf.round(Time.toMinutes * 6f);
             glowColor = Color.valueOf("3ed09a");
             outlineColor = NyfalisColors.contentOutline;
             requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.with(new Object[]{Items.silicon, 1}));

@@ -9,11 +9,13 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
 import arc.util.*;
+import mindustry.ai.types.*;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
+import mindustry.entities.units.*;
 import mindustry.game.Team;
 import mindustry.gen.*;
 import mindustry.graphics.Drawf;
@@ -126,7 +128,13 @@ public class MicroWaveFieldAbility extends Ability {
                 });
             }
 
-            all.sort(h -> h.dst2(rx, ry));
+
+            all.sort(h -> h.dst2(rx, ry) + Mathf.randomSeed( unit.id, 0f, 20f));
+            if(unit.controller() instanceof CommandAI c && c.attackTarget instanceof Healthc h && all.contains(h)){
+                all.remove(h);
+                all.add(h);
+            }
+
             int len = Math.min(all.size, maxTargets);
             for(int i = 0; i < len; i++){
                 Healthc other = all.get(i);

@@ -49,6 +49,11 @@ public class SnekWeapon extends NyfalisWeapon {
 
                     wx = seg(unit)[0] + unit.x + Angles.trnsx(rotation, x, y) + Angles.trnsx(weaponRotation, 0, -realRecoil),
                     wy = seg(unit)[1] + unit.y +  Angles.trnsy(rotation, x, y) + Angles.trnsy(weaponRotation, 0, -realRecoil);
+            if(type.drawType == 1 && type.rotationBuffer.containsKey(unit)){
+                wx = type.rotationBuffer.get(unit)[weaponSegmentParent][0];
+                wy = type.rotationBuffer.get(unit)[weaponSegmentParent][1];
+                weaponRotation = type.rotationBuffer.get(unit)[weaponSegmentParent][2] - 90 + (rotate ? mount.rotation : baseRotation);
+            }
 
             if (shadow > 0) {
                 Drawf.shadow(wx, wy, shadow);
@@ -131,11 +136,17 @@ public class SnekWeapon extends NyfalisWeapon {
 
     @Override
     public float mountX(Unit unit){
+        if(unit.type instanceof SnekUnitType snek && snek.drawType == 1 && snek.rotationBuffer.containsKey(unit)){
+            return  snek.rotationBuffer.get(unit)[weaponSegmentParent][0];
+        }
         return super.mountX(unit) + seg(unit)[0];
     }
 
     @Override
     public float mountY(Unit unit){
+        if(unit.type instanceof SnekUnitType snek && snek.drawType == 1 && snek.rotationBuffer.containsKey(unit)){
+            return  snek.rotationBuffer.get(unit)[weaponSegmentParent][1];
+        }
         return super.mountY(unit) + seg(unit)[1];
     }
 }

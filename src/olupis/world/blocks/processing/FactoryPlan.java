@@ -21,7 +21,7 @@ public class FactoryPlan extends Block{
     public @Nullable LiquidStack[] outputLiquid, inputLiquid;
     public float powerIn = 0, powerOut = 0;
     public @Nullable String overlay;
-    public TextureRegion overlayRegion, plan;
+    public TextureRegion overlayRegion;
 
     public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
         super(name);
@@ -38,6 +38,7 @@ public class FactoryPlan extends Block{
         variants = 1;
         update = true;
         rebuildable = false;
+        generateIcons = true;
         requirements(Category.logic, BuildVisibility.worldProcessorOnly, with());
         researchCost = with(NyfalisItemsLiquid.powerAmmoItem, 69);
         if(this.outputLiquid == null)this.outputLiquid = LiquidStack.empty;
@@ -75,7 +76,7 @@ public class FactoryPlan extends Block{
 
     @Override
     protected TextureRegion[] icons(){
-        return new TextureRegion[] {plan, overlayRegion};
+        return new TextureRegion[] {region, overlayRegion};
     }
 
     @Override
@@ -86,7 +87,7 @@ public class FactoryPlan extends Block{
         if(Objects.equals(localizedName, name))localizedName = localizedName.replace("olupis-", Iconc.crafting + " ");
 
         overlayRegion =  Core.atlas.find("olupis-plan-overlay");
-        plan = Core.atlas.find(getDisplayed().name);
+        region = Core.atlas.find(getDisplayed().name);
     }
 
     public UnlockableContent getDisplayed(){

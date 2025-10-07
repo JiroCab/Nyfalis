@@ -36,7 +36,7 @@ public class NyfalisPlanets {
             campaignRules = new NyfCampaignRules();
         }};
 
-        nyfalis = new Planet("olupis", Planets.sun, 1.1f, 3){{
+        nyfalis = new Planet("nyfalis", Planets.sun, 1.1f, 3){{
             allowSectorInvasion = allowLaunchLoadout = false;
             allowWaves = enemyCoreSpawnReplace  = prebuildBase = allowWaveSimulation = hasAtmosphere = true;
 
@@ -114,7 +114,7 @@ public class NyfalisPlanets {
             r.unitCrashDamageMultiplier = 0.25f;
 
             r.bannedBlocks.clear();
-            r.waveTeam = NyfUnitTeamMapper.verdantTeam;
+            r.waveTeam = NyfUnitTeamMapper.verdentTeam;
 
             r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
             r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = r.hideBannedBlocks = true;

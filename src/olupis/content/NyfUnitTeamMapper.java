@@ -14,7 +14,7 @@ import mindustry.ui.*;
 import olupis.world.entities.entities.*;
 
 public class  NyfUnitTeamMapper{
-    public static Team verdantTeam;
+    public static Team verdentTeam;
     public static int LeggedPayload, OnePayloadUnit, tonkNaval, snekUnit;
 
     public static void load(){
@@ -31,7 +31,7 @@ public class  NyfUnitTeamMapper{
     //bc rushie lazy
     public static void loadTeam(){
         //to lazy lmao to get the hex or whatever
-        verdantTeam = newTeam(60, "nyf-verdant", Team.get(60).color);
+        verdentTeam = newTeam(60, "nyf-verdent", Team.get(60).color);
     }
 
     private static Team newTeam(int id, String name, Color color) {

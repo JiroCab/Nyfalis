@@ -724,7 +724,7 @@ public class NyfalisUnits {
             drag = 0.06f;
             accel = 0.08f;
             health = 1300;
-            speed = 1.8f;
+            speed = 2f;
             engineSize = 4f;
             engineOffset = 8f;
             rotateSpeed = 30f;
@@ -743,7 +743,7 @@ public class NyfalisUnits {
                     x = y = 0;
                     shootY = 5f;
                     recoil = 0.5f;
-                    reload = 120;
+                    reload = 150;
                     recoils = 1;
                     top = alternate = mirror = false;
                     rotate = alwaysRotate = true;
@@ -776,14 +776,15 @@ public class NyfalisUnits {
                     }}
                     );
 
-                    bullet = new BasicBulletType(2.2f, 50, "large-bomb"){{
+                    bullet = new BasicBulletType(2.5f, 100, "large-bomb"){{
                         spin = 10f;
                         lifetime = 100f;
                         shrinkX = 20f /60;
                         shrinkY = 30f /60;
                         width = height = 17f;
-                        splashDamage = 80f;
-                        splashDamageRadius = 60f;
+                        splashDamage = 100f;
+                        splashDamageRadius = 80f;
+                        trailEffect = Fx.artilleryTrail;
                         backColor = Color.purple.cpy().add(Color.lightGray);
                         frontColor = Color.blue.cpy().add(Color.gray);
                         hitEffect = despawnEffect = new MultiEffect(NyfalisFxs.highYieldExplosive, NyfalisFxs.highYieldSmoke);
@@ -947,7 +948,7 @@ public class NyfalisUnits {
                     showStatSprite = false;
                     bullet = new BasicBulletType(3f, 12f){{
                         spin = 30f;
-                        lifetime = 30f;
+                        lifetime = 35f;
                         width = height = 7f;
                         splashDamage = 1f;
                         splashDamageRadius = 5f * 0.75f;
@@ -1384,7 +1385,7 @@ public class NyfalisUnits {
             armor = 5;
             hitSize = 12f;
             range = Vars.tilesize * 8;
-            health = 620;
+            health = 700;
             speed = 0.7f;
             engineSize = -1;
             itemOffsetY = 3f;
@@ -1516,12 +1517,13 @@ public class NyfalisUnits {
 
                         }}
                     );
-                    bullet = new MissileBulletType(9.5f, 35f) {{
+                    bullet = new EffectivenessMissleType(9.5f, 80f) {{
                         //no bonus to air or ground
-                        width = 8f;
+                        groundDamageMultiplier = 0.8f;
+                        width = 13f;
                         shrinkX = 0;
                         lifetime = (25 * Vars.tilesize) / speed;
-                        height = 13.5f;
+                        height = 18.5f;
                         trailChance = 0;
                         trailLength = 2;
                         knockback = 1.5f;
@@ -1538,12 +1540,12 @@ public class NyfalisUnits {
                 }}
             );
             setEnginesMirror(new UnitEngine(22 / 4f, -5 / 4f, 2f, 5f));
-            abilities.add(new MicroWaveFieldAbility(20f, 80f, Vars.tilesize * 9.5f, Vars.tilesize * 16f){{
+            abilities.add(new MicroWaveFieldAbility(13f, 80f, Vars.tilesize * 9.5f, Vars.tilesize * 16f){{
                 ideRangeDisplay = false;
                 damageEffect = Fx.none;
                 sectors = 4;
-                maxTargetBoost = 14;
-                maxTargetsGround = 7;
+                maxTargetBoost = 30;
+                maxTargetsGround = 20;
             }});
         }};
 
@@ -1574,7 +1576,7 @@ public class NyfalisUnits {
                 rotate = true;
                 mirror = top = false;
                 shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
-                bullet = new MineAffectedBulletType(2.5f, 20){{
+                bullet = new MineAffectedBulletType(2.5f, 250){{
                     width = 15f;
                     height = 20f;
                     lifetime = 150;
@@ -1590,7 +1592,7 @@ public class NyfalisUnits {
                     hitEffect = despawnEffect = Fx.flakExplosionBig;
 
                     fragBullets = 1;
-                    fragBullet = new DistanceScalingBulletType(90, 70){{
+                    fragBullet = new DistanceScalingBulletType(100, 70){{
                         trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                         maxDst = 30 * Vars.tilesize;
                         killShooter = collidesAir = false;
@@ -2639,12 +2641,12 @@ public class NyfalisUnits {
             hitSize = 7f;
             speed = 3.25f;
             fogRadius = 0f;
+            health = 300;
             ammoCapacity = 320;
-
+            engineSize = -1f;
 
             weapons.add(new LimitedRepairBeamWeapon(""){{
                 y = 6f;
-                engineSize = -1;
                 shootCone = 20f;
                 shootX = shootY = x = 0;
                 fractionRepairSpeed = 0.03f;
@@ -2658,6 +2660,31 @@ public class NyfalisUnits {
                     healPercent = 1f;
                 }};
             }});
+            parts.addAll(
+                new ThrusterPartOwO(){{
+                    under = mirror = true;
+                    y = 2f;
+                    x = 2.3f;
+                    xScl = yScl = 0;
+                    moveY = -6.1f;
+                    moveX = 3.5f;
+                    rotation = 90;
+                    layerOffset = -1f;
+                    progress = NyfPartParms.NyfPartProgress.speedP;
+                    moves.addAll(new PartMove(NyfPartParms.NyfPartProgress.speedP, 0, 0, -1, -1,  1));
+                }},
+                new RegionPart(){{
+                    name = "olupis-striker-booster";
+                    under = mirror = true;
+                    x = 2.2f;
+                    y = -3f;
+                    rotation = 45;
+                    moveX = 3.5f;
+                    layerOffset = -0.02f;
+                    heatProgress = progress = NyfPartParms.NyfPartProgress.speedP;
+                }}
+
+            );
 
             ammoType = lifeTimeSupport;
             constructor = UnitEntity::create;

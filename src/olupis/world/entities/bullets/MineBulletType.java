@@ -63,7 +63,7 @@ public class MineBulletType extends BulletType{
         //just in case
         if(tile == null) return;
         if(nearbyPlace){
-            boolean free = Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false, false);
+            boolean free = Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false, true);
             if(!free){
                 for(int i = -1; i < 1; i++){
                     for(int j = -1; j < 1; j++){
@@ -80,7 +80,7 @@ public class MineBulletType extends BulletType{
 
 
         boolean occupied = Groups.unit.intersect(b.x, b.y, 1, 1).contains(Unitc::isGrounded)
-                || !Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false, false) ;  //Dont spawn mines at the enemy core!
+                || !Build.validPlace(mine, b.team, World.toTile(b.x),  World.toTile(b.y), 0, false, true) ;  //Dont spawn mines at the enemy core!
 
         if (createChance){
             float createChanceRan = Mathf.random(0.01f,0.99f);

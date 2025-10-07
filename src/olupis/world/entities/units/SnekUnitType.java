@@ -7,6 +7,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.core.*;
 import mindustry.gen.*;
 import olupis.world.ai.*;
 
@@ -21,9 +22,7 @@ public class SnekUnitType extends NyfalisUnitType{
     public float sinOffset = 45, crawlTimeMul = 6f, lerpFactor = 0.31f;
     @Nullable public int[] sprites;
     @Nullable public float[] spriteOffsets;
-    HashMap<Unit, float[][]> rotationBuffer = new HashMap<>();
-    HashMap<Unit, Integer> rotationUpdate = new HashMap<>();
-    public int rotdelay = 5;
+    public HashMap<Unit, float[][]> rotationBuffer = new HashMap<>();
 
     public SnekUnitType(String name){
         super(name);
@@ -88,19 +87,15 @@ public class SnekUnitType extends NyfalisUnitType{
 
         if(!rotationBuffer.containsKey(unit)){
             float[][] out = new float[segments][3];
-            float[] up =new float[]{unit.x, unit.y, unit.rotation};
 
             for(int s = 0; s < segments; s++){
                 float tx = Angles.trnsx((360f / segments) * s, hitSize), ty = Angles.trnsy((360f / segments) * s, hitSize);
-                out[s] = new float[]{unit.x + tx, unit.y +  ty, Angles.angle(unit.x, unit.y, tx, ty)};
+                out[s] = new float[]{unit.x + tx, unit.y +  ty, s == 0 ? unit.rotation :Angles.angle(unit.x + tx, unit.y +  ty, out[s][0], out[ s][1]) };
             }
             rotationBuffer.put(unit, out);
         }
-        if(!rotationUpdate.containsKey(unit)) rotationUpdate.put(unit, 0);
 
         if(unit.moving()){
-            if(rotationUpdate.get(unit) >= rotdelay) rotationUpdate.put(unit, 0);
-            else rotationUpdate.put(unit, rotationUpdate.get(unit) + 1);
             float[][] in = rotationBuffer.get(unit);
             float[][] out = new float[segments][3];
             float[] up = new float[]{unit.x, unit.y, unit.rotation};
@@ -110,9 +105,8 @@ public class SnekUnitType extends NyfalisUnitType{
                 for(int d = 0; d < 2; d++){
                     out[segments - s -1][d] = Mathf.lerpDelta(in[segments - s -1][d], out[segments - s][d], lerpFactor);
                 }
-                //rotation is delayed so the segments don't just turn individually to the new rotation
-                if(rotationUpdate.get(unit) >= rotdelay) out[segments - s - 1][2] = in[segments - s][2];
-                else out[segments - s][2] = in[segments - s][2];
+                out[segments - s - 1][2] =  Angles.angle(in[segments - s - 1][0],in[segments - s - 1][1], in[segments - s][0], in[segments - s][1]);
+
             }
             rotationBuffer.put(unit, out);
         }
@@ -126,7 +120,7 @@ public class SnekUnitType extends NyfalisUnitType{
             applyColor(unit);
 
 
-            if(!rotationBuffer.containsKey(unit) || !rotationUpdate.containsKey(unit)) return;
+            if(!rotationBuffer.containsKey(unit)) return;
             float[][] in = rotationBuffer.get(unit);
             for(int p = 0; p < 2; p++){
                 TextureRegion[] regions = p == 0 ? segmentOutlineRegions : segmentRegions;

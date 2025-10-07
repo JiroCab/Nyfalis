@@ -18,6 +18,7 @@ import mindustry.editor.*;
 import mindustry.game.*;
 import mindustry.game.Rules.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -152,11 +153,11 @@ public class NyfalisStartUpUis {
         debugTable.visibility = () -> !state.isEditor() ||  !Core.settings.getBool("editor-blocks-shown");
         if(state.isEditor()){
             debugTable.table(Tex.pane, z -> {
-                ImageButton button = z.button(Tex.whiteui, Styles.clearNoneTogglei, 33f, () -> Call.setPlayerTeamEditor(player,  NyfUnitTeamMapper.verdantTeam))
+                ImageButton button = z.button(Tex.whiteui, Styles.clearNoneTogglei, 33f, () -> Call.setPlayerTeamEditor(player,  NyfUnitTeamMapper.verdentTeam))
                 .size(45f).margin(2f).get();
                 button.getImageCell().grow();
-                button.getStyle().imageUpColor = NyfUnitTeamMapper.verdantTeam.color;
-                button.update(() -> button.setChecked(player.team() ==  NyfUnitTeamMapper.verdantTeam));
+                button.getStyle().imageUpColor = NyfUnitTeamMapper.verdentTeam.color;
+                button.update(() -> button.setChecked(player.team() ==  NyfUnitTeamMapper.verdentTeam));
             });
 
             debugTable.row();
@@ -269,19 +270,27 @@ public class NyfalisStartUpUis {
             Table wasCurrent = in.current;
 
             Table teamRules = new Table(); // just button and collapser in one table
-            teamRules.button(NyfUnitTeamMapper.verdantTeam.coloredName(), Icon.downOpen, Styles.togglet, () -> {
+            teamRules.button(NyfUnitTeamMapper.verdentTeam.coloredName(), Icon.downOpen, Styles.togglet, () -> {
                 shown[0] = !shown[0];
             }).marginLeft(14f).width(260f).height(55f).update(t -> {
                 ((Image)t.getChildren().get(1)).setDrawable(shown[0] ? Icon.upOpen : Icon.downOpen);
                 t.setChecked(shown[0]);
             }).left().padBottom(2f).row();
 
+
             teamRules.collapser(c -> {
                 c.left().defaults().fillX().left().pad(5);
                 in.current = c;
-                TeamRule teams = rules.teams.get(NyfUnitTeamMapper.verdantTeam);
+                TeamRule teams = rules.teams.get(NyfUnitTeamMapper.verdentTeam);
+                in.check("@nyf.envrule", b ->{
+                    if (b) rules.env |= NyfalisAttributeWeather.nyfalian;
+                    else rules.env = ~NyfalisAttributeWeather.nyfalian;
+                }, () -> rules.hasEnv(NyfalisAttributeWeather.nyfalian));
+
+                c.image().color(Pal.accent).height(3f).padBottom(20).fillX().left().pad(5).row();
 
                 in.table(t -> {
+
                     for(int i = 0; i < 2; i++){
                         String type = i == 1 ? "@rules.enemyteam" : "@rules.playerteam" ;
                         int finalI = i;
@@ -295,8 +304,8 @@ public class NyfalisStartUpUis {
                             ta.add(type).left().padRight(5).marginRight(10f);
 
                             ta.button(Tex.whiteui, Styles.squareTogglei, 38f, () -> {
-                                cons.get(NyfUnitTeamMapper.verdantTeam);
-                            }).pad(1f).checked(b -> (finalI == 1 ? rules.waveTeam : rules.defaultTeam) == NyfUnitTeamMapper.verdantTeam).size(60f).tooltip(NyfUnitTeamMapper.verdantTeam.coloredName()).with(im -> im.getStyle().imageUpColor = NyfUnitTeamMapper.verdantTeam.color);
+                                cons.get(NyfUnitTeamMapper.verdentTeam);
+                            }).pad(1f).checked(b -> (finalI == 1 ? rules.waveTeam : rules.defaultTeam) == NyfUnitTeamMapper.verdentTeam).size(60f).tooltip(NyfUnitTeamMapper.verdentTeam.coloredName()).with(im -> im.getStyle().imageUpColor = NyfUnitTeamMapper.verdentTeam.color);
                         }).row();
                     }
                 }).padTop(0).row();
@@ -304,13 +313,13 @@ public class NyfalisStartUpUis {
                 in.number("@rules.blockhealthmultiplier", f -> teams.blockHealthMultiplier = f, () -> teams.blockHealthMultiplier);
                 in.number("@rules.blockdamagemultiplier", f -> teams.blockDamageMultiplier = f, () -> teams.blockDamageMultiplier);
 
-                in.check("@rules.rtsai", b -> teams.rtsAi = b, () -> teams.rtsAi, () -> NyfUnitTeamMapper.verdantTeam != rules.defaultTeam);
+                in.check("@rules.rtsai", b -> teams.rtsAi = b, () -> teams.rtsAi, () -> NyfUnitTeamMapper.verdentTeam != rules.defaultTeam);
                 in.numberi("@rules.rtsminsquadsize", f -> teams.rtsMinSquad = f, () -> teams.rtsMinSquad, () -> teams.rtsAi, 0, 100);
                 in.numberi("@rules.rtsmaxsquadsize", f -> teams.rtsMaxSquad = f, () -> teams.rtsMaxSquad, () -> teams.rtsAi, 1, 1000);
                 in.number("@rules.rtsminattackweight", f -> teams.rtsMinWeight = f, () -> teams.rtsMinWeight, () -> teams.rtsAi);
 
                 //disallow on Erekir (this is broken for mods I'm sure, but whatever)
-                in.check("@rules.buildai", b -> teams.buildAi = b, () -> teams.buildAi, () -> NyfUnitTeamMapper.verdantTeam != rules.defaultTeam && rules.env != Planets.erekir.defaultEnv && !rules.pvp);
+                in.check("@rules.buildai", b -> teams.buildAi = b, () -> teams.buildAi, () -> NyfUnitTeamMapper.verdentTeam != rules.defaultTeam && rules.env != Planets.erekir.defaultEnv && !rules.pvp);
                 in.number("@rules.buildaitier", false, f -> teams.buildAiTier = f, () -> teams.buildAiTier, () -> teams.buildAi && rules.env != Planets.erekir.defaultEnv && !rules.pvp, 0, 1);
 
                 in.number("@rules.extracorebuildradius", f -> teams.extraCoreBuildRadius = f * tilesize, () -> Math.min(teams.extraCoreBuildRadius / tilesize, 200), () -> !rules.polygonCoreProtection);

@@ -7,6 +7,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.Units.*;
 import mindustry.game.*;
@@ -14,6 +15,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.meta.*;
 import olupis.world.entities.units.*;
@@ -24,15 +26,17 @@ public class Ladar extends Radar {
     public @Nullable UnitType type = null;
 
     public  boolean spotlight = false;
-    public float spotRadius  = 100f, spotRange = fogRadius * 3, minProgress = 0.7f, spottedDuration = 4f, minEffReveal = 0.7f;
+    public float spotRadius  = 100f, spotRange = fogRadius * 3, minProgress = 0.7f, spottedDuration = 4f, minEffReveal = 0.7f, noBuildDecayMul = 2f;
+    public int decayDelay = -1, minHealth = 1;
     public StatusEffect spotted = StatusEffects.none;
     public Ladar(String name){
-       super(name);
-   }
+        super(name);
+    }
 
     public void setBars() {
         super.setBars();
         addBar("bar.progress", (RadarBuild entity) -> new Bar("bar.loadprogress", Pal.ammo, () -> entity.progress));
+        if(decayDelay > 0)addBar("bar.nyf-decay", (LadarBuild entity) -> new Bar("objective.timer.name", Color.scarlet, entity::decay));
     }
 
 
@@ -52,7 +56,7 @@ public class Ladar extends Radar {
 
     public class LadarBuild extends RadarBuild{
         public @Nullable Vec2 tar = new Vec2();
-        public int readUnitId = -1;
+        public int readUnitId = -1, decayTimer, maxHp;
         public @Nullable Unit slave;
 
         @Override
@@ -92,9 +96,32 @@ public class Ladar extends Radar {
 
             }
 
+            if(decayDelay > 0) {
+                if(decayTimer  <= 0 ) kill();
+                float mul = Build.validPlace(block, team, tile.x,  tile.y, 0, false, true) ? noBuildDecayMul : 1;
+                decayTimer -= Math.round(mul);
+                maxHp = Math.round(Mathf.lerp(block.health, minHealth, 1- decay()));
+                if(health > maxHp) health = maxHp;
+                maxHealth = maxHp;
+            }
             super.updateTile(); //cant be bothered
         }
 
+        public float decay(){
+            return  ((float) decayTimer / decayDelay);
+        }
+
+        @Override
+        public float maxHealth(){
+            return maxHp;
+        }
+
+        @Override
+        public Building init(Tile tile, Team team, boolean shouldAdd, int rotation){
+            decayTimer = decayDelay;
+            return super.init(tile, team, shouldAdd, rotation);
+
+        }
         @Override
         public void drawLight(){
             if(emitLight) Drawf.light(x, y, Mathf.lerp(0, lightRadius, progress), lightColor, lightColor.a);
@@ -112,7 +139,7 @@ public class Ladar extends Radar {
         }
 
         public byte version() {
-            return 1;
+            return 2;
         }
 
         @Override
@@ -120,6 +147,7 @@ public class Ladar extends Radar {
             super.read(read, revision);
 
             if(revision >= 1)readUnitId = read.i();
+            if(revision >= 2)decayTimer = read.i();
         }
 
         @Override
@@ -133,6 +161,7 @@ public class Ladar extends Radar {
             super.write(write);
 
             write.i(slave == null ? -1 : slave.id);
+            write.i(decayDelay > 0 ? decayTimer : -1);
         }
     }
 

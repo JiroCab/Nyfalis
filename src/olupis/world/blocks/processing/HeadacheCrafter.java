@@ -3,10 +3,15 @@ package olupis.world.blocks.processing;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.graphics.Color;
 import arc.math.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.Image;
+import arc.scene.ui.ScrollPane;
+import arc.scene.ui.TextField;
 import arc.scene.ui.layout.*;
+import arc.scene.ui.layout.Stack;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -19,7 +24,11 @@ import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import olupis.content.*;
 import olupis.world.blocks.drawers.*;
+
+import java.awt.*;
+import java.util.*;
 
 import static mindustry.Vars.*;
 
@@ -61,41 +70,53 @@ public class HeadacheCrafter  extends GenericCrafter{
         stats.add(Stat.output, table -> {
             table.row();
 
+            float[] widths = new float[] {0, 0, 0};
+            Seq<Cell<Table>> inTab = new Seq<>(), arwTab  = new Seq<>(), outTab = new Seq<>();
             table.table(nu -> plans.each(pl -> {
                 nu.row();
                 nu.table(Styles.grayPanel, b -> {
 
-                    //TODO THIS NO WORK LOL
-                    if(state.rules.bannedBlocks.contains(pl) && !state.rules.blockWhitelist){
-                        b.table(e -> {
-                            e.image(Icon.cancel.getRegion()).color(Color.scarlet).scaling(Scaling.bounded).row();
-                        }).center();
+                        //TODO THIS NO WORK LOL
+                        if(state.rules.bannedBlocks.contains(pl) && !state.rules.blockWhitelist){
+                            b.table(e -> {
+                                e.image(Icon.cancel.getRegion()).color(Color.scarlet).scaling(Scaling.bounded).row();
+                            }).center();
 
-                        b.table(e -> {
+                            b.table(e -> {
                             if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
-                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01, false)).pad(5).row();
+                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01f, false)).pad(5).row();
                         }).padLeft(5f);
                     }else {
-                        b.table(e -> {
-                            if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).row();
-                            if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).pad(5).row();
-                            if(pl.powerIn > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerIn * 60f) + "[lightgray] " + StatUnit.perSecond.localized());
+                        Cell<Table>  in = b.table( e -> {
+                            if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).left().row();
+                            if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).left().pad(5).row();
+                            if(pl.powerIn > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerIn * 60f) + "[lightgray] " + StatUnit.perSecond.localized()).left();
                         }).left().padLeft(5f);
+                        inTab.add(in);
+                        widths[0] = Math.max(in.minWidth(), widths[0]);
 
-                        b.table(e -> {
-                            e.image(Icon.right.getRegion()).scaling(Scaling.bounded).row();
+                        Cell<Table> arw = b.table( e -> {
+                            e.image(Icon.right.getRegion()).scaling(Scaling.bounded).growX().row();
                             e.add("[lightgray]" + Strings.autoFixed(pl.time /60f, 2) + StatUnit.perSecond.localized());
+                        }).center().pad(5f);
+                        arwTab.add(arw);
+                        widths[1] = Math.max(arw.minWidth(), widths[1]);
 
-                        }).center().growX().pad(3f);
-
-                        b.table(e -> {
-                            if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).row();
-                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).pad(5).row();
-                            if(pl.powerOut > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerOut * 60f) + "[lightgray] " + StatUnit.perSecond.localized());
-                        }).right().padRight(5f);
+                        Cell<Table>  out = b.table( e -> {
+                            if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).left().pad(5).row();
+                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).left().pad(5).row();
+                            if(pl.powerOut > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerOut * 60f) + "[lightgray] " + StatUnit.perSecond.localized()).left();
+                        }).right().padRight(5f).padLeft(5f);
+                        widths[2] = Math.max(out.minWidth(), widths[2]);
+                        outTab.add(out);
                     }
-                }).growX().pad(5).row();
-            })).growX();
+                }).growX().pad(5).margin(20).row();
+            })).minWidth((widths[0] + widths[1] + widths [2]) * 1.25f).growX();
+            for(int i = 0; i < inTab.size; i++) inTab.get(i).width(widths[0]);
+            for(int i = 0; i < arwTab.size; i++) arwTab.get(i).width(widths[1]);
+            for(int i = 0; i < outTab.size; i++) outTab.get(i).width(widths[2]);
+            Log.err(widths[0] + " " + widths[1] + " " + widths[2] );
+
         });
     }
 

@@ -80,19 +80,23 @@ public class NyfalisTechTree {
             });
 
             node(gnat, ()->{
-                node(spirit, Seq.with(
-                new  Objectives.Research(construct)
-                ), () ->{
-                    node(banshee,  Seq.with(
-                    new  Objectives.Produce(quartz)
+                node(shade, Seq.with(
+                new Objectives.Produce(shade)),
+                () -> {
+                    node(spirit, Seq.with(
+                    new  Objectives.Research(construct)
                     ), () ->{
-                        node(phantom, Seq.with(
-                        new  Objectives.Produce(graphite)
-                        ), () -> {
-                            node(revenant, Seq.with(
-                            new  Objectives.Produce(silicon)
+                        node(banshee,  Seq.with(
+                        new  Objectives.Produce(quartz)
+                        ), () ->{
+                            node(phantom, Seq.with(
+                            new  Objectives.Produce(graphite)
                             ), () -> {
+                                node(revenant, Seq.with(
+                                new  Objectives.Produce(silicon)
+                                ), () -> {
 
+                                });
                             });
                         });
                     });

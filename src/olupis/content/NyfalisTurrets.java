@@ -48,12 +48,13 @@ public class NyfalisTurrets {
         fracture = new NyfalisItemTurret("fracture"){{
             targetAir = false;
             ammo(
-                rustyIron,  new CappedIntervalBullet(4.5f, 18){{
+                rustyIron,  new CappedIntervalBullet(4.5f, 13){{
                     width = 4f;
                     height = 20f;
                     lifetime = 60f;
                     knockback = 0.1f;
                     reloadMultiplier = 0.75f;
+                    ammoMultiplier = 1;
 
                     collidesAir = false;
                     hitEffect = despawnEffect = Fx.hitBulletColor;
@@ -66,7 +67,7 @@ public class NyfalisTurrets {
                     bulletInterval = 1f;
                     IntervalCap = 2;
                 }},
-                iron,  new BasicBulletType(3.7f, 37){{
+                iron,  new BasicBulletType(3.7f, 30){{
                     pierce = pierceBuilding = true;
                     collidesAir = false;
 
@@ -83,7 +84,7 @@ public class NyfalisTurrets {
                     hitColor = backColor = trailColor = ironBulletBack;
                     frontColor = ironBullet;
                 }},
-                alcoAlloy,  new CappedIntervalBullet(5f, 40, "olupis-diamond-bullet"){{
+                alcoAlloy,  new CappedIntervalBullet(5f, 35, "olupis-diamond-bullet"){{
                     pierce = pierceBuilding = true;
                     collidesAir = false;
 
@@ -102,7 +103,7 @@ public class NyfalisTurrets {
                     intervalRandomSpread = 10f;
                     bulletInterval = IntervalCap = 1;
                 }},
-                aluminum,  new BasicBulletType(5f, 60){{
+                aluminum,  new BasicBulletType(5f, 50){{
                     pierce = pierceBuilding = true;
                     collidesAir = false;
 
