@@ -17,6 +17,8 @@ import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.blocks.logic.*;
 import olupis.*;
 import olupis.content.*;
@@ -33,7 +35,7 @@ public class NyfalisSettingsDialog {
     }
     public static boolean musicModPresent = false;
 
-    public static float pdlStatusGiverTrans, pdlStatusGiverRange;
+    public static float pdlStatusGiverTrans, pdlStatusGiverRange, treeTransgenderRange;
     public static boolean pdlStatusGiverAnyTeam, pdlStatusGiverSimple;
 
     public static void updateSettings(){ //moved here so settings are checked per tick not per draw
@@ -41,6 +43,7 @@ public class NyfalisSettingsDialog {
         pdlStatusGiverRange = Core.settings.getInt("nyfalis-pdl-status-range");
         pdlStatusGiverAnyTeam = !Core.settings.getBool("nyfalis-pdl-status-anyteam");
         pdlStatusGiverSimple = Core.settings.getBool("nyfalis-pdl-status-simple");
+        treeTransgenderRange = settings.getInt("nyfalis-tree-trans-range") * tilesize;
     }
 
     public void BuildDialog(){
@@ -60,15 +63,14 @@ public class NyfalisSettingsDialog {
             table.pref(new CollapserSetting("div-visuals", 6));
             table.checkPref("nyfalis-cloud-shadows", true);
             table.checkPref("nyfalis-cloud-shadows-others", false);
-            table.checkPref("nyfalis-qolTreeTrans", true);
-            table.sliderPref("nyfalis-pdl-status-trans",15, 0, 100, 1, i -> i == 0 ? "@off" : i + "%");
-            table.sliderPref("nyfalis-pdl-status-range",25, 0, 51, 1, i -> i == 0 ? "@off" : i == 51 ? "@yes" : i + " " + Core.bundle.get("unit.blocks"));
-            table.checkPref("nyfalis-pdl-status-anyteam", false);
-            table.checkPref("nyfalis-pdl-status-simple", false);
+            slider(table, "nyfalis-pdl-status-trans",15, 0, 100, 1, i -> i == 0 ? "@off" : i + "%");
+            slider(table, "nyfalis-pdl-status-range",25, 0, 51, 1, i -> i == 0 ? "@off" : i == 51 ? "@yes" : i + " " + Core.bundle.get("unit.blocks"));
+            check(table, "nyfalis-pdl-status-anyteam", false);
+            check(table, "nyfalis-pdl-status-simple", false);
+            slider(table, "nyfalis-tree-trans-range",5, 0, 51, 1, i -> i == 0 ? "@off" : i == 51 ? "@yes" : i + " " + Core.bundle.get("unit.blocks"));
 
             table.pref(new CollapserSetting("div-gameplay", 6));
             table.checkPref("nyfalis-sandbox-super-weapon-cap", false);
-            //table.checkPref("nyfalis-bread-gun", false); TODO: full removal
             table.checkPref("nyfalis-auto-ban", true);
             table.checkPref("nyfalis-display-bat-helper", false, val -> {
                 for(UnitType b : NyfalisUnits.batHelpers){
@@ -355,5 +357,18 @@ public class NyfalisSettingsDialog {
         ui.mods.show();//haha so we don't need to manually restart and im too lazy to find out how
         ui.mods.githubImportMod(mod, true, null);
     }
+
+    //Same as the normal ones but also calls updateSettings()
+    public void slider(SettingsTable  table, String name, int def, int min, int max, int step, StringProcessor s){
+        table.sliderPref(name,def, min, max, step, owo -> {
+            updateSettings();
+            return s.get(owo);
+        });
+    }
+
+    public void  check (SettingsTable  table, String name, boolean def){
+        table.checkPref(name, def, owo -> updateSettings());
+    }
+
 
 }

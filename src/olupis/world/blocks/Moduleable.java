@@ -17,7 +17,7 @@ public interface Moduleable{
     }
 
    default void removeModule(Articulator.ArticulatorBuild build){
-       getModules().remove(build);
+        getModules().remove(build);
     }
 
     default int minTier(){

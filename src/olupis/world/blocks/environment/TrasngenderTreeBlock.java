@@ -9,11 +9,12 @@ import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.input.ui.*;
 import olupis.world.*;
 
 public class TrasngenderTreeBlock extends TreeBlock{
-    public float transRange = Vars.tilesize * 5;
     public TextureRegion log;
+    public boolean leaf = true;
 
     public TrasngenderTreeBlock(String name){
         super(name);
@@ -30,8 +31,8 @@ public class TrasngenderTreeBlock extends TreeBlock{
 
 
         float alpha = 1f;
-        if(Core.settings.getBool("nyfalis-qolTreeTrans")){
-            alpha = NyfWorldFuckingHelper.withinMouseOrUnitRangeF(tile, transRange);
+        if(NyfalisSettingsDialog.treeTransgenderRange != 0){
+            alpha = NyfWorldFuckingHelper.withinMouseOrUnitRangeF(tile, NyfalisSettingsDialog.treeTransgenderRange);
         }
 
         float

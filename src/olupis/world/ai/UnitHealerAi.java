@@ -1,12 +1,14 @@
 package olupis.world.ai;
 
-import arc.math.Mathf;
-import arc.util.Nullable;
-import arc.util.Time;
-import mindustry.entities.Units;
-import mindustry.entities.units.AIController;
-import mindustry.gen.Building;
-import mindustry.gen.Teamc;
+import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.entities.*;
+import mindustry.entities.units.*;
+import mindustry.gen.*;
+import olupis.world.entities.units.*;
+
+import static mindustry.Vars.indexer;
 
 public class UnitHealerAi extends AIController {
     public static float retreatDelay = Time.toSeconds * 3f;
@@ -20,10 +22,12 @@ public class UnitHealerAi extends AIController {
         if(timer.get(timerTarget, 15)){
             Building blk = null;
             //Looking for damaged allied
-             var unt = Units.closest(unit.team, unit.x, unit.y, Math.max(unit.type.range, 400f), u -> !u.dead() && u.type != unit.type && u.targetable(unit.team) && u.type.playerControllable && u.health < u.maxHealth,
+            var unt = Units.closest(unit.team, unit.x, unit.y, Math.max(unit.type.range, 400f), u -> !u.dead() && u.type != unit.type && u.targetable(unit.team) && u.type.playerControllable && u.health < u.maxHealth,
                     (u, tx, ty) -> (u.maxHealth / u.health) + Mathf.dst2(u.x, u.y, tx, ty) / 6400f);
             if(includeBlocks) {
-                 blk = Units.findDamagedTile(unit.team, unit.x, unit.y);
+                Seq<Building> dmg = indexer.getDamaged(unit.team);
+                if(unit.type instanceof NyfalisUnitType a && a.healingIgnoresMines) dmg.remove(b ->!b.block.targetable);
+                blk =  dmg.min(b -> b.dst2(unit.x, unit.y));
             }
 
             if(unt != null && blk != null){
@@ -58,8 +62,6 @@ public class UnitHealerAi extends AIController {
             }
 
         }
-
-
     }
 
 }

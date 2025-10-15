@@ -39,6 +39,10 @@ public class NyfalisStats extends StatValues {
         return ammoWithInfo(map, 0, false, parent != null ? parent.name : null, null);
     }
 
+    public static <T extends UnlockableContent> StatValue ammoWithInfo(ObjectMap<T, BulletType> map, UnlockableContent parent, ObjectMap<T, BulletType> ori){
+        return ammoWithInfo(map, 0, false, parent != null ? parent.name : null, null, ori);
+    }
+
     public static <T extends UnlockableContent> StatValue ammoWithInfoSortable(ObjectMap<T, BulletType> map, UnlockableContent parent, Floatf<BulletType> comparator){
         return ammoWithInfo(map, 0, false, parent != null ? parent.name : null, comparator);
     }
@@ -49,10 +53,10 @@ public class NyfalisStats extends StatValues {
             children.put(b.key, checkChildren(b.value));
         }
 
-        return ammoWithInfo(children, parent);
+        return ammoWithInfo(children, parent, map);
     }
 
-    public static BulletType checkChildren(BulletType type){
+    public static BulletType checkChildren(BulletType type ){
         if(type instanceof MineBulletType){
             return type;
         }
@@ -61,6 +65,9 @@ public class NyfalisStats extends StatValues {
     }
 
     public static <T extends UnlockableContent> StatValue ammoWithInfo(ObjectMap<T, BulletType> map, int indent, boolean showUnit, String parent, Floatf<BulletType> comparator){
+        return ammoWithInfo(map, indent, showUnit, parent, comparator, null);
+    }
+    public static <T extends UnlockableContent> StatValue ammoWithInfo(ObjectMap<T, BulletType> map, int indent, boolean showUnit, String parent, Floatf<BulletType> comparator, ObjectMap<T, BulletType> ori){
         return table -> {
 
             table.row();
@@ -74,11 +81,11 @@ public class NyfalisStats extends StatValues {
 
                 BulletType type = map.get(t);
 
-                if(type instanceof  MineBulletType){
+                if(type instanceof  MineBulletType mb){
                     table.table(Styles.grayPanel, in -> {
                         in.left().top().defaults().padRight(3).left();
+                        BulletType ob = ori.get(t);
 
-                        MineBulletType mb = (MineBulletType) type;
                         if (mb.mine != null) {
                             if(!mb.mine.unlockedNowHost()){
                                 in.image(Icon.lock.getRegion()).color(Pal.darkerGray).size(30).pad(10f).left().scaling(Scaling.fit);
@@ -91,7 +98,12 @@ public class NyfalisStats extends StatValues {
                                             bt.left().top().defaults().growX().left();
                                             if(t instanceof Item itm) title(bt, itm);
                                             sepLeft(bt, (mb.mine.localizedName));
-                                            sepLeftWrap(bt, (mb.mine.description));
+                                            if(Core.bundle.getOrNull(parent + "." +t.name) == null){
+                                                sepLeftWrap(bt, (mb.mine.description));
+                                            }else {
+                                                sepLeftWrap(bt, (Core.bundle.get(parent + "." +t.name)));
+
+                                            }
                                             if(Core.settings.getBool("console")) sepLeft(bt, ("[lightgray]" + mb.mine.name));
                                             if(mb.createChance){
                                                 float set;
@@ -113,14 +125,19 @@ public class NyfalisStats extends StatValues {
                                                     bt.row();
 
                                                     Table ic = new Table();
-                                                    ammoWithInfo(ObjectMap.of(t, sm.bullet), indent + 1, false, null).display(ic);
+                                                    ic.table(tai -> {
+                                                        tai.add("[accent]±" +  Strings.autoFixed(ob.fragSpread + ob.fragAngle + ob.fragRandomSpread, 2) + " [][lightgray]" + Core.bundle.get("unit.degrees")).left().row();
+                                                        if(sm.shots >1)tai.add("[accent]"+sm.shots+ "[] [lightgray]" + Core.bundle.get("stat.shots")).left().row();
+                                                    }).padLeft((indent + 2) * 5).left().padBottom(0);
+
+                                                    ammoWithInfo(ObjectMap.of(t, sm.bullet), indent + 2, false, null).display(ic);
                                                     Collapser coll = new Collapser(ic, true);
                                                     coll.setDuration(0.1f);
 
                                                     bt.table(it -> {
                                                         it.left().defaults().left();
 
-                                                        it.add(Core.bundle.format("stat.olupis-bullet", Strings.autoFixed(sm.shots, 2)));
+                                                        it.add("[accent]"+ob.fragBullets + "[][lightgray]"+ Core.bundle.get("unit.pershot"));
                                                         it.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX();
                                                     });
                                                     bt.row();

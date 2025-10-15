@@ -67,11 +67,12 @@ public class NyfalisUnitType extends UnitType {
                             payloadUnitsUpdate = false,
                             payloadUpdateRequiresStatus = false,
                             pickupBlocks = true,  //Only used in LeggedPayloadUnit
-                            payloadDisarms = false;
+                            payloadDisarms = false,
+                            healingIgnoresMines = false;
     /*Used by `payloadUnitsUpdate` as dummy to copy target to other mounts  */
     public int mountPointer = 0;
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
-    public float secondaryLightRadius = lightRadius  * 2;
+    public float secondaryLightRadius = lightRadius  * 2, deathRegrowChance = 0.1f;
     public StatusEffect payloadUpdateSE = StatusEffects.none, payloadDisarmSE = StatusEffects.disarmed;
 
     public TextureRegion bossRegion, borrowRegion;
@@ -300,6 +301,11 @@ public class NyfalisUnitType extends UnitType {
         if(secondaryLightRadius > 0) Drawf.light(unit.x, unit.y, secondaryLightRadius, secondaryLightColor, secondaryLightColor.a);
     }
 
+    @Override
+    public void killed(Unit unit){
+        super.killed(unit);
+        if(deathRegrowChance > 0 &&  Mathf.randomBoolean(deathRegrowChance) &&unit.team ==  state.rules.waveTeam) NyfWorldFuckingHelper.growSprigs(unit.tileOn());
+    }
 
     @Override
     public <T extends Unit&Legsc> void drawLegs(T unit){

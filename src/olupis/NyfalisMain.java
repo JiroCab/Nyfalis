@@ -40,7 +40,7 @@ public class NyfalisMain extends Mod{
     public static NyfalisLogicDialog logicDialog;
     public NyfalisSettingsDialog nyfalisSettings;
     public static boolean shownWarning = false, incompatible = false, nyfalianPlanet = false;
-    public @Nullable Texture cloudNoise;
+    public static @Nullable Texture cloudNoise;
     public static float  floodPlaneLevel = 0.30f;
 
     @Override
@@ -93,7 +93,7 @@ public class NyfalisMain extends Mod{
                     break;
                 }
             }
-            floodPlaneLevel = 0.30f;
+            NyfWorldFuckingHelper.restUpdaters();
 
             //Clean up of the old system of banning stuff
             NyfalisPlanets.unlockPlanets();
@@ -179,46 +179,11 @@ public class NyfalisMain extends Mod{
 
         Events.run(EventType.Trigger.update, () -> {
             NyfalisSettingsDialog.updateSettings();
-
-            if(state.isPaused() || !renderer.animateWater )  return;
-            if(Groups.weather.contains(w -> w.weather instanceof RainWeather)){
-                int cnt = 0;
-                float avrg = 0f;
-
-                for(WeatherState w : Groups.weather){
-                    if(!(w.weather instanceof RainWeather)) continue;
-                    cnt++;
-                    avrg += w.intensity;
-                }
-                floodPlaneLevel = Mathf.lerpDelta(floodPlaneLevel, Math.max(0.30f, avrg/cnt), 0.0025f);
-            }
+            NyfWorldFuckingHelper.allUpdaters();
         });
 
         Events.run(Trigger.draw, () -> {
-            if( nyfalianPlanet){
-                if(!Core.settings.getBool("nyfalis-cloud-shadows")) return;
-            } else {
-                if(!Core.settings.getBool("nyfalis-cloud-shadows-others")) return;
-            }
-
-            if(cloudNoise == null){
-                cloudNoise = Core.assets.get("sprites/clouds.png", Texture.class);
-                cloudNoise.setWrap(Texture.TextureWrap.repeat);
-                cloudNoise.setFilter(Texture.TextureFilter.linear);
-            }
-
-            final float[] sspeed = {1f}, sscl = { 1f }, salpha = { 1f }, offset = { 0f };
-            Color col = Tmp.c1.set(Color.grays(0.1f));
-            Draw.z(Layer.weather - 2f);
-            for(int i = 0; i < 3; i++){
-                Weather.drawNoise(cloudNoise, Color.grays(0.1f), 1100f * sscl[0], salpha[0] * 0.27f, sspeed[0] *  0.035f, 1, 1.1f, 0.5f, offset[0]);
-                sspeed[0] *= 2;
-                salpha[0] *= 0.4f;
-                sscl[0] *= 2;
-                offset[0] += 0.29f;
-                col.mul(1);
-            }
-            Draw.reset();
+            NyfWorldFuckingHelper.allDrawers();
         });
     }
 

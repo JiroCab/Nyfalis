@@ -13,6 +13,7 @@ import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import olupis.world.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Draw.rect;
@@ -171,7 +172,7 @@ public class NyfalisFxs extends Fx {
                 float lenRand = rand.random(0.5F, 1.0F);
                 Lines.lineAngle(e.x, e.y, angle, e.foutpow() * 50.0F * rand.random(1.0F, 0.6F) + 2.0F, e.finpow() * 45.0F * lenRand + 6.0F);
             }
-
+            Draw.z(Layer.bullet);
             Draw.color(Pal.orangeSpark.cpy().add(Color.purple));
             Lines.stroke(e.fout() * 2.0F);
             float circleRad = size + e.finpow() * 40.0F;
@@ -192,13 +193,8 @@ public class NyfalisFxs extends Fx {
         }),
 
         highYieldSmoke = new Effect(80, 120f, e -> {
-            float z = Draw.z();
-            Draw.z(Layer.blockOver);
-
             Draw.color(Color.purple.cpy().add(Pal.lightOrange).a(0.7f), Pal.orangeSpark.cpy().add(Color.gray).a(0.05f), e.fin());
             Angles.randLenVectors((long)e.id, 20, 35F, (x, y) -> Fill.circle(e.x + x, e.y + y, 6.0F * Mathf.clamp(e.fin() / 0.1F) * Mathf.clamp(e.fout() / 0.1F)));
-
-            Draw.z(z);
         }),
 
         unitBreakdown = new Effect(100f, e -> {
@@ -428,7 +424,32 @@ public class NyfalisFxs extends Fx {
             });
         }).layer(Layer.debris),
 
-        mossSpread = new MultiEffect(mossStageUp, acidRainDamage).layer(Layer.debris);
+        mossSpread = new MultiEffect(mossStageUp, acidRainDamage).layer(Layer.debris),
+
+        gnatBullCharge = new Effect(80f, 100f, e -> {
+            color(Pal.heal, e.fout());
+            stroke(e.fin() * 2f);
+            randLenVectors(e.id, 2 ,  2, 20f * e.fin(), (x, y) -> {
+                Fill.circle(e.x + x, e.y + y, e.fout()  + (1.4f * e.fout()));
+                Drawf.light(e.x + x, e.y + y, e.fout() * 3f, Pal.heal, 0.15f );
+            });
+            color();
+            Drawf.light(e.x, e.y, e.fin() * 5f, Pal.heal, 0.2f);
+        }).followParent(true).rotWithParent(true).layer(Layer.bullet - 0.01f),
+
+        trangenderTreeLeafEffect = new Effect(200, e -> {
+            color(e.color, e.fout()  /1.5f);
+            randLenVectors(e.id, 4 ,  10, 100f * e.fin(), (x, y) -> {
+                float trnsx = Mathf.sin(Time.time, 6, 3), trnsy = Mathf.cos(Time.time, 9, 2), rot =Angles.angle(e.x, e.y, e.x + x, e.y + y),
+                tx = Angles.trnsx(rot, trnsx) + Angles.trnsx(rot, trnsy), ty = Angles.trnsy(rot, trnsx) + Angles.trnsx(rot, trnsy),
+                fx = e.x + x + tx, fy = e.y +ty + y, fr = Angles.angle(e.x, e.y, fx, fy);
+
+                Drawf.tri(fx , fy, e.fout() * 5, e.fout() * 5, fr);
+                Drawf.tri(fx, fy, e.fout() * 5, e.fout() * 5, fr + 180);
+            });
+        }).layer(Layer.power + 0.01f);
+        ;
+
 
     ;
 

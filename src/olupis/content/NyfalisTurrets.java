@@ -693,11 +693,11 @@ public class NyfalisTurrets {
         strata = new NyfalisItemTurret("strata"){{
 
             ammo(
+                //interval bullets on the mine just to pass how many shots are there
                 aluminum, new BasicBulletType(0,0){{
                     lifetime = 0;
-                    fragBullets = 20;
                     fragRandomSpread = 3;
-                    fragSpread = 5;
+                    fragSpread = 3;
                     fragVelocityMin = 0.6f;
                     fragVelocityMax = 1.1f;
 
@@ -708,12 +708,12 @@ public class NyfalisTurrets {
                     sp.fragBullet = new MineBulletType(NyfalisBlocks.heavyMine,Fx.ballfire, 0.80f);
                     sp.hitColor = sp.trailColor = sp.colourIn = sp.colourOut = aluminum.color;
                     fragBullet = sp;
-                }},
+                    fragBullets = 15;
+            }},
                 cobalt, new BasicBulletType(0,0){{
                     lifetime = 0;
-                    fragBullets = 20;
                     fragRandomSpread = 3;
-                    fragSpread = 5;
+                    fragSpread = 3;
                     fragVelocityMin = 0.6f;
                     fragVelocityMax = 1.1f;
 
@@ -721,36 +721,38 @@ public class NyfalisTurrets {
                     sp.hitColor = sp.trailColor = sp.colourIn = sp.colourOut = cobalt.color;
                     sp.fragBullet = new MineBulletType(NyfalisBlocks.glitchMine,Fx.ballfire, 0.80f);
                     fragBullet = sp;
-                }},
+                    fragBullets = 10;
+            }},
                 quartz, new BasicBulletType(0,0){{
                     lifetime = 0;
-                    fragBullets = 20;
-                    fragRandomSpread = 3;
-                    fragSpread = 5;
+                    fragRandomSpread = 4;
+                    fragSpread = 7;
                     fragVelocityMin = 0.6f;
                     fragVelocityMax = 1.1f;
 
                     ShappedBulletType sp = (ShappedBulletType)strataProjectile.copy();
                     sp.hitColor = sp.trailColor = sp.colourIn = sp.colourOut = quartz.color;
-                    sp.fragBullet = new MineBulletType(fragMine,Fx.ballfire, 0.80f);
+                    sp.fragBullet = new MineBulletType(fragMine,Fx.ballfire, 0.60f);
                     fragBullet = sp;
 
-                }},
+                    fragBullets = 25;
+            }},
                 condensedBiomatter, new BasicBulletType(0,0){{
                     lifetime = 0;
-                    fragBullets = 20;
-                    fragRandomSpread = 3;
-                    fragSpread = 5;
+                    fragRandomSpread = 5;
+                    fragSpread = 2;
                     fragVelocityMin = 0.6f;
                     fragVelocityMax = 1.1f;
 
-                    var sp = strataProjectile;
+                    ShappedBulletType sp = strataProjectile;
                     sp.shapeIn = sp.shapeOut = 1;
                     sp.widthIn = 1f;
                     sp.hitColor = sp.trailColor = sp.colourIn = sp.colourOut = condensedBiomatter.color;
-                    sp.fragBullet = new MineBulletType(mossMine,Fx.ballfire, 0.80f);
+                    sp.fragBullet = new MineBulletType(mossMine,Fx.ballfire, 0.5f);
                     fragBullet = sp;
-                }}
+
+                    fragBullets = 30;
+            }}
             );
 
             statsBlocksOnly = true;
@@ -778,8 +780,8 @@ public class NyfalisTurrets {
             minRange = 200f;
             health = 1500;
             fogRadius = 13;
-            coolantMultiplier = 7.5f;
-            reload = 12 * 16;
+            coolantMultiplier = 2.5f;
+            reload = 15 * 16;
             fogRadiusMultiplier = 0.75f;
             ammoPerShot = 24;
             loopSound = Sounds.release;
@@ -790,8 +792,7 @@ public class NyfalisTurrets {
             requirements(Category.turret, with(iron, 100, copper, 150, silicon, 50, quartz, 100));
         }};
 
-        aegis = new AirPriorityItemTurret("aegis"){
-            {
+        aegis = new AirPriorityItemTurret("aegis"){{
                 targetAir = slowFogOfWar = targetGround = emitLight = true;
                 size = 3;
                 shootY = 5;
@@ -1335,12 +1336,12 @@ public class NyfalisTurrets {
         hive = new ItemUnitTurret("hive"){{
             size = 4;
             shootY = 0f;
-            range = 650;
+            range = 700;
             reload = 600f;
             maxAmmo  = 20;
             itemCapacity = 60;
             lightRadius = (size * 8) + 4;
-            fogRadiusMultiplier = 0.5f;
+            fogRadiusMultiplier = 0.15f;
             shootSound = Sounds.respawn;
 
             ammo(
@@ -1349,19 +1350,21 @@ public class NyfalisTurrets {
                     ammoMultiplier = 1f;
                     spawnUnit = flea;
                     unitRange = 650;
+                    hasParent = true;
                 }},
                 iron, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     spawnUnit = mite;
                     unitRange = 650;
-                    targetsFlames = true;
+                    targetsFlames = hasParent = true;;
                 }},
                 silicon, new SpawnHelperBulletType(){{
                     shootEffect = Fx.shootBig;
                     ammoMultiplier = 1f;
                     unitRange = 650;
                     collidesAir = false;
+                    hasParent = true;
                     spawnUnit = lice;
                 }},
                 cobalt, new SpawnHelperBulletType(){{
@@ -1369,6 +1372,7 @@ public class NyfalisTurrets {
                     ammoMultiplier = 1f;
                     spawnUnit = tick;
                     unitRange = 650;
+                    hasParent = true;
                 }}
             );
             playerControllable = drawOnTarget = emitLight =  boosterAlternate= true;
@@ -1377,8 +1381,8 @@ public class NyfalisTurrets {
             buildingFilter = b -> false; //dont
             lightColor = floodLightColor;
             requiredItems = with(copper, 10);
-            researchCost = with(aluminum, 1500, silicon, 1500,  iron, 1500, copper, 1500);
-            requirements(Category.turret, with(iron, 100, aluminum, 40, silicon, 40, copper, 40));
+            researchCost = with(aluminum, 1500, silicon, 1500,  iron, 1500, quartz, 1500);
+            requirements(Category.turret, with(iron, 100, aluminum, 40, silicon, 40, quartz, 40));
         }};
 
         duality = new DuelLiquidTurret("duality"){{

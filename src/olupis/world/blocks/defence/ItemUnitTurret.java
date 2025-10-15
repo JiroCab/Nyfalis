@@ -57,7 +57,7 @@ public class ItemUnitTurret extends ItemTurret {
     public Sound failedMakeSound = Sounds.dullExplosion;
     public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 0.6f;
     public Effect failedMakeFx = NyfalisFxs.failedMake;
-    public TextureRegion bottomRegion, rotatorRegion;
+    public TextureRegion bottomRegion, rotatorRegion, radarRegion;
     /*Hovering Shows the unit creation*/
     public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false, unitFactory = false;
     /*Aim at the rally point*/
@@ -123,6 +123,7 @@ public class ItemUnitTurret extends ItemTurret {
     public void load(){
         bottomRegion = Core.atlas.find(name + "-bottom", "olupis-construct-bottom");
         rotatorRegion = Core.atlas.find(name + "-rotator", "olupis-construct-rotator");
+        radarRegion = Core.atlas.find(name + "-radar", "olupis-hive-radar");
         super.load();
     }
 
@@ -300,13 +301,14 @@ public class ItemUnitTurret extends ItemTurret {
     public class ItemUnitTurretBuild<T extends UnitPayload> extends ItemTurretBuild implements Moduleable{
         public @Nullable Vec2 commandPos;
         public float time, speedScl;
-        public int direction = -1;
+        public int direction = -1, readUnitId = -1;
         public @Nullable Item cheatConfig = null;
         public @Nullable UnitPayload payload;
         public Vec2 payVector = new Vec2();
         public @Nullable UnitCommand command;
         public Seq<Articulator.ArticulatorBuild> modules = new Seq<>();
         public boolean useAlternate = false;
+        public @Nullable Unit child = null;
 
         @Override
         public Seq<ArticulatorBuild> getModules(){
@@ -409,6 +411,25 @@ public class ItemUnitTurret extends ItemTurret {
                     updateShooting();
                 }
             }
+
+            if(readUnitId != -1){
+                child = Groups.unit.getByID(readUnitId);
+
+                if(child != null || !net.client()){
+                    if(child.type instanceof  AmmoEnabledUnitType ae ) ae.relationship.put(child, this);
+                    readUnitId = -1;
+                }
+            }
+
+            if(child != null && child.dead){
+                if(child.type instanceof  AmmoEnabledUnitType aa) aa.relationship.remove(child);
+                child = null;
+
+            }
+        }
+
+        public void resupplied(){
+
         }
 
         public UnitType checkUnit(Item item){
@@ -452,6 +473,7 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         protected void updateShooting(){
+            if(!isUnitFactory() && child != null) return;
             if(reloadCounter >= reload && !charging() && shootWarmup >= minWarmup){
                 BulletType type = peekAmmo();
                 if(useAlternate && type instanceof SpawnHelperBulletType spw && spw.alternateType != null) type = spw.alternateType;
@@ -631,15 +653,21 @@ public class ItemUnitTurret extends ItemTurret {
             if(!(drawer instanceof DrawDefault)){
                 super.draw();
             }else{
-                Draw.z(Layer.block + 1);
+                Draw.z(Layer.block + 0.1f);
                 float rot = direction == -1 ? rotation -90: direction * 90;
                 Draw.rect(bottomRegion, x, y);
                 Draw.rect(rotatorRegion, x, y, rot);
 
-                if (peekAmmo() != null) {
+                if(!unitFactory && child != null && !child.dead){
+                    Draw.draw(Layer.blockOver, () ->{
+                        Draw.rect(radarRegion, x, y, child.angleTo(this) + 90);
+                    });
+                }
+                else if (peekAmmo() != null) {
                     UnitType unt = useAlternate && peekAmmo() instanceof SpawnHelperBulletType spw && spw.alternateType != null ? spw.alternateType.spawnUnit : peekAmmo().spawnUnit;
                     if (unt != null) { Draw.draw(Layer.blockOver, () ->{
-                        if (shootCreatable(peekAmmo())) { Drawf.construct(this, unt.fullIcon != null ? unt.fullIcon : unt.region, rot, this.reloadCounter / reload, speedScl, time);}
+                        boolean building = shootCreatable(peekAmmo()) && (this.reloadCounter / reload) < 0.99f;
+                        if (building) { Drawf.construct(this, unt.fullIcon != null ? unt.fullIcon : unt.region, rot, this.reloadCounter / reload, speedScl, time);}
                         else {
                             Draw.alpha(reloadCounter / reload);
                             Draw.rect(unt.fullIcon, x, y, rot);
@@ -650,8 +678,9 @@ public class ItemUnitTurret extends ItemTurret {
                             Draw.reset();
 
                             Draw.color(Pal.remove, Math.min(reloadCounter / reload, 0.8f));
-                            if(unit.type().unlockedNowHost()) Draw.rect(Icon.warning.getRegion(), x, y);
-                            else  Draw.rect(Icon.tree.getRegion(), x, y);
+                            if(!unt.unlockedNowHost()) Draw.rect(Icon.tree.getRegion(), x, y);
+                            else if(unt.isBanned()) Draw.rect(Icon.cancel.getRegion(), x, y);
+                            else if(team.data().countType(unt) < team.data().unitCap && unt.useUnitCap)  Draw.rect(Icon.warning.getRegion(), x, y);
                             Draw.reset();
                         }
                     });}
@@ -662,6 +691,15 @@ public class ItemUnitTurret extends ItemTurret {
                 }
                 Draw.rect(region, x, y);
             }
+        }
+
+        @Override
+        public void drawTeam(){
+            Draw.draw(Layer.blockOver +0.1f, () ->{
+                Draw.color(this.team.color);
+                Draw.rect("block-border", this.x - (float)(this.block.size * 8) / 2.0F + 4.0F, this.y - (float)(this.block.size * 8) / 2.0F + 4.0F);
+                Draw.color();
+            });
         }
 
         @Override
@@ -868,6 +906,7 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         protected float baseReloadSpeed(){
+            if(!unitFactory && child != null && !child.dead && reloadCounter >= reload / 2f) return 0f;
             return hasReqItems() ? efficiency : 0f;
         }
 
@@ -881,6 +920,7 @@ public class ItemUnitTurret extends ItemTurret {
             TypeIO.writeVecNullable(write, commandPos);
             write.i(direction);
             Payload.write(payload, write);
+            write.i(child != null ? child.id : -1);
         }
 
         @Override
@@ -893,11 +933,12 @@ public class ItemUnitTurret extends ItemTurret {
                 direction = read.i();
                 payload = Payload.read(read);
             } else  direction = -1;
+            if(revision >= 6) readUnitId =  read.i();
         }
 
         @Override
         public byte version(){
-            return 5;
+            return 6;
         }
 
         @Override

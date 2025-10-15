@@ -17,14 +17,17 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import olupis.world.ai.*;
 
+import java.util.*;
+
 import static mindustry.Vars.*;
 
 //Class for stuff renders ammo but necessary it's life tied to it
-public class AmmoEnabledUnitType extends  NyfalisUnitType{
+public class AmmoEnabledUnitType extends NyfalisUnitType{
     private transient float resupplyTime = Mathf.random(10f);
     public boolean drawAmmo = false, altResupply = false;
     public TextureRegion ammoRegion;
     public float ammoZ = -1f;
+    public HashMap<Unit, Teamc> relationship = new HashMap<>();
 
     public AmmoEnabledUnitType(String name){
         super(name);
@@ -88,48 +91,39 @@ public class AmmoEnabledUnitType extends  NyfalisUnitType{
             table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
         }
 
-        if(unit.controller() instanceof SearchAndDestroyFlyingAi ai ){
+        if(unit.controller() instanceof  InoperableAi  ioa){
             table.row();
             table.table().left().growX().update(i -> {
                 i.left().clear();
-                if(ai.targetOverriden && ai.tarFire != null){
-                    i.add(Core.bundle.get("rules.fire")  + Iconc.statusBurning  + (Core.settings.getBool("console") ? "[lightgray] (" +Mathf.round(ai.tarFire.x/8f) + "," + Math.round(ai.tarFire.y/8f) + ")[]"  : "")) ;
+                if(unit.controller() instanceof SearchAndDestroyFlyingAi ai ){
+                    if(ai.targetOverriden && ai.tarFire != null) i.add(Core.bundle.get("rules.fire") + Iconc.statusBurning + (Core.settings.getBool("console") ? "[lightgray] (" + Mathf.round(ai.tarFire.x / 8f) + "," + Math.round(ai.tarFire.y / 8f) + ")[]" : ""));
                 }
-                else if(ai.inoperable){
-                    i.add(Core.bundle.get("nyfalis-ai-inoperable"));
+
+                if(unit.controller() instanceof NyfalisMiningAi ai ){
+                    if(ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null){
+                        i.add(Core.bundle.get("nyfalis-ai-inoperable"));
+                        return;
+                    }
+                    TextureRegion icon = unit.closestCore().block.fullIcon;
+                    if(ai.mineType >= 2 && ai.ore != null){
+                        if(ai.mineType == 2) icon = ai.ore.floor().fullIcon;
+                        else if(ai.mineType == 3) icon = ai.ore.block().fullIcon;
+                        else if(ai.mineType == 4) icon = ai.ore.overlay().fullIcon;
+                    }
+
+                    i.image(icon).size(iconSmall).scaling(Scaling.bounded).left();
+                    i.add(ai.mineType != 1 ? ai.targetItem.localizedName: unit.closestCore().block.localizedName).wrap().left();
+                    if (ai.ore != null && unit.closestCore() != null && (Core.settings.getBool("mouseposition") || Core.settings.getBool("position"))) {
+                        if(ai.ore == null || unit.closestCore() == null) return;
+                        Tile tar = ai.mineType == 1 ? unit.closestCore().tile : ai.ore;
+                        i.add("[lightgray](" + Math.round(tar.x) + ", " + Math.round(tar.y) + ") [" + Math.round(unit.dst(tar)) + "]");
+                    }
                 }
+
+                if(ioa.inoperable())i.add(Core.bundle.get("nyfalis-ai-inoperable"));
             });
-        }
+        };
 
-        if(unit.controller() instanceof NyfalisMiningAi ai ){
-            table.row();
-            table.table().left().growX().update(i -> {
-                i.left().clear();
-                if(ai.targetItem == null || unit.closestCore() == null || ai.targetItem == null){
-                    i.add(Core.bundle.get("nyfalis-ai-inoperable"));
-                    return;
-                }
-                TextureRegion icon = unit.closestCore().block.fullIcon;
-                if(ai.mineType >= 2 && ai.ore != null){
-                    if(ai.mineType == 2) icon = ai.ore.floor().fullIcon;
-                    else if(ai.mineType == 3) icon = ai.ore.block().fullIcon;
-                    else if(ai.mineType == 4) icon = ai.ore.overlay().fullIcon;
-                }
-
-                i.image(icon).size(iconSmall).scaling(Scaling.bounded).left();
-                i.add(ai.mineType != 1 ? ai.targetItem.localizedName: unit.closestCore().block.localizedName).wrap().left();
-            });
-
-            if (ai.ore != null && unit.closestCore() != null && (Core.settings.getBool("mouseposition") || Core.settings.getBool("position"))) {
-                table.row();
-                table.table().update(i -> {
-                    i.left().clear();
-                    if(ai.ore == null || unit.closestCore() == null) return;
-                    Tile tar = ai.mineType == 1 ? unit.closestCore().tile : ai.ore;
-                    i.add("[lightgray](" + Math.round(tar.x) + ", " + Math.round(tar.y) + ") [" + Math.round(unit.dst(tar)) + "]");
-                }).growX().wrap();
-            }
-        }
         table.row();
     }
 
@@ -162,15 +156,20 @@ public class AmmoEnabledUnitType extends  NyfalisUnitType{
 
     @Override
     public void update(Unit unit){
-        if(altResupply && !state.rules.unitAmmo && unit.ammo < ammoCapacity - 0.0001f){
+        if(altResupply && unit.ammo < ammoCapacity - 0.0001f){
             resupplyTime += Time.delta;
 
             //resupply only at a fixed interval to prevent lag
-            if(resupplyTime > 20f){
+            if(resupplyTime > 10f){
                 ammoType.resupply(unit.self());
                 resupplyTime = 0f;
             }
         }
+
+        if(relationship.containsKey(unit)){
+            if(unit.dead())relationship.remove(unit);
+        }
+
         super.update(unit);
     }
 }

@@ -145,13 +145,7 @@ public class NyfalisAttributeWeather {
             for(int i = 0; i < world.width() * world.height(); i++){
                 grow = Mathf.randomBoolean(regrowPercent);
 
-                if(grow && world.tiles.geti(i).block() instanceof SprigProp){
-                    NyfWorldFuckingHelper.growSprigs(world.tiles.geti(i));
-                    continue;
-                }
-
-                if(grow)
-                    NyfWorldFuckingHelper.placeSprigs(world.tiles.geti(i));
+                if(grow) NyfWorldFuckingHelper.growSprigs(world.tiles.geti(i));
             }
         }
 

@@ -4,25 +4,29 @@
  import arc.math.geom.*;
  import arc.struct.*;
  import arc.util.*;
+ import mindustry.*;
  import mindustry.ai.types.*;
  import mindustry.entities.*;
  import mindustry.gen.*;
+ import mindustry.logic.*;
  import mindustry.type.*;
  import mindustry.world.meta.*;
  import olupis.world.entities.units.*;
+ import org.w3c.dom.ranges.*;
 
- import static mindustry.Vars.state;
+ import static mindustry.Vars.*;
 
- /*FlyingAi but really aggressive */
-public class SearchAndDestroyFlyingAi extends FlyingAI {
+ /*FlyingAi but really aggressive
+ * was  but this has developed into something else */
+public class SearchAndDestroyFlyingAi extends FlyingAI  implements InoperableAi{
     /*avoids stuttering on trying to go to spawn after target is null*/
     public float delay = 70f * 60f, idleAfter;
     /*screw crawlers in particular*/
-    public boolean suicideOnSuicideUnits = false, suicideOnTarget = false, inoperable = false, targetOverriden = false;
+    public boolean suicideOnSuicideUnits = false, suicideOnTarget = false, targetOverriden = false;
     /*Compensate for target speed, for better chasing */
     public boolean compensateTargetSpeed = true;
     /*Allow the ai to seek new targets or pick one and idle*/
-    public boolean updateTargeting = false;
+    public boolean updateTargeting = true;
 
     public boolean circleBombing = false;
     public boolean targetFlames = false;
@@ -33,24 +37,48 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
     }
     public SearchAndDestroyFlyingAi(){}
 
+    private boolean inoperable  = false;
+    private float lastMoveX, lastMoveY;
+
+    @Override
+    public boolean inoperable(){
+        return inoperable;
+    }
+
     @Override
     public void updateMovement(){
         unloadPayloads();
 
         targetOverriden = false;
         if(invalid(target)){
-            if(unit.type instanceof AmmoLifeTimeUnitType) inoperable = true;
+            inoperable = true;
             if(updateTargeting) target = null;
         }
+        Teamc parent = null;
+        if(unit.type instanceof  AmmoEnabledUnitType ae && ae.relationship.containsKey(unit)){
+            parent= ae.relationship.get(unit);
+            if(parent != null){
+                if( unit.ammo <= 0 || (parent instanceof Ranged pr && (!unit.within(pr, pr.range()) || (target == null || !target.within(pr, pr.range()))) )){
+                    justMove(parent);
+                    target = null;
+                    return;
+                }
 
+            }
+        }
 
         if(target == null){
-            if(unit.type instanceof AmmoLifeTimeUnitType) inoperable = true;
+            inoperable = true;
             if( Time.time >= idleAfter) {
                 //protect key points on idle
-                if(unit.closestEnemyCore() != null && unit.inFogTo(unit.team) && unit.within(unit.closestEnemyCore(), Math.min(600f, unit().range() * 2f))) moveTo(unit.closestEnemyCore(), unit.range() * 2f);
-                else if(getClosestSpawner() != null && unit.within(getClosestSpawner(), Math.min(600f, unit().range() * 1.5f) + state.rules.dropZoneRadius) ) moveTo(unit.closestCore(), (unit().range() * 1.5f) + state.rules.dropZoneRadius);
-                else if(unit.closestCore() != null && unit.within(unit.closestCore(), Math.min(800f, unit().range() * 2f))) moveTo(unit.closestCore(), unit.range());
+                if(unit.closestEnemyCore() != null && unit.inFogTo(unit.team) && unit.within(unit.closestEnemyCore(), Math.min(600f, unit().range() * 2f))) justMove(unit.closestEnemyCore(), unit.range() * 2f);
+                else if(getClosestSpawner() != null && unit.within(getClosestSpawner(), Math.min(600f, unit().range() * 1.5f) + state.rules.dropZoneRadius) ) justMove(unit.closestCore(), (unit().range() * 1.5f) + state.rules.dropZoneRadius);
+                else if(unit.closestCore() != null && unit.within(unit.closestCore(), Math.min(800f, unit().range() * 2f))) justMove(unit.closestCore(), unit.range());
+                else if(parent != null && unit.within(parent, Math.min(800f, unit().range() * 2f))){
+                    target = null;
+                    justMove(parent, unit.range());
+                }
+
             }
             else findMainTarget(unit.x, unit.y, unit.range(), unit.type().targetAir, unit.type().targetGround);
         }
@@ -62,13 +90,18 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
             float speed = target instanceof Unit tar ? unit().speed() + tar.speed() : unit.speed();
             Vec2 tarVec = Predict.intercept(unit, target, speed);
 
-            if(unit.type.circleTarget || circleBombing && (target instanceof Building || (target instanceof Unit p && p.isGrounded()))){
-                circleAttack(120f);
-            }else if (compensateTargetSpeed){
-                float moveSpd = target instanceof Unit tar ? unit.within(tarVec, range) ?tar.moving() ?Math.min(tar.speed(), unit.speed()): Mathf.lerp(unit.speed(), 0, 1f) : unit.speed() : unit.speed();
-                vec.set(tarVec).sub(unit).setLength(moveSpd);
-                if(suicideOnSuicideUnits || !unit.within(target, unit.range() * 0.95f)) unit.moveAt(vec);
-            } else  moveTo(target, range);
+            if(unit.isFlying()){
+                if(unit.type.circleTarget || circleBombing && (target instanceof Building || (target instanceof Unit p && p.isGrounded()))){
+                    circleAttack(120f);
+                }else if (compensateTargetSpeed){
+                    float moveSpd = target instanceof Unit tar ? unit.within(tarVec, range) ?tar.moving() ?Math.min(tar.speed(), unit.speed()): Mathf.lerp(unit.speed(), 0, 1f) : unit.speed() : unit.speed();
+                    vec.set(tarVec).sub(unit).setLength(moveSpd);
+                    if(suicideOnSuicideUnits || !unit.within(target, unit.range() * 0.95f)) unit.moveAt(vec);
+                } else  moveTo(target, range);
+            } else {
+                justMove(target);
+            }
+
         }else if(target == null && targetFlames && !Groups.fire.isEmpty()){
             Seq<Fire> ff = Groups.fire.copy().sort(f -> f.dst(unit));
             tarFire = ff.find(f -> f.within(unit, 650f ));
@@ -138,6 +171,19 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
     @Override
     public Teamc findMainTarget(float x, float y, float range, boolean air, boolean ground){
 
+        if(unit.type instanceof  AmmoEnabledUnitType ae && ae.relationship.containsKey(unit)){
+            Teamc parent = ae.relationship.get(unit);
+            if(parent != null){
+                if(unit.ammo <= 0) return null;
+                if(parent instanceof  Ranged pr){
+                    if(!unit.within(pr, pr.range())) return null;
+                    return Units.closestTarget(unit.team, parent.x(), parent.y(), pr.range() + 16f, u -> air && !u.inFogTo(unit.team), b -> ground && !b.inFogTo(unit.team)) ;
+                }
+            }
+
+        }
+
+
         var search = Units.closestTarget(unit.team, x, y, Float.MAX_VALUE, u -> air && !u.inFogTo(unit.team), b -> ground && !b.inFogTo(unit.team)) ;
         if(search != null){
             suicideOnTarget = Units.closestTarget(unit.team, x, y, Float.MAX_VALUE, u -> u.type().weapons.find(w->w.bullet.killShooter) != null, b -> ground) != null;
@@ -155,4 +201,24 @@ public class SearchAndDestroyFlyingAi extends FlyingAI {
         }
         return targetFlag(x, y, BlockFlag.core, true);
     }
+
+
+    public void justMove(Teamc target){
+      justMove(target, unit.range() * 0.85f);
+    }
+    public void justMove(Teamc target, float range){
+        if (unit.type.flying) moveTo(target, range);
+        else {
+            if(!Mathf.equal(target.getX(), lastMoveX, 0.1f) || !Mathf.equal(target.getY(), lastMoveY, 0.1f)){
+            //lastPathId ++;
+                lastMoveX = target.getX();
+                lastMoveY = target.getY();
+            }
+            if (Vars.controlPath.getPathPosition(unit, Tmp.v2.set(target.getX(), target.getY()), Tmp.v1, null)) {
+                unit.lookAt(Tmp.v1);
+                moveTo(Tmp.v1, 1f, Tmp.v2.epsilonEquals(Tmp.v1, 4.1f) ? 30f : 0f, false, null);
+            } else unit.lookAt(unit.prefRotation());
+        }
+    }
+
 }

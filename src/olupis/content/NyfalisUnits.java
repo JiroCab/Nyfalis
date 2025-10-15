@@ -29,6 +29,7 @@ import mindustry.world.meta.*;
 import olupis.input.*;
 import olupis.world.*;
 import olupis.world.ai.*;
+import olupis.world.blocks.defence.ItemUnitTurret.*;
 import olupis.world.entities.abilities.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.entities.*;
@@ -88,14 +89,16 @@ public class NyfalisUnits {
 
         /*Misc/pending purpose units*/
         firefly, excess,
-        lootbug, ladarHelper, searchHelper
+        lootbug, ladarHelper, searchHelper,
+
+        /*hive spawns*/
+        mite, tick, flea, lice
     ;
 
     public static BatHelperUnitType pteropusAir, acerodonAir, nyctalusAir, mirimiriAir , vampyrumAir;
     public static HashMap<UnitType, Weapon[]> payloadWeaponIndex;
 
     public static AmmoLifeTimeUnitType
-        mite, tick, flea, lice,
         //support - yes, its just Phasmophobia ghost types
         spirit, phantom, banshee, revenant, poltergeis, shade
     ;
@@ -787,7 +790,7 @@ public class NyfalisUnits {
                         trailEffect = Fx.artilleryTrail;
                         backColor = Color.purple.cpy().add(Color.lightGray);
                         frontColor = Color.blue.cpy().add(Color.gray);
-                        hitEffect = despawnEffect = new MultiEffect(NyfalisFxs.highYieldExplosive, NyfalisFxs.highYieldSmoke);
+                        hitEffect = despawnEffect = new MultiEffect(NyfalisFxs.highYieldExplosive, NyfalisFxs.highYieldSmoke).layer(Layer.bullet);
                         shrinkInterp = Interp.slope;
                         collidesAir = false;
                         fragBullet = null;
@@ -2387,26 +2390,23 @@ public class NyfalisUnits {
 
         //endregion
         //region Limited - Hive
-        float hiveDepletionRate = 1;
-        flea = new AmmoLifeTimeUnitType("flea"){{
+        flea = new AmmoEnabledUnitType("flea"){{
             hitSize = 8f;
             range = 4f;
             armor = 10f;
-            speed = 2.7f;
+            speed = 1.2f;
             drag = 0.04f;
             accel = 0.08f;
             health = 100;
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
-            penaltyMultiplier = 1f;
-            ammoDepletionAmount = hiveDepletionRate;
+            mechSideSway = 0.25f;
             maxRange = 15f * Vars.tilesize;
-            ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
-            flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
-            playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
-            constructor = UnitEntity::create;
+            targetGround = targetAir = drawAmmo = true;
+            playerControllable  = logicControllable = useUnitCap  = false;
+            constructor = LegsUnit::create;
             controller = u -> new SearchAndDestroyFlyingAi();
             weapons.add(new NyfalisWeapon(){{
                 y = x = 0f;
@@ -2417,15 +2417,15 @@ public class NyfalisUnits {
                 targetSwitchInterval = 60f;
                 ammoPerShot = (float) ammoCapacity / 4f;
 
-                shootSound = Sounds.pew;
+                shoot.shots = 4;
+                shoot.shotDelay = 2.5f;
+                shootSound = NyfalisSounds.cncRa2DestroyerOsprey;;
                 ammoType = lifeTimeWeapon;
-                bullet = new FlakBulletType(6f, 3){{
+                bullet = new FlakBulletType(7f, 13){{
                     sprite = "mine-bullet";
                     width = 6f;
                     height = 8f;
-                    lifetime = 30f;
-                    ammoMultiplier = 5f;
-                    reloadMultiplier = 0.5f;
+                    lifetime = 25f;
                     splashDamage = 20f * 1.5f;
                     splashDamageRadius = 4f * 8f;
                     buildingDamageMultiplier = 0f;
@@ -2436,7 +2436,7 @@ public class NyfalisUnits {
             }});
         }};
 
-        mite = new AmmoLifeTimeUnitType("mite"){{
+        mite = new AmmoEnabledUnitType("mite"){{
             /*Rework: only no ammo deplete over time if with X of parent, once out, high  deplete amount*/
             hitSize = 8f;
             range = 45f;
@@ -2448,12 +2448,10 @@ public class NyfalisUnits {
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
-            penaltyMultiplier = 1f;
-            ammoDepletionAmount = hiveDepletionRate;
 
 
-            flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
-            playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
+            flying = targetGround = targetAir = drawAmmo = altResupply = true;
+            playerControllable  = logicControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
             controller = u -> new SearchAndDestroyFlyingAi(true){{
@@ -2470,6 +2468,7 @@ public class NyfalisUnits {
 
                     shootSound = Sounds.pew;
                     ammoType = lifeTimeWeapon;
+                    alwaysUseAmmo = true;
                     /*Gave up using LiquidBulletType*/
                     bullet = new NoBoilLiquidBulletType(NyfalisItemsLiquid.steam){{
                         useAmmo = true;
@@ -2513,7 +2512,7 @@ public class NyfalisUnits {
         }};
 
         //fires 2 roll bullets in quick succession
-        lice = new AmmoLifeTimeUnitType("lice"){{
+        lice = new AmmoEnabledUnitType("lice"){{
             range = 5;
             hitSize = 8f;
             armor = 10f;
@@ -2524,12 +2523,9 @@ public class NyfalisUnits {
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
-            penaltyMultiplier = 1f;
-            ammoDepletionAmount = hiveDepletionRate;
-            ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
-            flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
-            playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
+            flying = targetGround = targetAir = drawAmmo = true;
+            playerControllable  = logicControllable = useUnitCap =  false;
             constructor = UnitEntity::create;
             controller = u -> new SearchAndDestroyFlyingAi(true);
             weapons.add(new NyfalisWeapon(){{
@@ -2565,7 +2561,7 @@ public class NyfalisUnits {
         }};
 
         //Explodes and gives glitched effect
-        tick = new AmmoLifeTimeUnitType("tick"){{
+        tick = new AmmoEnabledUnitType("tick"){{
             range = 5;
             hitSize = 8f;
             armor = 10f;
@@ -2576,12 +2572,9 @@ public class NyfalisUnits {
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
-            penaltyMultiplier = 1f;
-            ammoDepletionAmount = hiveDepletionRate;
-            ammoCapacity = (int) (600f/(speed * ammoDepletionAmount));
 
-            flying = targetGround = targetAir = drawAmmo = ammoDepletesOverTime = true;
-            playerControllable  = logicControllable = useUnitCap = ammoDepletesInRange = false;
+            flying = targetGround = targetAir = drawAmmo  = true;
+            playerControllable  = logicControllable = useUnitCap  = false;
             constructor = UnitEntity::create;
             controller = u -> new SearchAndDestroyFlyingAi(true);
             weapons.add(new NyfalisWeapon(){{
@@ -2652,12 +2645,13 @@ public class NyfalisUnits {
                 fractionRepairSpeed = 0.03f;
                 beamWidth = repairSpeed = 0.3f;
 
-                targetBuildings = useAmmo = true;
+                targetBuildings = useAmmo = autoTarget = healingIgnoresMines = true;
                 controllable = top = false;
                 bullet = new BulletType(){{
                     aimDst = 0f;
                     maxRange = 120f;
                     healPercent = 1f;
+                    hitUnder = true;
                 }};
             }});
             parts.addAll(
@@ -2843,6 +2837,7 @@ public class NyfalisUnits {
                     rangeOverride = 7.4f * Vars.tilesize;
                     collidesTeam = true;
                     frontColor = Color.white;
+                    hitUnder = true;
                     hittable = reflectable = false;
                     backColor = lightColor = Pal.heal;
                     smokeEffect = hitEffect = despawnEffect =  Fx.hitLaser;
@@ -2957,6 +2952,44 @@ public class NyfalisUnits {
 //        }};
         //endregion
         //region Nyfalis Core Units
+        BulletType  gnatIntervals =  new HealOnlyBulletType(4,-5, "olupis-diamond-bullet", false) {{
+            lifetime = 60;
+            trailLength = 8;
+            trailWidth = 1.5f;
+            healAmount = 20;
+            bulletInterval = 10;
+            homingPower = 0.1f;
+            homingRange =  300f;
+            splashDamageRadius =  tilesize * 2 ;
+            followAimSpeed = 10;
+
+            collidesTeam = true;
+            keepVelocity = false;
+            hitEffect = despawnEffect = Fx.heal;
+            backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
+        }};
+
+        BulletType  gnatHealNade =  new HealOnlyBulletType(0,0) {{
+            spin = 3.5f;
+            drag = 0.9f;
+            lifetime = 10*60;
+            shrinkX = 25f/60f;
+            shrinkY = 35f/60f;
+            intervalBullets = 1;
+            intervalRandomSpread = 360;
+            height = width =  healAmount = 20;
+            bulletInterval = 10f;
+            trailInterval =  NyfalisFxs.gnatBullCharge.lifetime /2f;
+
+            collidesTeam = true;
+            keepVelocity = false;
+            hitEffect = despawnEffect = Fx.heal;
+            trailEffect = NyfalisFxs.gnatBullCharge;
+            backColor = frontColor = trailColor = lightColor = Pal.heal;
+
+            intervalBullet = gnatIntervals;
+        }};
+
         gnat = new NyfalisUnitType("gnat"){{
             armor = 1f;
             hitSize = 10f;
@@ -3017,36 +3050,7 @@ public class NyfalisUnits {
                         rangeOverride = 30f;
                         splashDamageRadius = 55f;
                         buildingDamageMultiplier = speed = 0f;
-                        intervalBullet = new HealOnlyBulletType(0,0) {{
-                            spin = 3.5f;
-                            drag = 0.9f;
-                            lifetime = 10*60;
-                            shrinkX = 25f/60f;
-                            shrinkY = 35f/60f;
-                            intervalBullets = 2;
-                            intervalSpread = 180;
-                            intervalRandomSpread = 90;
-                            height = width = bulletInterval = healAmount = 20;
-
-                            collidesTeam = true;
-                            keepVelocity = false;
-                            hitEffect = despawnEffect = Fx.heal;
-                            backColor = frontColor = trailColor = lightColor = Pal.heal;
-
-                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet", false) {{
-                                lifetime = 60;
-                                trailLength = 10;
-                                trailWidth = 1.5f;
-                                healAmount = 20;
-                                bulletInterval = 10;
-                                homingPower = 0.09f;
-
-                                collidesTeam = true;
-                                keepVelocity = false;
-                                hitEffect = despawnEffect = Fx.heal;
-                                backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
-                            }};
-                        }};
+                        intervalBullet = gnatHealNade.copy();
                     }};
                 }}
             );
@@ -3113,37 +3117,7 @@ public class NyfalisUnits {
                         rangeOverride = 30f;
                         splashDamageRadius = 55f;
                         buildingDamageMultiplier = speed = 0f;
-                        intervalBullet = new HealOnlyBulletType(0,0) {{
-                            spin = 3.6f;
-                            drag = 0.9f;
-                            lifetime = 10*60;
-                            shrinkX = 25f/60f;
-                            shrinkY = 35f/60f;
-                            bulletInterval = 25;
-                            intervalBullets = 2;
-                            intervalSpread = 180;
-                            intervalRandomSpread = 90;
-                            height = width = healAmount = 20;
-
-                            collidesTeam = true;
-                            keepVelocity = false;
-                            hitEffect = despawnEffect = Fx.heal;
-                            backColor = frontColor = trailColor = lightColor = Pal.heal;
-
-                            intervalBullet = new HealOnlyBulletType(4,-5, "olupis-diamond-bullet", false) {{
-                                lifetime = 60;
-                                trailLength = 10;
-                                trailWidth = 1.5f;
-                                healAmount = 20;
-                                bulletInterval = 10;
-                                homingPower = 0.09f;
-
-                                collidesTeam = true;
-                                keepVelocity = false;
-                                hitEffect = despawnEffect = Fx.heal;
-                                backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
-                            }};
-                        }};
+                        intervalBullet = gnatHealNade.copy();
                     }};
                 }},
                 new Weapon(){{
@@ -3229,35 +3203,7 @@ public class NyfalisUnits {
                             splashDamage = 70f;
                             splashDamageRadius = 55f;
                             speed = buildingDamageMultiplier = 0f;
-                            intervalBullet = new HealOnlyBulletType(0,-5) {{
-                                spin = 3.7f;
-                                drag = 0.9f;
-                                lifetime = 10*60;
-                                shrinkX = 25f/60f;
-                                shrinkY = 35f/60f;
-                                bulletInterval = 30;
-                                intervalBullets = 2;
-                                intervalSpread = 180;
-                                intervalRandomSpread = 90;
-                                height = width = healAmount = 20;
-
-                                fogVisible = true;
-                                keepVelocity = false;
-                                hitEffect = despawnEffect = Fx.heal;
-                                backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
-                                intervalBullet = new HealOnlyBulletType(5,0, "olupis-diamond-bullet", false) {{
-                                    lifetime = 60;
-                                    trailLength = 11;
-                                    trailWidth = 1.5f;
-                                    healAmount = 30;
-                                    bulletInterval = 10;
-                                    homingPower = 0.11f;
-
-                                    keepVelocity = false;
-                                    hitEffect = despawnEffect = Fx.heal;
-                                    backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.7f);
-                                }};
-                            }};
+                            intervalBullet = gnatHealNade.copy();
                         }};
                     }};
                 }}
@@ -3316,37 +3262,12 @@ public class NyfalisUnits {
                                 splashDamage = 70f;
                                 splashDamageRadius = 55f;
                                 speed = buildingDamageMultiplier = 0f;
-                                intervalBullet = new HealOnlyBulletType(0,-5) {{
-                                    spin = 3.7f;
-                                    drag = 0.9f;
-                                    lifetime = 10*60;
-                                    shrinkX = 25f/60f;
-                                    shrinkY = 35f/60f;
-                                    bulletInterval = 60;
-                                    intervalBullets = 3;
-                                    intervalSpread = 180;
-                                    intervalRandomSpread = 90;
-                                    height = width = healAmount = 20;
+                                intervalBullet = gnatHealNade.copy();
+                                BulletType dipetaInterval = gnatIntervals.copy();
+                                dipetaInterval.splashDamageRadius = Vars.tilesize * 2;
+                                dipetaInterval.hitEffect = dipetaInterval.despawnEffect = NyfalisFxs.taurusHeal;
 
-                                    fogVisible = true;
-                                    keepVelocity = false;
-                                    hitEffect = despawnEffect = Fx.heal;
-                                    backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.4f);
-                                    intervalBullet = new HealOnlyBulletType(10,0, "olupis-diamond-bullet", false) {{
-                                        width = 9f;
-                                        height = 13f;
-                                        lifetime = 15;
-                                        trailLength = 5;
-                                        trailWidth = 2f;
-                                        healAmount = 40;
-                                        homingPower = 0.2f;
-                                        splashDamageRadius = Vars.tilesize * 2;
-
-                                        keepVelocity = false;
-                                        backColor = frontColor = trailColor = lightColor = Pal.heal.a(0.7f);
-                                        hitEffect = despawnEffect = NyfalisFxs.taurusHeal;
-                                    }};
-                                }};
+                                intervalBullet.intervalBullet = dipetaInterval;
                             }};
                         }};
                     }}
@@ -3492,7 +3413,16 @@ public class NyfalisUnits {
             }
 
             @Override
-            public void resupply(Unit unit) {}
+            public void resupply(Unit unit) {
+                if(unit.type instanceof AmmoEnabledUnitType ae && ae.relationship.containsKey(unit)){
+                    Teamc p = ae.relationship.get(unit);
+                    if(p != null && unit.within(p, ae.range * 0.75f)){
+                        if(p instanceof ItemUnitTurretBuild b)b.resupplied();
+                        Fx.itemTransfer.at(p.x(), p.y(), 45f, unit.team.color, unit);
+                        unit.ammo = unit.type.ammoCapacity;
+                    }
+                }
+            }
         };
 
         lifeTimeSupport = new AmmoType() {

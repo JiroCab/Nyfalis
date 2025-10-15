@@ -3,6 +3,7 @@ package olupis.world;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -12,10 +13,16 @@ import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.type.weather.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.*;
+import olupis.content.*;
 import olupis.world.blocks.environment.*;
 
+import static mindustry.Vars.*;
+import static olupis.NyfalisMain.*;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisSectors.*;
 
@@ -78,8 +85,14 @@ public class NyfWorldFuckingHelper{
     // region == Weather helpers
 
     // no longer assumes the solids do not exist
-    public static void placeSprigs(Tile t){
+    public static void growSprigs(Tile t){
         if(t == null || (t.block() != Blocks.air && !t.block().alwaysReplace)) return;
+
+        if(t.block() instanceof RotatingProp sp && sp.replacement != null && sp.replacement != Blocks.air){
+            t.setNet(sp.replacement);
+            Fx.breakProp.at(t);
+            return;
+        }
 
         Floor fl = t.floor();
         t.setNet(
@@ -92,14 +105,6 @@ public class NyfWorldFuckingHelper{
         );
     }
 
-
-
-    public static void growSprigs(Tile t){
-        if(t.block() instanceof SprigProp sp){
-            t.setNet(sp.replacement);
-            Fx.breakProp.at(t);
-        }else Log.err(t + " is not Sprig(prop)!");
-    }
 
     /** Gets the generated ore variant from the given SpreadingFloor
      * @return The ore variant if found, the base ore if missing */
@@ -162,4 +167,83 @@ public class NyfWorldFuckingHelper{
         }
     }
     //engregion
+
+
+    //== Ambience Helper ==
+    public static void allUpdaters(){
+        transgenderTreeLeaves();
+        acidRainDamage();
+    }
+
+    public static void restUpdaters(){
+        trees = new Seq<>();
+        updates = 0;
+        floodPlaneLevel = 0.30f;
+    }
+
+    public static void acidRainDamage(){
+        if(state.isPaused() || !renderer.animateWater )  return;
+        if(Groups.weather.contains(w -> w.weather instanceof RainWeather)){
+            int cnt = 0;
+            float avrg = 0f;
+
+            for(WeatherState w : Groups.weather){
+                if(!(w.weather instanceof RainWeather)) continue;
+                cnt++;
+                avrg += w.intensity;
+            }
+            floodPlaneLevel = Mathf.lerpDelta(floodPlaneLevel, Math.max(0.30f, avrg/cnt), 0.0025f);
+        }
+    }
+
+    static int updates = 0;
+    static Seq<Tile> trees  = new Seq<>();
+    public static void transgenderTreeLeaves(){
+        if(!renderer.enableEffects) return;
+        if(!Mathf.randomBoolean(0.1f))return;
+
+        updates--;
+        if(updates <= 0){
+            for(Tile tile : Vars.world.tiles){
+                if(tile.block() instanceof  TrasngenderTreeBlock tg && tg.leaf && tile.staticDarkness() < 5)trees.add(tile);
+            }
+            updates = 20;
+        }
+        Tile tree = trees.random();
+        if(tree != null){
+            NyfalisFxs.trangenderTreeLeafEffect.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
+        }
+    }
+
+    public static void  allDrawers(){
+        cloudShadowDrawer();
+    }
+
+    public  static void cloudShadowDrawer(){
+        if( NyfalisMain.nyfalianPlanet){
+            if(!Core.settings.getBool("nyfalis-cloud-shadows")) return;
+        } else {
+            if(!Core.settings.getBool("nyfalis-cloud-shadows-others")) return;
+        }
+
+        if(cloudNoise == null){
+            cloudNoise = Core.assets.get("sprites/clouds.png", Texture.class);
+            cloudNoise.setWrap(Texture.TextureWrap.repeat);
+            cloudNoise.setFilter(Texture.TextureFilter.linear);
+        }
+
+        final float[] sspeed = {1f}, sscl = { 1f }, salpha = { 1f }, offset = { 0f };
+        Color col = Tmp.c1.set(Color.grays(0.1f));
+        Draw.z(Layer.weather - 2f);
+        for(int i = 0; i < 3; i++){
+            Weather.drawNoise(cloudNoise, Color.grays(0.1f), 1100f * sscl[0], salpha[0] * 0.27f, sspeed[0] *  0.035f, 1, 1.1f, 0.5f, offset[0]);
+            sspeed[0] *= 2;
+            salpha[0] *= 0.4f;
+            sscl[0] *= 2;
+            offset[0] += 0.29f;
+            col.mul(1);
+        }
+        Draw.reset();
+    }
+
 }

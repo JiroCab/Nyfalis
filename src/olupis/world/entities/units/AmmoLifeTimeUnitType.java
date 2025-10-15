@@ -118,7 +118,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
         boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap)), op = false;
         if(inoperableDepletes) op = (( unit.ammo >= deathThreshold && unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.inoperable) )
                             || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding())) //TODO: keep track of building prog and dont dep when no progress
-                            || (unit.controller() instanceof SearchAndDestroyFlyingAi ai && ai.inoperable);
+                            || (unit.controller() instanceof InoperableAi ai && ai.inoperable());
 
         boolean shouldDeplete = ( startTimeTracker.get(unit) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
         if(op || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){

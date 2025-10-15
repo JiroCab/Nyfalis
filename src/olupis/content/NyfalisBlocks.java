@@ -603,21 +603,24 @@ public class NyfalisBlocks {
         //endregion
         //endregion
         //region Props
-        yellowBush = new Prop("yellow-bush") {{
+        yellowBush = new RotatingProp("yellow-bush") {{
+            threshold = -1;
             variants = 2;
             breakSound = Sounds.plantBreak;
             frozenGrass.asFloor().decoration = this;
             yellowGrass.asFloor().decoration = this;
         }};
 
-        lumaFlora = new Prop("luma-flora") {{
+        lumaFlora = new RotatingProp("luma-flora") {{
+            threshold = -1;
             variants = 2;
             breakSound = Sounds.plantBreak;
             lumaGrass.asFloor().decoration = this;
             pinkGrass.asFloor().decoration = this;
         }};
 
-        bush = new Prop("bush") {{
+        bush = new RotatingProp("bush") {{
+            threshold = -1;
             variants = 2;
             breakSound = Sounds.plantBreak; // Buildable via planty mush
         }};
@@ -661,7 +664,8 @@ public class NyfalisBlocks {
             cinderBloomiest.asFloor().decoration = this;
         }};
 
-        redSandBoulder = new Prop("red-sand-boulder") {{
+        redSandBoulder = new RotatingProp("red-sand-boulder") {{
+            threshold = -1;
             variants = 2;
             redSand.asFloor().decoration = this;
         }};
@@ -698,25 +702,25 @@ public class NyfalisBlocks {
 
 
         //Rain stage grows of props
-        grassSprig = new SprigProp("grass-sprig") {{
+        grassSprig = new RotatingProp("grass-sprig") {{
             hasShadow = false;
             replacement = bush;
             breakSound = Sounds.plantBreak;
         }};
 
-        mossSprig = new SprigProp("moss-sprig") {{
+        mossSprig = new RotatingProp("moss-sprig") {{
             hasShadow = false;
             replacement = mossBoulder;
             breakSound = Sounds.plantBreak;
         }};
 
-        yellowSprig = new SprigProp("yellow-sprig") {{
+        yellowSprig = new RotatingProp("yellow-sprig") {{
             hasShadow = false;
             replacement = yellowBush;
             breakSound = Sounds.plantBreak;
         }};
 
-        glowSprig = new SprigProp("glow-sprig") {{
+        glowSprig = new RotatingProp("glow-sprig") {{
             hasShadow = false;
             lightRadius = 5f;
             floating = placeableLiquid = emitLight = rotate =  true;
@@ -725,7 +729,7 @@ public class NyfalisBlocks {
             breakSound = Sounds.plantBreak;
         }};
 
-        lumaSprig = new SprigProp("luma-sprig") {{
+        lumaSprig = new RotatingProp("luma-sprig") {{
             hasShadow = false;
             replacement = lumaFlora;
             breakSound = Sounds.plantBreak;
@@ -846,9 +850,11 @@ public class NyfalisBlocks {
         }};
         deadTree = new TrasngenderTreeBlock("dead-tree"){{
             variants = 2;
+            leaf = false;
         }};
         mossDeadTree = new TrasngenderTreeBlock("moss-dead-tree"){{
             variants = 2;
+            leaf = false;
         }};
 
 
@@ -1910,14 +1916,16 @@ public class NyfalisBlocks {
             instantDeconstruct = true; //statra nerf
             size = 1;
             health = 100;
+            armor = 2;
             damage = tileDamage = tendrils = length = 0;
             shots = 1;
-            bullet = new ExplosionBulletType(250, 20*8){{
+            bullet = new ExplosionBulletType(185, 140){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;
                 fragBullets = 8;
-                fragRandomSpread = 0;
                 fragSpread = 45;
+                fragRandomSpread = 0;
+                buildingDamageMultiplier = 0.005f;
                 fragBullet = new BulletType(){{
                     damage = 0;
                     knockback = 2f;
@@ -1946,8 +1954,9 @@ public class NyfalisBlocks {
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;
                 fragBullets = 8;
-                fragRandomSpread = 0;
                 fragSpread = 45;
+                fragRandomSpread = 0;
+                buildingDamageMultiplier = 0.005f;
                 fragBullet = new BulletType(){{
                     damage = 0;
                     knockback = 2f;
@@ -1967,15 +1976,16 @@ public class NyfalisBlocks {
             floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
             size = 1;
+            shots = 1;
             health = 40;
             damage = tileDamage = tendrils = length = 0;
-            shots = 1;
             bullet = new ExplosionBulletType(100, 10*8){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;
                 fragBullets = 8;
-                fragRandomSpread = 0;
                 fragSpread = 45;
+                buildingDamageMultiplier = 0.005f;
+                fragRandomSpread = 0;
                 fragBullet = new BasicBulletType(3.0F, 10.0F) {{
                     width = 5.0F;
                     height = 12.0F;
@@ -1994,14 +2004,15 @@ public class NyfalisBlocks {
             instantDeconstruct = true; //statra nerf
             size = 1;
             health = 20;
-            damage = tileDamage = tendrils = length = 0;
             shots = 1;
+            damage = tileDamage = tendrils = length = 0;
             bullet = new ExplosionBulletType(50, 15*8){{
                 trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
                 killShooter = collidesAir = true;
                 fragBullets = 8;
-                fragRandomSpread = 0;
                 fragSpread = 45;
+                fragRandomSpread = 0;
+                buildingDamageMultiplier = 0.005f;
                 fragBullet = new BulletType(){{
                     damage = 0;
                     knockback = 0.2f;
@@ -2832,6 +2843,7 @@ public class NyfalisBlocks {
                 if(b instanceof SteamVent) vents.add(b);
                 allNyfalisBlocks.add(b);
                 b.envEnabled = NyfalisAttributeWeather.nyfalian;
+                b.outlineColor = NyfalisColors.contentOutline;
             }
 
             if(b.techNode != null && b.techNode.planet == Planets.serpulo || b.isOnPlanet(Planets.serpulo)){
