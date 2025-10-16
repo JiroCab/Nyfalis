@@ -77,6 +77,7 @@ public class NyfalisBlocks {
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop, slopDeep, lubricantPool,
+        flowWater,
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly, lilypad,
@@ -600,6 +601,33 @@ public class NyfalisBlocks {
             cacheLayer = CacheLayer.water;
         }};
 
+        flowWater = new FlowWaterTile("flow-water") {{
+            parent = water;
+            variants = 0;
+            albedo = 0.9f;
+            drownTime = 200f;
+            statusDuration = 120f;
+            liquidMultiplier = 1.5f;
+            speedMultiplier = 0.2f;
+            isLiquid = supportsOverlay = true;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
+        }};
+
+        flowWater = new FlowWaterTile("flow-algae") {{
+            parent = algaeWater;
+            variants = 0;
+            albedo = 0.9f;
+            drownTime = 200f;
+            statusDuration = 120f;
+            liquidMultiplier = 1.5f;
+            speedMultiplier = 0.2f;
+            isLiquid = supportsOverlay = true;
+            liquidDrop = Liquids.water;
+            status = StatusEffects.wet;
+            cacheLayer = CacheLayer.water;
+        }};
         //endregion
         //endregion
         //region Props

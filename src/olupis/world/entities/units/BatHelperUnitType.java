@@ -1,16 +1,21 @@
 package olupis.world.entities.units;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.g2d.TextureAtlas.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.graphics.MultiPacker.*;
 import mindustry.type.*;
 
-public class BatHelperUnitType extends UnitType {
+public class BatHelperUnitType extends NyfalisUnitType {
     public UnitType main = UnitTypes.alpha;
     public Seq<StatusEffect> blacklist = Seq.with(StatusEffects.unmoving, StatusEffects.disarmed, StatusEffects.invincible);
+    public TextureRegion overlayRegion;
 
     public BatHelperUnitType(String name){
         super(name);
@@ -32,8 +37,8 @@ public class BatHelperUnitType extends UnitType {
     @Override
     public void load() {
         super.load();
-        TextureRegion i = main.uiIcon;
-        fullIcon = main.fullIcon;
+        region = Core.atlas.find(main.name);
+        overlayRegion = Core.atlas.find("olupis-bat-helper");
         localizedName = main.localizedName + " " + Core.bundle.get("nyfalis-helper-air");
     }
 
@@ -57,4 +62,15 @@ public class BatHelperUnitType extends UnitType {
         }
         unit.remove();
     }
+
+    @Override
+    public void createIcons(MultiPacker packer){
+        super.createIcons(packer);
+
+        Pixmap base = Core.atlas.getPixmap(region).crop();
+        base.draw(Core.atlas.getPixmap(overlayRegion), true);
+        packer.add(PageType.main, "unit-" + name + "-full", base);
+        base.dispose();
+    }
+
 }

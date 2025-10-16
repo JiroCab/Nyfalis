@@ -915,6 +915,11 @@ public class ItemUnitTurret extends ItemTurret {
         }
 
         @Override
+        public void onRemoved(){
+            if(child != null) AmmoLifeTimeUnitType.callTimeOut(child);
+            super.onRemoved();
+        }
+        @Override
         public void write(Writes write){
             super.write(write);
             TypeIO.writeVecNullable(write, commandPos);

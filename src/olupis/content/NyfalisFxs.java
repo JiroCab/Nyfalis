@@ -1,5 +1,6 @@
 package olupis.content;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -13,7 +14,6 @@ import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import olupis.world.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Draw.rect;
@@ -447,8 +447,48 @@ public class NyfalisFxs extends Fx {
                 Drawf.tri(fx , fy, e.fout() * 5, e.fout() * 5, fr);
                 Drawf.tri(fx, fy, e.fout() * 5, e.fout() * 5, fr + 180);
             });
-        }).layer(Layer.power + 0.01f);
-        ;
+        }).layer(Layer.power + 0.01f),
+
+        //stolen from: https://github.com/ItsKirby69/MineDusty/blob/master/src/minedusty/content/DustyEffects.java
+        flowWater = new Effect(85f, 250f, e -> {
+            float thresh = 0.6f;
+            float fade = e.fin() < thresh ?
+            Interp.pow3Out.apply(e.fin() / thresh) :
+            1f - Interp.pow3In.apply((e.fin() - thresh) / (1f - thresh));
+
+            fade *= 0.5f;
+
+            color(Color.valueOf("#4f5fb8"), Color.valueOf("#fbfcffff"), e.finpow());
+
+            rand.setSeed(e.id);
+            float baseAngle = e.rotation;
+            float angle = baseAngle + rand.random(-2f, 2f);
+            // Keep in mind that the default position of the effect is pointing East
+            float offsetX = rand.random(-15f, -14f);
+            float offsetY = rand.random(-6f, 6f);
+            // Offsets according to direction.
+            float ox = Angles.trnsx(angle, offsetX, offsetY);
+            float oy = Angles.trnsy(angle, offsetX, offsetY);
+
+            float speed = rand.random(0.15f);
+            float travel = 10f * speed;
+
+            float rise = 36f * e.fin() * Mathf.clamp(1.75f - e.finpow(), 0f, 1f);
+            float shrink = Mathf.lerp(1f, 0.5f, e.fin());
+
+            float cx = e.x + ox + Angles.trnsx(angle, travel);
+            float cy = e.y + oy + Angles.trnsy(angle, travel);
+            cy += Angles.trnsy(baseAngle, rise);
+            cx += Angles.trnsx(baseAngle, rise);
+
+            float baseSize = 4.5f + rand.random(3f);
+            float wid = baseSize * (2f + shrink);
+            float len = baseSize * (1f * 0.7f) * shrink * Mathf.clamp(e.finpow() * 7f - 4f, 1f, 7f); //Mathf.sin(e.fin() * Mathf.PI)
+
+            alpha(fade);
+            Draw.rect(Core.atlas.find("olupis-circooler"), cx, cy, wid, len, angle);
+            // lineAngle(sx, sy, angle, length);
+        }).layer(35f).rotWithParent(true).followParent(true)
 
 
     ;

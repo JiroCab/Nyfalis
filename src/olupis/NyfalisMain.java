@@ -12,6 +12,7 @@ import mindustry.*;
 import mindustry.ai.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -166,6 +167,12 @@ public class NyfalisMain extends Mod{
                 //ui.content.show(NyfalisUnits.resolute);
             }
             NyfalisClassMap.load(this.getClass().getPackage().getName());
+
+            content.each(c -> {
+                if(c.minfo != null && c.minfo.mod != null && Objects.equals(c.minfo.mod.name, "olupis")){
+                    if( c instanceof UnlockableContent uc && !uc.fullIcon.found()) uc.uiIcon = uc.fullIcon = Core.atlas.find(Mathf.randomBoolean(0.5f) ? "alphaaaa" :  "ranai");
+                }
+            });
         });
 
         Events.on(ServerLoadEvent.class, e-> globalLoadEvent());

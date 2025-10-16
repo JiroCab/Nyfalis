@@ -204,6 +204,18 @@ public class NyfalisTechTree {
                 ), () -> {
 
                 });
+                node(flea, Seq.with(
+                new  Objectives.Research(scoutPad)
+                ), () -> {
+                    node(mite, () -> {
+                        node(flea, () ->{
+                            node(lice, () ->{
+
+                            });
+                        });
+                    });
+
+                });
             });
 
             node(mossyBoulder, ()-> {

@@ -1,6 +1,8 @@
 package olupis.content;
 
+import arc.*;
 import arc.graphics.*;
+import arc.math.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.type.*;
@@ -125,7 +127,10 @@ public class NyfalisItemsLiquid {
 
         //endregion
 
-        nyfalisOnlyItems.addAll(rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum);
+        nyfalisOnlyItems.addAll(
+            rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum,
+            ironFrame, copperWire, crudeBattery, basicRotor, ironPlate, graphiteFrame, siliconCircuit, ceramicPlating, graphiteCell, electricMotor
+        );
         nyfalisItems.add(nyfalisOnlyItems);
         nyfalisItems.addAll(copper, lead, silicon, graphite, sand, scrap);
     }

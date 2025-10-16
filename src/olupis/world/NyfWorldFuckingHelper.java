@@ -21,6 +21,9 @@ import olupis.*;
 import olupis.content.*;
 import olupis.world.blocks.environment.*;
 
+import java.util.*;
+import java.util.Map.*;
+
 import static mindustry.Vars.*;
 import static olupis.NyfalisMain.*;
 import static olupis.content.NyfalisBlocks.*;
@@ -171,18 +174,23 @@ public class NyfWorldFuckingHelper{
 
     //== Ambience Helper ==
     public static void allUpdaters(){
+        if(state.isPaused())return;
         transgenderTreeLeaves();
-        acidRainDamage();
+        updateFloodPlane();
+        updateFlows();
     }
 
     public static void restUpdaters(){
         trees = new Seq<>();
-        updates = 0;
+        flows = new HashMap<>();
+
+        updatesTree = 3;
+        updatesFlows = 0;
         floodPlaneLevel = 0.30f;
     }
 
-    public static void acidRainDamage(){
-        if(state.isPaused() || !renderer.animateWater )  return;
+    public static void updateFloodPlane(){
+        if(!renderer.animateWater )  return;
         if(Groups.weather.contains(w -> w.weather instanceof RainWeather)){
             int cnt = 0;
             float avrg = 0f;
@@ -196,22 +204,48 @@ public class NyfWorldFuckingHelper{
         }
     }
 
-    static int updates = 0;
+    static int updatesTree = 0;
     static Seq<Tile> trees  = new Seq<>();
     public static void transgenderTreeLeaves(){
         if(!renderer.enableEffects) return;
         if(!Mathf.randomBoolean(0.1f))return;
 
-        updates--;
-        if(updates <= 0){
+        updatesTree--;
+        if(updatesTree <= 0){
             for(Tile tile : Vars.world.tiles){
                 if(tile.block() instanceof  TrasngenderTreeBlock tg && tg.leaf && tile.staticDarkness() < 5)trees.add(tile);
             }
-            updates = 20;
+            updatesTree = 120;
         }
         Tile tree = trees.random();
         if(tree != null){
             NyfalisFxs.trangenderTreeLeafEffect.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
+        }
+    }
+
+    public static HashMap<Tile, Integer> flows = new HashMap<>();
+    static int updatesFlows = 0;
+    public static void updateFlows(){
+        if(!renderer.enableEffects) return;
+        updatesFlows--;
+        if(updatesFlows <= 0){
+            for(Tile tile : Vars.world.tiles){
+                if(tile.floor() instanceof  FlowWaterTile ft && (tile.block() == Blocks.air || !tile.block().solid) && !flows.containsKey(tile)) flows.put(tile, ft.effectSpacing);
+            }
+            updatesFlows = 240;
+        }
+
+        for(Entry<Tile, Integer> entry : flows.entrySet()){
+            Tile til = entry.getKey();
+            int tim = entry.getValue();
+
+            if(tim <= 0){
+                if(til.floor() instanceof FlowWaterTile ft){
+                    ft.effect.at(til.x * tilesize, til.y * tilesize, til.extraData);
+                    flows.replace(til, ft.effectSpacing);
+                }else flows.remove(til);
+
+            } else flows.replace(til, tim - 1);
         }
     }
 
