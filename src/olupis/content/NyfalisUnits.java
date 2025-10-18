@@ -2643,7 +2643,8 @@ public class NyfalisUnits {
                 shootCone = 20f;
                 shootX = shootY = x = 0;
                 fractionRepairSpeed = 0.03f;
-                beamWidth = repairSpeed = 0.3f;
+                beamWidth = 0.3f;
+                repairSpeed = 0.5f;
 
                 targetBuildings = useAmmo = autoTarget = healingIgnoresMines = true;
                 controllable = top = false;
@@ -2777,14 +2778,15 @@ public class NyfalisUnits {
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new AgressiveFlyingAi(true, true);
+
             weapons.add(new LimitedRepairBeamWeapon(""){{
                 shootCone = 20f;
                 shootX = shootY = x = y = 0;
                 fractionRepairSpeed = 0.02f;
-                beamWidth = repairSpeed = 1.8f;
+                beamWidth = repairSpeed = 0.18f;
 
-                useAmmo = autoTarget = healingIgnoresMines = true;
-                controllable = top = targetUnits = false;
+                useAmmo = autoTarget = healingIgnoresMines = targetUnits= true;
+                controllable = top = targetBuildings = false;
                 bullet = new BulletType(){{
                     aimDst = 0f;
                     maxRange = 100f;
