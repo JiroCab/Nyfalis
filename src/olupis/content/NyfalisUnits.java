@@ -2650,7 +2650,7 @@ public class NyfalisUnits {
                 bullet = new BulletType(){{
                     aimDst = 0f;
                     maxRange = 120f;
-                    healPercent = 1f;
+                    healPercent = 3f;
                     hitUnder = true;
                 }};
             }});
@@ -2777,20 +2777,19 @@ public class NyfalisUnits {
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new AgressiveFlyingAi(true, true);
-            weapons.add(new Weapon(){{
-                top = false;
-                reload = 25f;
-                shootCone = 30f;
-                shootSound = Sounds.lasershoot;
-                x = y = shootX = inaccuracy = 0f;
-                bullet = new LaserBoltBulletType(6f, 10){{
-                    lifetime = 30f;
-                    healPercent = 5f;
-                    homingPower = 0.03f;
-                    buildingDamageMultiplier = 0.01f;
-                    collidesTeam = true;
-                    backColor = Pal.heal;
-                    frontColor = Color.white;
+            weapons.add(new LimitedRepairBeamWeapon(""){{
+                shootCone = 20f;
+                shootX = shootY = x = y = 0;
+                fractionRepairSpeed = 0.02f;
+                beamWidth = repairSpeed = 1.8f;
+
+                useAmmo = autoTarget = healingIgnoresMines = true;
+                controllable = top = targetUnits = false;
+                bullet = new BulletType(){{
+                    aimDst = 0f;
+                    maxRange = 100f;
+                    healPercent = 1f;
+                    hitUnder = true;
                 }};
             }});
         }};
@@ -2990,6 +2989,45 @@ public class NyfalisUnits {
             intervalBullet = gnatIntervals;
         }};
 
+        BulletType pediciaPew = new ShappedBulletType(){{
+            speed = 3f;
+            damage = 10f;
+            lifetime = 35f;
+            widthIn = 2.5f;
+            heightIn = 6f;
+            heightOut = 7.5f;
+            shapeIn = shapeOut = 2;
+            rotIn = rotOut = 0;
+            followAimSpeed = 2.8f;
+            buildingDamageMultiplier = 0.3f;
+
+            hitEffect = despawnEffect =NyfalisFxs.hollowPointHitSmall;
+            colourIn= rustyBullet;
+            colourOut = rustyBulletBack;
+            trailColor = NyfalisItemsLiquid.rustyIron.color;
+            trailWidth = 1f;
+            trailLength = 8;
+
+            pierce = true;
+            pierceCap = 2;
+            fragBullets = 3;
+            pierceFragCap = 1;
+
+            fragBullet = new ShappedBulletType(){{
+                drawOut =false;
+                rotIn = 0f;
+                speed = 1f;
+                shapeIn = 2;
+                damage = 4f;
+                widthIn  = 2.5f;
+                heightIn = 3.4f;
+                lifetime = 20f;
+                hitEffect = despawnEffect = Fx.none;
+                buildingDamageMultiplier = 0.3f;
+                colourIn = rustyBullet;
+            }};
+        }};
+
         gnat = new NyfalisUnitType("gnat"){{
             armor = 1f;
             hitSize = 10f;
@@ -3041,7 +3079,7 @@ public class NyfalisUnits {
                     shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
                     /*3 bullets deep, just so everything shoot at the same time, as being separate weapons causes early/late shooting*/
                     bullet = new BulletType() {{
-                        collides = hittable = collidesTiles = false;
+                        collides = hittable = collidesTiles = mirror = false;
                         instantDisappear = collidesAir = true;
                         hitSound = Sounds.explosion;
                         hitEffect = NyfalisFxs.unitDischarge;
@@ -3108,7 +3146,7 @@ public class NyfalisUnits {
                     shootStatusDuration = shoot.firstShotDelay = Fx.heal.lifetime-1;
                     /*3 bullets deep, just so everything shoot at the same time, as being separate weapons causes early/late shooting*/
                     bullet = new BulletType() {{
-                        collides = hittable = collidesTiles = false;
+                        collides = hittable = collidesTiles = mirror = false;
                         instantDisappear = collidesAir = true;
                         hitSound = Sounds.explosion;
                         hitEffect = NyfalisFxs.unitDischarge;
@@ -3120,21 +3158,14 @@ public class NyfalisUnits {
                         intervalBullet = gnatHealNade.copy();
                     }};
                 }},
-                new Weapon(){{
-                    top = false;
+                new NyfalisWeapon(){{
+                    top = mirror = false;
                     reload = 50f;
                     shootCone = 30f;
-                    shootSound = Sounds.lasershoot;
-                    x = y = shootX = inaccuracy = 0f;
-                    bullet = new LaserBoltBulletType(6f, 5){{
-                        lifetime = 15f;
-                        healPercent = 1f;
-                        homingPower = 0.03f;
-                        buildingDamageMultiplier = 0.01f;
-                        collidesTeam = true;
-                        backColor = Pal.heal;
-                        frontColor = Color.white;
-                    }};
+                    shootSound = Sounds.pew;
+                    y =  2.5f;
+                    x = shootX = inaccuracy = 0f;
+                    bullet = pediciaPew.copy();
                 }}
             );
         }};
@@ -3195,7 +3226,7 @@ public class NyfalisUnits {
                         //rangeOverride = mineRange;
                         intervalBullet =  new BulletType() {{
                             instantDisappear = collidesAir = true;
-                            collidesTiles = collides = hittable = false;
+                            collidesTiles = collides = hittable = mirror = false;
                             hitSound = Sounds.explosion;
                             hitEffect = NyfalisFxs.unitDischarge;
 
@@ -3206,6 +3237,17 @@ public class NyfalisUnits {
                             intervalBullet = gnatHealNade.copy();
                         }};
                     }};
+                }},
+                new NyfalisWeapon(){{
+                    top = false;
+                    mirror = true;
+                    reload = 35f;
+                    shootCone = 30f;
+                    shootSound = Sounds.pew;
+                    x = 2.5f;
+                    y = 7;
+                    shootX = inaccuracy = 0f;
+                    bullet = pediciaPew.copy();
                 }}
             );
         }};
@@ -3254,7 +3296,7 @@ public class NyfalisUnits {
                             intervalDelay = 0.5f;
                             intervalBullet =  new BulletType() {{
                                 instantDisappear = collidesAir = true;
-                                collidesTiles = collides = hittable = false;
+                                collidesTiles = collides = hittable = mirror = false;
                                 hitSound = Sounds.explosion;
                                 hitEffect = NyfalisFxs.unitDischarge;
 

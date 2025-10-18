@@ -4,7 +4,7 @@ With slight lean on RTS Elements and providing pain from the base game has to of
 
 # Misc Info
 ### [Consider getting the music companion mod here!](https://github.com/JiroCab/Nyfalis-Music)
-(Alpha version/ not in releases) This Mod has [TMI support](https://github.com/eb-wilson/toomanyitems)!
+(Alpha version / not in releases) This Mod has [TMI support](https://github.com/eb-wilson/toomanyitems)!
 
 [Releases](https://github.com/JiroCab/Olupis/releases) for all release versions automatically created from commits to `main`. 
 otherwise use [GitHub Actions](https://github.com/JiroCab/Olupis/actions) for ready to download jars per commit on any branch.
@@ -31,7 +31,7 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 * [Kapzduke](https://github.com/kapzduke) - Sprites
 * [Otamamori](https://github.com/Otamamori917) - Sprites
 * [Catana](https://github.com/Catana791) - Sprites
-* [ItsKirby69](https://github.com/ItsKirby69) - Sprites
+* [ItsKirby69](https://github.com/ItsKirby69) - Sprites, Fx
 * slario&asterisk.txt - Maps
 
 
