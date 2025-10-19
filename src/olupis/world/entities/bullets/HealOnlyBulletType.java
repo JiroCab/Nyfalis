@@ -1,14 +1,12 @@
 package olupis.world.entities.bullets;
 
-import arc.math.Angles;
-import arc.util.Time;
-import mindustry.Vars;
+import arc.math.*;
+import arc.util.*;
+import mindustry.*;
 import mindustry.entities.*;
-import mindustry.entities.bullet.BasicBulletType;
+import mindustry.entities.bullet.*;
 import mindustry.gen.*;
-import mindustry.world.blocks.ConstructBlock;
-
-import java.util.concurrent.atomic.AtomicReference;
+import mindustry.world.blocks.*;
 
 public class HealOnlyBulletType extends BasicBulletType {
     public boolean fogVisible = true, alwaysSplashDamage = false, despawnHitEffect = false;
@@ -66,7 +64,7 @@ public class HealOnlyBulletType extends BasicBulletType {
         //Only Home on allies
         return Units.closestTarget(null, realAimX, realAimY, homingRange,
             e -> false /*don't*/,
-            t ->{hitsize[0] = t.hitSize());
+            t ->{hitsize[0] = t.hitSize();
                 return (t.team == b.team && t.damaged()) && !b.hasCollided(t.id);
             }
         );
