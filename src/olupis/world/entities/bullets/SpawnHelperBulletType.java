@@ -58,12 +58,11 @@ public class SpawnHelperBulletType extends BasicBulletType {
                 }
                 if(hasParent){
                     if(shooter instanceof ItemUnitTurretBuild b) b.child = spawned;
-                    if(spawned.type instanceof AmmoEnabledUnitType b && shooter instanceof Teamc unit) b.relationship.put(spawned, unit);
-                }
-                if(spawned.controller() instanceof AgressiveFlyingAi ai && hasParent) {
-                    ai.hasParent = true;
-                    if (shooter instanceof Unit unit) ai.parent = unit;
-                    if (shooter instanceof ControlBlock control) ai.parent = control.unit();
+                    if(spawned.type instanceof AmmoEnabledUnitType b && shooter instanceof Teamc unit){
+                        if (shooter instanceof ControlBlock control) b.relationship.put(spawned, control.unit());
+                        else b.relationship.put(spawned, unit);
+
+                    }
                 }
 
 

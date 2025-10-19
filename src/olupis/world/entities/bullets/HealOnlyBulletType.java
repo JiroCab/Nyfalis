@@ -31,11 +31,11 @@ public class HealOnlyBulletType extends BasicBulletType {
     }
 
     @Override
-    public void update(Bullet b){
-        AtomicReference<Float> tarSize = new AtomicReference<>(b.hitSize);
-        Teamc tar = findTarget(b, tarSize);
+    public void update(Bullet b){;
+        float[] hitsize = {b.hitSize};
+        Teamc tar = findTarget(b, hitsize);
 
-        updateCollision(b, tar, tarSize);
+        updateCollision(b, tar, hitsize[0]);
         updateTrail(b);
         updateHoming(b, tar);
         updateWeaving(b);
@@ -50,23 +50,23 @@ public class HealOnlyBulletType extends BasicBulletType {
     }
 
     /*Overcomplicated way to say: Hit only Blocks but not units*/
-    public void updateCollision(Bullet b, Teamc target, AtomicReference<Float> tarSize){
+    public void updateCollision(Bullet b, Teamc target, float tarSize){
         /*If someone finds a better way to do this, please let us know -RushieWsahie*/
         if (!heals())return;
         /*heals only the target, passing over any damaged blocks is ignored, debating if this a feature or bug*/
         float splash = Math.max(b.type.splashDamageRadius * 0.8f, 1f);
         if(target == null) this.collides = this.collidesGround = false;
-        else this.collides  = this.collidesGround = target.within(b.x(), b.y(), Math.max(tarSize.get() -3.5f, splash));
+        else this.collides  = this.collidesGround = target.within(b.x(), b.y(), Math.max(tarSize -3.5f, splash));
     }
 
-    public Teamc findTarget(Bullet b, AtomicReference<Float> tarSize){
+    public Teamc findTarget(Bullet b, float[] hitsize){
         if(!heals()) return null;
         float realAimX = b.aimX < 0 ? b.x : b.aimX,
                 realAimY = b.aimY < 0 ? b.y : b.aimY;
         //Only Home on allies
         return Units.closestTarget(null, realAimX, realAimY, homingRange,
             e -> false /*don't*/,
-            t ->{tarSize.set(t.hitSize());
+            t ->{hitsize[0] = t.hitSize());
                 return (t.team == b.team && t.damaged()) && !b.hasCollided(t.id);
             }
         );

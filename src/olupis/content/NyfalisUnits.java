@@ -2647,7 +2647,7 @@ public class NyfalisUnits {
                 repairSpeed = 0.5f;
 
                 targetBuildings = useAmmo = autoTarget = healingIgnoresMines = true;
-                controllable = top = false;
+                controllable = top = mirror = false;
                 bullet = new BulletType(){{
                     aimDst = 0f;
                     maxRange = 120f;
@@ -2770,23 +2770,26 @@ public class NyfalisUnits {
             speed = 3f;
             fogRadius = 0f;
             itemCapacity = 0;
-            ammoCapacity = 150;
+            ammoCapacity = 300;
             ammoDepletionAmount = ammoCapacity;
             ammoDepletionOffset = 60*10;
 
-            flying = alwaysShootWhenMoving = drawAmmo = true;
+            ammoType = lifeTimeSupport;
+            flying = alwaysShootWhenMoving = drawAmmo = lookForParent = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
             controller = u -> new AgressiveFlyingAi(true, true);
 
+
             weapons.add(new LimitedRepairBeamWeapon(""){{
                 shootCone = 20f;
-                shootX = shootY = x = y = 0;
+                y = 3;
+                shootX = shootY = x = 0;
                 fractionRepairSpeed = 0.02f;
                 beamWidth = repairSpeed = 0.18f;
 
                 useAmmo = autoTarget = healingIgnoresMines = targetUnits= true;
-                controllable = top = targetBuildings = false;
+                controllable = top = targetBuildings = mirror =  false;
                 bullet = new BulletType(){{
                     aimDst = 0f;
                     maxRange = 100f;
@@ -2993,41 +2996,22 @@ public class NyfalisUnits {
 
         BulletType pediciaPew = new ShappedBulletType(){{
             speed = 3f;
-            damage = 10f;
+            damage = 13f;
             lifetime = 35f;
             widthIn = 2.5f;
             heightIn = 6f;
             heightOut = 7.5f;
             shapeIn = shapeOut = 2;
             rotIn = rotOut = 0;
-            followAimSpeed = 2.8f;
-            buildingDamageMultiplier = 0.3f;
+            followAimSpeed = 10f;
+            buildingDamageMultiplier = 0.1f;
 
             hitEffect = despawnEffect =NyfalisFxs.hollowPointHitSmall;
             colourIn= rustyBullet;
             colourOut = rustyBulletBack;
             trailColor = NyfalisItemsLiquid.rustyIron.color;
-            trailWidth = 1f;
-            trailLength = 8;
-
-            pierce = true;
-            pierceCap = 2;
-            fragBullets = 3;
-            pierceFragCap = 1;
-
-            fragBullet = new ShappedBulletType(){{
-                drawOut =false;
-                rotIn = 0f;
-                speed = 1f;
-                shapeIn = 2;
-                damage = 4f;
-                widthIn  = 2.5f;
-                heightIn = 3.4f;
-                lifetime = 20f;
-                hitEffect = despawnEffect = Fx.none;
-                buildingDamageMultiplier = 0.3f;
-                colourIn = rustyBullet;
-            }};
+            trailWidth = 1.25f;
+            trailLength = 5;
         }};
 
         gnat = new NyfalisUnitType("gnat"){{
@@ -3316,6 +3300,22 @@ public class NyfalisUnits {
                         }};
                     }}
             );
+            float[] xp = {7.5f, 0, -7.5f}, yp = {-4, 0, -4};
+            for(int i = 0; i < 3; i++){
+                int ic = i;
+                weapons.addAll(
+                    new NyfalisWeapon(){{
+                        top = mirror = false;
+                        reload = 50f;
+                        shootCone = 30f;
+                        shootSound = Sounds.pew;
+                        x =  xp[ic];
+                        y =  yp[ic];
+                        shootX = inaccuracy = 0f;
+                        bullet = pediciaPew.copy();
+                    }}
+                );
+            }
         }};
 
         //diptera -> Flying unit that drops healing cluster bomb,  explode (w/ dmg) > split into 2 healing circles
@@ -3574,6 +3574,7 @@ public class NyfalisUnits {
         /*Blocks are null while loading units, so this exists for as a work around*/
         scarab.weapons.get(0).bullet.fragBullet = new MineBulletType(NyfalisBlocks.scarabRadar,Fx.placeBlock);
         batHelpers = Seq.with(pteropusAir, acerodonAir, nyctalusAir);
+        ((AmmoEnabledUnitType) embryo).parentTypes = Seq.with(diptera, phorid);
 
         for (UnitType u : Vars.content.units()) {
             if(u.name.contains("olupis-")){

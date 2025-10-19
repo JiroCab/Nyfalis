@@ -49,7 +49,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
     /*Anti-spam to hard, aka setting a diminishing return for the sake of frames */
     public float penaltyMultiplier = 2f;
     /*Time out params */
-    public boolean inoperable = false, inoperableDepletes = false;
+    public boolean inoperable = false, inoperableDepletes = false, lookForParent = false;
     public Sound timedOutSound = Sounds.explosion;
     public Effect timedOutFx = NyfalisFxs.unitBreakdown;
     public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f, maxRange = -1;
@@ -148,6 +148,15 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
         }
 
         super.update(unit);
+
+        if(lookForParent && !relationship.containsKey(unit) && parentTypes != null && parentTypes.size >= 1){
+            Unit cu = Units.closest(unit.team, unit.x, unit.y, 4000, uf -> !uf.dead && parentTypes.contains(uf.type));
+            if(cu != null){
+                relationship.put(unit, cu);
+            }
+            Log.err(unit + " = " + cu);
+
+        }
     }
 
     @Override
@@ -171,7 +180,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
     }
 
     public boolean inRange(Unit unit){
-        if(unit.type.aiController instanceof AgressiveFlyingAi ai && ai.hasParent && ai.parent != null) return unit.within(ai.parent.vel, maxRange);
+        if(unit.type instanceof AmmoEnabledUnitType ai && ai.relationship.containsKey(unit)) return unit.within(ai.relationship.get(unit), maxRange);
         if(startPos == null || maxRange == -1) return true;
         return unit.within(startPos.x * 8, startPos.y * 8, maxRange);
     }

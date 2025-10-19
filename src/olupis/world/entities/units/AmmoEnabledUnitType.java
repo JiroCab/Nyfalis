@@ -6,11 +6,15 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
+import mindustry.ctype.*;
+import mindustry.entities.*;
 import mindustry.entities.abilities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -28,6 +32,8 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     public TextureRegion ammoRegion;
     public float ammoZ = -1f;
     public HashMap<Unit, Teamc> relationship = new HashMap<>();
+    //used by relationship for recreating it on load for unit to unit gayness
+    public @Nullable Seq<MappableContent> parentTypes = null;
 
     public AmmoEnabledUnitType(String name){
         super(name);
