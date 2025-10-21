@@ -6,13 +6,13 @@ displayName: "Nyfalis (Olupis)"
 name: "olupis"
 
 #your name
-author: " ;3\nProgramming:\nRushieWashie, Siede, WMF Industries, Otamamori \n---------------------\nSprites:\nRushieWashie, NightmarishWolf, Ethanol10, kapzduke, Otamamori, Catana, Lixie, ItsKirby69\n---------------------\nMaps:\nRushieWashie, MrApple, NightmarishWolf, slario&asterisk.txt "
+author: " ;3\nFounded by:RushieWashie, NightmarishWolf\n With massive help and thanks to: Ethanol10, Siede, WMF Industries, MrApple, Kapzduke, Otamamori, Catana, ItsKirby69, slario&asterisk.txt"
 
 #the fully qualified main class of the mod
 main: "olupis.NyfalisMain"
 
 #the mod description as seen in the mod dialog
-description: "(\u26A0Work in progress\u26A0)\n Yet another planet mod \nThat does it's best to give the player(s) a bit of something new,\n with a minor hint of what the base game has to offer, focus on RTS controls, and pain on top"
+description: "(\u26A0Work in progress\u26A0)\n Yet another planet mod \nThat does it's best to give the player(s) a bit of something new,\n with a minor hint of what the base game has to offer, focus on RTS controls, complexity and pain\nStable Releases is v7, Alpha versions is on V8!"
 
 subtitle: "Yet another planet mod, v2.0.1"
 

@@ -37,7 +37,10 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 
  # Mindusty v7 / Nyfalis v1.7.x Migration guide
 With the migration to v8 and the rework of content needed, bundles names are now its internal name (ex: porter -> sentry)
-Thus the following content will no longer load properly, migration will require you to replace the following
+Thus the following content will no longer load properly, migration will require you to replace the following, as they will be removed on update
+
+## Major Changes
+- "olupis", "arthin" & "vorgin" has been replaced with thier new names: nyfalis, seredris & vorgin; update maps and saes accordingly! (`Settings > Nyfalis Settings > Game data > Repair Current save` if planets was changed to serpulo)
 
 ## Content changes
 - t2+ Cores (vestige and above)
@@ -45,5 +48,7 @@ Thus the following content will no longer load properly, migration will require 
 - biomatter press (Mush blender)
 - Broiler (Liquifier)
 
-## Major Changes
-- "olupis", "arthin" & "vorgin" has been replaced with thier new names: nyfalis, seredris & vorgin; update maps and saes accordingly! (`Settings > Nyfalis Settings > Game data > Repair Current save` if planets was changed to serpulo)  
+
+## Changes with equivalents / no effort required 
+The following content was removed and on load will be replaced
+TODO

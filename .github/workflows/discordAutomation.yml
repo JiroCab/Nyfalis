@@ -35,3 +35,11 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
       - run: echo 'The triggering workflow failed sadge'
+      - name: send failed commit info
+        uses: tsickert/discord-webhook@v7.0.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_BETA_CHANNEL_WH }}
+          username: ${{github.actor}}
+          embed-title: COMMIT FAILED! Bully ${{github.actor}}!
+          embed-description: ${{github.event.workflow_run.head_commit.message}}
+          embed-color: 12196367
