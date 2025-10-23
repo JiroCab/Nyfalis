@@ -77,7 +77,7 @@ public class NyfalisBlocks {
 
         /*Liquid floors*/
         redSandWater, lumaGrassWater, brimstoneSlag, algaeWater, algaeWaterDeep, pinkGrassWater, yellowMossyWater, coralReef, slop, slopDeep, lubricantPool,
-        flowWater,
+        flowWater, flowAlgea,
 
         /*props*/
         yellowBush, lumaFlora, bush, mossyBoulder, mossBoulder, infernalBloom, redSandBoulder, glowBloom, luminiteBoulder, deadBush, glowLilly, lilypad,
@@ -610,12 +610,13 @@ public class NyfalisBlocks {
             liquidMultiplier = 1.5f;
             speedMultiplier = 0.2f;
             isLiquid = supportsOverlay = true;
+            blendGroup = water;
             liquidDrop = Liquids.water;
             status = StatusEffects.wet;
             cacheLayer = CacheLayer.water;
         }};
 
-        flowWater = new FlowWaterTile("flow-algae") {{
+        flowAlgea = new FlowWaterTile("flow-algae") {{
             parent = algaeWater;
             variants = 0;
             albedo = 0.9f;
@@ -624,6 +625,7 @@ public class NyfalisBlocks {
             liquidMultiplier = 1.5f;
             speedMultiplier = 0.2f;
             isLiquid = supportsOverlay = true;
+            blendGroup = water;
             liquidDrop = Liquids.water;
             status = StatusEffects.wet;
             cacheLayer = CacheLayer.water;
@@ -865,9 +867,13 @@ public class NyfalisBlocks {
         pinkTree = new TrasngenderTreeBlock("pink-tree"){{
             variants = 2;
         }};
-        yellowTree = new TrasngenderTreeBlock("yellow-tree");
+        yellowTree = new TrasngenderTreeBlock("yellow-tree"){{
+            flavourTarget = Color.valueOf("f5d271");
+        }};
         yellowTreeBlooming = new TrasngenderTreeBlock("yellow-tree-blooming"){{
-            variants = 2;
+            flavourTarget = Color.valueOf("f5d271");
+            featureVariants = 2;
+            parent = yellowTree;
         }};
         infernalMegaBloom = new TrasngenderTreeBlock("infernal-megabloom"){{
             variants = 4;
@@ -1569,7 +1575,7 @@ public class NyfalisBlocks {
             craftEffect = Fx.steamCoolSmoke;
             size = 3;
             plans = Seq.with(copperWirePlan, ironFramePlan, crudeBatteryPlan, ironPlatePlan, basicRotorPlan, graphiteFramePlan, ceramicPlatingPlan, siliconCircuitPlan, electricMotorPlan, graphiteCellPlan);
-            drawer = new DrawMulti(new DrawDefault(),new PlanDrawer());
+            drawer = new DrawMulti(new DrawDefault(),new PlanDrawer(true));
             requirements(Category.crafting, with(iron, 25, lead, 50, copper, 50, rustyIron, 50));
         }};
 
@@ -2897,5 +2903,6 @@ public class NyfalisBlocks {
         if(headless)return;
 
         ((LimitedLandingPad) deliveryReciver).podRegion = ((LimitedLaunchPad) deliveryCannon).podRegion;
+        yellowTree.mapColor = yellowTreeBlooming.mapColor = Color.valueOf("A0A54DFF");
     }
 }

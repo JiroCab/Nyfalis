@@ -4,6 +4,7 @@ import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -13,8 +14,6 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
-
-import static mindustry.Vars.tilesize;
 
 public class FlowWaterTile extends Floor{
     public Block parent = Blocks.air;
@@ -37,16 +36,24 @@ public class FlowWaterTile extends Floor{
         overlay = Core.atlas.find("olupis-flow-overlay");
         region = parent.region;
 
-        if(Core.atlas.has(parent + "-edge")){
-            int tsize = (int)(tilesize / Draw.scl);
-            edges = Core.atlas.find(parent + "-edge").split(tsize, tsize);
-        }
+//        if(Core.atlas.has(parent.name + "-edge")){
+//            int tsize = (int)(tilesize / Draw.scl);
+//            edges = Core.atlas.find(parent.name + "-edge").split(tsize, tsize);
+//        }
     }
 
 
     @Override
     public TextureRegion[] icons(){
-        return new TextureRegion[]{Core.atlas.find(Core.atlas.has(name) ? name : name + "1"), overlay };
+        String out = Core.atlas.has(name) ? name : name + "1";
+        if(parent != null){
+            if(parent.isModded()){
+                out = parent.getContentType() + "-" + parent;
+                if(Core.atlas.has(out)) out = out + "1";
+            }else out = parent.name;
+        }
+
+        return new TextureRegion[]{Core.atlas.find(out), overlay };
     }
 
     @Override
@@ -83,12 +90,18 @@ public class FlowWaterTile extends Floor{
     @Override
     public void buildEditorConfig(Table t){
         t.table(b -> {
+            b.clear();
             b.margin(4f);
             b.left();
             int ls = lastConfig instanceof  Integer ii ? ii : 0;
             b.field(ls + "", s ->{
                 lastConfig = Strings.parseInt(s);
-            }).valid(f -> Strings.parseInt(f) >= 0 && Strings.parseInt(f) <= 360 ).color(Color.white).minWidth(200).padLeft(5f);
+            }).valid(f -> Strings.parseInt(f) >= 0 && Strings.parseInt(f) <= 360 ).color(Color.white).minWidth(100).padLeft(5f);
+            Image ic = new Image(Icon.right);
+            b.add(ic).update(a ->{
+                int ui = lastConfig instanceof  Integer ii ? ii : 0;
+                a.setRotation(ui);
+            });
         }).left().width(250f).pad(3f).row();
     }
 

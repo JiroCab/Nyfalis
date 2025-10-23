@@ -16,10 +16,16 @@ import olupis.world.blocks.processing.HeadacheCrafter.*;
 public class PlanDrawer  extends DrawRegion{
     public TextureRegion[][] variantRegions;
     public String emptyName= "";
+    public  boolean placeholder = false;
 
 
     public PlanDrawer(){
 
+    }
+
+
+    public PlanDrawer(boolean placeholer){
+        this.placeholder = placeholer;
     }
 
     @Override
@@ -47,6 +53,13 @@ public class PlanDrawer  extends DrawRegion{
 
             float z = Draw.z();
             if(layer > 0) Draw.z(layer);
+
+            if(placeholder){
+                Draw.rect(hc.getPlanSelected().fullIcon, build.x + x, build.y + y, build.totalProgress() * rotateSpeed + rotation + (buildingRotate ? build.rotdeg() : 0));
+
+                Draw.z();
+                return;
+            }
 
             TextureRegion region = variantRegions[hc.planSelected][Mathf.randomSeed(build.pos(), 0,hc.getPlanSelected().variants-1)];
 

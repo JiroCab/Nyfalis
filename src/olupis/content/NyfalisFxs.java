@@ -437,19 +437,29 @@ public class NyfalisFxs extends Fx {
             Drawf.light(e.x, e.y, e.fin() * 5f, Pal.heal, 0.2f);
         }).followParent(true).rotWithParent(true).layer(Layer.bullet - 0.01f),
 
-        trangenderTreeLeafEffect = new Effect(200, e -> {
-            color(e.color, e.fout()  /1.5f);
-            randLenVectors(e.id, 4 ,  10, 100f * e.fin(), (x, y) -> {
-                float trnsx = Mathf.sin(Time.time, 6, 3), trnsy = Mathf.cos(Time.time, 9, 2), rot =Angles.angle(e.x, e.y, e.x + x, e.y + y),
-                tx = Angles.trnsx(rot, trnsx) + Angles.trnsx(rot, trnsy), ty = Angles.trnsy(rot, trnsx) + Angles.trnsx(rot, trnsy),
-                fx = e.x + x + tx, fy = e.y +ty + y, fr = Angles.angle(e.x, e.y, fx, fy);
+        //stolen from: https://github.com/ItsKirby69/MineDusty/blob/master/src/minedusty/content/DustyEffects.java#L263
+        trangenderTreeLeafEffect =  new Effect(450f, e ->{
+            color(e.color, e.color, e.fslope());
+            alpha(e.fslope() * 3f);
 
-                Drawf.tri(fx , fy, e.fout() * 5, e.fout() * 5, fr);
-                Drawf.tri(fx, fy, e.fout() * 5, e.fout() * 5, fr + 180);
+            float drift = -20f * e.fin() * 4f;
+            randLenVectors(e.id, 3, 30f + e.finpow() * 40f, (x, y) -> {
+                Draw.rect(Core.atlas.find("olupis-tree-prop3"), e.x + x + drift, e.y + y + drift, 16f, 16f, e.fin() * 360f);
+            });
+        }).layer(Layer.darkness + 1),
+
+        trangenderTreeLeafEffectUnder =  new Effect(450f, e ->{
+            color(e.color, e.color, e.fslope());
+            alpha(e.fslope() * 3f);
+
+            float drift = -20f * e.fin() * 4f;
+            randLenVectors(e.id, 3, 30f + e.finpow() * 40f, (x, y) -> {
+                Draw.rect(Core.atlas.find("olupis-tree-prop3"), e.x + x + drift, e.y + y + drift, 16f, 16f, e.fin() * 360f);
             });
         }).layer(Layer.power + 0.01f),
 
-        //stolen from: https://github.com/ItsKirby69/MineDusty/blob/master/src/minedusty/content/DustyEffects.java
+
+        //stolen from: https://github.com/ItsKirby69/MineDusty/blob/master/src/minedusty/content/DustyEffects.java#L144
         flowWater = new Effect(85f, 250f, e -> {
             float thresh = 0.6f;
             float fade = e.fin() < thresh ?

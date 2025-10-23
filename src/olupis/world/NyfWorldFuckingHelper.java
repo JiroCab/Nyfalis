@@ -174,7 +174,9 @@ public class NyfWorldFuckingHelper{
 
     //== Ambience Helper ==
     public static void allUpdaters(){
-        if(state.isPaused())return;
+        if(state.isPaused() || state.isEditor() || ui.editor.isShown())
+            return;
+
         transgenderTreeLeaves();
         updateFloodPlane();
         updateFlows();
@@ -182,7 +184,7 @@ public class NyfWorldFuckingHelper{
 
     public static void restUpdaters(){
         trees = new Seq<>();
-        flows = new HashMap<>();
+        flows = new Seq<>();
 
         updatesTree = 3;
         updatesFlows = 0;
@@ -190,16 +192,21 @@ public class NyfWorldFuckingHelper{
     }
 
     public static void updateFloodPlane(){
-        if(!renderer.animateWater )  return;
+        if(!renderer.animateWater) return;
+
         if(Groups.weather.contains(w -> w.weather instanceof RainWeather)){
             int cnt = 0;
             float avrg = 0f;
 
-            for(WeatherState w : Groups.weather){
-                if(!(w.weather instanceof RainWeather)) continue;
-                cnt++;
-                avrg += w.intensity;
+            for(int i = 0; i < Groups.weather.size(); i++){
+                WeatherState w = Groups.weather.index(i);
+
+                if(w.weather instanceof RainWeather){
+                    cnt++;
+                    avrg += w.intensity;
+                }
             }
+
             floodPlaneLevel = Mathf.lerpDelta(floodPlaneLevel, Math.max(0.30f, avrg/cnt), 0.0025f);
         }
     }
@@ -207,46 +214,48 @@ public class NyfWorldFuckingHelper{
     static int updatesTree = 0;
     static Seq<Tile> trees  = new Seq<>();
     public static void transgenderTreeLeaves(){
-        if(!renderer.enableEffects) return;
-        if(!Mathf.randomBoolean(0.1f))return;
+        if(!renderer.enableEffects || !Mathf.randomBoolean(0.1f)) return;
 
-        updatesTree--;
-        if(updatesTree <= 0){
-            for(Tile tile : Vars.world.tiles){
-                if(tile.block() instanceof  TrasngenderTreeBlock tg && tg.leaf && tile.staticDarkness() < 5)trees.add(tile);
-            }
+        if(--updatesTree <= 0){
             updatesTree = 120;
+
+            for(int i = 0; i < world.width() * world.height(); i++)
+                if(world.tiles.geti(i).block() instanceof TrasngenderTreeBlock tg && tg.leaf && world.tiles.geti(i).staticDarkness() < 5)
+                    trees.add(world.tiles.geti(i));
         }
+
         Tile tree = trees.random();
         if(tree != null){
-            NyfalisFxs.trangenderTreeLeafEffect.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
+            if(Mathf.randomBoolean()) NyfalisFxs.trangenderTreeLeafEffect.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
+            else NyfalisFxs.trangenderTreeLeafEffectUnder.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
         }
     }
 
-    public static HashMap<Tile, Integer> flows = new HashMap<>();
+    public static Seq<IntTile> flows = new Seq<>();
     static int updatesFlows = 0;
     public static void updateFlows(){
         if(!renderer.enableEffects) return;
-        updatesFlows--;
-        if(updatesFlows <= 0){
-            for(Tile tile : Vars.world.tiles){
-                if(tile.floor() instanceof  FlowWaterTile ft && (tile.block() == Blocks.air || !tile.block().solid) && !flows.containsKey(tile)) flows.put(tile, ft.effectSpacing);
-            }
+
+        if(--updatesFlows <= 0){
             updatesFlows = 240;
+
+            for(int i = 0; i < world.width() * world.height(); i++){
+                Tile tile = world.tiles.geti(i);
+
+                if(tile.floor() instanceof FlowWaterTile ft && (tile.block() == Blocks.air || !tile.block().solid) && !IntTile.containsTile(flows, tile))
+                    flows.add(new IntTile(tile, ft.effectSpacing));
+            }
         }
 
-        for(Entry<Tile, Integer> entry : flows.entrySet()){
-            Tile til = entry.getKey();
-            int tim = entry.getValue();
+        flows.each(entry -> {
+            if(entry.integer <= 0){
+                if(entry.tile.floor() instanceof FlowWaterTile ft){
+                    ft.effect.at(entry.tile.x * tilesize, entry.tile.y * tilesize, entry.tile.extraData);
+                    entry.integer = ft.effectSpacing;
+                }else flows.remove(entry);
 
-            if(tim <= 0){
-                if(til.floor() instanceof FlowWaterTile ft){
-                    ft.effect.at(til.x * tilesize, til.y * tilesize, til.extraData);
-                    flows.replace(til, ft.effectSpacing);
-                }else flows.remove(til);
-
-            } else flows.replace(til, tim - 1);
-        }
+            }else entry.integer--;
+        });
     }
 
     public static void  allDrawers(){
@@ -280,4 +289,21 @@ public class NyfWorldFuckingHelper{
         Draw.reset();
     }
 
+
+    public static class IntTile{
+        public final Tile tile;
+        public int integer;
+
+        IntTile(Tile tile, int integer){
+            this.tile = tile;
+            this.integer = integer;
+        }
+
+        public static boolean containsTile(Seq<IntTile> data, Tile t){
+            for(int i = 0; i < data.size; i++)
+                if(data.get(i).tile == t)
+                    return true;
+            return false;
+        }
+    }
 }
