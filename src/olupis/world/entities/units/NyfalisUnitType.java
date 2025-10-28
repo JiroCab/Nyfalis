@@ -43,7 +43,7 @@ import static mindustry.ai.UnitStance.holdFire;
 
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
-    public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false, canCharge = false,
+    public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false, canCharge = false, canRetreat = false,
                             constructHideDefault = false, customMineAi = false, waveHunts = false, cantMove = false, AiCircleBomb = false, borrows = false;
     /*Makes (legged) units boost automatically regardless of Ai*/
     public boolean alwaysBoostOnSolid = false;
@@ -111,6 +111,7 @@ public class NyfalisUnitType extends UnitType {
             if (canDash)commands.add(NyfalisUnitCommands.nyfalisDashCommand);
             if (canCharge) commands.add(NyfalisUnitCommands.nyfalisChargeCommand);
             if (canBoost && alwaysBoosts) commands.remove(UnitCommand.boostCommand);
+            if(canRetreat) commands.add(NyfalisUnitCommands.nyfalisRetreatCommand);
             //Move it to last
             if (commands.contains(UnitCommand.enterPayloadCommand)){
                 commands.remove(UnitCommand.enterPayloadCommand);

@@ -17,8 +17,11 @@ import mindustry.entities.abilities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import olupis.input.*;
+import olupis.input.ui.NyfalisLogicDialog.*;
 import olupis.world.ai.*;
 
 import java.util.*;
@@ -34,6 +37,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     public HashMap<Unit, Teamc> relationship = new HashMap<>();
     //used by relationship for recreating it on load for unit to unit gayness
     public @Nullable Seq<MappableContent> parentTypes = null;
+    public StatusEffect retreatStatus = StatusEffects.none;
 
     public AmmoEnabledUnitType(String name){
         super(name);
@@ -177,6 +181,8 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
         }
 
         super.update(unit);
+
+        if(canRetreat && retreatStatus != null && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisRetreatCommand) unit.apply(retreatStatus, Time.toSeconds);
     }
 }
 

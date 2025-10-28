@@ -674,6 +674,7 @@ public class NyfalisTurrets {
 
             trailWidth = 1f;
             trailLength = 8;
+            ammoMultiplier = 1;
             hitEffect = cascadeEffect;
 
             despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect(){{
@@ -682,7 +683,7 @@ public class NyfalisTurrets {
                 lifetime = 2f;
             }});
             trailRotation = true;
-            trailEffect =NyfalisFxs.startaBulletMine;
+            trailEffect =NyfalisFxs.strataBulletMine;
             fragBullets = 1;
             fragRandomSpread = 0;
             fragSpread = 360;
@@ -776,6 +777,7 @@ public class NyfalisTurrets {
             recoil = 0;
             shootY = 0;
             range = 350f;
+            maxAmmo = 60;
             trackingRange = 370f;
             minRange = 200f;
             health = 1500;
@@ -783,7 +785,7 @@ public class NyfalisTurrets {
             coolantMultiplier = 2.5f;
             reload = 15 * 16;
             fogRadiusMultiplier = 0.75f;
-            ammoPerShot = 24;
+            ammoPerShot = 12;
             loopSound = Sounds.release;
             outlineColor = nyfalisBlockOutlineColour;
             shootSound = NyfalisSounds.cncRa2DestroyerOsprey;

@@ -17,7 +17,8 @@ import olupis.world.entities.status.*;
 import java.util.*;
 
 public class NyfalisStatusEffects {
-    public static StatusEffect lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate, comradery, overTuned, magnetized;
+    public static StatusEffect
+        lubed, mossed, deployed, corupt, malfuct, glitch, sloppy, unloaded, drained, marked, concentrated, alternate, comradery, overTuned, magnetized, retreating;
 
     public static void loadStatusEffects(){
         //lube buff
@@ -270,6 +271,11 @@ public class NyfalisStatusEffects {
             color = Color.valueOf("6b675f");
             show = true;
             effect = Fx.redgeneratespark;
+        }};
+
+        retreating = new StatusEffect("retreating"){{
+            color = Pal.boostTo;
+            speedMultiplier = 1.25f;
         }};
     }
 }

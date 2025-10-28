@@ -123,10 +123,10 @@ public class NyfalisStats extends StatValues {
                                                 }
                                                 if(sm.bullet != null){
                                                     bt.row();
+                                                    bt.add("[accent]±" +  Strings.autoFixed(ob.fragSpread + ob.fragAngle + ob.fragRandomSpread, 2) + " [][lightgray]" + Core.bundle.get("unit.degrees")).left().row();
 
                                                     Table ic = new Table();
                                                     ic.table(tai -> {
-                                                        tai.add("[accent]±" +  Strings.autoFixed(ob.fragSpread + ob.fragAngle + ob.fragRandomSpread, 2) + " [][lightgray]" + Core.bundle.get("unit.degrees")).left().row();
                                                         if(sm.shots >1)tai.add("[accent]"+sm.shots+ "[] [lightgray]" + Core.bundle.get("stat.shots")).left().row();
                                                     }).padLeft((indent + 2) * 5).left().padBottom(0);
 

@@ -8,7 +8,9 @@ import olupis.world.entities.units.*;
 
 public class NyfalisUnitCommands {
 
-    public static UnitCommand circleCommand, healCommand, nyfalisMoveCommand, nyfalisDeployCommand, nyfalisMineCommand, nyfalisGuardCommand, nyfalisMendCommand, nyfalisChargeCommand, nyfalisDashCommand;
+    public static UnitCommand
+        circleCommand, healCommand, nyfalisMoveCommand, nyfalisDeployCommand, nyfalisMineCommand, nyfalisGuardCommand,
+        nyfalisMendCommand, nyfalisChargeCommand, nyfalisDashCommand, nyfalisRetreatCommand;
 
 
         public static void loadUnitCommands(){
@@ -86,6 +88,9 @@ public class NyfalisUnitCommands {
                     switchToMove = resetTarget = false;
                     drawTarget = true;
                 }};
+            nyfalisRetreatCommand = new UnitCommand("nyfalis-retreat",  "rotate", u -> new RetreatAi()){{
+                drawTarget = true;
+            }};
         }
 
 }

@@ -878,6 +878,7 @@ public class NyfalisBlocks {
         infernalMegaBloom = new TrasngenderTreeBlock("infernal-megabloom"){{
             variants = 4;
             clipSize = 128f;
+            flavored = false;
         }};
         orangeTree = new TrasngenderTreeBlock("orange-tree"){{
             variants = 3;

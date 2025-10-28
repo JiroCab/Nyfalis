@@ -932,8 +932,9 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             aiController = WaveAiHandler::new;
             ammoType = carrierTypeAmmo;
+            retreatStatus = NyfalisStatusEffects.retreating;
             faceTarget = false;
-            lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = true;
+            lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
 
             weapons.addAll(
                 new NyfalisWeapon("olupis-district pew"){{
@@ -2348,41 +2349,74 @@ public class NyfalisUnits {
 
                         }};
                 }},
-                    new NyfalisWeapon("olupis-dark-tur"){{
-                        x = 0f;
-                        y = 6.5f;
-                        reload = 8f;
-                        inaccuracy = 4f;
-                        shootCone = 30f;
-                        rotateSpeed = 10f;
-                        targetInterval = 10f;
-                        targetSwitchInterval = 20f;
-                        soundPitchMax = 1.4f;
-                        soundPitchMin = 1f;
+                new Weapon("olupis-twin-mount"){{
+                    x = 0;
+                    y = 6.5f;
+                    recoils = 2;
+                    recoil = 0.5f;
+                    reload = 25;
+                    mirror = false;
+                    rotate= top = true;
+                    shoot = new ShootAlternate(3.6f);
+                    for(int i = 0; i < 2; i ++){ int f = i;
+                        parts.add(new RegionPart("-barrel-" + (i == 0 ? "r" : "l")){{
+                            x = (f == 0) ? 1.8f : -1.8f;
+                            y = 3f;
+                            shootY = 6f;
+                            recoilIndex = f;
+                            outlineLayerOffset = 0f;
+                            outlineColor = NyfalisColors.contentOutline;
+                            outline = drawRegion = under = true;
+                            progress = PartProgress.recoil;
+                            moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
+                        }}); }
 
-                        autoTarget = rotate = partialControl = weaponIconUseFullString = true;
-                        mirror = controllable = false;
-                        weaponIconString = "olupis-bay-ui-front";
-                        shootSound = NyfalisSounds.cncZhQuadPew;
-                        bullet = new BasicBulletType(2.5f, 10){{
-                            width = 3f;
-                            height = 20f;
-                            lifetime = 60f;
-                            collidesAir = false;
-                            frontColor = NyfalisColors.rustyBullet;
-                            backColor = NyfalisColors.rustyBulletBack;
-                            hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
-                        }};
-                        parts.addAll(
-                            new RegionPart(){{
-                                name = "olupis-bay-ui-front";
-                                mirror = false;
-                                under = true;
-                                progress = PartProgress.recoil;
-                                y = 1;
-                                moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
-                            }}
-                        );
+                    bullet = new ArtilleryBulletType(3f, 20){{
+                        width = 7f;
+                        height = 9f;
+                        trailSize = 3f;
+                        lifetime = 65f;
+                        splashDamage = 7f;
+                        splashDamageRadius = 2.5f *8f;
+                        collidesAir = false;
+                        frontColor = NyfalisColors.ironBullet;
+                        backColor = NyfalisColors.ironBulletBack;
+                        hitEffect = despawnEffect = Fx.hitBulletSmall;
+                    }};
+                }},new Weapon("olupis-twin-mount"){{
+                    x = 0;
+                    y = -6.5f;
+                    recoils = 2;
+                    recoil = 0.5f;
+                    reload = 25;
+                    mirror = false;
+                    rotate= top = true;
+                    shoot = new ShootAlternate(3.6f);
+                    for(int i = 0; i < 2; i ++){ int f = i;
+                        parts.add(new RegionPart("-barrel-" + (i == 0 ? "r" : "l")){{
+                            x = (f == 0) ? 1.8f : -1.8f;
+                            y = 3f;
+                            shootY = 6f;
+                            recoilIndex = f;
+                            outlineLayerOffset = 0f;
+                            outlineColor = NyfalisColors.contentOutline;
+                            outline = drawRegion = under = true;
+                            progress = PartProgress.recoil;
+                            moves.add(new PartMove(PartProgress.recoil, 0, -3f, 0));
+                        }}); }
+
+                    bullet = new ArtilleryBulletType(3f, 20){{
+                        width = 7f;
+                        height = 9f;
+                        trailSize = 3f;
+                        lifetime = 65f;
+                        splashDamage = 7f;
+                        splashDamageRadius = 2.5f *8f;
+                        collidesAir = false;
+                        frontColor = NyfalisColors.ironBullet;
+                        backColor = NyfalisColors.ironBulletBack;
+                        hitEffect = despawnEffect = Fx.hitBulletSmall;
+                    }};
                 }}
             );
 

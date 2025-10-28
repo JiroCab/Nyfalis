@@ -404,7 +404,7 @@ public class NyfalisFxs extends Fx {
             Draw.rect(block.fullIcon, e.x, e.y);
         }),
 
-        startaBulletMine = new Effect(13, e -> {
+        strataBulletMine = new Effect(13, e -> {
             color(Color.white, e.color, e.fin());
             stroke(0.6f + e.fout() * 1.7f);
             rand.setSeed(e.id);

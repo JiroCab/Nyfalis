@@ -11,7 +11,7 @@ otherwise use [GitHub Actions](https://github.com/JiroCab/Olupis/actions) for re
 See [change logs here](https://github.com/JiroCab/Olupis/blob/main/changelog.txt).
 
 Building Locally works the same as most other mods,  use `./gradlew jar` or `./gradlew deploy`.
-alternatively you may use [Toxopid](https://github.com/Xpdustry/Toxopid) with `./gradlew runMindustryDesktop ` , `./gradlew runMindustryServer`.
+alternatively you may use [Toxopid](https://github.com/Xpdustry/Toxopid) with `./gradlew runMindustryDesktop `, `./gradlew runClientwithLocalMods` , `./gradlew runMindustryServer`.
 you can figure out the rest, you got this, you're a smart cookie
 
 [Discord server](https://discord.gg/S8wuZAF4ZZ) to talk and complain about the mod.
@@ -42,7 +42,7 @@ Thus the following content will no longer load properly, migration will require 
 ## Major Changes
 - "olupis", "arthin" & "vorgin" has been replaced with thier new names: nyfalis, seredris & vorgin; update maps and saes accordingly! (`Settings > Nyfalis Settings > Game data > Repair Current save` if planets was changed to serpulo)
 
-## Content changes
+## Content changes / changes required
 - t2+ Cores (vestige and above)
 - Porter tree  (to Sentry and respective upgrades)
 - biomatter press (Mush blender)
