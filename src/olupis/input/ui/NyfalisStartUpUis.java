@@ -264,12 +264,13 @@ public class NyfalisStartUpUis {
 
     public static void nyfAdditionalRules(CustomRulesDialog in){
         Seq<Runnable> additionalSetup = Reflect.get(in, "additionalSetup");
-        additionalSetup.add( () -> {
+        additionalSetup.add( () -> Time.run(2 * Time.toSeconds, () -> {
+
             Rules rules = Reflect.get(in, "rules");
             boolean[] shown = {false};
             Table wasCurrent = in.current;
 
-            Table teamRules = new Table(); // just button and collapser in one table
+                Table teamRules = new Table(); // just button and collapser in one table
             teamRules.button(NyfUnitTeamMapper.verdentTeam.coloredName(), Icon.downOpen, Styles.togglet, () -> {
                 shown[0] = !shown[0];
             }).marginLeft(14f).width(260f).height(55f).update(t -> {
@@ -341,8 +342,8 @@ public class NyfalisStartUpUis {
                     wasCurrent.add(teamRules).row();
                 }
 
-                in.current = wasCurrent;
             }, () -> shown[0]).left().growX().row();
-        });
+            in.current = wasCurrent;
+        }));
     }
 }

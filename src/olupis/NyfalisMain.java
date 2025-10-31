@@ -27,26 +27,22 @@ import olupis.input.ui.*;
 import olupis.world.*;
 import olupis.world.ai.*;
 import olupis.world.blocks.unit.*;
+import olupis.world.logic.*;
 import olupis.world.planets.*;
 
 import java.util.*;
 
 import static mindustry.Vars.*;
+import static olupis.NyfalisVars.*;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisPlanets.*;
 
 public class NyfalisMain extends Mod{
-    public static NyfalisSounds soundHandler = new NyfalisSounds();
-    public static LimitedLauncherSelect sectorSelect;
-    public static NyfalisLogicDialog logicDialog;
-    public NyfalisSettingsDialog nyfalisSettings;
-    public static boolean shownWarning = false, incompatible = false, nyfalianPlanet = false;
-    public static @Nullable Texture cloudNoise;
-    public static float  floodPlaneLevel = 0.30f;
+
 
     @Override
     public void loadContent(){
-        incompatible = !(Version.number == 7 && Objects.equals(Version.type, "official"));
+        NyfalisVars.incompatible = !(Version.number == 7 && Objects.equals(Version.type, "official"));
 
         NyfUnitTeamMapper.load();
         NyfalisShaders.LoadShaders();
@@ -70,7 +66,7 @@ public class NyfalisMain extends Mod{
         NyfalisAttributeWeather.AddAttributes();
         NyfalisUnits.PostLoadUnits();
 
-
+        LogicIO.allStatements.addAll(NyfLStatements.allNyf);
 
         Log.info("OwO, Nyfalis (Olupis) content Loaded! Hope you enjoy nya~");
     }
@@ -137,14 +133,17 @@ public class NyfalisMain extends Mod{
             NyfalisStartUpUis.buildDebugUI(Vars.ui.hudGroup);
 
             //Thank you wmf for telling me this exists
-            //pause menu
-            NyfalisStartUpUis.nyfAdditionalRules(Reflect.get(ui.paused, "rulesDialog"));
-            //main menu custom game
-            NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.custom, "dialog"), "dialog"));
-            //editor > custom game
-            NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.editor, "playtestDialog"), "dialog"));
-            //editor > info > rules
-            NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.editor, "infoDialog"), "ruleInfo"));
+            //Delayed for cases like when mapping utils
+            Time.run(0.5f * Time.toSeconds, () -> {
+                //pause menu
+                NyfalisStartUpUis.nyfAdditionalRules(Reflect.get(ui.paused, "rulesDialog"));
+                //main menu custom game
+                NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.custom, "dialog"), "dialog"));
+                //editor > custom game
+                NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.editor, "playtestDialog"), "dialog"));
+                //editor > info > rules
+                NyfalisStartUpUis.nyfAdditionalRules(Reflect.get((Object)Reflect.get(ui.editor, "infoDialog"), "ruleInfo"));
+            });
 
 
             Vars.ui.planet.shown(() -> {
@@ -301,7 +300,7 @@ public class NyfalisMain extends Mod{
     }
 
     public static void sandBoxCheck(Boolean auto){
-        if(NyfalisMain.incompatible) return;
+        if(incompatible) return;
         if(!state.isPlaying()) return;
         if(net.client())return;
 
@@ -349,7 +348,7 @@ public class NyfalisMain extends Mod{
     @Override
     public void init() {
         NyfalisBlocks.NyfalisBlocksPlacementFix();
-        nyfalisSettings = new NyfalisSettingsDialog();
+        NyfalisVars.nyfalisSettings = new NyfalisSettingsDialog();
         if(!headless){
             NyfUnitTeamMapper.loadTeam();
 

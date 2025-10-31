@@ -7,8 +7,10 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
+import olupis.*;
 
 import static mindustry.Vars.*;
+import static olupis.NyfalisVars.*;
 import static olupis.world.EnvUpdater.*;
 
 /** This class as a whole is now only for auto-generation */
@@ -40,7 +42,7 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
 
         if(net.client()) return;
 
-        if(Mathf.chance(parent.spreadChance))
+        if(Mathf.chance(parent.spawnChance * NyfalisVars.calyxSpreadingFactor))
             ++data[key][arrayID];
 
         if(data[key][arrayID] >= parent.spreadTries){
@@ -59,13 +61,13 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
 
                 queue[next.id][arrayID].add(tile.pos());
 
-                if(parent.oresSpawnsProps && parent.props.size > 0 && canSpawn(id, parent.propLimit, parent.dynamicLimit) && Mathf.chance(parent.spawnChance)){
+                if(parent.oresSpawnsProps && parent.props.size > 0 && canSpawn(id, parent.propLimit, parent.dynamicLimit) && Mathf.chance(parent.spawnChance * calyxSpreadingFactor)){
                     addProp(id);
                     queue[parent.props.random().id][2].add(tile.pos());
                 }
             }
 
-            if(parent.spread){
+            if(parent.spread && calyxSpreading){
                 for(int i = 0; i < 4; i++){
                     Tile near = tile.nearby(i);
                     if(near == null)

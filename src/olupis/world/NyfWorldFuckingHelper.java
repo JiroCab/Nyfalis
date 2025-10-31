@@ -25,7 +25,7 @@ import java.util.*;
 import java.util.Map.*;
 
 import static mindustry.Vars.*;
-import static olupis.NyfalisMain.*;
+import static olupis.NyfalisVars.*;
 import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisSectors.*;
 
@@ -263,7 +263,7 @@ public class NyfWorldFuckingHelper{
     }
 
     public  static void cloudShadowDrawer(){
-        if( NyfalisMain.nyfalianPlanet){
+        if( NyfalisVars.nyfalianPlanet){
             if(!Core.settings.getBool("nyfalis-cloud-shadows")) return;
         } else {
             if(!Core.settings.getBool("nyfalis-cloud-shadows-others")) return;

@@ -9,9 +9,11 @@ import mindustry.graphics.*;
 import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.*;
 import olupis.world.*;
 
-import static olupis.input.ui.NyfalisSettingsDialog.treeTransgenderRange;
+import static olupis.NyfalisVars.treeTransgenderRange;
+
 
 public class TrasngenderTreeBlock extends TreeBlock{
     public TextureRegion log;

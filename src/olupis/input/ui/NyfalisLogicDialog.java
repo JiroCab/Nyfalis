@@ -14,13 +14,16 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.logic.*;
 import mindustry.logic.LExecutor.*;
+import mindustry.logic.LStatements.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
+import olupis.world.logic.*;
 
 import java.util.*;
 
 import static mindustry.Vars.*;
 import static mindustry.logic.LCanvas.tooltip;
+import static mindustry.logic.LStatements.*;
 import static mindustry.logic.LogicDialog.*;
 
 public class NyfalisLogicDialog extends BaseDialog {
@@ -168,7 +171,7 @@ public class NyfalisLogicDialog extends BaseDialog {
                 table.pane(t -> {
                     for(Prov<LStatement> prov : statements){
                         LStatement example = prov.get();
-                        if(example instanceof LStatements.InvalidStatement || example.hidden() || (example.privileged() && !privileged) || (example.nonPrivileged() && privileged)) continue;
+                        if(example instanceof InvalidStatement || example.hidden() || (example.privileged() && !privileged) || (example.nonPrivileged() && privileged)) continue;
 
                         LCategory category = example.category();
                         Table cat = t.find(category.name);
@@ -219,7 +222,7 @@ public class NyfalisLogicDialog extends BaseDialog {
         this.privileged = privileged;
         canvas.statements.clearChildren();
         canvas.rebuild();
-        //canvas.privileged = privileged;
+        canvas.subPriv = privileged;
         try{
             canvas.load(code);
         }catch(Throwable t){
@@ -238,6 +241,7 @@ public class NyfalisLogicDialog extends BaseDialog {
     public class NyfalisCanvas extends LCanvas{
         /*Stolen from: https://github.com/TeamViscott/ModProjectViscott/blob/master/src/viscott/types/logic/PvCanvas.java*/
         public Seq<Prov<LStatement>> allStatements;
+        public boolean subPriv  = false;
 
         public NyfalisCanvas(Seq<Prov<LStatement>> statements) {
             super();
@@ -264,7 +268,7 @@ public class NyfalisLogicDialog extends BaseDialog {
             setDialog();
             NyfalisLogicParser.jumps.clear();
 
-            Seq<LStatement> statements = NyfalisAssembler.NyfalisRead(asm, false);
+            Seq<LStatement> statements = NyfalisAssembler.NyfalisRead(asm, subPriv);
             statements.truncate(LExecutor.maxInstructions);
             this.statements.clearChildren();
             for(LStatement st : statements){
@@ -301,7 +305,7 @@ public class NyfalisLogicDialog extends BaseDialog {
         public static Seq<LStatement> NyfalisRead(String text, boolean privileged){
             //don't waste time parsing null/empty text
             if(text == null || text.isEmpty()) return new Seq<>();
-            return new NyfalisLogicParser(text, allStatement).parse();
+            return new NyfalisLogicParser(text, allStatement, privileged).parse();
         }
     }
 
@@ -331,8 +335,13 @@ public class NyfalisLogicDialog extends BaseDialog {
             connector.put(ent,statement);
         }
 
+
         public NyfalisLogicParser(String text, Seq<Prov<LStatement>> allStatements){
-            this.privileged = true;
+            this(text, allStatements, false);
+        }
+
+        public NyfalisLogicParser(String text, Seq<Prov<LStatement>> allStatements, boolean privileged){
+            this.privileged = privileged;
             this.allStatements = allStatements;
             this.chars = text.toCharArray();
         }
@@ -442,29 +451,29 @@ public class NyfalisLogicDialog extends BaseDialog {
                     LStatement st;
 
                     try{
-                        st = LogicIO.read(tokens,tok);
-                        if (st == null)
-                            st = readStatement(tokens, tok);
+                        st = NyfLStatements.readNyfLogic(tokens, tok);
+                        if(st == null){
+                            st = LogicIO.read(tokens,tok);
+                            if (st == null)
+                                st = readStatement(tokens, tok);
+                        }
                     }catch(Exception e){
                         //replace invalid statements
-                        st = new LStatements.InvalidStatement();
+                        st = new InvalidStatement();
                     }
 
                     //discard misplaced privileged instructions
-                    if(!privileged && st != null && st.privileged()){
-                        st = new LStatements.InvalidStatement();
-                    }
+                    if(!privileged && st != null ){
+                        if( st.privileged()) st = new InvalidStatement();
 
-                    /*Prevents pasted unit code*/
-                    if(privileged && st != null){
-                        if(st instanceof LStatements.UnitBindStatement) st = new LStatements.InvalidStatement();
-                        if(st instanceof LStatements.UnitControlStatement) st = new LStatements.InvalidStatement();
-                        if(st instanceof LStatements.UnitRadarStatement) st = new LStatements.InvalidStatement();
-                        if(st instanceof LStatements.UnitLocateStatement) st = new LStatements.InvalidStatement();
+                        if(st instanceof UnitBindStatement) st = new InvalidStatement();
+                        else if(st instanceof UnitControlStatement) st = new InvalidStatement();
+                        else if(st instanceof UnitRadarStatement) st = new InvalidStatement();
+                        else if(st instanceof UnitLocateStatement) st = new InvalidStatement();
                     }
 
                     //store jumps that use labels
-                    if(st instanceof LStatements.JumpStatement jump && wasJump){
+                    if(st instanceof JumpStatement jump && wasJump){
                         jumps.add(new NyfalisLogicParser.JumpIndex(jump, jumpLoc));
                     }
 
@@ -476,7 +485,7 @@ public class NyfalisLogicDialog extends BaseDialog {
                             statements.add(LAssembler.customParsers.get(tokens[0]).get(tokens));
                         }else{
                             //unparseable statement
-                            statements.add(new LStatements.InvalidStatement());
+                            statements.add(new InvalidStatement());
                         }
                     }
                     line ++;
@@ -520,10 +529,10 @@ public class NyfalisLogicDialog extends BaseDialog {
         }
 
         static class JumpIndex{
-            LStatements.JumpStatement jump;
+            JumpStatement jump;
             String location;
 
-            public JumpIndex(LStatements.JumpStatement jump, String location){
+            public JumpIndex(JumpStatement jump, String location){
                 this.jump = jump;
                 this.location = location;
             }

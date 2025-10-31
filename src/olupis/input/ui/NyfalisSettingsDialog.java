@@ -26,6 +26,7 @@ import olupis.world.entities.packets.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
+import static olupis.NyfalisVars.*;
 
 public class NyfalisSettingsDialog {
     public static String nyfalisDiscordInvite = "https://discord.gg/K5YX2ECjv7";
@@ -33,10 +34,6 @@ public class NyfalisSettingsDialog {
     public NyfalisSettingsDialog() {
         if(!headless) BuildDialog();
     }
-    public static boolean musicModPresent = false;
-
-    public static float pdlStatusGiverTrans, pdlStatusGiverRange, treeTransgenderRange;
-    public static boolean pdlStatusGiverAnyTeam, pdlStatusGiverSimple;
 
     public static void updateSettings(){ //moved here so settings are checked per tick not per draw
         pdlStatusGiverTrans = Core.settings.getInt("nyfalis-pdl-status-trans")  / 100f;

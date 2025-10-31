@@ -6,7 +6,7 @@ import mindustry.ui.Styles;
 import mindustry.world.blocks.campaign.LaunchPad;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
-import olupis.NyfalisMain;
+import olupis.*;
 
 import static mindustry.Vars.*;
 
@@ -42,7 +42,7 @@ public class LimitedLaunchPad extends LaunchPad {
             }
 
             table.button(Icon.upOpen, Styles.cleari, () -> {
-                NyfalisMain.sectorSelect.showSelect(state.rules.sector, other -> {
+                NyfalisVars.sectorSelect.showSelect(state.rules.sector, other -> {
                     if(state.isCampaign() && other.planet == state.rules.sector.planet){
                         state.rules.sector.info.destination = other;
                     }

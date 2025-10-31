@@ -1,21 +1,14 @@
 package olupis.world.entities.abilities;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.geom.*;
-import arc.struct.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.entities.abilities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.*;
-import olupis.*;
-import olupis.input.ui.*;
 import olupis.world.*;
 
-import static olupis.input.ui.NyfalisSettingsDialog.*;
+import static olupis.NyfalisVars.*;
 
 public class PointDefenceIndicatorAbility  extends Ability{
     public float range = 5 * Vars.tilesize;

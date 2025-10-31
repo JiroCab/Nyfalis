@@ -6,8 +6,10 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.*;
 
 import static mindustry.Vars.*;
+import static olupis.NyfalisVars.*;
 import static olupis.world.EnvUpdater.*;
 
 public class GrowingWall extends StaticWall implements UpdatingEnvironment{
@@ -31,8 +33,9 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
 
     public void updateEnv(Tile tile, int key){
         if(net.client()) return;
+        if(!calyxSpreading) return;
 
-        if(Mathf.chance(growChance))
+        if(Mathf.chance(growChance * calyxSpreadingFactor))
             ++data[key][arrayID];
 
         if(data[key][arrayID] >= growTries){

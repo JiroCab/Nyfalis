@@ -61,7 +61,7 @@ public class NyfalisShaders {
             setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
             setUniformf("u_resolution", Core.camera.width, Core.camera.height);
             setUniformf("u_time", Time.time);
-            if(plane)setUniformf("level", NyfalisMain.floodPlaneLevel);
+            if(plane)setUniformf("level", NyfalisVars.floodPlaneLevel);
 
 
             if(hasUniform("u_noise")){

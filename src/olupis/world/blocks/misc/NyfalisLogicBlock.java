@@ -1,61 +1,81 @@
 package olupis.world.blocks.misc;
 
-import arc.func.Prov;
-import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
-import mindustry.gen.Icon;
-import mindustry.logic.LStatement;
-import mindustry.logic.LStatements;
-import mindustry.ui.Styles;
-import mindustry.world.blocks.logic.LogicBlock;
-import olupis.NyfalisMain;
+import arc.func.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
+import mindustry.gen.*;
+import mindustry.logic.*;
+import mindustry.ui.*;
+import mindustry.world.blocks.logic.*;
+import olupis.*;
+import olupis.world.logic.NyfLStatements.*;
+
+import static mindustry.logic.LStatements.*;
 
 public class NyfalisLogicBlock extends LogicBlock {
     /*Credit: https://github.com/TeamViscott/ModProjectViscott/blob/master/src/viscott/world/block/logic/PvLogicBlock.java*/
-    public Seq<Prov<LStatement>> allStatements;
+    public Seq<Prov<LStatement>> allStatements, privStatements;
 
     public NyfalisLogicBlock(String name){
         super(name);
+
+        privStatements = Seq.with( new Prov[]{
+            UnitBindStatement::new,
+            UnitControlStatement::new,
+            UnitRadarStatement::new,
+            UnitLocateStatement::new,
+            //
+            NyfalisSetRuleStatement::new,
+            GetCalyxTile::new,
+            //TODO: Manual Call Calyx spread instruction
+            //TODO: check infected/Claxied tile (out = x y lvl# growth#)
+            //TODO: Sprig growth call bc idk (x y )
+            //
+
+            //moved here so they dont load after unit controls and thow ppl off
+            GetBlockStatement::new,
+            SetBlockStatement::new,
+            SpawnUnitStatement::new,
+            ApplyStatusStatement::new,
+            SpawnWaveStatement::new,
+            SetRuleStatement::new,
+            FlushMessageStatement::new,
+            CutsceneStatement::new,
+            ExplosionStatement::new,
+            SetRateStatement::new,
+            FetchStatement::new,
+            GetFlagStatement::new,
+            SetFlagStatement::new
+
+        });
         allStatements = Seq.with( new Prov[]{
-                LStatements.InvalidStatement::new,
-                LStatements.ReadStatement::new,
-                LStatements.WriteStatement::new,
-                LStatements.DrawStatement::new,
-                LStatements.PrintStatement::new,
-                LStatements.DrawFlushStatement::new,
-                LStatements.PrintFlushStatement::new,
-                LStatements.GetLinkStatement::new,
-                LStatements.ControlStatement::new,
-                LStatements.SensorStatement::new,
-                LStatements.RadarStatement::new,
-                LStatements.SetStatement::new,
-                LStatements.OperationStatement::new,
-                LStatements.WaitStatement::new,
-                LStatements.StopStatement::new,
-                LStatements.LookupStatement::new,
-                LStatements.PackColorStatement::new,
-                LStatements.EndStatement::new,
-                LStatements.JumpStatement::new,
-                LStatements.GetBlockStatement::new,
-                LStatements.SetBlockStatement::new,
-                LStatements.SpawnUnitStatement::new,
-                LStatements.ApplyStatusStatement::new,
-                LStatements.SpawnWaveStatement::new,
-                LStatements.SetRuleStatement::new,
-                LStatements.FlushMessageStatement::new,
-                LStatements.CutsceneStatement::new,
-                LStatements.ExplosionStatement::new,
-                LStatements.SetRateStatement::new,
-                LStatements.FetchStatement::new,
-                LStatements.GetFlagStatement::new,
-                LStatements.SetFlagStatement::new
+                InvalidStatement::new,
+                ReadStatement::new,
+                WriteStatement::new,
+                DrawStatement::new,
+                PrintStatement::new,
+                DrawFlushStatement::new,
+                PrintFlushStatement::new,
+                GetLinkStatement::new,
+                ControlStatement::new,
+                SensorStatement::new,
+                RadarStatement::new,
+                SetStatement::new,
+                OperationStatement::new,
+                WaitStatement::new,
+                StopStatement::new,
+                LookupStatement::new,
+                PackColorStatement::new,
+                EndStatement::new,
+                JumpStatement::new
         });
     }
+
     public class NyfalisLogicBuild extends LogicBuild {
 
         @Override
         public void buildConfiguration(Table table){
-            table.button(Icon.pencil, Styles.cleari, () -> NyfalisMain.logicDialog.show(allStatements, code, executor, privileged, code -> configure(compress(code, relativeConnections())))).size(40);
+            table.button(Icon.pencil, Styles.cleari, () -> NyfalisVars.logicDialog.show(allStatements, code, executor, privileged, code -> configure(compress(code, relativeConnections())))).size(40);
         }
     }
 }

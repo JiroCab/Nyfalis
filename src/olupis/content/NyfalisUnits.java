@@ -26,6 +26,7 @@ import mindustry.type.*;
 import mindustry.type.ammo.*;
 import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
+import olupis.*;
 import olupis.input.*;
 import olupis.world.*;
 import olupis.world.ai.*;
@@ -43,6 +44,7 @@ import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static mindustry.Vars.*;
 import static mindustry.content.Items.*;
+import static olupis.NyfalisVars.*;
 import static olupis.content.NyfalisColors.*;
 import static olupis.content.NyfalisItemsLiquid.*;
 import static olupis.content.NyfalisItemsLiquid.steam;
@@ -96,7 +98,7 @@ public class NyfalisUnits {
     ;
 
     public static BatHelperUnitType pteropusAir, acerodonAir, nyctalusAir, mirimiriAir , vampyrumAir;
-    public static HashMap<UnitType, Weapon[]> payloadWeaponIndex;
+
 
     public static AmmoLifeTimeUnitType
         //support - yes, its just Phasmophobia ghost types
@@ -2918,6 +2920,7 @@ public class NyfalisUnits {
                         moves.add(new PartMove(p ->( Mathf.cos(Time.time / 30) / 2 + 0.5f) * (1- NyfPartParms.nyfparams.paylCount), 0, 0, 360f));
                     }}
             );
+            abilities.add(new ActivePayloadHandler());
             weapons.add(new NyfalisWeapon(""){{
                 top = mirror = false;
                 shake = 0f;

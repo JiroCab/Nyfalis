@@ -30,7 +30,9 @@ public class NyfalisColors{
 		turretLightColor = new Color().set(Color.white).a(0.35f),
 
         acidRainColour = Color.valueOf("50766A").a(0.7f),
-        altStatColour = Color.valueOf("63553B")
+        altStatColour = Color.valueOf("63553B"),
+
+        supportGreen = Color.valueOf("5c9f62")
 	 ;
 
     public  static  Color[]

@@ -16,6 +16,7 @@ import mindustry.world.blocks.environment.*;
 import olupis.content.*;
 
 import static mindustry.Vars.*;
+import static olupis.NyfalisVars.*;
 import static olupis.world.EnvUpdater.*;
 
 public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironment{
@@ -164,7 +165,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     public void updateEnv(Tile tile, int key){
         if(net.client()) return;
 
-        if(Mathf.chance(spreadChance))
+        if(Mathf.chance(spreadChance * calyxSpreadingFactor))
             ++data[key][arrayID];
 
         if(data[key][arrayID] >= spreadTries){
@@ -189,7 +190,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                 }
             }
 
-            if(spread){
+            if(spread && calyxSpreading){
                 for(int i = 0; i < 4; i++){
                     Tile near = tile.nearby(i);
                     if(near == null)

@@ -126,7 +126,7 @@ public class NyfalisBlocks {
         mendFieldProjector, taurus, lamp, ladar, search,
         cutboi,
 
-        fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry,
+        fortifiedMessageBlock, mechanicalProcessor, analogProcessor, mechanicalSwitch, mechanicalRegistry, nyfalianProcessor,
 
         /*special*/
         scarabRadar, floodDisruptor
@@ -2784,6 +2784,21 @@ public class NyfalisBlocks {
             health = 100;
             researchCost = with(iron, 500, graphite, 500);
             requirements(Category.logic, with(Items.graphite, 10, iron, 5));
+        }};
+
+
+        nyfalianProcessor = new NyfalisLogicBlock("nyfalian-processor"){{
+            requirements(Category.logic, BuildVisibility.worldProcessorOnly, with());
+            allStatements.addAll(privStatements);
+
+            canOverdrive = false;
+            targetable = false;
+            instructionsPerTick = 8;
+            forceDark = true;
+            privileged = true;
+            size = 1;
+            maxInstructionsPerTick = 1000;
+            range = Float.MAX_VALUE;
         }};
 
         mechanicalProcessor = new NyfalisLogicBlock("mechanical-processor"){{
