@@ -1724,8 +1724,8 @@ public class NyfalisBlocks {
                 }}
             );
             alwaysShooting = unitFactory = true;
-            requiredItems = with(ironFrame, 1, copperWire, 1, crudeBattery, 1,basicRotor ,1);
-            requiredAlternate = with(ironPlate, 3, copperWire, 3, crudeBattery, 3, basicRotor, 3);
+            requiredItems = with(lead, 10, copper, 10 , basicRotor ,5);
+            requiredAlternate = with(ironPlate, 10, copperWire, 10, crudeBattery, 10, basicRotor, 10, ironFrame, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(lead, 800, copper, 800,  iron, 600);
             requirements(Category.units, with(iron, 100, lead, 100, copper, 100));
@@ -1756,8 +1756,8 @@ public class NyfalisBlocks {
                     }};
                 }}
             );
-            requiredItems = with(ironFrame, 2, copperWire, 2, crudeBattery, 2);
-            requiredAlternate = with(ironPlate, 3, copperWire, 3, crudeBattery, 3);
+            requiredItems = with(lead, 10, copper, 10, crudeBattery, 5);
+            requiredAlternate = with(ironPlate, 10, copperWire, 10, crudeBattery, 10, ironFrame, 10);
             alwaysShooting = hoverShowsSpawn = arrowShootPos = unitFactory = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(rustyIron, 500, copper, 500,  iron, 300);
@@ -1800,8 +1800,8 @@ public class NyfalisBlocks {
                     }};
                 }}
             );
-            requiredItems = with(ironFrame, 2, copperWire, 1, crudeBattery, 1, basicRotor ,1);
-            requiredAlternate = with(ironPlate, 3, copperWire, 3, crudeBattery, 3, basicRotor, 3);
+            requiredItems = with(copper, 10, lead, 10, crudeBattery, 3, basicRotor , 3);
+            requiredAlternate = with(ironPlate, 10, copperWire, 10, crudeBattery, 10, basicRotor, 10, ironFrame, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             alwaysShooting = hoverShowsSpawn = floating = arrowShootPos = unitFactory = true;
             researchCost = with(lead, 1500, graphite, 500,  iron, 800);

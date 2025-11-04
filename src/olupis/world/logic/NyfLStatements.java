@@ -45,61 +45,50 @@ public class NyfLStatements{
             out.append(" ");
             out.append(((GetCalyxTile)obj).result);
             out.append(" ");
+            out.append(((GetCalyxTile)obj).fetch.name());
+            out.append(" ");
             out.append(((GetCalyxTile)obj).x);
             out.append(" ");
             out.append(((GetCalyxTile)obj).y);
             out.append(" ");
             out.append(((GetCalyxTile)obj).r);
+            out.append(" ");
+            out.append(((GetCalyxTile)obj).f);
         }
     }
 
     public static LStatement readNyfLogic(String[] tokens, int length) {
         if (tokens[0].equals("nyf-setrule")) {
             NyfalisSetRuleStatement result = new NyfalisSetRuleStatement();
-            if (length > 1) {
-                result.rule = NyfLogicRule.valueOf(tokens[1]);
-            }
+            if (length > 1) result.rule = NyfLogicRule.valueOf(tokens[1]);
 
-            if (length > 2) {
-                result.value = tokens[2];
-            }
+            if (length > 2) result.value = tokens[2];
 
-            if (length > 3) {
-                result.p1 = tokens[3];
-            }
+            if (length > 3) result.p1 = tokens[3];
 
-            if (length > 4) {
-                result.p2 = tokens[4];
-            }
+            if (length > 4) result.p2 = tokens[4];
 
-            if (length > 5) {
-                result.p3 = tokens[5];
-            }
+            if (length > 5) result.p3 = tokens[5];
 
-            if (length > 6) {
-                result.p4 = tokens[6];
-            }
+            if (length > 6) result.p4 = tokens[6];
 
             result.afterRead();
             return result;
         }else if (tokens[0].equals("nyf-getcalyxtile")) {
             GetCalyxTile result = new GetCalyxTile();
 
-            if (length > 1) {
-                result.result = tokens[1];
-            }
+            if (length > 1) result.result = tokens[1];
 
-            if (length > 2) {
-                result.x = tokens[2];
-            }
+            if (length > 2) result.fetch = CalyxFetches.valueOf(tokens[2]);
 
-            if (length > 3) {
-                result.y = tokens[3];
-            }
+            if (length > 3) result.x = tokens[3];
 
-            if (length > 4) {
-                result.r = tokens[4];
-            }
+            if (length > 4) result.y = tokens[4];
+
+            if (length > 5) result.r = tokens[5];
+
+            if (length > 6) result.f = tokens[6];
+
 
             result.afterRead();
             return result;
@@ -107,13 +96,39 @@ public class NyfLStatements{
         return null;
     }
 
-    public static class NyfLStatment extends LStatement{
+    public static class GetCalyxTile extends LStatement{
+        public CalyxFetches fetch = CalyxFetches.any;
+        public String result = "result", x = "0", y = "0", r = "1", f = "1";
 
         @Override
-        public void build(Table table){}
+        public void build(Table table){
+            fields(table, result, str -> result = str);
+
+            table.add(" =");
+            table.button(b -> {
+                b.label(() -> fetch.name());
+                b.clicked(() -> showSelect(b, CalyxFetches.all, fetch, o -> fetch = o));
+            }, Styles.logict, () -> {}).size(80f, 40f).pad(4f).color(table.color);
+
+            row(table);
+            fields(table, x, str -> x = str);
+            table.add(", ");
+            fields(table, y, str -> y = str);
+            table.add( " :" );
+            fields(table, r, str -> r = str);
+            table.add( " tiles" );
+            fields(table, f, str -> f = str);
+        }
 
         @Override
-        public LInstruction build(LAssembler builder){return null;}
+        public boolean privileged(){
+            return true;
+        }
+
+        @Override
+        public LInstruction build(LAssembler builder){
+            return new GetCalyx(builder.var(x), builder.var(y), builder.var(result), builder.var(r), fetch, builder.var(f));
+        }
 
         @Override
         public LCategory category(){
@@ -126,44 +141,17 @@ public class NyfLStatements{
         }
     }
 
-    public static class GetCalyxTile extends NyfLStatment{
-        public String result = "result", x = "0", y = "0", r = "1";
-
-        @Override
-        public void build(Table table){
-            fields(table, result, str -> result = str);
-
-            table.add(" = get ");
-
-            row(table);
-            fields(table, x, str -> x = str);
-            table.add(", ");
-            fields(table, y, str -> y = str);
-            table.add( " :" );
-            fields(table, r, str -> r = str);
-            table.add( " tiles" );
-        }
-
-        @Override
-        public boolean privileged(){
-            return true;
-        }
-
-        @Override
-        public LInstruction build(LAssembler builder){
-            return new GetCalyx(builder.var(x), builder.var(y), builder.var(result), builder.var(r));
-        }
-    }
-
     public static class GetCalyx implements LInstruction{
+        public CalyxFetches t;
         public LVar x, y, r;
         public LVar dest;
 
-        public GetCalyx(LVar x, LVar y, LVar dest, LVar r){
+        public GetCalyx(LVar x, LVar y, LVar dest, LVar r, CalyxFetches t, LVar f){
             this.x = x;
             this.y = y;
             this.dest = dest;
             this.r = r;
+            this.t = t;
         }
 
         public GetCalyx(){}
@@ -171,6 +159,7 @@ public class NyfLStatements{
         @Override
         public void run(LExecutor exec){
             Tile tile = world.tile(Mathf.round(x.numf()), Mathf.round(y.numf()));
+            //todo: t is to change from any level, input a min level or return growth
             if(tile == null){
                 dest.setobj(null);
             }else{
@@ -179,7 +168,7 @@ public class NyfLStatements{
         }
     }
 
-    public static class NyfalisSetRuleStatement extends NyfLStatment{
+    public static class NyfalisSetRuleStatement extends LStatement{
         public NyfLogicRule rule = NyfLogicRule.calyxSpread;
         public String value = "1", p1 = "0", p2 = "0", p3 = "100", p4 = "100";
 
@@ -196,7 +185,7 @@ public class NyfLStatements{
                 b.clicked(() -> showSelect(b, NyfLogicRule.all, rule, o -> {
                     rule = o;
                     rebuild(table);
-                }, 2, c -> c.width(150f)));
+                }, 2, c -> c.minWidth(225f)));
             }, Styles.logict, () -> {}).size(160f, 40f).margin(5f).pad(4f).color(table.color);
 
             switch(rule){
@@ -216,6 +205,16 @@ public class NyfLStatements{
         @Override
         public LInstruction build(LAssembler builder){
             return new NyfSetRuleI(rule, builder.var(value), builder.var(p1), builder.var(p2), builder.var(p3), builder.var(p4));
+        }
+
+        @Override
+        public LCategory category(){
+            return nyfalian;
+        }
+
+        @Override
+        public void write(StringBuilder builder){
+            writeNyfLogic(this, builder);
         }
     }
 
