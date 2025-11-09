@@ -2,6 +2,7 @@ package olupis.world.blocks.processing;
 
 import arc.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
@@ -89,6 +90,7 @@ public class FactoryPlan extends Block{
         UnlockableContent dis = getDisplayed();
 
         region = dis.isModded() ? Core.atlas.find(dis.name) : Core.atlas.find( dis.getContentType() + "-" + dis.name);
+        if(!region.found()) region = Core.atlas.find(Mathf.randomBoolean(0.5f) ? "alphaaaa" :  "ranai");
         return new TextureRegion[]{region, overlayRegion};
     }
 

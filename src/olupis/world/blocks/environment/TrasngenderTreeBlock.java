@@ -63,9 +63,9 @@ public class TrasngenderTreeBlock extends TreeBlock{
     public void drawBase(Tile tile){
 
         float alpha = 1f;
-        if(treeTransgenderRange > 0 && treeTransgenderRange < 51 ){
+        if(treeTransgenderRange > 0 && treeTransgenderRange < 51 * 8f ){
             alpha = NyfWorldFuckingHelper.withinMouseOrUnitRangeF(tile, treeTransgenderRange);
-        } else if(treeTransgenderRange >= 51 ) alpha = 0;
+        } else if(treeTransgenderRange >= 51 * 8f ) alpha = 0;
 
         float
         x = tile.worldx(), y = tile.worldy(),
@@ -88,7 +88,7 @@ public class TrasngenderTreeBlock extends TreeBlock{
         Draw.alpha(alpha);
 
         TextureRegion reg = variants == 0 ? region : variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))];
-        if(flavored) Draw.color(new Color().set(Draw.getColor()).lerp(flavourTarget, Mathf.randomSeedRange(tile.pos(), 1f)));
+        if(flavored) Draw.color(new Color().set(Draw.getColor()).lerp(flavourTarget, Mathf.randomSeedRange(tile.pos(), 1f)), alpha);
         Draw.z(Layer.power + 1);
         Draw.rectv(reg, x, y, w, h, rot, vec -> vec.add(
         Mathf.sin(vec.y*3 + Time.time, scl, mag) + Mathf.sin(vec.x*3 - Time.time, 70, 0.8f),

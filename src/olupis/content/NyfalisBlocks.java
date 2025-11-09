@@ -13,7 +13,6 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
-import mindustry.entities.part.DrawPart.PartProgress;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -2546,7 +2545,7 @@ public class NyfalisBlocks {
             size = 3;
             fogRadius = 32;
             lightRadius = 200;
-            rotateSpeed = 20f;
+            rotateSpeed = 5f;
             glowMag = glowScl = 0f;
             discoveryTime = 60f * 40f;
             spotted = NyfalisStatusEffects.marked;

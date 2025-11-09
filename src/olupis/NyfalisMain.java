@@ -169,6 +169,7 @@ public class NyfalisMain extends Mod{
 
             content.each(c -> {
                 if(c.minfo != null && c.minfo.mod != null && Objects.equals(c.minfo.mod.name, "olupis")){
+                    if(c instanceof  Planet) return;
                     if( c instanceof UnlockableContent uc && !uc.fullIcon.found()) uc.uiIcon = uc.fullIcon = Core.atlas.find(Mathf.randomBoolean(0.5f) ? "alphaaaa" :  "ranai");
                 }
             });
