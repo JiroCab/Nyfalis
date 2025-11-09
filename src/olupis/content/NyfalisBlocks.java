@@ -13,6 +13,7 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
+import mindustry.entities.part.DrawPart.PartProgress;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -650,7 +651,7 @@ public class NyfalisBlocks {
         }};
 
         bush = new RotatingProp("bush") {{
-            threshold = -1;
+            customShadow = true;
             variants = 2;
             breakSound = Sounds.plantBreak; // Buildable via planty mush
         }};
@@ -700,9 +701,12 @@ public class NyfalisBlocks {
             redSand.asFloor().decoration = this;
         }};
 
-        glowBloom = new RotatingProp("glow-bloom") {{
-            variants = 3;
+        glowBloom = new VariantsBush("glow-bloom") {{
+            variants = 2;
             lightRadius = 10f;
+            lobesMin = 5;
+            lobesMax = 6;
+
             emitLight = true;
             lightColor = NyfalisColors.glowPlantLight;
             breakSound = Sounds.plantBreak;
@@ -723,7 +727,7 @@ public class NyfalisBlocks {
             breakSound = Sounds.plantBreak;
         }};
 
-        lilypad = new RotatingProp("lilypad") {{
+        lilypad = new LargeProps("lilypad") {{
             variants = 3;
             largeVariants = 6;
             customShadow = floating = placeableLiquid = true;
@@ -811,8 +815,10 @@ public class NyfalisBlocks {
         }};
 
         greenShrubsIrregular = new TallBlock("green-shrubs-irregular"){{
-            variants = 2;
+            variants = 3;
             clipSize = 128f;
+            shadowAlpha = 0.4f;
+            shadowOffset = -1f;
         }};
 
         /*Irregular varrients that don't show up on top of tress*/
@@ -827,6 +833,8 @@ public class NyfalisBlocks {
             variants = 2;
             clipSize = 128f;
             layer = Layer.power + 0.9f;
+            shadowAlpha = 0.4f;
+            shadowOffset = -1f;
         }};
 
         yellowShrubsCrooked = new TallBlock("yellow-shrubs-crooked"){{
@@ -872,7 +880,7 @@ public class NyfalisBlocks {
         }};
         yellowTreeBlooming = new TrasngenderTreeBlock("yellow-tree-blooming"){{
             flavourTarget = Color.valueOf("f5d271");
-            featureVariants = 2;
+            featureVariants = 3;
             parent = yellowTree;
         }};
         infernalMegaBloom = new TrasngenderTreeBlock("infernal-megabloom"){{
