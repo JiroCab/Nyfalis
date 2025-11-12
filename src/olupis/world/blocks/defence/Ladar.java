@@ -22,6 +22,7 @@ import mindustry.world.meta.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
+import static olupis.world.NyfWorldFuckingHelper.bestEnemyFog;
 
 public class Ladar extends Radar {
     public @Nullable UnitType type = null;
@@ -62,7 +63,7 @@ public class Ladar extends Radar {
 
         @Override
         public void updateTile(){
-            Unit uf = bestEnemyFog(team, this.x, this.y, spotRange * tilesize, u -> !u.dead, UnitSorts.strongest);
+            Unit uf = bestEnemyFog(team, this.x, this.y, spotRange * tilesize, u -> !u.dead && (!u.hasEffect(spotted) || u.getDuration(spotted) <= spottedDuration * 0.5f), UnitSorts.strongest);
             if(uf != null){
                 tar.set(uf.x, uf.y);
                 if(spotted != StatusEffects.none) uf.apply(spotted, spottedDuration);
@@ -164,27 +165,5 @@ public class Ladar extends Radar {
             write.i(slave == null ? -1 : slave.id);
             write.i(decayDelay > 0 ? decayTimer : -1);
         }
-    }
-
-
-    //Yes all this just to remove `inFogTo()`
-    public static Unit bestEnemyFog(Team team, float x, float y, float range, Boolf<Unit> predicate, Sortf sort){
-        if(team == Team.derelict) return null;
-
-        Unit[] result = {null};
-        float[] in = {0f, -99999f};
-
-        Units.nearbyEnemies(team, x - range, y - range, range*2f, range*2f, e -> {
-            if(e.dead() || !predicate.get(e) || e.team == Team.derelict || !e.within(x, y, range + e.hitSize/2f) || !e.targetable(team)) return;
-
-            float cost = sort.cost(e, x, y);
-            if((result == null || cost < in[0] || e.type.targetPriority > in[1]) && e.type.targetPriority >= in[1]){
-                result[0] = e;
-                in[0] = cost;
-                in[1] = e.type.targetPriority;
-            }
-        });
-
-        return result[0];
     }
 }

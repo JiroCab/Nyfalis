@@ -32,6 +32,8 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.input.*;
+import olupis.world.*;
+import olupis.world.NyfPartParms.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
 import olupis.world.blocks.drawers.*;
@@ -43,6 +45,7 @@ import olupis.world.blocks.turret.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.consumer.*;
 import olupis.world.entities.bullets.*;
+import olupis.world.entities.parts.*;
 import olupis.world.entities.pattern.*;
 
 import static arc.graphics.g2d.Draw.color;
@@ -2486,7 +2489,7 @@ public class NyfalisBlocks {
                     boolean isOdd = finalI % 2 != 0;
                     parts.add(new RegionPart("-truss"){{
                         //todo: make a progress that scales how far the target pos is
-                        progress = PartProgress.warmup;
+                        progress = p -> Mathf.lerp(0, NyfPartProgress.tarDistP.get(p),  PartProgress.warmup.get(p));
                         mirror = true;
                         under = false;
                         y = 5;
@@ -2501,7 +2504,7 @@ public class NyfalisBlocks {
                 new RegionPart("-blade"){{
                     mirror = true;
                     under = true;
-                    progress = PartProgress.warmup;
+                    progress = p -> Mathf.lerp(0, NyfPartProgress.tarDistP.get(p),  PartProgress.warmup.get(p));
                     y = 0;
                     moveY = 53;
                     moveRot = -45;

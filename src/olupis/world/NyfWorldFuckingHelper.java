@@ -11,6 +11,9 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
+import mindustry.entities.*;
+import mindustry.entities.Units.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -83,7 +86,27 @@ public class NyfWorldFuckingHelper{
 
         return build;
     }
-    
+
+    //Yes all this just to remove `inFogTo()`
+    public static Unit bestEnemyFog(Team team, float x, float y, float range, Boolf<Unit> predicate, Sortf sort){
+        if(team == Team.derelict) return null;
+
+        Unit[] result = {null};
+        float[] in = {0f, -99999f};
+
+        Units.nearbyEnemies(team, x - range, y - range, range*2f, range*2f, e -> {
+            if(e.dead() || !predicate.get(e) || e.team == Team.derelict || !e.within(x, y, range + e.hitSize/2f) || !e.targetable(team)) return;
+
+            float cost = sort.cost(e, x, y);
+            if((result == null || cost < in[0] || e.type.targetPriority > in[1]) && e.type.targetPriority >= in[1]){
+                result[0] = e;
+                in[0] = cost;
+                in[1] = e.type.targetPriority;
+            }
+        });
+
+        return result[0];
+    }
     //endregion
     // region == Weather helpers
 
@@ -169,10 +192,8 @@ public class NyfWorldFuckingHelper{
             Drawf.tri(x + x1, y + y1, width, length, Angles.angle(x, y, x + x1, y + y1));
         }
     }
-    //engregion
-
-
-    //== Ambience Helper ==
+    //endregion
+    //region == Ambience Helper ==
     public static void allUpdaters(){
         if(state.isPaused() || state.isEditor() || ui.editor.isShown())
             return;
@@ -306,4 +327,5 @@ public class NyfWorldFuckingHelper{
             return false;
         }
     }
+    //endregion
 }

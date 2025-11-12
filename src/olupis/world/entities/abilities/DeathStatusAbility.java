@@ -32,7 +32,9 @@ public class DeathStatusAbility extends Ability{
     public void addStats(Table t){
         t.add(Core.bundle.format("bullet.range", Strings.autoFixed(range / tilesize, 2)));
         t.row();
-        t.add((effect.hasEmoji() ? effect.emoji() : "") + "[stat]" + effect.localizedName);
+        t.add((effect.hasEmoji() ? effect.emoji() : "") + "[stat]" + effect.localizedName).get().clicked( () -> {
+            if(!effect.isHidden())Vars.ui.content.show(effect);
+        });
     }
 
     @Override

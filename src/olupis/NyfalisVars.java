@@ -2,6 +2,7 @@ package olupis;
 
 import arc.graphics.*;
 import arc.util.*;
+import mindustry.game.*;
 import mindustry.type.*;
 import olupis.content.*;
 import olupis.input.ui.*;
@@ -34,6 +35,8 @@ public class NyfalisVars{
     public static float calyxSpreadingFactor = 1;
     /*How much Calyx will grow "buildings" on it*/
     public static float calyxBuildingFactor = 1;
+    /*which team the Calyx "building" team is on*/
+    public static Team calyxTeam = NyfUnitTeamMapper.verdentTeam;
 
     public static boolean damagingWeather = true;
 

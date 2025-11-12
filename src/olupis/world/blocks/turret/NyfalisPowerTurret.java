@@ -1,8 +1,11 @@
 package olupis.world.blocks.turret;
 
 import arc.math.Mathf;
+import arc.util.*;
+import mindustry.*;
 import mindustry.graphics.Drawf;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import olupis.world.*;
 
 public class NyfalisPowerTurret extends PowerTurret {
     public float illuminateTime = 30f;
@@ -24,6 +27,11 @@ public class NyfalisPowerTurret extends PowerTurret {
             super.drawLight();
         }
 
+        @Override
+        public void update(){
+            super.update();
+            NyfPartParms.nyfparams.set(this, targetPos != null ? dst(targetPos) / range : 0, this.totalAmmo);
+        }
     }
 
 }

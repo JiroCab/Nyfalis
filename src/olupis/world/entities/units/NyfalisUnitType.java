@@ -265,7 +265,7 @@ public class NyfalisUnitType extends UnitType {
 
     @Override
     public void draw(Unit unit){
-        if(parts.size > 0) updatePrams(unit);
+        if(parts.size > 0) NyfPartParms.nyfparams.set(unit);
 
         super.draw(unit);
     }
@@ -343,20 +343,7 @@ public class NyfalisUnitType extends UnitType {
             unit.apply(payloadDisarmSE, Time.toSeconds);
         }
     }
-    public void updatePrams(Unit unit){
-        NyfPartParms.nyfparams.set(
-            unit.healthf(),
-            unit.team.id,
-            unit.elevation(),
-            partAmmo(unit),
-            Mathf.clamp(Math.abs(unit.vel().len2() / unit.type.speed)),
-            unit.speed(),
-            onWater(unit) ? 1 : 0,
-            0,
-            unit instanceof OnePayloadUnitClass po ? (po.hasPayload() ? 1 : 0) : unit instanceof Payloadc p ? p.payloadUsed() / player.unit().type().payloadCapacity : 0
-        );
 
-    }
 
     public static boolean onWater(Unit unit){
         return unit.floorOn().isLiquid;

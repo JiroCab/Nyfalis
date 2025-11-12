@@ -94,21 +94,6 @@ public class DuckyTubeTankUnitType extends  LeggedWaterUnit{
         }}
     }
 
-    @Override
-    public void updatePrams (Unit unit){
-        NyfPartParms.nyfparams.set(
-        unit.healthf(),
-        unit.team.id,
-        unit.elevation(),
-        partAmmo(unit),
-        Mathf.clamp(Math.abs(unit.vel().len2() / unit.type.speed)),
-        unit.speed(),
-        fetchFloating(unit),
-        treadTracker.getOrDefault(unit, 0f),
-        unit instanceof OnePayloadUnitClass po ? (po.hasPayload() ? 1 : 0) : unit instanceof Payloadc p ? p.payloadUsed() / unit.type().payloadCapacity : 0
-        );
-    }
-
     public float fetchFloating(Unit unit){
         if(floatingTracker.containsKey(unit)) return floatingTracker.get(unit);
         return onWater(unit) ? 1f : 0f;

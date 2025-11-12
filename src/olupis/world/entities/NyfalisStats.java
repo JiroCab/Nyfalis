@@ -16,6 +16,7 @@ import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.type.unit.*;
 import mindustry.type.weapons.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -67,6 +68,7 @@ public class NyfalisStats extends StatValues {
     public static <T extends UnlockableContent> StatValue ammoWithInfo(ObjectMap<T, BulletType> map, int indent, boolean showUnit, String parent, Floatf<BulletType> comparator){
         return ammoWithInfo(map, indent, showUnit, parent, comparator, null);
     }
+    //actual big block for stats
     public static <T extends UnlockableContent> StatValue ammoWithInfo(ObjectMap<T, BulletType> map, int indent, boolean showUnit, String parent, Floatf<BulletType> comparator, ObjectMap<T, BulletType> ori){
         return table -> {
 
@@ -80,6 +82,8 @@ public class NyfalisStats extends StatValues {
                 boolean compact = t instanceof UnitType && !showUnit || indent > 0;
 
                 BulletType type = map.get(t);
+
+
 
                 if(type instanceof  MineBulletType mb){
                     table.table(Styles.grayPanel, in -> {
@@ -158,7 +162,7 @@ public class NyfalisStats extends StatValues {
                     }).growX().padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).margin(compact ? 0 : 10);
                     table.row();
                 }
-                else if (type instanceof SpawnHelperBulletType || type.spawnUnit != null ) { //TODO Icon broken
+                else if (type instanceof SpawnHelperBulletType ) { //TODO Icon broken
                     UnitType spawn = type.spawnUnit;
                     table.table(Styles.grayPanel, in -> {
                         in.left().top().defaults().padRight(3).left();
@@ -202,6 +206,11 @@ public class NyfalisStats extends StatValues {
                     }).padLeft(indent * 5).padTop(5).padBottom(compact ? 0 : 5).growX().margin(compact ? 0 : 10);
                 }
                 else {
+                    if(type.spawnUnit != null && type.spawnUnit.weapons.size > 0){
+                        ammoWithInfo(ObjectMap.of(t, type.spawnUnit.weapons.first().bullet), indent, false, null).display(table);
+                        continue;
+                    }
+
                     table.table(Styles.grayPanel, bt -> {
                         bt.left().top().defaults().padRight(3).left();
                         //no point in displaying unit icon twice

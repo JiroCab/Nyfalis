@@ -59,28 +59,8 @@ public  class NyfalisWeapon extends Weapon {
 
     @Override
     public void draw(Unit unit, WeaponMount mount){
-        updateParams(unit);
+        if(parts.size > 0) NyfPartParms.nyfparams.set(unit);
         super.draw(unit, mount);
-    }
-
-    public void  updateParams(Unit unit){
-        if(parts.size > 0){
-            float water = 0, ammop = 0;
-            if(unit.type instanceof  NyfalisUnitType nyf){
-                ammop = nyf.partAmmo(unit);
-            }
-            NyfPartParms.nyfparams.set(
-            unit.healthf(),
-            unit.team.id,
-            unit.elevation(),
-            ammop,
-            Mathf.clamp(Math.abs(unit.vel().len2() / unit.type.speed)),
-            unit.speed(),
-            NyfalisUnitType.onWater(unit) ? 1 : 0,
-            0,
-            unit instanceof OnePayloadUnitClass po ? (po.hasPayload() ? 1 : 0) : unit instanceof Payloadc p ? p.payloadUsed() / player.unit().type().payloadCapacity : 0
-            );
-        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import mindustry.entities.part.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import olupis.world.*;
 import olupis.world.entities.units.*;
 
 /*Very janky but gets the work done*
@@ -33,7 +34,7 @@ public class SnekWeapon extends NyfalisWeapon {
 
     @Override
     public void draw(Unit unit, WeaponMount mount){
-        updateParams(unit);
+        if(parts.size > 0) NyfPartParms.nyfparams.set(unit);
 
         if(!(unit instanceof Crawlc crawl) || !(unit.type instanceof SnekUnitType type)){
             super.draw(unit, mount);
