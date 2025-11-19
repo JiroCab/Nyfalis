@@ -36,17 +36,14 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
             Draw.rect(overlayRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, overlayRegions.length - 1))], tile.worldx(), tile.worldy());
     }
 
-    public void updateEnv(Tile tile, int key){
+    public void updateEnv(Tile tile, EnvStruct i){
         if(tile.block() instanceof Drill)
             tasks.post(() -> tile.build.applySlowdown(parent.drillEfficiency, 30f));
 
         if(net.client()) return;
 
-        if(Mathf.chance(parent.spawnChance * NyfalisVars.calyxSpreadingFactor))
-            ++data[key][arrayID];
-
-        if(data[key][arrayID] >= parent.spreadTries){
-            data[key][arrayID] = 0;
+        if(Mathf.chance(parent.spawnChance * NyfalisVars.calyxSpreadingFactor) && i.getIncrementOverlay() >= parent.spreadTries){
+            i.clearOverlayVal();
 
             if(next != null){
                 if(parent.upgradeEffect != null){
@@ -68,24 +65,24 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
             }
 
             if(parent.spread && calyxSpreading){
-                for(int i = 0; i < 4; i++){
-                    Tile near = tile.nearby(i);
+                for(int it = 0; it < 4; it++){
+                    Tile near = tile.nearby(it);
                     if(near == null)
                         continue;
 
-                    if(parent.replaces(near)) continue;
+                    EnvStruct nearby = instances[near.array()];
+                    if(parent.replaces(near, nearby) || !parent.canSpread(near))
+                        continue;
 
-                    if(parent.canSpread(near)){
-                        if(replacementMap[near.array()][arrayID] <= -1)
-                            replacementMap[near.array()][arrayID] = index(near.overlay());
-                        queue[parent.id][arrayID].add(near.pos());
+                    if(nearby.canWriteOverlay())
+                        nearby.setOverlayIndex(near.overlay());
+                    queue[parent.id][arrayID].add(near.pos());
 
-                        if(parent.spreadEffect != null){
-                            tasks.post(() ->{
-                                parent.spreadEffect.at(tile.worldx(), tile.worldy(), near.floor().mapColor);
-                                Call.effect(parent.spreadEffect, near.worldx(), near.worldy(), 0, near.floor().mapColor);
-                            });
-                        }
+                    if(parent.spreadEffect != null){
+                        tasks.post(() -> {
+                            parent.spreadEffect.at(tile.worldx(), tile.worldy(), near.floor().mapColor);
+                            Call.effect(parent.spreadEffect, near.worldx(), near.worldy(), 0, near.floor().mapColor);
+                        });
                     }
                 }
             }

@@ -31,15 +31,11 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
         this.variants = variants;
     }
 
-    public void updateEnv(Tile tile, int key){
-        if(net.client()) return;
-        if(!calyxSpreading) return;
+    public void updateEnv(Tile tile, EnvStruct i){
+        if(net.client() || !calyxSpreading) return;
 
-        if(Mathf.chance(growChance * calyxSpreadingFactor))
-            ++data[key][arrayID];
-
-        if(data[key][arrayID] >= growTries){
-            data[key][arrayID] = 0;
+        if(Mathf.chance(growChance * calyxSpreadingFactor) && i.getIncrementBlock() >= growTries){
+            i.clearBlockVal();
 
             if(next != null){
                 if(growEffect != null){

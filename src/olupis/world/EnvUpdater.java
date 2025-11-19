@@ -10,6 +10,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.io.*;
 import mindustry.world.*;
+import mindustry.world.blocks.environment.*;
 
 import java.io.*;
 import java.util.Arrays;
@@ -19,41 +20,35 @@ import static mindustry.Vars.*;
 /** Yes, this class has race conditions and possibly memory leaks, cry about it */
 public class EnvUpdater implements AsyncProcess{
     public static ObjectMap<String, ObjectSet<Block>> blacklists = new ObjectMap<>();
-    public static Seq<Block> env = new Seq<>();
-    public static byte[][] data = new byte[][]{};
+    public static EnvStruct[] instances;
 
     // a queue for stuff that has to be done on the main thread
     public static TaskQueue tasks = new TaskQueue();
-    // array noting whether the tile is an instance of UpdatingEnvironment
-    public static boolean[] infested = new boolean[]{};
-    // array of original tile IDs
-    public static short[][] replacementMap = new short[][]{};
     // list of tiles to set blocks on, per block type & layer
     public static IntSeq[][] queue = new IntSeq[][]{};
     // prop count for various floors
     private static short[] props = new short[]{};
 
-    // cache
-    static Tile lookup, ret;
-    static boolean state, ready;
+    static boolean ready;
     static int space, wsize;
     static float wwidth, wheight;
 
-    static final int csize = 3;
+    // amount of layers to keep track of, 3 for vanilla (floor, overlay, block)
+    static final int blockLayers = 3;
 
 
     public static void load(){
         Events.on(EventType.ContentInitEvent.class, e ->
             Core.app.post(() -> {
-                queue = new IntSeq[content.blocks().size][csize];
+                queue = new IntSeq[content.blocks().size][blockLayers];
 
                 for(int id = 0; id < queue.length; id++)
-                    for(int i = 0; i < csize; i ++)
+                    for(int i = 0; i < blockLayers; i ++)
                         queue[id][i] = new IntSeq();
             })
         );
 
-        SaveVersion.addCustomChunk("nyf-env-io", new EnvUpdaterIO());
+        SaveVersion.addCustomChunk("nyf-envstruct-io", new EnvUpdaterIO());
     }
 
     @Override
@@ -62,40 +57,37 @@ public class EnvUpdater implements AsyncProcess{
         if(Vars.state.isEditor()) return;
 
         wsize = world.width() * world.height();
-
         wwidth = (world.width() - 1) * tilesize;
         wheight = (world.height() - 1) * tilesize;
 
+        instances = new EnvStruct[wsize];
         props = new short[content.blocks().size];
-        data = new byte[wsize][csize];
-        infested = new boolean[wsize];
-        replacementMap = new short[wsize][csize];
 
         for(int i = 0; i < wsize; i++){
-            Arrays.fill(replacementMap[i], Short.MIN_VALUE);
-            lookup = world.tiles.geti(i);
+            EnvStruct struct = instances[i] = new EnvStruct();
 
-            env.addUnique(lookup.floor());
-            env.addUnique(lookup.overlay());
-            env.addUnique(lookup.block());
+            Tile lookup = world.tiles.geti(i);
+            // avoid casting multiple times
+            Floor floor = lookup.floor();
+            Floor overlay = lookup.overlay();
 
             // cleanup & setup
-            if(lookup.floor() instanceof UpdatingEnvironment e){
+            if(floor instanceof UpdatingEnvironment e){
                 if(!e.isValid(lookup)){
-                    lookup.setFloorNet(e.replacement(), lookup.overlay());
+                    lookup.setFloorNet(e.replacement(), overlay);
                     continue;
                 }
 
-                replacementMap[i][0] = e.replacement().id;
+                struct.setFloorIndex(e.replacement());
             }
 
-            if(lookup.overlay() instanceof UpdatingEnvironment e){
+            if(overlay instanceof UpdatingEnvironment e){
                 if(!e.isValid(lookup)){
                     lookup.setOverlayNet(e.replacement());
                     continue;
                 }
 
-                replacementMap[i][1] = e.replacement().id;
+                struct.setOverlayIndex(e.replacement());
             }
 
             if(lookup.block() instanceof UpdatingEnvironment e){
@@ -104,7 +96,7 @@ public class EnvUpdater implements AsyncProcess{
                     continue;
                 }
 
-                replacementMap[i][2] = e.replacement().id;
+                struct.setBlockIndex(e.replacement());
             }
 
             if(!lookup.block().isStatic())
@@ -112,7 +104,7 @@ public class EnvUpdater implements AsyncProcess{
         }
 
         for(int i = 0; i < queue.length; i++)
-            for(int idx = 0; idx < csize; idx++)
+            for(int idx = 0; idx < blockLayers; idx++)
                 queue[i][idx].clear();
 
         ready = true;
@@ -121,25 +113,26 @@ public class EnvUpdater implements AsyncProcess{
     @Override
     public void process(){
         for(int i = 0; i < wsize; i++){
-            lookup = world.tiles.geti(i);
-            state = false;
+            Tile lookup = world.tiles.geti(i);
+            EnvStruct instance = instances[i];
 
+            boolean state = false;
             if(lookup.floor() instanceof UpdatingEnvironment e){
-                e.updateEnv(lookup, i);
+                e.updateEnv(lookup, instance);
                 state = true;
             }
 
             if(lookup.overlay() instanceof UpdatingEnvironment e){
-                e.updateEnv(lookup, i);
+                e.updateEnv(lookup, instance);
                 state = true;
             }
 
             if(lookup.block() instanceof UpdatingEnvironment e){
-                e.updateEnv(lookup, i);
+                e.updateEnv(lookup, instance);
                 state = true;
             }
 
-            infested[i] = state;
+            instance.infested = state;
         }
     }
 
@@ -186,16 +179,6 @@ public class EnvUpdater implements AsyncProcess{
         return props[id] < limit + (scaling * space);
     }
 
-    public static short index(Block key){
-        short idx = (short) env.indexOf(key);
-        if(idx < 0){
-            env.add(key);
-            idx = (short) env.size;
-        }
-
-        return idx;
-    }
-
     /** Gets an infested tile within the specified radius, if one exists <br/>All variables are in world units */
     public static Tile getInfested(float x, float y, float radius){
         return getInfested(x, y, radius, 0f);
@@ -205,8 +188,8 @@ public class EnvUpdater implements AsyncProcess{
     public static Tile getInfested(float x, float y, float radius, float offset){
         for(float dx = Math.max(x - radius, 0); dx <= Math.min(x + radius, wwidth); dx += tilesize){
             for(float dy = Math.max(y - radius, 0); dy <= Math.min(y + radius, wheight); dy += tilesize){
-                ret = world.tileWorld(dx, dy);
-                if(ret.build == null && ret.within(x, y, radius) && (offset <= 0f || !ret.within(x, y, offset)) && infested[ret.array()])
+                Tile ret = world.tileWorld(dx, dy);
+                if(ret.build == null && ret.within(x, y, radius) && (offset <= 0f || !ret.within(x, y, offset)) && instances[ret.array()].infested)
                     return ret;
             }
         }
@@ -219,19 +202,22 @@ public class EnvUpdater implements AsyncProcess{
         if(tile == null) return;
 
         tile.getLinkedTiles(t -> {
-            int idx = t.array(), arr;
+            int ptr = t.array();
+            EnvStruct instance = instances[ptr];
 
-            arr = replacementMap[idx][0];
-            if(arr >= 0)
+            int arr = instance.replacedIndexes[0];
+            if(arr > 0) // air is never a good replacement for floors
                 t.setFloorNet(content.block(arr), t.overlay());
 
-            arr = replacementMap[idx][1];
+            arr = instance.replacedIndexes[1];
             if(arr >= 0)
                 t.setOverlayNet(content.block(arr));
 
-            arr = replacementMap[idx][2];
+            arr = instance.replacedIndexes[2];
             if(arr >= 0)
                 t.setNet(content.block(arr));
+
+            instances[ptr] = new EnvStruct();
         });
     }
 
@@ -239,84 +225,166 @@ public class EnvUpdater implements AsyncProcess{
         return blacklists.get(key, ObjectSet::new);
     }
 
-    public interface UpdatingEnvironment{
-        void updateEnv(Tile tile, int i);
-
-        boolean isValid(Tile tile);
-
-        Block replacement();
-    }
-
     // save chunk - only writing the necessary stuff, everything else gets recreated
     public static class EnvUpdaterIO implements SaveFileReader.CustomChunk{
+        final short exitVal = Short.MIN_VALUE + 1;
         @Override
         public void write(DataOutput stream) throws IOException{
-            stream.writeByte(2);
+            stream.writeByte(1);
 
             stream.writeBoolean(ready);
-            if(ready){
-                stream.writeInt(wsize);
-                stream.writeByte(csize);
-
-                StringBuilder map = new StringBuilder();
-                for(int i = 0; i < env.size; i++)
-                    map.append(env.get(i).name).append("=").append(i).append(":");
-
-                map.setLength(map.length() - 1);
-                stream.writeUTF(map.toString());
-
-                for(int i = 0; i < wsize; i++)
-                    for(int idx = 0; idx < csize; idx++)
-                        stream.writeShort(replacementMap[i][idx]);
-            }
+            if(ready)
+                writeOptimizedDataChunk(stream);
         }
 
         @Override
         public void read(DataInput stream) throws IOException{
             byte version = stream.readByte();
 
-            if(stream.readBoolean()){
-                int readw = stream.readInt();
-                byte readc = stream.readByte();
+            if(stream.readBoolean())
+                readOptimizedDataChunk(stream, version);
+        }
 
-                // old saves remain readable
-                if(version == 1){
-                    for(int i = 0; i < readw; i++)
-                        for(int idx = 0; idx < readc; idx++)
-                            replacementMap[i][idx] = stream.readShort();
+        public void writeName(DataOutput stream, short id) throws IOException{
+            Block b = content.block(id);
+            if(b == null)
+                b = Blocks.air;
+
+            stream.writeUTF(b.name);
+        }
+
+        public short readName(DataInput stream) throws IOException{
+            Block b = content.block(stream.readUTF());
+            if(b == null)
+                b = Blocks.air;
+
+            return b.id;
+        }
+
+        public void writeOptimizedDataChunk(DataOutput stream) throws IOException{
+            stream.writeByte(blockLayers);
+            for(int i = 0; i < blockLayers; i++){
+                int count = 0;
+                short index = instances[0].formatID(i);
+                for(EnvStruct instance : instances){
+                    if(count >= Short.MAX_VALUE || index != instance.formatID(i)){
+                        stream.writeShort(count);
+                        writeName(stream, index);
+
+                        index = instance.formatID(i);
+                        count = 1;
+                    }else ++count;
                 }
 
-                if(version == 2){
-                    String[] entries = stream.readUTF().split(":");
-                    ObjectMap<Short, Block> map = new ObjectMap<>();
-
-                    for(int i = 0; i < entries.length; i++){
-                        String[] entry = entries[i].split("=");
-                        if(entry.length == 2){
-                            Block b = content.block(entry[0]);
-                            if(b == null)
-                                b = Blocks.air;
-
-                            short id = (short) Strings.parseInt(entry[1], -1);
-                            map.put(id, b);
-                        }
-                    }
-
-                    for(int i = 0; i < readw; i++)
-                        for(int idx = 0; idx < readc; idx++)
-                            replacementMap[i][idx] = getID(stream.readShort(), map);
+                if(count > 0){
+                    stream.writeShort(count);
+                    writeName(stream, index);
                 }
+
+                stream.writeShort(exitVal);
             }
         }
 
-        public short getID(short idx, ObjectMap<Short, Block> map){
-            Block b = map.get(idx, Blocks.air);
-            return b == Blocks.air ? -1 : b.id;
+        public void readOptimizedDataChunk(DataInput stream, int version) throws IOException{
+            int layers = stream.readByte();
+            for(int i = 0; i < layers; i++){
+                int arrayIndex = 0;
+                while(true){
+                    short count = stream.readShort();
+                    if(count == exitVal)
+                        break;
+
+                    short id = readName(stream);
+                    for(int idx = arrayIndex; idx < (arrayIndex + count); idx++)
+                        instances[idx].replacedIndexes[i] = id;
+
+                    arrayIndex += count;
+                }
+            }
         }
 
         @Override
         public boolean writeNet(){
             return false;
         }
+    }
+
+    /** Class containing all necessary values for environment updates, alongside methods to access and change said values for ease of use and readability */
+    public static class EnvStruct{
+        public final byte[] tileValues = new byte[blockLayers];
+        public final short[] replacedIndexes = new short[blockLayers];
+        public boolean infested;
+
+        public short formatID(int layer){
+            return replacedIndexes[layer] > 0 ? replacedIndexes[layer] : Blocks.air.id;
+        }
+
+        public void setFloorIndex(Block block){
+            short value = block.id;
+            if(block instanceof UpdatingEnvironment e)
+                value = e.replacement().id;
+
+            replacedIndexes[0] = value;
+        }
+
+        public int getIncrementFloor(){
+            return tileValues[0]++;
+        }
+
+        public void clearFloorVal(){
+            tileValues[0] = 0;
+        }
+
+        public boolean canWriteFloor(){
+            return replacedIndexes[0] <= 0;
+        }
+
+        public void setOverlayIndex(Block block){
+            short value = block.id;
+            if(block instanceof UpdatingEnvironment e)
+                value = e.replacement().id;
+
+            replacedIndexes[1] = value;
+        }
+
+        public int getIncrementOverlay(){
+            return tileValues[1]++;
+        }
+
+        public void clearOverlayVal(){
+            tileValues[1] = 0;
+        }
+
+        public boolean canWriteOverlay(){
+            return replacedIndexes[1] <= 0;
+        }
+
+        public void setBlockIndex(Block block){
+            short value = block.id;
+            if(block instanceof UpdatingEnvironment e)
+                value = e.replacement().id;
+
+            replacedIndexes[2] = value;
+        }
+
+        public int getIncrementBlock(){
+            return tileValues[2]++;
+        }
+
+        public void clearBlockVal(){
+            tileValues[2] = 0;
+        }
+
+        public boolean canWriteBlock(){
+            return replacedIndexes[2] <= 0;
+        }
+    }
+
+    public interface UpdatingEnvironment{
+        void updateEnv(Tile tile, EnvStruct i);
+
+        boolean isValid(Tile tile);
+
+        Block replacement();
     }
 }

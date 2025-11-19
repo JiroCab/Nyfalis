@@ -162,14 +162,11 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         return in.name.replaceAll("ore-|olupis-|nyfalis-", "") + name.replaceAll("olupis|nyfalis|-overlay", "");
     }
 
-    public void updateEnv(Tile tile, int key){
+    public void updateEnv(Tile tile, EnvStruct i){
         if(net.client()) return;
 
-        if(Mathf.chance(spreadChance * calyxSpreadingFactor))
-            ++data[key][arrayID];
-
-        if(data[key][arrayID] >= spreadTries){
-            data[key][arrayID] = 0;
+        if(Mathf.chance(spreadChance * calyxSpreadingFactor) && i.getIncrementFloor() >= spreadTries){
+            i.clearFloorVal();
 
             if(next != null){
                 if(upgradeEffect != null){
@@ -191,62 +188,60 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
             }
 
             if(spread && calyxSpreading){
-                for(int i = 0; i < 4; i++){
-                    Tile near = tile.nearby(i);
+                for(int it = 0; it < 4; it++){
+                    Tile near = tile.nearby(it);
                     if(near == null)
                         continue;
 
-                    if(replaces(near)) continue;
+                    EnvStruct nearby = instances[near.array()];
+                    if(replaces(near, nearby) || !canSpread(near))
+                        continue;
 
-                    if(canSpread(near)){
-                        if(replacementMap[near.array()][arrayID] <= -1)
-                            replacementMap[near.array()][arrayID] = index(near.overlay());
-                        queue[id][arrayID].add(near.pos());
+                    if(nearby.canWriteFloor())
+                        nearby.setFloorIndex(near.overlay());
+                    queue[id][arrayID].add(near.pos());
 
-                        if(spreadEffect != null){
-                            tasks.post(() ->{
-                                spreadEffect.at(tile.worldx(), tile.worldy(), near.floor().mapColor);
-                                Call.effect(spreadEffect, near.worldx(), near.worldy(), 0, near.floor().mapColor);
-                            });
-                        }
+                    if(spreadEffect != null){
+                        tasks.post(() -> {
+                            spreadEffect.at(tile.worldx(), tile.worldy(), near.floor().mapColor);
+                            Call.effect(spreadEffect, near.worldx(), near.worldy(), 0, near.floor().mapColor);
+                        });
                     }
                 }
             }
         }
     }
 
-    public boolean replaces(Tile tile){
+    public boolean replaces(Tile tile, EnvStruct i){
         boolean replaces = false;
-        int array = tile.array();
-        short id;
 
-        Block block = replacements.get(tile.floor());
+        Block tileBlock = tile.floor();
+        Block block = replacements.get(tileBlock);
         if(block != null){
             replaces = true;
 
-            id = index(tile.floor());
-            if(replacementMap[array][0] == -1)
-                replacementMap[array][0] = id;
+            if(i.canWriteFloor())
+                i.setFloorIndex(tileBlock);
             queue[block.id][0].add(tile.pos());
         }
 
-        block = replacements.get(tile.overlay());
+        tileBlock = tile.overlay();
+        block = replacements.get(tileBlock);
         if(block != null){
             replaces = true;
 
-            id = index(tile.overlay());
-            if(replacementMap[array][1] == -1)
-                replacementMap[array][1] = id;
+            if(i.canWriteOverlay())
+                i.setOverlayIndex(tileBlock);
             queue[block.id][1].add(tile.pos());
         }
 
-        block = replacements.get(tile.block());
+        tileBlock = tile.block();
+        block = replacements.get(tileBlock);
         if(block != null){
             replaces = true;
 
-            id = index(tile.block());
-            if(replacementMap[array][2] <= -1)
-                replacementMap[array][2] = id;
+            if(i.canWriteBlock())
+                i.setBlockIndex(tileBlock);
             queue[block.id][2].add(tile.pos());
         }
 
