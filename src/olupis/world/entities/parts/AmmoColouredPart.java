@@ -11,9 +11,21 @@ import mindustry.game.Team;
 import static olupis.world.NyfPartParms.nyfparams;
 
 public class AmmoColouredPart extends RegionPart {
+    public  float threshold = 1;
+    public  boolean blinks = false;
 
     public AmmoColouredPart(String region){
         super(region);
+    }
+    public AmmoColouredPart(String region, boolean blink, float thres){
+        super(region);
+        this.threshold = thres;
+        this.blinks = blink;
+    }
+
+    public AmmoColouredPart(String region, float thres){
+        super(region);
+        this.threshold = thres;
     }
 
     public AmmoColouredPart(String region, Blending blending, Color color){
@@ -30,8 +42,9 @@ public class AmmoColouredPart extends RegionPart {
     }
 
     public void updateTeamColor(){
-        float f = Mathf.clamp(nyfparams.ammo);
-        color = Tmp.c1.set(Color.black).lerp(Team.get(nyfparams.team).color, f + Mathf.absin(Time.time, Math.max(f * 5f, 1f), 1f - f));
+        float f = Mathf.clamp(nyfparams.ammo), b = blinks ? Mathf.absin(Time.time, Math.max(f * 2.5f, 1f), 1f - f) : 0;
+        if(threshold < 1) f = Mathf.lerp(0, 1, Mathf.clamp(f - threshold));
+        color = Tmp.c1.set(Color.black).lerp(Team.get(nyfparams.team).color, f + b);
     }
 
 

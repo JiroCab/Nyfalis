@@ -90,6 +90,7 @@ public class NyfalisUnitCommands {
                 }};
             nyfalisRetreatCommand = new UnitCommand("nyfalis-retreat",  "rotate", u -> new RetreatAi()){{
                 drawTarget = true;
+                switchToMove = resetTarget = false;
             }};
         }
 

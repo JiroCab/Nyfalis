@@ -38,6 +38,8 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     //used by relationship for recreating it on load for unit to unit gayness
     public @Nullable Seq<MappableContent> parentTypes = null;
     public StatusEffect retreatStatus = StatusEffects.none;
+    public float minRetreatAmmo = 0.1f;
+    public boolean setRetreat = false;
 
     public AmmoEnabledUnitType(String name){
         super(name);
@@ -182,7 +184,10 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
 
         super.update(unit);
 
-        if(canRetreat && retreatStatus != null && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisRetreatCommand) unit.apply(retreatStatus, Time.toSeconds);
+        if(canRetreat && retreatStatus != null){
+            int min = Math.round(setRetreat ? minRetreatAmmo : ammoCapacity * minRetreatAmmo);
+            if(min <= unit.ammo && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisRetreatCommand) unit.apply(retreatStatus, Time.toSeconds);
+        }
     }
 }
 

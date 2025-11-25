@@ -63,9 +63,9 @@ public class NyfalisUnitType extends UnitType {
                             payloadUpdateRequiresStatus = false,
                             pickupBlocks = true,  //Only used in LeggedPayloadUnit
                             payloadDisarms = false,
-                            healingIgnoresMines = false;
-    /*Used by `payloadUnitsUpdate` as dummy to copy target to other mounts  */
-    public int mountPointer = 0;
+                            healingIgnoresMines = false
+    ;
+    public float minVel = -1;
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
     public float secondaryLightRadius = lightRadius  * 2, deathRegrowChance = 0.1f;
     public StatusEffect payloadUpdateSE = StatusEffects.none, payloadDisarmSE = StatusEffects.disarmed;
@@ -341,6 +341,10 @@ public class NyfalisUnitType extends UnitType {
 
         if(payloadDisarms && unit instanceof  Payloadc p && p.hasPayload()){
             unit.apply(payloadDisarmSE, Time.toSeconds);
+        }
+
+        if(minVel > 0){
+            unit.vel.setLength2(Math.max(minVel, unit.vel.len2()));
         }
     }
 

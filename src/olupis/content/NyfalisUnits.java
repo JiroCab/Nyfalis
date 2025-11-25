@@ -1007,11 +1007,12 @@ public class NyfalisUnits {
             fogRadius = 10f;
             engineSize = 2f;
             engineOffset = 7.5f;
-            rotateSpeed = 19f;
+            rotateSpeed = 6f;
             itemCapacity = 25;;
             armor = speed = 3f;
             hitSize = 12f;
             ammoZ = Layer.flyingUnitLow;
+            range = 115f;
 
 
             constructor = UnitEntity::create;
@@ -1091,6 +1092,66 @@ public class NyfalisUnits {
         }};
 
         //division -> Fighter-bomber, cnc Zero hour china mig style weapon
+
+        division = new AmmoEnabledUnitType("division"){{
+            drag = 0.05f;
+            accel = 0.05f;
+            health = 2000;
+            fogRadius = 13f;
+            engineSize = 2f;
+            engineOffset = 7.5f;
+            rotateSpeed = 2.5f;
+            itemCapacity = 15;
+            ammoCapacity = 4;
+            armor = 10f;
+            speed = 5f;
+            hitSize = 20f;
+            ammoZ = Layer.flyingUnitLow;
+            range = 125;
+            minVel = speed * 0.8f;
+
+
+            constructor = UnitEntity::create;
+            aiController = WaveAiHandler::new;
+            ammoType = carrierTypeAmmo;
+            retreatStatus = NyfalisStatusEffects.retreating;
+            omniMovement = false;
+            lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
+
+            weapons.addAll(
+                new NyfalisWeapon(""){{
+                    top = false;
+                    rotate = alwaysUseAmmo =true;
+                    x = 7f;
+                    y = shootY = 0f;
+                    recoil = 0.47f;
+                    reload = 60f;
+                    shootCone = 65f;
+                    ejectEffect = Fx.none;
+
+                    showStatSprite = false;
+                    bullet = new EffectivenessMissleType(1.5f, 100){{
+                        backColor = NyfalisColors.alcoBulletBack;
+                        frontColor = NyfalisColors.alcoBullet;
+                        sprite = "missile-large";
+                        splashDamage = 35f;
+                        splashDamageRadius = 8f * 0.75f;
+
+                        groundDamageSplashMultiplier = 0.5f;
+                        groundDamageMultiplier = 0.5f;
+
+                        homingPower = 0.2f;
+                        homingRange = 150f;
+                        drag = -0.05f;
+                        lifetime = 35f;
+                        trailEffect = Fx.smokePuff;
+                        hitEffect = despawnEffect = Fx.hitBulletSmall;
+                    }};
+                }}
+            );
+            parts.add(new AmmoColouredPart("-pew", 0.8f));
+        }};
+
         //endregion
         //region Ground - Snek
         venom = new SnekUnitType("venom"){{
@@ -3631,11 +3692,17 @@ public class NyfalisUnits {
                 w.reload *=2.5f;
                 //is always true despite not used can cause headaches down the line
                 if(!w.mirror) w.alternate = false;
-                w.rotate = w.ignoreRotation = w.controllable = true;
-                w.mirror = w.flipSprite = false;
+                w.rotate = w.ignoreRotation = w.controllable = w.aiControllable = true;
+                w.mirror = w.flipSprite = w.autoTarget = false;
+
+//                if(w.bullet instanceof BasicBulletType bb){
+//                    bb.frontColor = Color.scarlet;
+//                    bb.backColor = Color.red;
+//                }
 
                 w.shootCone = 360f;
                 w.rotationLimit = 361f;
+                w.minShootVelocity = 0;
                 w.rotateSpeed = Math.max(w.rotateSpeed, 20);
                 if(w.alternate){
                     w.alternate = false;

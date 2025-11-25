@@ -1,13 +1,15 @@
 package olupis.world.entities.abilities;
 
-import arc.struct.*;
-import arc.util.*;
+import arc.math.*;
+import arc.math.geom.*;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.payloads.*;
+import olupis.*;
+import olupis.content.*;
 
 import java.util.*;
 
@@ -32,17 +34,35 @@ public class ActivePayloadHandler extends Ability{
 
         float aimX = target.x(), aimY = target.y();
 
-
         for(Payload p : c.payloads()){
             if(p instanceof UnitPayload up && up.unit.hasWeapons()){
                 Unit u = up.unit;
-                for(int i = 0; i < u.type.weapons.size; i++){
-                    Weapon w = u.type.weapons.get(i);
-                    u.mounts[i].shoot = true;
-                    w.update(unit, u.mounts[i]);
-                    Log.err("owo");
+
+                m[0] = 0;
+                if(u.type.weapons.size >= 1){
+                    WeaponMount[] mounts = u.mounts();
+                    for(WeaponMount mount : mounts){
+                        mount.shoot = true;
+                        Weapon w = NyfalisVars.payloadWeaponIndex.get(u.type)[m[0]];
+                        mount.rotation = Angles.angle(w.x + unit.x, w.y + unit.y, aimX, aimY) - unit.rotation;
+
+
+                        if(w.predictTarget){
+                            Vec2 to = Predict.intercept(unit, target, w.bullet.speed);
+                            aimX = to.x;
+                            aimY = to.y;
+                        }
+
+                        mount.aimX = aimX;
+                        mount.aimY = aimY;
+
+                        w.update(unit, mount);
+                        m[0]++;
+                    }
                 }
             }
         }
+
+
     }
 }

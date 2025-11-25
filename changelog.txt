@@ -1,4 +1,4 @@
-== Olupis Major change log ==
+== Nyfalis Major change log ==
 https://github.com/JiroCab/Olupis
 Last updated on 02/19/2025 (+8utc) by Jirocab/RushieWashie
 
@@ -8,7 +8,7 @@ Last updated on 02/19/2025 (+8utc) by Jirocab/RushieWashie
     ~ Balance: Venom hp is now in line with other t1
     ~ Balance: Supella hp incrased to be more competative to venom
     ~ Balance: Striker, speed reduced, other stats increased to compesate (TODO)
-    ~ Balance: Nerfed iron unlader
+    ~ Balance: Nerfed iron unloader
 
 
 = Version 1-7-9 () =
