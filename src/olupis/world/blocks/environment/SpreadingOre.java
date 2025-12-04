@@ -18,10 +18,9 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
     public static final int arrayID = 1;
 
     public SpreadingOverlay parent;
-    public Block next = null;
-    public Block set = null;
-    public int overlayVariants = 0;
-    public TextureRegion[] overlayRegions = new TextureRegion[overlayVariants];
+    public Block next;
+    public Block set;
+    public TextureRegion[] overlayRegions;
 
     public SpreadingOre(String name){
         super(name);
@@ -58,7 +57,7 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
 
                 queue[next.id][arrayID].add(tile.pos());
 
-                if(parent.oresSpawnsProps && parent.props.size > 0 && canSpawn(id, parent.propLimit, parent.dynamicLimit) && Mathf.chance(parent.spawnChance * calyxSpreadingFactor)){
+                if(parent.oresSpawnProps && parent.props.size > 0 && canSpawn(id, parent.propLimit, parent.dynamicLimit) && Mathf.chance(parent.spawnChance * calyxSpreadingFactor)){
                     addProp(id);
                     queue[parent.props.random().id][2].add(tile.pos());
                 }

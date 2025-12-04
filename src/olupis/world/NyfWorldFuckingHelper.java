@@ -33,6 +33,8 @@ import static olupis.content.NyfalisBlocks.*;
 import static olupis.content.NyfalisSectors.*;
 
 public class NyfWorldFuckingHelper{
+    public static final ObjectIntMap<Block> spreadLevels = new ObjectIntMap<>();
+
     //region == Gameplay Helpers ==
     /** returns whether any raycasted tiles match the filter */
     public static boolean rayCheck(Healthc build, Posc entity, Func<Block, Boolean> filter){
@@ -310,6 +312,42 @@ public class NyfWorldFuckingHelper{
         Draw.reset();
     }
 
+    public static void initLevelMap(){
+        Seq<Block> keys = spreadLevels.keys().toArray();
+        keys.each(b -> {
+            if(b instanceof SpreadingOverlay overlay){
+                keys.add(overlay.ores.first());
+            }
+        });
+
+        for(int i = 0; i < keys.size; i++){
+            if(keys.get(i) instanceof SpreadingOverlay entity){
+                Block current = entity;
+                int level = 1;
+
+                while(current instanceof SpreadingOverlay object){
+                    current = object.next;
+                    spreadLevels.put(object, level++);
+                }
+
+                if(current != null && spreadLevels.get(current, -1) < 0)
+                    spreadLevels.put(current, level);
+            }
+
+            if(keys.get(i) instanceof SpreadingOre entity){
+                Block current = entity;
+                int level = 1;
+
+                while(current instanceof SpreadingOre object){
+                    current = object.next;
+                    spreadLevels.put(object, level++);
+                }
+
+                if(current != null && spreadLevels.get(current, -1) < 0)
+                    spreadLevels.put(current, level);
+            }
+        }
+    }
 
     public static class IntTile{
         public final Tile tile;

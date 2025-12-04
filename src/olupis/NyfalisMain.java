@@ -78,8 +78,9 @@ public class NyfalisMain extends Mod{
         //Load sounds once they're added to the file tree
         Events.on(FileTreeInitEvent.class, e -> Core.app.post(NyfalisSounds::LoadSounds));
 
+        Events.on(ContentInitEvent.class, e -> NyfWorldFuckingHelper.initLevelMap());
 
-        Events.on(EventType.WorldLoadEvent.class, l ->{
+        Events.on(WorldLoadEvent.class, l ->{
             /*Delayed since custom games, for some reason needs it*/
             Time.run(0.5f * Time.toSeconds, NyfalisMain::sandBoxCheck);
             nyfalianPlanet = false;
@@ -104,13 +105,13 @@ public class NyfalisMain extends Mod{
             soundHandler.replaceSoundHandler();
         });
 
-        Events.on(EventType.SectorLaunchEvent.class, e -> {
+        Events.on(SectorLaunchEvent.class, e -> {
             //When launching, prevents exporting to items to where you launched from if it's out of range
             if(NyfalisPlanets.isNyfalianPlanet(e.sector.planet) && !e.sector.near().contains(e.sector.info.destination)) e.sector.info.destination = e.sector;
         });
         if(headless)return;
-        Events.on(EventType.TurnEvent.class, e -> sectorPostTurn());
-        Events.on(EventType.SectorCaptureEvent.class, event -> {
+        Events.on(TurnEvent.class, e -> sectorPostTurn());
+        Events.on(SectorCaptureEvent.class, event -> {
             for (Building b : Groups.build)
                 if (b instanceof Replicator.ReplicatorBuild r) {
                     Tile tile = r.tile;
@@ -119,11 +120,11 @@ public class NyfalisMain extends Mod{
                     NyfalisFxs.replicatorDie.at(r.x, r.y, 0, b.team.color, r.getReplacement());
                 }
         });
-        Events.on(EventType.UnlockEvent.class, event ->{
+        Events.on(UnlockEvent.class, event ->{
             unlockPlanets();
         });
 
-        Events.on(EventType.SectorCaptureEvent.class, event -> unlockPlanets());
+        Events.on(SectorCaptureEvent.class, event -> unlockPlanets());
 
         Events.on(ClientLoadEvent.class, e -> {
             globalLoadEvent();
@@ -184,7 +185,7 @@ public class NyfalisMain extends Mod{
             }
         });
 
-        Events.run(EventType.Trigger.update, () -> {
+        Events.run(Trigger.update, () -> {
             NyfalisSettingsDialog.updateSettings();
             NyfWorldFuckingHelper.allUpdaters();
         });
@@ -272,7 +273,7 @@ public class NyfalisMain extends Mod{
                 if(sec.info.damage >= 0.999){
                     if(sec.info.wave < sec.info.winWave && sec.info.hasCore){
                         lostSectors.add(sec.name() + "");
-                        Events.fire(new EventType.SectorLoseEvent(sec));
+                        Events.fire(new SectorLoseEvent(sec));
 
                         sec.info.items.clear();
                         sec.info.damage = 1f;
