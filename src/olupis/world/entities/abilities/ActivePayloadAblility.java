@@ -15,7 +15,7 @@ import java.util.*;
 
 import static mindustry.ai.UnitStance.holdFire;
 
-public class ActivePayloadHandler extends Ability{
+public class ActivePayloadAblility extends Ability{
     public HashMap<Weapon, Float> Cooldown = new HashMap();
 
     @Override
@@ -42,6 +42,8 @@ public class ActivePayloadHandler extends Ability{
                 if(u.type.weapons.size >= 1){
                     WeaponMount[] mounts = u.mounts();
                     for(WeaponMount mount : mounts){
+                        if(NyfalisVars.blacklistedWeaponsTypes.contains(mount.weapon.getClass().getName())) continue;
+
                         mount.shoot = true;
                         Weapon w = NyfalisVars.payloadWeaponIndex.get(u.type)[m[0]];
                         mount.rotation = Angles.angle(w.x + unit.x, w.y + unit.y, aimX, aimY) - unit.rotation;

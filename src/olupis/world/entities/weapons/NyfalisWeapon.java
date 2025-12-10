@@ -13,7 +13,6 @@ import olupis.content.*;
 import olupis.input.*;
 import olupis.world.*;
 import olupis.world.entities.bullets.*;
-import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
@@ -39,7 +38,9 @@ public  class NyfalisWeapon extends Weapon {
     alwaysUseAmmo = false,
     statusOnlyOnHit = false,
     /*Determines if the weapon can shoot while Borrowed or not*/
-    borrowShoot = true, unBorrowShoot = true;
+    borrowShoot = true, unBorrowShoot = true,
+    /*Determines if this weapon can fire in active payload, overrides elevation logic*/
+    activePayloadShoot = true
     ;
     /*Margin where when a weapon can fire while transition from ground to air*/
     public  float boostedEvaluation = 0.95f, groundedEvaluation = 0.05f;
@@ -71,10 +72,10 @@ public  class NyfalisWeapon extends Weapon {
         }
 
         //this is mess
-        boolean can =
-            !unit.disarmed
-            && (unit.onSolid() && fireOverSolids || !unit.onSolid()) && (!unit.type.canBoost ||
-            (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation));
+        boolean
+            elevation = (!unit.isAdded() && activePayloadShoot) || (!unit.type.canBoost || (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation)),
+            can = !unit.disarmed
+                && (unit.onSolid() && fireOverSolids || !unit.onSolid()) && elevation;
 
         if(unit.type instanceof  NyfalisUnitType nyf && nyf.borrows ) can = can && ((unit.hasEffect(nyf.deployEffect) && borrowShoot) || unBorrowShoot);
 

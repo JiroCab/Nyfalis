@@ -1,6 +1,7 @@
 package olupis;
 
 import arc.graphics.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.game.*;
 import mindustry.type.*;
@@ -17,6 +18,7 @@ public class NyfalisVars{
 
     //gaymeplay vars
     public static HashMap<UnitType, Weapon[]> payloadWeaponIndex;
+    public static Seq<String> blacklistedWeaponsTypes = new Seq<>();
 
     //env visuals
     public static @Nullable Texture cloudNoise;

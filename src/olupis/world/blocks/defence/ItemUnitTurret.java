@@ -340,8 +340,8 @@ public class ItemUnitTurret extends ItemTurret {
         @Override
         public boolean acceptItem(Building source, Item item){
             return ((super.acceptItem(source, item) && !ammoTypes.get(item).spawnUnit.isBanned())
-                     || (!useAlternate || !hasAlternate) && (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)))
-                    || (useAlternate && hasAlternate) && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < alternateCapacity);
+                || (!useAlternate || !hasAlternate) && (Arrays.stream(requiredItems).anyMatch( i -> item == i.item) && items.get(item) < getMaximumAccepted(item)))
+                || (useAlternate && hasAlternate) && (Arrays.stream(requiredAlternate).anyMatch( i -> item == i.item) && items.get(item) < alternateCapacity);
         }
 
         @Override
@@ -353,11 +353,16 @@ public class ItemUnitTurret extends ItemTurret {
 
         @Override
         public void handleItem(Building source, Item item){
-            if (Arrays.stream(requiredItems).noneMatch(i -> item == i.item) && Arrays.stream(requiredAlternate).noneMatch(i -> item == i.item)) {
-                super.handleItem(source, item);
-            } else if (hasAlternate && useAlternate && items.get(item) < alternateCapacity || (items.get(item) < getMaximumAccepted(item))) {
-                items.add(item, 1);
+            boolean
+                inv =( hasAlternate && Arrays.stream(requiredAlternate).anyMatch(i -> item == i.item) && useAlternate && items.get(item) < alternateCapacity )|| (Arrays.stream(requiredItems).anyMatch(i -> item == i.item)  && items.get(item) < getMaximumAccepted(item)),
+                amo = ammoTypes.containsKey(item) && totalAmmo + ammoTypes.get(item).ammoMultiplier <= maxAmmo;
+
+            if(inv && amo){
+                if(Mathf.randomBoolean()) super.handleItem(source, item);
+                else items.add(item, 1);
             }
+            else if (amo)super.handleItem(source, item);
+            else items.add(item, 1);
         }
 
         public int getMaximumAccepted(Item item) {

@@ -1092,7 +1092,6 @@ public class NyfalisUnits {
         }};
 
         //division -> Fighter-bomber, cnc Zero hour china mig style weapon
-
         division = new AmmoEnabledUnitType("division"){{
             drag = 0.05f;
             accel = 0.05f;
@@ -1111,12 +1110,13 @@ public class NyfalisUnits {
             minVel = speed * 0.8f;
 
 
+            omniMovement = false;
+            lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
             constructor = UnitEntity::create;
             aiController = WaveAiHandler::new;
             ammoType = carrierTypeAmmo;
             retreatStatus = NyfalisStatusEffects.retreating;
-            omniMovement = false;
-            lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
+            defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
 
             weapons.addAll(
                 new NyfalisWeapon(""){{
@@ -3033,7 +3033,7 @@ public class NyfalisUnits {
                         moves.add(new PartMove(p ->( Mathf.cos(Time.time / 30) / 2 + 0.5f) * (1- NyfPartParms.nyfparams.paylCount), 0, 0, 360f));
                     }}
             );
-            abilities.add(new ActivePayloadHandler());
+            abilities.add(new ActivePayloadAblility());
             weapons.add(new NyfalisWeapon(""){{
                 top = mirror = false;
                 shake = 0f;

@@ -207,7 +207,7 @@ public class NyfalisBlocks {
         //endregion
         // region Floors
         /*In each group it should be sorted in the following:
-        * Liquid/wet > normal > vent  || sub-grouped tiles with ther varaints */
+        * Liquid/wet > normal > vent  || sub-grouped tiles with ther variants */
 
         // region > watered sands
         snowySand = new Floor("snowy-sand") {{
@@ -453,6 +453,14 @@ public class NyfalisBlocks {
             attributes.set(bio, 0.2f);
             attributes.set(Attribute.water, 0.1f);
         }};
+
+        mossyVent = new SteamVent("mossy-vent") {{
+            variants = 3;
+            effectColor = Color.white;
+            parent = blendGroup = mossStone;
+            attributes.set(Attribute.steam, 1f);
+        }};
+
         //endregion
         //region > dirt
         frozenDirt = new Floor("frozen-dirt") {{
@@ -845,6 +853,7 @@ public class NyfalisBlocks {
             layer = Layer.power + 0.9f;
         }};
 
+        //todo: fix colours
         mossyStoneWall = new StaticWallTree("mossy-stone-wall"){{
             attributes.set(Attribute.sand, 1f);
             mossierStone.asFloor().wall = this;
@@ -878,17 +887,17 @@ public class NyfalisBlocks {
             variants = 2;
         }};
         yellowTree = new TrasngenderTreeBlock("yellow-tree"){{
-            flavourTarget = Color.valueOf("f5d271");
+            flavours = Seq.with(Color.valueOf("f5d271"));
         }};
         yellowTreeBlooming = new TrasngenderTreeBlock("yellow-tree-blooming"){{
-            flavourTarget = Color.valueOf("f5d271");
+            flavours = Seq.with(Color.valueOf("f5d271"));
             featureVariants = 3;
             parent = yellowTree;
         }};
         infernalMegaBloom = new TrasngenderTreeBlock("infernal-megabloom"){{
             variants = 4;
             clipSize = 128f;
-            flavored = false;
+            flavours = Seq.with();
         }};
         orangeTree = new TrasngenderTreeBlock("orange-tree"){{
             variants = 3;
