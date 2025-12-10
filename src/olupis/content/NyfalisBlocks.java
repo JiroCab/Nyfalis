@@ -906,7 +906,6 @@ public class NyfalisBlocks {
         //endregion
         //region Spreading & related floor
 
-        // TODO: Add Fx (spreadEffect [floors, ores], upgradeEffect [floors], growEffect [walls])
         growingWall = new GrowingWall("walltest", 0){{
             inEditor = false;
 
@@ -915,7 +914,6 @@ public class NyfalisBlocks {
             next = mossiestStoneWall;
         }};
 
-        //NyfalisBlocks.mycelium.spreadChance = 1
         mycelium = new SpreadingOverlay("mossy-overlay", 3){{
             spread = true;
 
@@ -929,7 +927,7 @@ public class NyfalisBlocks {
 
             blacklistKey = "calyx";
 
-            mapColor = Color.valueOf("#78bc27");
+            upgradeColor = Color.valueOf("#78bc27");
             spreadSound = NyfalisSounds.mossSpread;
         }};
 
@@ -944,7 +942,7 @@ public class NyfalisBlocks {
 
             blacklistKey = "calyx";
 
-            mapColor = Color.valueOf("#5a8d1d");
+            upgradeColor = Color.valueOf("#5a8d1d");
             spreadSound = NyfalisSounds.mossSpread;
         }};
 
@@ -959,7 +957,7 @@ public class NyfalisBlocks {
 
             blacklistKey = "calyx";
 
-            mapColor = Color.valueOf("#3c5e14");
+            upgradeColor = Color.valueOf("#3c5e14");
             spreadSound = NyfalisSounds.mossSpread;
 
             status = StatusEffects.corroded;

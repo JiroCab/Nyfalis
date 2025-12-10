@@ -45,7 +45,7 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
                     });
                 }
 
-                queue[next.id][arrayID].add(tile.pos());
+                queue(next).add(tile.pos());
             }
         }
     }

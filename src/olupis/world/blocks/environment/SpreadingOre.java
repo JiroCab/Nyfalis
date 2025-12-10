@@ -47,19 +47,19 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
             if(next != null){
                 if(parent.upgradeEffect != null){
                     tasks.post(() -> {
-                        parent.upgradeEffect.at(tile.worldx(), tile.worldy(), 0f, tile.floor().mapColor, tile.floor());
-                        Call.effect(parent.upgradeEffect, tile.worldx(), tile.worldy(), 0, tile.floor().mapColor, tile.floor());
+                        parent.upgradeEffect.at(tile.worldx(), tile.worldy(), 0f, parent.upgradeColor);
+                        Call.effect(parent.upgradeEffect, tile.worldx(), tile.worldy(), 0, parent.upgradeColor);
                     });
                 }
 
                 if(parent.spreadSound != null)
-                    tasks.post(() -> Call.soundAt(parent.spreadSound, tile.worldx(), tile.worldy(), 1f, 1f));
+                    tasks.post(() -> Call.soundAt(parent.spreadSound, tile.worldx(), tile.worldy(), parent.spreadVolume, 1f));
 
-                queue[next.id][arrayID].add(tile.pos());
+                queue(next).add(tile.pos());
 
                 if(parent.oresSpawnProps && parent.props.size > 0 && canSpawn(id, parent.propLimit, parent.dynamicLimit) && Mathf.chance(parent.spawnChance * calyxSpreadingFactor)){
                     addProp(id);
-                    queue[parent.props.random().id][2].add(tile.pos());
+                    queue(parent.props.random()).add(tile.pos());
                 }
             }
 
@@ -75,11 +75,11 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
 
                     if(nearby.canWriteOverlay())
                         nearby.setOverlayIndex(near.overlay());
-                    queue[parent.id][arrayID].add(near.pos());
+                    queue(parent).add(near.pos());
 
                     if(parent.spreadEffect != null){
                         tasks.post(() -> {
-                            parent.spreadEffect.at(tile.worldx(), tile.worldy(), near.floor().mapColor);
+                            parent.spreadEffect.at(near.worldx(), near.worldy(), near.floor().mapColor);
                             Call.effect(parent.spreadEffect, near.worldx(), near.worldy(), 0, near.floor().mapColor);
                         });
                     }

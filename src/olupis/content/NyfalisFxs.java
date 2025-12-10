@@ -416,15 +416,13 @@ public class NyfalisFxs extends Fx {
             }
 
         }),
-        mossStageUp = new  Effect(15f, e -> {
-            float scl = Math.max(e.rotation, 1);
-            color(Tmp.c1.set(e.color).mul(1.1f));
-            randLenVectors(e.id, 6, 19f * e.finpow() * scl, (x, y) -> {
-                Drawf.tri(e.x, e.y, e.fout() * 3.5f * scl + 0.3f, 30f * e.fout(), e.rotation);
+        mossSpread = new Effect(25f, e -> {
+            color(e.color);
+            randLenVectors(e.id, e.fin(), Mathf.random(4, 7), 5f, (x, y, fin, fout) -> {
+                alpha((0.5f - Math.abs(fin - 0.5f)) * 2f);
+                Fill.circle(e.x + x, e.y + y, fout * fin);
             });
         }).layer(Layer.debris),
-
-        mossSpread = new MultiEffect(mossStageUp, acidRainDamage).layer(Layer.debris),
 
         gnatBullCharge = new Effect(80f, 100f, e -> {
             color(Pal.heal, e.fout());

@@ -25,7 +25,7 @@ public class EnvUpdater implements AsyncProcess{
     // a queue for stuff that has to be done on the main thread
     public static TaskQueue tasks = new TaskQueue();
     // list of tiles to set blocks on, per block type & layer
-    public static IntSeq[][] queue = new IntSeq[][]{};
+    public static BlockSet[] queue = new BlockSet[]{};
     // prop count for various floors
     private static short[] props = new short[]{};
 
@@ -39,23 +39,55 @@ public class EnvUpdater implements AsyncProcess{
 
     public static void load(){
         Events.on(EventType.ContentInitEvent.class, e ->
-            Core.app.post(() -> {
-                queue = new IntSeq[content.blocks().size][blockLayers];
-
-                for(int id = 0; id < queue.length; id++)
-                    for(int i = 0; i < blockLayers; i ++)
-                        queue[id][i] = new IntSeq();
-            })
+            Core.app.post(() ->
+                queue = new BlockSet[content.blocks().size]
+            )
         );
+        // This is here only to avoid in-editor crashes,
+        Events.on(EventType.ResizeEvent.class, e -> {
+            EnvStruct[] resized = new EnvStruct[world.width() * world.height()];
+            for(int i = 0; i < resized.length; i++)
+                resized[i] = new EnvStruct();
+            instances = resized;
+        });
 
         SaveVersion.addCustomChunk("nyf-envstruct-io", new EnvUpdaterIO());
     }
 
+    public static EnvStruct getStruct(int index){
+        EnvStruct struct = new EnvStruct();
+
+        Tile lookup = world.tiles.geti(index);
+        Floor floor = lookup.floor();
+        Floor overlay = lookup.overlay();
+
+        // cleanup & setup
+        if(floor instanceof UpdatingEnvironment e){
+            if(!e.isValid(lookup))
+                lookup.setFloorNet(e.replacement(), overlay);
+            else struct.setFloorIndex(e.replacement());
+        }
+
+        if(overlay instanceof UpdatingEnvironment e){
+            if(!e.isValid(lookup))
+                lookup.setOverlayNet(e.replacement());
+            else struct.setOverlayIndex(e.replacement());
+        }
+
+        if(lookup.block() instanceof UpdatingEnvironment e){
+            if(!e.isValid(lookup))
+                lookup.setNet(e.replacement());
+            else struct.setBlockIndex(e.replacement());
+        }
+
+        if(!lookup.block().isStatic())
+            space++;
+
+        return struct;
+    }
+
     @Override
     public void init(){
-        ready = false;
-        if(Vars.state.isEditor()) return;
-
         wsize = world.width() * world.height();
         wwidth = (world.width() - 1) * tilesize;
         wheight = (world.height() - 1) * tilesize;
@@ -63,51 +95,12 @@ public class EnvUpdater implements AsyncProcess{
         instances = new EnvStruct[wsize];
         props = new short[content.blocks().size];
 
-        for(int i = 0; i < wsize; i++){
-            EnvStruct struct = instances[i] = new EnvStruct();
+        for(int i = 0; i < wsize; i++)
+            instances[i] = getStruct(i);
 
-            Tile lookup = world.tiles.geti(i);
-            // avoid casting multiple times
-            Floor floor = lookup.floor();
-            Floor overlay = lookup.overlay();
-
-            // cleanup & setup
-            if(floor instanceof UpdatingEnvironment e){
-                if(!e.isValid(lookup)){
-                    lookup.setFloorNet(e.replacement(), overlay);
-                    continue;
-                }
-
-                struct.setFloorIndex(e.replacement());
-            }
-
-            if(overlay instanceof UpdatingEnvironment e){
-                if(!e.isValid(lookup)){
-                    lookup.setOverlayNet(e.replacement());
-                    continue;
-                }
-
-                struct.setOverlayIndex(e.replacement());
-            }
-
-            if(lookup.block() instanceof UpdatingEnvironment e){
-                if(!e.isValid(lookup)){
-                    lookup.setNet(e.replacement());
-                    continue;
-                }
-
-                struct.setBlockIndex(e.replacement());
-            }
-
-            if(!lookup.block().isStatic())
-                space++;
-        }
-
-        for(int i = 0; i < queue.length; i++)
-            for(int idx = 0; idx < blockLayers; idx++)
-                queue[i][idx].clear();
-
-        ready = true;
+        Core.app.post(
+            () -> ready = state.isGame() && !state.isEditor()
+        );
     }
 
     @Override
@@ -141,28 +134,34 @@ public class EnvUpdater implements AsyncProcess{
         if(!ready) return;
 
         tasks.run();
-        for(int i = 0; i < queue.length; i++){
-            int index = i;
+        if(net.client()) return;
 
-            if(queue[i][0].size > 0){
-                queue[i][0].chunked(200, tiles -> Call.setTileFloors(content.block(index), tiles));
-                queue[i][0].clear();
-            }
+        for(BlockSet set : queue){
+            if(set != null && set.positions.size > 0){
+                switch(set.layer){
+                    case 0 -> set.positions.chunked(200, tiles -> Call.setTileFloors(set.block, tiles));
+                    case 1 -> set.positions.chunked(200, tiles -> Call.setTileOverlays(set.block, tiles));
+                    case 2 -> set.positions.chunked(200, tiles -> Call.setTileBlocks(set.block, Team.derelict, tiles));
+                }
 
-            if(queue[i][1].size > 0){
-                queue[i][1].chunked(200, tiles -> Call.setTileOverlays(content.block(index), tiles));
-                queue[i][1].clear();
-            }
-
-            if(queue[i][2].size > 0){
-                queue[i][2].chunked(200, tiles -> Call.setTileBlocks(content.block(index), Team.derelict, tiles));
-                queue[i][2].clear();
+                set.positions.clear();
             }
         }
     }
 
+    public static IntSeq queue(Block block){
+        if(queue[block.id] == null)
+            queue[block.id] = new BlockSet(block);
+        return queue[block.id].positions;
+    }
+
     @Override
     public void reset(){
+        // dereference all the garbage
+        Arrays.fill(queue, null);
+        instances = null;
+        props = null;
+
         ready = false;
     }
 
@@ -245,6 +244,16 @@ public class EnvUpdater implements AsyncProcess{
                 readOptimizedDataChunk(stream, version);
         }
 
+        @Override
+        public boolean shouldWrite(){
+            return ready;
+        }
+
+        @Override
+        public boolean writeNet(){
+            return ready;
+        }
+
         public void writeName(DataOutput stream, short id) throws IOException{
             Block b = content.block(id);
             if(b == null)
@@ -302,10 +311,17 @@ public class EnvUpdater implements AsyncProcess{
                 }
             }
         }
+    }
 
-        @Override
-        public boolean writeNet(){
-            return false;
+    /** Class containing the bare minimum required for the Call.set methods */
+    public static class BlockSet{
+        final IntSeq positions = new IntSeq();
+        final Block block;
+        final byte layer;
+
+        public BlockSet(Block block){
+            this.block = block;
+            layer = (byte) (block.isOverlay() ? 1 : block.isFloor() ? 0 : 2);
         }
     }
 

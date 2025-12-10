@@ -3,6 +3,7 @@ package olupis.world.blocks.environment;
 import arc.*;
 import arc.audio.*;
 import arc.func.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
@@ -34,10 +35,13 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
     /** The sound played when this spreads */
     public Sound spreadSound = null;
+    /** Volume at which the spreadSound plays */
+    public float spreadVolume = 0.13f;
     /** An effect spawned at the target tile when spreading */
-    public Effect spreadEffect = NyfalisFxs.mossSpread, //NyfalisFxs.highYieldExplosive,
+    public Effect spreadEffect = NyfalisFxs.mossSpread,
     /** An effect this spawns when it upgrades */
-    upgradeEffect = NyfalisFxs.mossStageUp; //NyfalisFxs.impactReactorExplosion;
+    upgradeEffect = NyfalisFxs.mossSpread;
+    public Color upgradeColor = Color.clear;
 
     /** Spreading blacklist */
     public ObjectSet<Block> blacklist = ObjectSet.with(Blocks.coreZone);
@@ -113,6 +117,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                 ores.get(i).variants = vanilla.get(i + idx).variants;
                 ores.get(i).variantRegions = vanilla.get(i + idx).variantRegions;
                 ores.get(i).overlayRegions = variantRegions;
+                ores.get(i).mapColor.shiftValue(-0.05f * spreadLevels.get(this));
                 ores.get(i).localizedName = Strings.format("[#@]@[] @", mapColor.toString(), orePrefix, vanilla.get(i + idx).localizedName);
             }
         });
@@ -173,19 +178,19 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
             if(next != null){
                 if(upgradeEffect != null){
                     tasks.post(() -> {
-                        upgradeEffect.at(tile.worldx(), tile.worldy(), 0f, tile.floor().mapColor, tile.floor());
-                        Call.effect(upgradeEffect, tile.worldx(), tile.worldy(), 0, tile.floor().mapColor, tile.floor());
+                        upgradeEffect.at(tile.worldx(), tile.worldy(), 0f, upgradeColor);
+                        Call.effect(upgradeEffect, tile.worldx(), tile.worldy(), 0, upgradeColor);
                     });
                 }
 
                 if(spreadSound != null)
-                    tasks.post(() -> Call.soundAt(spreadSound, tile.worldx(), tile.worldy(), 1f, 1f));
+                    tasks.post(() -> Call.soundAt(spreadSound, tile.worldx(), tile.worldy(), spreadVolume, 1f));
 
-                queue[next.id][arrayID].add(tile.pos());
+                queue(next).add(tile.pos());
 
                 if(props.size > 0 && canSpawn(id, propLimit, dynamicLimit) && Mathf.chance(spawnChance)){
                     addProp(id);
-                    queue[props.random().id][2].add(tile.pos());
+                    queue(props.random()).add(tile.pos());
                 }
             }
 
@@ -201,11 +206,11 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
                     if(nearby.canWriteFloor())
                         nearby.setFloorIndex(near.overlay());
-                    queue[id][arrayID].add(near.pos());
+                    queue(this).add(near.pos());
 
                     if(spreadEffect != null){
                         tasks.post(() -> {
-                            spreadEffect.at(tile.worldx(), tile.worldy(), near.floor().mapColor);
+                            spreadEffect.at(near.worldx(), near.worldy(), near.floor().mapColor);
                             Call.effect(spreadEffect, near.worldx(), near.worldy(), 0, near.floor().mapColor);
                         });
                     }
@@ -224,7 +229,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
             if(i.canWriteFloor())
                 i.setFloorIndex(tileBlock);
-            queue[block.id][0].add(tile.pos());
+            queue(block).add(tile.pos());
         }
 
         tileBlock = tile.overlay();
@@ -234,7 +239,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
             if(i.canWriteOverlay())
                 i.setOverlayIndex(tileBlock);
-            queue[block.id][1].add(tile.pos());
+            queue(block).add(tile.pos());
         }
 
         tileBlock = tile.block();
@@ -244,7 +249,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
             if(i.canWriteBlock())
                 i.setBlockIndex(tileBlock);
-            queue[block.id][2].add(tile.pos());
+            queue(block).add(tile.pos());
         }
 
         return replaces;
