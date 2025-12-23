@@ -21,6 +21,7 @@ import olupis.content.*;
 import olupis.world.ai.*;
 import olupis.world.entities.packets.*;
 import olupis.world.entities.weapons.*;
+import olupis.world.interfaces.*;
 
 import java.util.*;
 

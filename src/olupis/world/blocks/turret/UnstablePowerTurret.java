@@ -30,7 +30,7 @@ import static mindustry.Vars.tilesize;
 public class UnstablePowerTurret extends PowerTurret {
 
     public Effect explodeEffect = new MultiEffect(NyfalisFxs.cascadeSun, NyfalisFxs.cascadeSmoke);
-    public Sound explodeSound = Sounds.boom;
+    public Sound explodeSound = Sounds.blockExplodeElectricBig;
     public Sound warningSound = NyfalisSounds.cascadeDangerWarning;
 
     public float explosionDamage = 60, explosionRadius = 40;

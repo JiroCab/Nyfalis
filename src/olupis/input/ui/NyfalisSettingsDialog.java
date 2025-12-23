@@ -301,7 +301,7 @@ public class NyfalisSettingsDialog {
                 subTable.button("test save disclaimer", () -> {
                     if(Core.input.keyDown(KeyCode.altLeft))Core.settings.put("nyf-lastver", 0f);
                     else Core.settings.put("nyf-lastver", 1f);
-                    Sounds.respawn.play();
+                    Sounds.explosionCore.play();
                     float lVer = Float.parseFloat(Core.settings.get("nyf-lastver", 0).toString());
                     Log.info("Nyf last save set: @", lVer);
                 }).margin(14).width(260f).pad(6);

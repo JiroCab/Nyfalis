@@ -12,17 +12,15 @@ import mindustry.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.entities.*;
 import mindustry.entities.abilities.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import olupis.input.*;
-import olupis.input.ui.NyfalisLogicDialog.*;
 import olupis.world.ai.*;
+import olupis.world.interfaces.*;
 
 import java.util.*;
 
@@ -103,7 +101,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
             table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
         }
 
-        if(unit.controller() instanceof  InoperableAi  ioa){
+        if(unit.controller() instanceof  InoperableAi ioa){
             table.row();
             table.table().left().growX().update(i -> {
                 i.left().clear();

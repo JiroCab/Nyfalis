@@ -132,14 +132,14 @@ public class NyfalisUnits {
                 top = mirror = false;
                 continuous = alwaysContinuous = parentizeEffects  = true;
                 shake = 0f;
-                range = 32f;
+                range = 30f;
                 shootY = 9.1f;
                 y = x = recoil = 0f;
                 reload = shootCone = 30f;
                 ejectEffect = Fx.none;
                 outlineRegion = null;
                 layerOffset = Layer.flyingUnit -1;
-                shootSound = Sounds.electricHum;
+                shootSound = Sounds.loopElectricHum;
 
                 bullet = new ContinuousShrapnelBulletType(){{
                     serrations = 1;
@@ -157,13 +157,16 @@ public class NyfalisUnits {
                     pierceCap = 2;
                     lightStroke = 10;
                     frontLength = 10f;
-                    damage = 20 / 12f;
+                    damage = (40 / 12f);
                     homingPower = 0.06f;
                     buildingDamageMultiplier = 1.1f;
+                    groundDamageMultiplier = (20 / 12f);
                     incendAmount = -1;
                     incendChance = incendSpread = 0f;
-                    pierce = true;
+                    pierce = flatDamage = true;
+                    statusDuration = 60 * 8f;
                     removeAfterPierce = false;
+                    airStatus = StatusEffects.shocked;
                     smokeEffect = shootEffect = Fx.none;
                     chargeEffect = hitEffect = Fx.hitLancer;
                     colors = NyfalisColors.aeroLaserColours;
@@ -246,7 +249,7 @@ public class NyfalisUnits {
                 inaccuracy = shootCone = 180f;
 
                 ejectEffect = Fx.none;
-                shootSound = Sounds.spark;
+                shootSound = Sounds.shootArc;
                 ignoreRotation = alwaysShooting=  true;
                 bullet = new LightningBulletType(){{
                     damage = 10;
@@ -342,7 +345,7 @@ public class NyfalisUnits {
                 inaccuracy = shootCone = 180f;
 
                 ejectEffect = Fx.none;
-                shootSound = Sounds.spark;
+                shootSound = Sounds.shootArc;
                 ignoreRotation = alwaysShooting= parentizeEffects = autoTarget = autoFindTarget = true;
                 top = alternate =  mirror =  aiControllable = controllable = false;
 
@@ -427,7 +430,7 @@ public class NyfalisUnits {
                 shootCone = 60f;
 
                 ejectEffect = Fx.none;
-                shootSound = Sounds.spark;
+                shootSound = Sounds.shootArc;
                 ignoreRotation = parentizeEffects = autoTarget = autoFindTarget = true;
                 top = alternate =  mirror = false;
 
@@ -534,7 +537,7 @@ public class NyfalisUnits {
                     shootCone = 45f;
                     ejectEffect = Fx.casing1;
 
-                    shootSound = Sounds.missile;
+                    shootSound = Sounds.shootMissile;
                     weaponIconUseFullString = true;
                     weaponIconString = "olupis-pteropus-ui-front";
                     bullet = new BasicBulletType(6, 7, "missile"){{
@@ -665,7 +668,7 @@ public class NyfalisUnits {
                     rotate = alwaysRotate = true;
                     top = alternate = mirror = false;
 
-                    shootSound = Sounds.missile;
+                    shootSound = Sounds.shootMissile;
                     float cx = -4.2f, mx = 0.8f, cy = 2.8f, r = 1;
                     parts.addAll(
                         new RegionPart("olupis-acerodon-weapon"){{
@@ -758,7 +761,7 @@ public class NyfalisUnits {
 
                     weaponIconString = "olupis-aegis-core";
 
-                    shootSound = Sounds.artillery;
+                    shootSound = Sounds.shootRipple;
                     parts.addAll(
                     new RegionPart("olupis-aegis-core"){{
                         mirror = false;
@@ -838,7 +841,7 @@ public class NyfalisUnits {
                 rotateSpeed = 15f;
                 autoTarget = mirror = top = false;
                 rotate = controllable = parentizeEffects = continuous = alwaysContinuous = statusOnlyOnHit = true;
-                shootSound = Sounds.tractorbeam;
+                shootSound = Sounds.beamParallax;
                 ejectEffect = Fx.casing1;
                 bullet = new TracterBeamBullet(){{
                     continuous = true;
@@ -1130,7 +1133,7 @@ public class NyfalisUnits {
                     ejectEffect = Fx.none;
 
                     showStatSprite = false;
-                    bullet = new EffectivenessMissleType(1.5f, 100){{
+                    bullet = new EffectivenessMissileType(1.5f, 100){{
                         backColor = NyfalisColors.alcoBulletBack;
                         frontColor = NyfalisColors.alcoBullet;
                         sprite = "missile-large";
@@ -1294,7 +1297,7 @@ public class NyfalisUnits {
                recoil = 0.5f;
 
                bullet = new BulletType(){{
-                   shootSound = Sounds.lasershoot;
+                   shootSound = Sounds.shootLaser;
                    shootEffect = Fx.sparkShoot;
                    hitEffect = Fx.pointHit;
                    maxRange = 85f;
@@ -1358,7 +1361,7 @@ public class NyfalisUnits {
                     weaponSegmentParent = 1;
                     autoTarget = mirror = top = false;
                     rotate = controllable = parentizeEffects = true;
-                    shootSound = Sounds.tractorbeam;
+                    shootSound = Sounds.beamParallax;
                     ejectEffect = Fx.casing1;
                     bullet = new RollBulletType(4.5f, 70){{
                         status = StatusEffects.slow;
@@ -1436,7 +1439,7 @@ public class NyfalisUnits {
                     weaponSegmentParent = 1;
                     autoTarget = mirror = top = false;
                     rotate = controllable = parentizeEffects = continuous = alwaysContinuous = statusOnlyOnHit = true;
-                    shootSound = Sounds.tractorbeam;
+                    shootSound = Sounds.beamParallax;
                     ejectEffect = Fx.casing1;
                     bullet = new TracterBeamBullet(){{
                         continuous = true;
@@ -1653,7 +1656,7 @@ public class NyfalisUnits {
                     y = 1.25f;
                     reload = 65f;
                     shootCone = 30f;
-                    shootSound = Sounds.missile;
+                    shootSound = Sounds.shootMissile;
                     top = false;
                     ejectEffect = Fx.casing1;
                     parts.addAll(
@@ -1667,7 +1670,7 @@ public class NyfalisUnits {
 
                         }}
                     );
-                    bullet = new EffectivenessMissleType(9.5f, 80f) {{
+                    bullet = new EffectivenessMissileType(9.5f, 80f) {{
                         //no bonus to air or ground
                         groundDamageMultiplier = 0.8f;
                         width = 13f;
@@ -2378,7 +2381,7 @@ public class NyfalisUnits {
                     rotate = true;
                     layerOffset = 0.01f;
                     ejectEffect = Fx.casing1;
-                    shootSound = Sounds.mediumCannon;
+                    shootSound = Sounds.shootSpectre;
                     soundPitchMin = 0.3f;
                     soundPitchMax = 0.8f;
                     rotateSpeed = 2f;
@@ -2615,7 +2618,7 @@ public class NyfalisUnits {
                     ammoPerShot = 3;
                     targetSwitchInterval = 60f;
 
-                    shootSound = Sounds.pew;
+                    shootSound = Sounds.shootDuo;
                     ammoType = lifeTimeWeapon;
                     alwaysUseAmmo = true;
                     /*Gave up using LiquidBulletType*/
@@ -2772,7 +2775,7 @@ public class NyfalisUnits {
 
             ammoType = lifeTimeDrill;
             constructor = UnitEntity::create;
-            timedOutSound = Sounds.dullExplosion;
+            timedOutSound = Sounds.explosionDull;
             controller = u -> new NyfalisMiningAi();
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = inoperableDepletes = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
@@ -2858,7 +2861,7 @@ public class NyfalisUnits {
             ammoType = lifeTimeDrill;
             groundLayer = Layer.legUnit;
             constructor = LegsUnit::create;
-            timedOutSound = Sounds.dullExplosion;
+            timedOutSound = Sounds.explosionDull;
             controller = u -> new NyfalisMiningAi();
             hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = lockLegsOnLiquid= drawAmmo = customShadow = inoperableDepletes = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = false;
@@ -2965,7 +2968,7 @@ public class NyfalisUnits {
             ammoType = lifeTimeDrill;
             aiController = RepairAI::new    ;
             constructor = UnitEntity::create;
-            timedOutSound = Sounds.dullExplosion;
+            timedOutSound = Sounds.explosionDull;
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = cantMove =  customMineAi = inoperableDepletes  = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
 
@@ -2978,7 +2981,7 @@ public class NyfalisUnits {
 
 
                 ejectEffect = Fx.none;
-                shootSound = Sounds.lasershoot;
+                shootSound = Sounds.shootLaser;
 
                 bullet = new HealOnlyBulletType(5.2f, 13, "olupis-diamond-bullet"){{
                     width = 9f;
@@ -3051,7 +3054,7 @@ public class NyfalisUnits {
                     shootEffect = smokeEffect = Fx.none;
                     backColor = Color.valueOf("3ed09a");
                     frontColor = Color.white;
-                    hitSound = Sounds.mineDeploy;
+                    hitSound = Sounds.wind3;
                     shootCone = 180f;
                     ejectEffect = Fx.none;
 
@@ -3298,7 +3301,7 @@ public class NyfalisUnits {
                     top = mirror = false;
                     reload = 50f;
                     shootCone = 30f;
-                    shootSound = Sounds.pew;
+                    shootSound = Sounds.shoot;
                     y =  2.5f;
                     x = shootX = inaccuracy = 0f;
                     bullet = pediciaPew.copy();
@@ -3379,7 +3382,7 @@ public class NyfalisUnits {
                     mirror = true;
                     reload = 35f;
                     shootCone = 30f;
-                    shootSound = Sounds.pew;
+                    shootSound = Sounds.shoot;
                     x = 2.5f;
                     y = 7;
                     shootX = inaccuracy = 0f;
@@ -3458,7 +3461,7 @@ public class NyfalisUnits {
                         top = mirror = false;
                         reload = 50f;
                         shootCone = 30f;
-                        shootSound = Sounds.pew;
+                        shootSound = Sounds.shoot;
                         x =  xp[ic];
                         y =  yp[ic];
                         shootX = inaccuracy = 0f;

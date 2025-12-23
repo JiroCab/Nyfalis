@@ -7,7 +7,7 @@ import mindustry.gen.Building;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
-import olupis.world.blocks.*;
+import olupis.world.interfaces.*;
 
 import static mindustry.Vars.world;
 

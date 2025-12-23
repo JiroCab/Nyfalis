@@ -9,7 +9,6 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.*;
 import mindustry.ai.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -21,10 +20,10 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
-import olupis.world.blocks.*;
 import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.entities.*;
 import olupis.world.entities.units.*;
+import olupis.world.interfaces.*;
 
 import static mindustry.Vars.*;
 

@@ -34,12 +34,12 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
-import olupis.world.blocks.*;
 import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.packets.*;
 import olupis.world.entities.units.*;
+import olupis.world.interfaces.*;
 
 import java.util.*;
 
@@ -54,7 +54,7 @@ public class ItemUnitTurret extends ItemTurret {
     public ItemStack[] requiredAlternate = ItemStack.with(NyfalisItemsLiquid.aluminum, 30, Items.copper, 60);
     public int alternateCapacity = itemCapacity * 2;
     /*Parameters when failing to make a unit*/
-    public Sound failedMakeSound = Sounds.dullExplosion;
+    public Sound failedMakeSound = Sounds.explosionDull;
     public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 0.6f;
     public Effect failedMakeFx = NyfalisFxs.failedMake;
     public TextureRegion bottomRegion, rotatorRegion, radarRegion;
@@ -80,7 +80,7 @@ public class ItemUnitTurret extends ItemTurret {
         super(name);
         commandable = configurable = outputsPayload = clearOnDoubleTap = true;
         playerControllable = false;
-        shootSound = Sounds.respawn;
+        shootSound = Sounds.wind3;
         drawer = new DrawDefault();
         fogRadius = -1;
         range = 0f;
@@ -420,7 +420,7 @@ public class ItemUnitTurret extends ItemTurret {
             if(readUnitId != -1){
                 child = Groups.unit.getByID(readUnitId);
 
-                if(child != null || !net.client()){
+                if(child != null && !net.client()){
                     if(child.type instanceof  AmmoEnabledUnitType ae ) ae.relationship.put(child, this);
                     readUnitId = -1;
                 }

@@ -32,7 +32,7 @@ public class MicroWaveFieldAbility extends Ability {
     public float damage = 1, reload = 100, range = 60, boostRange = 30, groundRange = 60;
     public Effect healEffect = Fx.heal, hitEffect = Fx.hitFuse, damageEffect = Fx.none, shootEffect = Fx.none;
     public StatusEffect status = StatusEffects.none;
-    public Sound shootSound = Sounds.noammo;
+    public Sound shootSound = Sounds.wind3;
     public float statusDuration = 60f * 6f;
     public float x, y;
     public boolean targetGround = true, targetAir = true, hitBuildings = true, hitUnits = true;

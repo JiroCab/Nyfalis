@@ -1,4 +1,4 @@
-package olupis.world.ai;
+package olupis.world.interfaces;
 
 public interface InoperableAi{
 

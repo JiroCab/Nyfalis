@@ -16,7 +16,6 @@ import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.type.unit.*;
 import mindustry.type.weapons.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -24,11 +23,11 @@ import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
-import olupis.world.blocks.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.units.*;
 import olupis.world.entities.weapons.*;
+import olupis.world.interfaces.*;
 
 import java.util.*;
 
@@ -257,9 +256,9 @@ public class NyfalisStats extends StatValues {
                             }else sep(bt, Core.bundle.format("bullet.splashdamage", autoFixedCustom(type.splashDamage), Strings.fixed(type.splashDamageRadius / tilesize, 1)));
                         }
 
-                        if (type instanceof EffectivenessMissleType m && m.groundDamageMultiplier != 1f) {
-                            float val = (m.flatDamage ? ((m.groundDamageMultiplier / m.damage) * 100 -100) : m.groundDamageMultiplier * 100 - 100);
-                            sep(bt, Core.bundle.format("stat.olupis-groundpenalty", autoFixedCustom(m.flatDamage ? m.groundDamageMultiplier : m.damage * m.groundDamageMultiplier), ammoStat(val)));
+                        if (type instanceof ElevationDamgeStatPassThrough m && m.groundDamageMultiplier() != 1f) {
+                            float val = m.groundDamageMultiplier() * 100 - 100;
+                            sep(bt, Core.bundle.format("stat.olupis-groundpenalty", autoFixedCustom(m.groundDamage()), ammoStat(val)));
                         }
 
                         if(type.shieldDamageMultiplier != 1){
@@ -274,9 +273,9 @@ public class NyfalisStats extends StatValues {
                             sep(bt, Core.bundle.format("bullet.splashdamage",  (autoFixedCustom(st.splashDamage * st.minDmgMul) + "-" + autoFixedCustom(st.splashDamage * st.maxDmgMul)), Strings.fixed(st.splashDamageRadius / tilesize, 1)));
                         }
 
-                        if (type.splashDamage > 0 && type instanceof EffectivenessMissleType m && m.groundDamageSplashMultiplier != 1f) {
-                            float val = (m.flatDamage ? (m.groundDamageMultiplier / m.damage) * 100 -100 : m.groundDamageMultiplier * 100 - 100);
-                            sep(bt, Core.bundle.format("stat.olupis-splashpenalty",  autoFixedCustom(m.flatDamage ? m.groundDamageSplashMultiplier : m.damage * m.groundDamageSplashMultiplier), ammoStat(val)));
+                        if (type.splashDamage > 0 && type instanceof ElevationDamgeStatPassThrough m && m.groundDamageSplashMultiplier() != 1f) {
+                            float val = m.groundDamageSplashMultiplier() * 100 - 100;
+                            sep(bt, Core.bundle.format("stat.olupis-splashpenalty",  autoFixedCustom(m.groundDamage()), ammoStat(val)));
                         }
 
                         if(type.statLiquidConsumed <= 0f && !compact && !Mathf.equal(type.ammoMultiplier, 1f) && type.displayAmmoMultiplier && (!(t instanceof Turret turret) || turret.displayAmmoMultiplier)){
@@ -331,8 +330,14 @@ public class NyfalisStats extends StatValues {
                         }
 
                         if (type.status != StatusEffects.none) {
-                            sep(bt, (type.status.minfo.mod == null ? type.status.emoji() : "") + "[stat]" + type.status.localizedName + (type.status.reactive ? "" : "[lightgray] ~ [stat]" + (Strings.autoFixed(type.statusDuration / 60f, 1)) + "[lightgray] " + Core.bundle.get("unit.seconds")));
+                            miniStatusEffect(bt, type.status, type.statusDuration);
                         }
+
+                        if(type instanceof ElevationDamgeStatPassThrough tt){
+                            if(tt.airStatusEffect() != StatusEffects.none) miniStatusEffect(bt, tt.airStatusEffect(), type.statusDuration, (byte)2);
+                            if(tt.groundStatusEffect() != StatusEffects.none) miniStatusEffect(bt, tt.groundStatusEffect(), type.statusDuration, (byte)1);
+                        }
+
 
                         if(!type.targetMissiles){
                             sep(bt, "@bullet.notargetsmissiles");
@@ -607,5 +612,21 @@ public class NyfalisStats extends StatValues {
         return t.uiIcon;
     }
 
+    private static void miniStatusEffect(Table table, StatusEffect type, float statusDuration ){
+        miniStatusEffect(table, type, statusDuration, (byte)0);
+    }
 
+    private static void miniStatusEffect(Table table, StatusEffect type, float statusDuration, byte target){
+        table.row();
+        table.table(t -> {
+            t.image(type.uiIcon).scaling(Scaling.fit).padRight(2).left();
+
+            String tar = " ";
+            if(target == 1) tar =" " + Core.bundle.get("stat.olupis-groundedtarget");
+            else if(target == 2) tar = " " + Core.bundle.get("stat.olupis-boostedtarget");
+
+            t.add(" [stat]" + type.localizedName + tar + (type.reactive ? "" : "[lightgray] ~ [stat]" + (Strings.autoFixed(statusDuration / 60f, 1)) + "[lightgray] " + Core.bundle.get("unit.seconds"))).left();
+        }).left().wrap().get().clicked(() -> ui.content.show(type));
+        table.row();
+    }
 }

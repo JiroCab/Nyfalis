@@ -12,7 +12,7 @@
  import mindustry.type.*;
  import mindustry.world.meta.*;
  import olupis.world.entities.units.*;
- import org.w3c.dom.ranges.*;
+ import olupis.world.interfaces.*;
 
  import static mindustry.Vars.*;
 

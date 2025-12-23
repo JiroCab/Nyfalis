@@ -981,19 +981,6 @@ public class NyfalisBlocks {
         }};
 
         //endregion
-        //region Misc
-        if(headless) return;
-        cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.75f);
-        cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.5f);
-        cinderBloomiest.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.25f);
-        mossyStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.75f);
-        mossierStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.5f);
-        mossiestStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.25f);
-        mossierDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
-        mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
-        frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
-        coralReef.mapColor = deepwater.mapColor;
-        //endregion
     }
 
     public static void LoadBlocks(){
@@ -1538,7 +1525,7 @@ public class NyfalisBlocks {
             consumePower(0.50f);
             hasPower = hasLiquids = true;
             craftEffect = Fx.smeltsmoke;
-            ambientSound = Sounds.smelter;
+            ambientSound = Sounds.loopSmelter;
             outputItem = new ItemStack(Items.silicon, 1);
             requirements(Category.crafting, with(Items.copper, 30, Items.lead, 30, iron, 20));
             drawer = new DrawMulti(new DrawDefault(), new DrawFlame(Color.valueOf("ffef99")));
@@ -2137,7 +2124,7 @@ public class NyfalisBlocks {
                 ambientSoundVolume = 0.06f;
 
                 attribute = hydro;
-                ambientSound = Sounds.hum;
+                ambientSound = Sounds.loopHum;
                 researchCost = with(iron, 750, silicon, 500, lead, 1500, cobalt, 500);
                 requirements(Category.power, with(iron, 20, silicon, 20, lead, 50, cobalt, 20));
                 drawer = new DrawMulti(
@@ -2175,7 +2162,7 @@ public class NyfalisBlocks {
 
             attribute = hydro;
             generateEffect = Fx.steam;
-            ambientSound = Sounds.hum;
+            ambientSound = Sounds.loopHum;
             researchCost = with(iron, 1500, silicon, 1000, lead, 3000, cobalt, 1000);
             requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
             drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
@@ -2201,7 +2188,7 @@ public class NyfalisBlocks {
             attribute = Attribute.steam;
             generateEffect = Fx.generatespark;
             consumeLiquid(NyfalisItemsLiquid.steam, 20f / 60f);
-            ambientSound = Sounds.smelter;
+            ambientSound = Sounds.loopSmelter;
             ambientSoundVolume = 0.06f;
         }};
 
@@ -2423,7 +2410,7 @@ public class NyfalisBlocks {
                 backColor = Pal.heal;
                 hitEffect = despawnEffect = NyfalisFxs.taurusHeal;
                 frontColor = Color.white;
-                shootSound = Sounds.sap;
+                shootSound = Sounds.shootSap;
             }};
             shootEffect = NyfalisFxs.shootTaurus;
             smokeEffect = Fx.none;
@@ -2665,7 +2652,7 @@ public class NyfalisBlocks {
             );
             unitType = phorid;
             shootEffect = Fx.none;
-            shootSound = Sounds.bigshot;
+            shootSound = Sounds.wind3;
             requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500, graphite, 500, copper, 1500));
             shootType = new ArtilleryBulletType(3f, 50){{
                 lifetime = 80f;
@@ -2699,7 +2686,7 @@ public class NyfalisBlocks {
             unitType = diptera;
             limitRange(0);
             shootEffect = Fx.none;
-            shootSound = Sounds.bigshot;
+            shootSound = Sounds.wind3;
             requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500, copper, 2500));
             shootType = new SapBulletType(){{
                 damage = 150f;
@@ -2728,7 +2715,7 @@ public class NyfalisBlocks {
 
             unitType = diptera;
             shootEffect = Fx.none;
-            shootSound = Sounds.bigshot;
+            shootSound = Sounds.wind3;
             targetGround = targetHealing = targetAir = true;
             requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 4500, silicon, 4500, graphite, 4500, quartz, 2500, cobalt, 2500, copper, 2500));
             shootType = new RailBulletType(){{
@@ -2847,7 +2834,7 @@ public class NyfalisBlocks {
             health = 900;
             powerProduction = 20f/60f;
             itemDuration = 3f * 60f;
-            ambientSound = Sounds.pulse;
+            ambientSound = Sounds.loopPulse;
             ambientSoundVolume = 0.07f;
             drawer = new DrawMulti(
                     new DrawRegion("-bottom"),
@@ -2937,5 +2924,18 @@ public class NyfalisBlocks {
 
         ((LimitedLandingPad) deliveryReciver).podRegion = ((LimitedLaunchPad) deliveryCannon).podRegion;
         yellowTree.mapColor = yellowTreeBlooming.mapColor = Color.valueOf("A0A54DFF");
+        cinderBloomy.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.65f);
+        cinderBloomier.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.45f);
+        cinderBloomiest.mapColor = new Color().set(cinderBloomGrass.mapColor).lerp(basalt.mapColor, 0.15f);
+        mossyStoneWall.mapColor = new Color(mossStoneWall.mapColor).lerp(stoneWall.mapColor, 0.65f).lerp(Color.black, 0.1f);
+        mossierStoneWall.mapColor = new Color(mossStoneWall.mapColor).lerp(stoneWall.mapColor, 0.45f).lerp(Color.black, 0.1f);
+        mossierStoneWall.mapColor = new Color(mossStoneWall.mapColor).lerp(stoneWall.mapColor, 0.15f).lerp(Color.black, 0.1f);
+        mossyStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.75f);
+        mossierStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.5f);
+        mossiestStone.mapColor = new Color().set(mossStone.mapColor).lerp(stone.mapColor, 0.25f);
+        mossierDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
+        mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
+        frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
+        coralReef.mapColor = deepwater.mapColor;
     }
 }

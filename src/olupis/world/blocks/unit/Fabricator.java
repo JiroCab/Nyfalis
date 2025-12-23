@@ -22,9 +22,9 @@ import mindustry.world.blocks.units.UnitAssembler.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
-import olupis.world.blocks.*;
 import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.consumer.*;
+import olupis.world.interfaces.*;
 
 import static mindustry.Vars.*;
 

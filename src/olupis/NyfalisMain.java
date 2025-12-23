@@ -164,7 +164,7 @@ public class NyfalisMain extends Mod{
                 //Vars.renderer.maxZoom  = 100; //just going to leave this here so aligning, screenshot are easier
                 //if(control.saves.getSaveSlots().first() != null) ui.load.runLoadSave(control.saves.getSaveSlots().first());
                 //ui.planet.debugSelect = true;
-                //ui.content.show(NyfalisUnits.resolute);
+                ui.content.show(NyfalisUnits.aero);
             }
             NyfalisClassMap.load(this.getClass().getPackage().getName());
 
@@ -266,23 +266,23 @@ public class NyfalisMain extends Mod{
     public static void sectorPostTurn(){
         Seq<String> lostSectors = new Seq<>();
 
-        for (Sector sec : system.sectors) { //Guaranteed lost, if a base is left alone in 3 turns (6 minutes)
-            if(sec.hasBase() && !sec.isBeingPlayed() && !sec.isCaptured()){
-                sec.info.damage = Math.min(sec.info.damage + 0.33f, 1f);
-
-                if(sec.info.damage >= 0.999){
-                    if(sec.info.wave < sec.info.winWave && sec.info.hasCore){
-                        lostSectors.add(sec.name() + "");
-                        Events.fire(new SectorLoseEvent(sec));
-
-                        sec.info.items.clear();
-                        sec.info.damage = 1f;
-                        sec.info.hasCore = false;
-                        sec.info.production.clear();
-                    }
-                }
-            }
-        }
+//        for (Sector sec : system.sectors) { //Guaranteed lost, if a base is left alone in 3 turns (6 minutes)
+//            if(sec.hasBase() && !sec.isBeingPlayed() && !sec.isCaptured()){
+//                sec.info.damage = Math.min(sec.info.damage + 0.33f, 1f);
+//
+//                if(sec.info.damage >= 0.999){
+//                    if(sec.info.wave < sec.info.winWave && sec.info.hasCore){
+//                        lostSectors.add(sec.name() + "");
+//                        Events.fire(new SectorLoseEvent(sec));
+//
+//                        sec.info.items.clear();
+//                        sec.info.damage = 1f;
+//                        sec.info.hasCore = false;
+//                        sec.info.production.clear();
+//                    }
+//                }
+//            }
+//        }
         Time.run(0.5f * Time.toSeconds, () -> abandonedSectorsWarning(lostSectors));
     }
 

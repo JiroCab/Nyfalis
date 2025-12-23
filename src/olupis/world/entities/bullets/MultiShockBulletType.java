@@ -30,7 +30,7 @@ public class MultiShockBulletType extends BulletType {
 	public int splashAmount = 3;
 	public boolean drawBlast = true;
 
-	public Sound applySound = Sounds.shotgun;
+	public Sound applySound = Sounds.shootFuse;
 	/** Adjust circle light color */
 	public Color frontColor = Pal.lightishOrange;
 	/** Adjust circle dark color */

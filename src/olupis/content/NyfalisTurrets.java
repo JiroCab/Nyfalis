@@ -187,7 +187,7 @@ public class NyfalisTurrets {
 
             final float groundPenalty = 0.05f, splashPenalty = 0.05f;
             ammo(
-                copper, new EffectivenessMissleType(5f, 20f){{
+                copper, new EffectivenessMissileType(5f, 20f){{
                     width = 6f;
                     shrinkX = 0;
                     lifetime = 70f;
@@ -208,7 +208,7 @@ public class NyfalisTurrets {
                     groundDamageMultiplier = 10f;
                     groundDamageSplashMultiplier = splashPenalty;
                 }},
-                lead, new EffectivenessMissleType(4.8f, 60f){{
+                lead, new EffectivenessMissileType(4.8f, 60f){{
                     width = 6f;
                     shrinkX = 0;
                     lifetime = 70;
@@ -229,7 +229,7 @@ public class NyfalisTurrets {
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
                 }},
-                iron, new EffectivenessMissleType(5.2f, 80f){{
+                iron, new EffectivenessMissileType(5.2f, 80f){{
                     width = 6f;
                     shrinkX = 0;
                     lifetime = 70;
@@ -250,7 +250,7 @@ public class NyfalisTurrets {
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
                 }},
-                graphite, new EffectivenessMissleType(6f, 110f){{
+                graphite, new EffectivenessMissileType(6f, 110f){{
                     width = 7f;
                     shrinkX = 0;
                     height = 11f;
@@ -269,7 +269,7 @@ public class NyfalisTurrets {
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
                 }},
-                cobalt, new EffectivenessMissleType(4.8f, 20f){{
+                cobalt, new EffectivenessMissileType(4.8f, 20f){{
                     width = 6f;
                     shrinkX = 0;
                     lifetime = 70;
@@ -293,7 +293,7 @@ public class NyfalisTurrets {
             );
             lightColor = floodLightColor;
             limitRange(3f);
-            shootSound = Sounds.missile;
+            shootSound = Sounds.shootMissile;
             shootEffect = Fx.blastsmoke;
 
             drawer = new DrawTurret(){{
@@ -650,7 +650,7 @@ public class NyfalisTurrets {
                 );
             }};
             limitRange(0.5f);
-            loopSound = Sounds.steam;
+            loopSound = Sounds.loopSteam;
             consumePower(1f);
             lightColor = turretLightColor;
             outlineColor = nyfalisBlockOutlineColour;
@@ -786,7 +786,7 @@ public class NyfalisTurrets {
             reload = 15 * 16;
             fogRadiusMultiplier = 0.75f;
             ammoPerShot = 12;
-            loopSound = Sounds.release;
+            loopSound = Sounds.wind3;
             outlineColor = nyfalisBlockOutlineColour;
             shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
             researchCost = with(iron, 500, copper, 500, silicon, 300, quartz, 500);
@@ -808,7 +808,7 @@ public class NyfalisTurrets {
 
                 final float airGroundPend = 1.5f, airBuildPend = 0.5f;
                 ammo(
-                    aluminum, new EffectivenessMissleType(7f, 40f) {{
+                    aluminum, new EffectivenessMissileType(7f, 40f) {{
                         width = 6f;
                         reloadMultiplier = 1.3f;
                         shrinkX = 0;
@@ -830,7 +830,7 @@ public class NyfalisTurrets {
                         groundDamageMultiplier = airGroundPend;
                         buildingDamageMultiplier = airBuildPend;
                     }},
-                    lead, new EffectivenessMissleType(5f, 15f) {{
+                    lead, new EffectivenessMissileType(5f, 15f) {{
                         inaccuracy = 10f;
                         width = 6f;
                         reloadMultiplier = 3f;
@@ -852,7 +852,7 @@ public class NyfalisTurrets {
                         buildingDamageMultiplier = airBuildPend;
                     }},
 
-                    iron, new EffectivenessMissleType(5.5f, 20f) {{
+                    iron, new EffectivenessMissileType(5.5f, 20f) {{
                         width = 6f;
                         reloadMultiplier = 2f;
                         shrinkX = 0;
@@ -874,7 +874,7 @@ public class NyfalisTurrets {
                         groundDamageMultiplier = airGroundPend;
                         buildingDamageMultiplier = airBuildPend;
                     }},
-                    cobalt, new EffectivenessMissleType(8f, 15f) {{
+                    cobalt, new EffectivenessMissileType(8f, 15f) {{
                         width = 6f;
                         shrinkX = 0;
                         lifetime = 140f;
@@ -894,7 +894,7 @@ public class NyfalisTurrets {
                         groundDamageMultiplier = airGroundPend;
                         buildingDamageMultiplier = airBuildPend;
                     }},
-                    graphite, new EffectivenessMissleType(9f, 30f) {{
+                    graphite, new EffectivenessMissileType(9f, 30f) {{
                         //no bonus to air or ground
                         width = 6f;
                         shrinkX = 0;
@@ -1049,7 +1049,7 @@ public class NyfalisTurrets {
                 }};
                 ammoPerShot = 20;
                 maxAmmo = 220;
-                shootSound = Sounds.missile;
+                shootSound = Sounds.shootMissile;
                 lightColor = floodLightColor;
                 outlineColor = nyfalisBlockOutlineColour;
                 shootEffect = Fx.shootSmallSmoke;
@@ -1344,7 +1344,7 @@ public class NyfalisTurrets {
             itemCapacity = 60;
             lightRadius = (size * 8) + 4;
             fogRadiusMultiplier = 0.15f;
-            shootSound = Sounds.respawn;
+            shootSound = Sounds.wind3;
 
             ammo(
                 lead, new SpawnHelperBulletType(){{
@@ -1497,7 +1497,7 @@ public class NyfalisTurrets {
             shoot.shots = 2;
 
             limitRange(0.5f);
-            loopSound = Sounds.steam;
+            loopSound = Sounds.loopSteam;
             loopSoundVolume = 0.35f;
             consumePower(1f);
             lightColor = turretLightColor;

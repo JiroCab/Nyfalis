@@ -1,4 +1,4 @@
-package olupis.world.blocks;
+package olupis.world.interfaces;
 
 import arc.struct.*;
 import arc.util.*;

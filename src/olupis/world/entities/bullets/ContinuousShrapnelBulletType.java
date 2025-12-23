@@ -1,15 +1,20 @@
 package olupis.world.entities.bullets;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
+import olupis.world.interfaces.*;
 
 //ContinuousLaserBulletType with ShrapnelBulletType style of rendering
-public class ContinuousShrapnelBulletType extends ContinuousLaserBulletType{
+public class ContinuousShrapnelBulletType extends ContinuousLaserBulletType implements ElevationDamgeStatPassThrough{
     public int serrations = 7;
     public float
         serrationLenScl = 10f,
@@ -20,8 +25,14 @@ public class ContinuousShrapnelBulletType extends ContinuousLaserBulletType{
         serrationAngle = 0,
         serrationFirstOffset = 0,
         serrationAlphaMul = 0.95f,
-        serrationLengthMul = 1f
+        serrationLengthMul = 1f,
+
+        groundDamageMultiplier = 1f,
+        groundDamageSplashMultiplier = 1f
     ;
+    public boolean flatDamage = false;
+    public StatusEffect groundStatus = StatusEffects.none, airStatus = StatusEffects.none;
+    static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
 
     public ContinuousShrapnelBulletType(float damage){
         this.damage = damage;
@@ -70,4 +81,58 @@ public class ContinuousShrapnelBulletType extends ContinuousLaserBulletType{
         Draw.reset();
     }
 
+    @Override
+    public void hitEntity(Bullet b, Hitboxc entity, float health){
+        boolean wasDead = entity instanceof Unit u && u.dead;
+
+        if(entity instanceof Healthc h){
+            float dmg = entity instanceof  Unit u && u.isGrounded() ? flatDamage ? groundDamageMultiplier :   groundDamageMultiplier * damage : damage;
+
+            if(pierceArmor){
+                h.damagePierce(dmg);
+            }else{
+                h.damage(dmg);
+            }
+        }
+
+        if(entity instanceof Unit unit){
+            Tmp.v3.set(unit).sub(b).nor().scl(knockback * 80f);
+            if(impact) Tmp.v3.setAngle(b.rotation() + (knockback < 0 ? 180f : 0f));
+            unit.impulse(Tmp.v3);
+            unit.apply(status, statusDuration);
+            if(groundStatus != StatusEffects.none &&unit.isGrounded()) unit.apply(groundStatus, statusDuration);
+            if(airStatus != null && !unit.isGrounded()) unit.apply(airStatus, statusDuration);
+
+            Events.fire(bulletDamageEvent.set(unit, b));
+        }
+
+        if(!wasDead && entity instanceof Unit unit && unit.dead){
+            Events.fire(new EventType.UnitBulletDestroyEvent(unit, b));
+        }
+
+        handlePierce(b, health, entity.x(), entity.y());
+    }
+
+    @Override
+    public float groundDamage(){
+        return (flatDamage ? groundDamageMultiplier :   groundDamageMultiplier * damage) / damageInterval * 60f ;
+    }
+    @Override
+    public float groundDamageMultiplier(){
+        return flatDamage ? ((groundDamageMultiplier / damage)) : groundDamageMultiplier;
+    }
+
+    @Override
+    public float groundDamageSplashMultiplier(){
+        return flatDamage ? ((groundDamageSplashMultiplier / splashDamage)) : groundDamageSplashMultiplier;
+    }
+    @Override
+    public StatusEffect groundStatusEffect(){
+        return groundStatus;
+    }
+
+    @Override
+    public StatusEffect airStatusEffect(){
+        return airStatus;
+    }
 }

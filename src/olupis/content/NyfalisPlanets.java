@@ -38,7 +38,7 @@ public class NyfalisPlanets {
 
         nyfalis = new Planet("nyfalis", Planets.sun, 1.1f, 3){{
             allowSectorInvasion = allowLaunchLoadout = false;
-            allowWaves = enemyCoreSpawnReplace  = prebuildBase = allowWaveSimulation = hasAtmosphere = true;
+            allowWaves = enemyCoreSpawnReplace  = prebuildBase = hasAtmosphere = true;
 
             totalRadius = 2.7f;
             atmosphereRadIn = 0.01f;
@@ -66,7 +66,7 @@ public class NyfalisPlanets {
 
         //1st moon
         seredris = new Planet("seredris", NyfalisPlanets.nyfalis, 1.1f, 1){{
-            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = allowWaveSimulation = true;
+            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = true;
 
             startSector = 2;
             lightDstTo = 0.8f;
@@ -89,7 +89,7 @@ public class NyfalisPlanets {
 
         vorgin = new Planet("vorgin", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
-            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible= allowWaveSimulation = allowCampaignRules = true;
+            clearSectorOnLose = allowSectorInvasion = updateLighting = accessible = allowCampaignRules = true;
 
             startSector = 1;
             enemyBuildSpeedMultiplier = 0.4f;

@@ -1,43 +1,35 @@
 package olupis.input.ui;
 
-import arc.Core;
-import arc.Events;
-import arc.assets.loaders.TextureLoader;
-import arc.func.Cons;
+import arc.*;
+import arc.assets.loaders.*;
+import arc.func.*;
 import arc.graphics.*;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.graphics.gl.FrameBuffer;
-import arc.input.KeyCode;
-import arc.math.Mathf;
-import arc.math.geom.Vec3;
-import arc.scene.Element;
+import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
+import arc.input.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.scene.*;
 import arc.scene.event.*;
-import arc.scene.style.TextureRegionDrawable;
+import arc.scene.style.*;
 import arc.scene.ui.*;
-import arc.scene.ui.layout.Scl;
-import arc.scene.ui.layout.Table;
-import arc.struct.ObjectMap;
-import arc.struct.Seq;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
-import mindustry.Vars;
+import mindustry.*;
 import mindustry.content.*;
-import mindustry.core.UI;
-import mindustry.ctype.ContentType;
-import mindustry.ctype.UnlockableContent;
+import mindustry.core.*;
+import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.graphics.Pal;
+import mindustry.graphics.*;
 import mindustry.graphics.g3d.*;
-import mindustry.input.Binding;
-import mindustry.maps.SectorDamage;
+import mindustry.input.*;
 import mindustry.type.*;
-import mindustry.ui.Fonts;
-import mindustry.ui.Styles;
-import mindustry.ui.dialogs.BaseDialog;
-import mindustry.ui.dialogs.LaunchLoadoutDialog;
-import mindustry.world.blocks.storage.CoreBlock;
-import olupis.content.NyfalisSounds;
+import mindustry.ui.*;
+import mindustry.ui.dialogs.*;
+import mindustry.world.blocks.storage.*;
+import olupis.content.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -917,10 +909,6 @@ public class LimitedLauncherSelect extends BaseDialog implements PlanetRenderer.
 
             c.add(Core.bundle.get("sectors.time") + " [accent]" + sector.save.getPlayTime()).left().row();
 
-            if(sector.info.waves && sector.hasBase()){
-                c.add(Core.bundle.get("sectors.wave") + " [accent]" + (sector.info.wave + sector.info.wavesPassed)).left().row();
-            }
-
             if(sector.isAttacked() || !sector.hasBase()){
                 c.add(Core.bundle.get("sectors.threat") + " [accent]" + sector.displayThreat()).left().row();
             }
@@ -934,17 +922,6 @@ public class LimitedLauncherSelect extends BaseDialog implements PlanetRenderer.
                     }
                 }).padLeft(10f).left().row();
             }
-
-            //production
-            displayItems(c, sector.getProductionScale(), sector.info.production, "@sectors.production");
-
-            //export
-            displayItems(c, sector.getProductionScale(), sector.info.export, "@sectors.export", t -> {
-                if(sector.info.destination != null && sector.info.destination.hasBase()){
-                    String ic = sector.info.destination.iconChar();
-                    t.add(Iconc.rightOpen + " " + (ic == null || ic.isEmpty() ? "" : ic + " ") + sector.info.destination.name()).padLeft(10f).row();
-                }
-            });
 
             //import
             if(sector.hasBase()){
@@ -1013,16 +990,17 @@ public class LimitedLauncherSelect extends BaseDialog implements PlanetRenderer.
     }
 
     void addSurvivedInfo(Sector sector, Table table, boolean wrap){
-        if(!wrap){
-            table.add(sector.planet.allowWaveSimulation ? Core.bundle.format("sectors.underattack", (int)(sector.info.damage * 100)) : "@sectors.underattack.nodamage").wrapLabel(wrap).row();
-        }
 
-        if(sector.planet.allowWaveSimulation && sector.info.wavesSurvived >= 0 && sector.info.wavesSurvived - sector.info.wavesPassed >= 0 && !sector.isBeingPlayed()){
-            int toCapture = sector.info.attack || sector.info.winWave <= 1 ? -1 : sector.info.winWave - (sector.info.wave + sector.info.wavesPassed);
-            boolean plus = (sector.info.wavesSurvived - sector.info.wavesPassed) >= SectorDamage.maxRetWave - 1;
-            table.add(Core.bundle.format("sectors.survives", Math.min(sector.info.wavesSurvived - sector.info.wavesPassed, toCapture <= 0 ? 200 : toCapture) +
-                    (plus ? "+" : "") + (toCapture < 0 ? "" : "/" + toCapture))).wrapLabel(wrap).row();
-        }
+//        if(!wrap){
+//            table.add(sector.planet.allowWaveSimulation ? Core.bundle.format("sectors.underattack", (int)(sector.info.damage * 100)) : "@sectors.underattack.nodamage").wrapLabel(wrap).row();
+//        }
+//
+//        if(sector.planet.allowWaveSimulation && sector.info.wavesSurvived >= 0 && sector.info.wavesSurvived - sector.info.wavesPassed >= 0 && !sector.isBeingPlayed()){
+//            int toCapture = sector.info.attack || sector.info.winWave <= 1 ? -1 : sector.info.winWave - (sector.info.wave + sector.info.wavesPassed);
+//            boolean plus = (sector.info.wavesSurvived - sector.info.wavesPassed) >= SectorDamage.maxRetWave - 1;
+//            table.add(Core.bundle.format("sectors.survives", Math.min(sector.info.wavesSurvived - sector.info.wavesPassed, toCapture <= 0 ? 200 : toCapture) +
+//                    (plus ? "+" : "") + (toCapture < 0 ? "" : "/" + toCapture))).wrapLabel(wrap).row();
+//        }
     }
 
     void selectSector(Sector sector){
@@ -1203,26 +1181,26 @@ public class LimitedLauncherSelect extends BaseDialog implements PlanetRenderer.
             return;
         }
 
-        //make sure there are no under-attack sectors (other than this one)
-        for(Planet planet : content.planets()){
-            if(!planet.allowWaveSimulation && !debugSelect && planet.allowWaveSimulation == sector.planet.allowWaveSimulation){
-                //if there are two or more attacked sectors... something went wrong, don't show the dialog to prevent softlock
-                Sector attacked = planet.sectors.find(s -> s.isAttacked() && s != sector);
-                if(attacked != null &&  planet.sectors.count(s -> s.isAttacked()) < 2){
-                    BaseDialog dialog = new BaseDialog("@sector.noswitch.title");
-                    dialog.cont.add(bundle.format("sector.noswitch", attacked.name(), attacked.planet.localizedName)).width(400f).labelAlign(Align.center).center().wrap();
-                    dialog.addCloseButton();
-                    dialog.buttons.button("@sector.view", Icon.eyeSmall, () -> {
-                        dialog.hide();
-                        lookAt(attacked);
-                        selectSector(attacked);
-                    });
-                    dialog.show();
-
-                    return;
-                }
-            }
-        }
+//        //make sure there are no under-attack sectors (other than this one)
+//        for(Planet planet : content.planets()){
+//            if(!planet.allowWaveSimulation && !debugSelect && planet.allowWaveSimulation == sector.planet.allowWaveSimulation){
+//                //if there are two or more attacked sectors... something went wrong, don't show the dialog to prevent softlock
+//                Sector attacked = planet.sectors.find(s -> s.isAttacked() && s != sector);
+//                if(attacked != null &&  planet.sectors.count(s -> s.isAttacked()) < 2){
+//                    BaseDialog dialog = new BaseDialog("@sector.noswitch.title");
+//                    dialog.cont.add(bundle.format("sector.noswitch", attacked.name(), attacked.planet.localizedName)).width(400f).labelAlign(Align.center).center().wrap();
+//                    dialog.addCloseButton();
+//                    dialog.buttons.button("@sector.view", Icon.eyeSmall, () -> {
+//                        dialog.hide();
+//                        lookAt(attacked);
+//                        selectSector(attacked);
+//                    });
+//                    dialog.show();
+//
+//                    return;
+//                }
+//            }
+//        }
 
         boolean shouldHide = true;
 

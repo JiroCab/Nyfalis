@@ -269,7 +269,7 @@ public  class NyfalisWeapon extends Weapon {
         bulletX = bulletX(unit, mount),
         bulletY = bulletY(unit, mount),
         shootAngle = bulletRotation(unit, mount, bulletX, bulletY) + angleOffset,
-        ran = bullet instanceof EffectivenessMissleType m  && m.maxRangeLifeScale? bullet.maxRange: bullet.range,
+        ran = bullet instanceof EffectivenessMissileType m  && m.maxRangeLifeScale? bullet.maxRange: bullet.range,
         lifeScl = bullet.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, mount.aimX, mount.aimY) / ran) : 1f,
         angle = shootAngle + Mathf.range(inaccuracy + bullet.inaccuracy);
 

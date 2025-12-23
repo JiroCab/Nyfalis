@@ -11,28 +11,31 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import mindustry.world.*;
+import olupis.world.interfaces.*;
 
 import static mindustry.Vars.*;
 
-public class EffectivenessMissleType extends MissileBulletType {
+public class EffectivenessMissileType extends MissileBulletType implements ElevationDamgeStatPassThrough{
     static final EventType.UnitDamageEvent bulletDamageEvent = new EventType.UnitDamageEvent();
     public float groundDamageMultiplier = 1f;
     public float groundDamageSplashMultiplier = 1f;
     public boolean flatDamage = false, homingExtends = true, maxRangeLifeScale;
     public float homingExtendedRange = 3f * tilesize;
+    public StatusEffect groundStatus = StatusEffects.none, airStatus = StatusEffects.none;
 
     private static final Rect rect = new Rect();
 
-    public EffectivenessMissleType(float speed, float damge, String bulletSprite){
+    public EffectivenessMissileType(float speed, float damge, String bulletSprite){
         super(speed, damge, bulletSprite);
     }
 
-    public EffectivenessMissleType(float speed, float damge){
+    public EffectivenessMissileType(float speed, float damge){
         super(speed, damge);
     }
 
-    public EffectivenessMissleType(){
+    public EffectivenessMissileType(){
         super();
     }
 
@@ -73,6 +76,8 @@ public class EffectivenessMissleType extends MissileBulletType {
             if(impact) Tmp.v3.setAngle(b.rotation() + (knockback < 0 ? 180f : 0f));
             unit.impulse(Tmp.v3);
             unit.apply(status, statusDuration);
+            if(groundStatus != StatusEffects.none &&unit.isGrounded()) unit.apply(groundStatus, statusDuration);
+            if(airStatus != null && !unit.isGrounded()) unit.apply(airStatus, statusDuration);
 
             Events.fire(bulletDamageEvent.set(unit, b));
         }
@@ -131,9 +136,9 @@ public class EffectivenessMissleType extends MissileBulletType {
                 }
             }
 
-            if(status != StatusEffects.none){
-                Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
-            }
+            if(status != StatusEffects.none) Damage.status(b.team, x, y, splashDamageRadius, status, statusDuration, collidesAir, collidesGround);
+            if(airStatus != StatusEffects.none && collidesAir) Damage.status(b.team, x, y, splashDamageRadius, airStatus, statusDuration, true, false);
+            if(groundStatus != StatusEffects.none && collidesGround) Damage.status(b.team, x, y, splashDamageRadius, groundStatus, statusDuration, false, true);
 
             if(heals()){
                 indexer.eachBlock(b.team, x, y, splashDamageRadius, Building::damaged, other -> {
@@ -165,5 +170,30 @@ public class EffectivenessMissleType extends MissileBulletType {
                 }
             }
         }
+    }
+
+    @Override
+    public float groundDamage(){
+        return flatDamage ? groundDamageMultiplier :   groundDamageMultiplier * damage;
+    }
+
+    @Override
+    public float groundDamageMultiplier(){
+        return flatDamage ? ((groundDamageMultiplier / damage)) : groundDamageMultiplier;
+    }
+
+    @Override
+    public float groundDamageSplashMultiplier(){
+        return flatDamage ? ((groundDamageSplashMultiplier / splashDamage)) : groundDamageSplashMultiplier;
+    }
+
+    @Override
+    public StatusEffect groundStatusEffect(){
+        return groundStatus;
+    }
+
+    @Override
+    public StatusEffect airStatusEffect(){
+        return airStatus;
     }
 }
