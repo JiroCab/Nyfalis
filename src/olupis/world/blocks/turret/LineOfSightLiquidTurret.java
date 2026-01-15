@@ -24,7 +24,7 @@ public class LineOfSightLiquidTurret extends  NyfalisLiquidTurret{
     }
 
     public class LineOfSightLiquidTurretBuild extends NyfalisLiquidTurretBuild{
-        public boolean ignoreLOS;
+        public boolean ignoreLOS = false;
 
         @Override
         public void placed(){

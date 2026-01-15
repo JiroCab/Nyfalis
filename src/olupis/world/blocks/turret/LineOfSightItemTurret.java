@@ -23,7 +23,7 @@ public class LineOfSightItemTurret extends  NyfalisItemTurret{
 
 
     public class LineOfSightTurretBuild extends NyfalisItemTurretBuild{
-        public boolean ignoreLOS;
+        public boolean ignoreLOS = false;
 
         @Override
         public void placed(){

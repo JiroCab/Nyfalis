@@ -4,4 +4,8 @@ space.ogg -> Command and Conquer: Red alert 3
 cnc_zh_battlemaster_weapon.wav -> Command and Conquer: Generals/Zero Hour
 sawblades -> ota (custom recorded and made :3)
 warning sound -> ota
-funi rainbow music -> https://youtu.be/6-8E4Nirh9s
+funi rainbow music -> https://youtu.be/6-8E4Nirh9s (Caramella Girls)
+
+pvc-rocket1 -> https://freesound.org/people/bowlingballout/sounds/151713/
+pvc-rocket2 -> https://freesound.org/people/bowlingballout/sounds/151714/
+microwave-beep -> https://freesound.org/people/vestibule-door/sounds/668982/

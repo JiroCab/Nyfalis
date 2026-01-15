@@ -436,7 +436,7 @@ public class NyfalisFxs extends Fx {
         }).followParent(true).rotWithParent(true).layer(Layer.bullet - 0.01f),
 
         //stolen from: https://github.com/ItsKirby69/MineDusty/blob/master/src/minedusty/content/DustyEffects.java#L263
-        trangenderTreeLeafEffect =  new Effect(450f, e ->{
+        transgenderTreeLeafEffect =  new Effect(450f, e ->{
             color(e.color, e.color, e.fslope());
             alpha(e.fslope() * 3f);
 
@@ -446,7 +446,7 @@ public class NyfalisFxs extends Fx {
             });
         }).layer(Layer.darkness + 1),
 
-        trangenderTreeLeafEffectUnder =  new Effect(450f, e ->{
+        transgenderTreeLeafEffectUnder =  new Effect(450f, e ->{
             color(e.color, e.color, e.fslope());
             alpha(e.fslope() * 3f);
 
@@ -496,7 +496,19 @@ public class NyfalisFxs extends Fx {
             alpha(fade);
             Draw.rect(Core.atlas.find("olupis-circooler"), cx, cy, wid, len, angle);
             // lineAngle(sx, sy, angle, length);
-        }).layer(35f).rotWithParent(true).followParent(true)
+        }).layer(35f).rotWithParent(true).followParent(true),
+
+        repairPinSpark = new Effect(40, e -> {
+            color(Pal.heal);
+            stroke(e.fout() * 1.6f);
+
+            randLenVectors(e.id, 18, e.finpow() * 27f, e.rotation, 360f, (x, y) -> {
+                float ang = Mathf.angle(x, y);
+                Drawf.square(e.x + x, e.y + y, 0);
+                Drawf.square(e.x + x, e.y + y, 0);
+                lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
+            });
+        })
 
 
     ;

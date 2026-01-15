@@ -1,11 +1,11 @@
 package olupis.world.ai;
 
 import arc.math.*;
+import mindustry.ai.*;
 import mindustry.ai.types.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import olupis.content.*;
-import olupis.input.*;
 import olupis.world.entities.abilities.*;
 import olupis.world.entities.units.*;
 
@@ -21,6 +21,15 @@ public class RetreatAi extends ArmDefenderAi{
 
         if(unit.controller() instanceof CommandAI ai){
             ai.defaultBehavior();
+        }
+        if(unit.isCommandable()){
+            boolean hold = false;
+            if(!unit.command().hasStance(UnitStance.pursueTarget)){
+                if(unit.command().targetPos != null && !unit.within(unit.command().targetPos , unit.range())) hold = true;
+                if(unit.command().attackTarget != null && !unit.within(unit.command().attackTarget , unit.range())) hold = true;
+            }
+
+            unit.command().setStance(UnitStance.holdFire, hold);
         }
     }
 

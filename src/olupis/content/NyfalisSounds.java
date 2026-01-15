@@ -15,28 +15,29 @@ import static olupis.content.NyfalisPlanets.*;
 public class NyfalisSounds {
     /*Music has been moved to https://github.com/JiroCab/Nyfalis-Music*/
     public static Sound
-            as2ArmorBreak = new Sound(),
-            as2PlasmaShot = new Sound(),
-            cncZhBattleMasterWeapon = new Sound(),
-            cncZhAvengerPdl = new Sound(),
-            sawActiveLoop = new Sound(),
-            sawCollision = new Sound(),
-            snip = new Sound(),
-            cncRa2DestroyerOsprey = new Sound(),
-            cncZhQuadPew = new Sound(),
-            cncRa3V4MissLand4 = new Sound(),
+        as2ArmorBreak = new Sound(),
+        as2PlasmaShot = new Sound(),
+        shootPVC1 = new Sound(),
+        shootPVC2 = new Sound(),
+        shootCncBattleMaster = new Sound(),
+        shootCncOsprey = new Sound(),
+        shootCncQuad = new Sound(),
+        shootCncV4MissileLand = new Sound(),
+        shootCncAvengerPdl = new Sound(),
+        shootBarrel = new Sound(),
+        shootMicrowave = new Sound(),
+        shootSnip = new Sound(),
+        sawActiveLoop = new Sound(),
+        sawCollision = new Sound(),
 
+        cascadeDangerWarning = new Sound(),
 
-            barrelLaunch = new Sound(),
+        space = new Sound(),
+        space2 = new Sound(),
+        rainbow1 = new Sound(),
+        rainbow2 = new Sound(),
 
-            cascadeDangerWarning = new Sound(),
-
-            space = new Sound(),
-            space2 = new Sound(),
-            rainbow1 = new Sound(),
-            rainbow2 = new Sound(),
-
-            mossSpread = new Sound();
+        mossSpread = new Sound()
     ;
     public static Seq<Sound> spaces;
 
@@ -44,21 +45,25 @@ public class NyfalisSounds {
         //Note: Vars.tree.loadSound only works with .mp3 and .ogg
         as2PlasmaShot = tree.loadSound("as2-plasma-shot");
         as2ArmorBreak = tree.loadSound("as2-broke-armor");
-        cncZhBattleMasterWeapon = tree.loadSound("cnc-zh-battlemaster-weapon");
-        cncZhAvengerPdl = tree.loadSound("cnc-zh-avenger-pdl");
+        shootCncBattleMaster = tree.loadSound("cnc-zh-battlemaster-weapon");
+        shootCncAvengerPdl = tree.loadSound("cnc-zh-avenger-pdl");
         sawActiveLoop = tree.loadSound("sawblade-active-loop");
         sawCollision = tree.loadSound("sawblade-collision");
-        snip = tree.loadSound("snip");
-        barrelLaunch = tree.loadSound("barrel-launch");
+        shootSnip = tree.loadSound("shootSnip");
+        shootBarrel = tree.loadSound("barrel-launch");
         cascadeDangerWarning = tree.loadSound("cascade-danger-warning");
         rainbow1 = tree.loadSound("rainbow-stat-music1");
         rainbow2 = tree.loadSound("rainbow-stat-music2");
         space = tree.loadSound("space");
         space2 = tree.loadSound("space2");
         mossSpread = tree.loadSound("moss-spread");
-        cncRa2DestroyerOsprey = tree.loadSound("cnc-ra2-destoryer-osprey");
-        cncZhQuadPew = tree.loadSound("cnc-zh-quad-pew");
-        cncRa3V4MissLand4 = tree.loadSound("cnc-ra3-v4missland4");
+        shootCncOsprey = tree.loadSound("cnc-ra2-destoryer-osprey");
+        shootCncQuad = tree.loadSound("cnc-zh-quad-pew");
+        shootCncV4MissileLand = tree.loadSound("cnc-ra3-v4missland4");
+
+        shootPVC1 = tree.loadSound("pvc-rocket1");
+        shootPVC2 = tree.loadSound("pvc-rocket2");
+        shootMicrowave =  tree.loadSound("microwave-beep");
 
         spaces = Seq.with(space, space2);
     }

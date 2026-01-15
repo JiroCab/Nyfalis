@@ -25,7 +25,7 @@ public class BurstPump extends Pump {
     public Interp speedCurve = Interp.pow2In;
     //public float invertedTime = 200f,
     public float pumpTime = 400, dumpScale = 1.5f;
-    public Sound drillSound = Sounds.wind3;
+    public Sound drillSound = Sounds.explosionDull;
     public float drillSoundVolume = 0.4f, drillSoundPitchRand = 0.3f, pumpEffectRnd = -1f, shake = 2f, leakAmount = 2f;
     public Effect pumpEffect = Fx.steam;
 

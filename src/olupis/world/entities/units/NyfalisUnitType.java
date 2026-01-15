@@ -33,6 +33,8 @@ import olupis.world.blocks.unit.*;
 import olupis.world.entities.*;
 import olupis.world.entities.entities.*;
 
+import java.util.*;
+
 import static arc.Core.settings;
 import static mindustry.Vars.*;
 
@@ -66,6 +68,7 @@ public class NyfalisUnitType extends UnitType {
                             healingIgnoresMines = false
     ;
     public float minVel = -1;
+    public HashMap<Unit, Integer> velPreviousAngle = new HashMap<>();
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
     public float secondaryLightRadius = lightRadius  * 2, deathRegrowChance = 0.1f;
     public StatusEffect payloadUpdateSE = StatusEffects.none, payloadDisarmSE = StatusEffects.disarmed;
@@ -343,8 +346,22 @@ public class NyfalisUnitType extends UnitType {
             unit.apply(payloadDisarmSE, Time.toSeconds);
         }
 
-        if(minVel > 0){
+        if(minVel > 0 && unit.speedMultiplier >= 0.5){
+            if (!velPreviousAngle.containsKey(unit)) velPreviousAngle.put(unit, Math.round(unit.vel.angle()));
+
             unit.vel.setLength2(Math.max(minVel, unit.vel.len2()));
+            if(!unit.isShooting &unit.vel.len2() <= (minVel * 1.25f)){
+
+                int mul = unit.vel.angle() - unit.vel.angle() >= 0 ? 2 : -2;
+                unit.vel.setAngle(unit.vel.angle() - (rotateSpeed * mul));
+                Log.err(mul + "");
+
+                unit.lookAt(unit.vel.angle());
+            }
+            velPreviousAngle.put(unit, Math.round(unit.vel.angle()));
+        }
+        if(velPreviousAngle.containsKey(unit)){
+            if(unit.dead())velPreviousAngle.remove(unit);
         }
     }
 

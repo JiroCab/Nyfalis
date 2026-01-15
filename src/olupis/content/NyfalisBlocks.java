@@ -296,9 +296,10 @@ public class NyfalisBlocks {
             attributes.set(Attribute.steam, 1f);
         }};
 
-        forestGrass = new Floor("forest-grass") {{
+        forestGrass = new RotatingFloor("forest-grass") {{
             attributes.set(Attribute.water, 0.1f);
             variants = 3;
+            rotateDraw =false;
         }};
 
         lumaGrassWater = new Floor("luma-grass-water") {{
@@ -2508,7 +2509,7 @@ public class NyfalisBlocks {
             }};
             lightColor = turretLightColor;
             outlineColor = nyfalisBlockOutlineColour;
-            shootSound = NyfalisSounds.snip;
+            shootSound = NyfalisSounds.shootSnip;
             coolant = consume(new ConsumeLubricant(15f / 60f));
             consumePower(30f / 60f);
             researchCost = with(iron, 200, copper, 150);

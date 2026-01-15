@@ -33,6 +33,7 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 * [Catana](https://github.com/Catana791) - Sprites
 * [ItsKirby69](https://github.com/ItsKirby69) - Sprites, Fx
 * slario&asterisk.txt - Maps
+* https://freesound.org/
 
 
  # Mindusty v7 / Nyfalis v1.7.x Migration guide

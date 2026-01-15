@@ -129,7 +129,7 @@ public class NyfalisTurrets {
             range = 180;
             fogRadius = 140;
             shootCone = 5f;
-            shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
+            shootSound = NyfalisSounds.shootPVC1;
             ammoUseEffect = Fx.casing1;
             shootEffect = Fx.shootLiquid;
             health = 350;
@@ -407,7 +407,6 @@ public class NyfalisTurrets {
             }
         };
 
-
         shredder = new LineOfSightItemTurret("shredder"){{
             targetAir = false;
             emitLight = angleCheck = true;
@@ -431,7 +430,7 @@ public class NyfalisTurrets {
             drawer = new DrawTurret("iron-");
             shoot = new ShootSpread(3, 15);
             smokeEffect = Fx.shootSmokeSquareSparse;
-            shootSound = NyfalisSounds.cncZhBattleMasterWeapon;
+            shootSound = NyfalisSounds.shootCncBattleMaster;
             researchCost = with(lead, 1000, iron, 850, graphite, 850, copper, 1000);
             requirements(Category.turret, with(iron, 100, lead, 20, graphite, 20, copper, 30));
             coolant = consume(new ConsumeLubricant(15f / 60f));
@@ -786,9 +785,8 @@ public class NyfalisTurrets {
             reload = 15 * 16;
             fogRadiusMultiplier = 0.75f;
             ammoPerShot = 12;
-            loopSound = Sounds.wind3;
             outlineColor = nyfalisBlockOutlineColour;
-            shootSound = NyfalisSounds.cncRa2DestroyerOsprey;
+            shootSound = NyfalisSounds.shootCncOsprey;
             researchCost = with(iron, 500, copper, 500, silicon, 300, quartz, 500);
             coolant = consume(new ConsumeLubricant(35f / 60f));
             requirements(Category.turret, with(iron, 100, copper, 150, silicon, 50, quartz, 100));
@@ -1049,7 +1047,7 @@ public class NyfalisTurrets {
                 }};
                 ammoPerShot = 20;
                 maxAmmo = 220;
-                shootSound = Sounds.shootMissile;
+                shootSound = Sounds.shootMissileLong;
                 lightColor = floodLightColor;
                 outlineColor = nyfalisBlockOutlineColour;
                 shootEffect = Fx.shootSmallSmoke;
@@ -1182,7 +1180,7 @@ public class NyfalisTurrets {
             shootY = (Vars.tilesize * size) - 10f;
             outlineColor = nyfalisBlockOutlineColour;
             lightColor = turretLightColor;
-            shootSound = NyfalisSounds.barrelLaunch;
+            shootSound = NyfalisSounds.shootBarrel;
             researchCost = with(iron, 4500, copper, 4500, quartz, 3000, aluminum, 3000);
             requirements(Category.turret, with(iron, 100, copper, 100, quartz, 50, aluminum, 50));
 
@@ -1974,8 +1972,6 @@ public class NyfalisTurrets {
         };
         //endregion
     }
-    
-
 
     public static Color updateColor(){
         return cascadeAlt ? Color.brown : Color.blue;

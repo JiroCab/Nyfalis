@@ -24,9 +24,6 @@ import olupis.*;
 import olupis.content.*;
 import olupis.world.blocks.environment.*;
 
-import java.util.*;
-import java.util.Map.*;
-
 import static mindustry.Vars.*;
 import static olupis.NyfalisVars.*;
 import static olupis.content.NyfalisBlocks.*;
@@ -249,8 +246,8 @@ public class NyfWorldFuckingHelper{
 
         Tile tree = trees.random();
         if(tree != null){
-            if(Mathf.randomBoolean()) NyfalisFxs.trangenderTreeLeafEffect.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
-            else NyfalisFxs.trangenderTreeLeafEffectUnder.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
+            if(Mathf.randomBoolean()) NyfalisFxs.transgenderTreeLeafEffect.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
+            else NyfalisFxs.transgenderTreeLeafEffectUnder.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
         }
     }
 
