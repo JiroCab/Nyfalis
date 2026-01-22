@@ -51,6 +51,7 @@ public class NyfalisMain extends Mod{
         NyfalisStatusEffects.loadStatusEffects();
         NyfalisItemsLiquid.LoadLiquids();
         NyfalisUnitCommands.loadUnitCommands();
+        NyfalisColors.load();
         ControlPathfinder.costTypes.addAll(NyfalisPathfind.nyfCostTypes);
         NyfalisUnits.LoadUnits();
         NyfalisBlocks.LoadWorldTiles();

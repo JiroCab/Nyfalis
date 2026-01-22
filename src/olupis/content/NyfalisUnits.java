@@ -325,6 +325,7 @@ public class NyfalisUnits {
                 damageEffect = NyfalisFxs.chainLightningAlt;
                 layer = Layer.flyingUnitLow - 0.01f;
                 status=  StatusEffects.none;
+                shootSound = Sounds.shootPulsar;
                 maxTargets = 5;
                 statusDuration = curStroke = 0;
                 maxDamageFraction = 0.75f;
@@ -427,7 +428,7 @@ public class NyfalisUnits {
                 shootCone = 60f;
 
                 ejectEffect = Fx.none;
-                shootSound = Sounds.shootArc;
+                shootSound = Sounds.shootPulsar;
                 ignoreRotation = parentizeEffects = autoTarget = autoFindTarget = true;
                 top = alternate =  mirror = false;
 
@@ -532,7 +533,6 @@ public class NyfalisUnits {
                     reload = 20f;
                     inaccuracy = 3f;
                     shootCone = 45f;
-                    ejectEffect = Fx.casing1;
 
                     shootSound = Sounds.shootMissile;
                     weaponIconUseFullString = true;
@@ -563,6 +563,7 @@ public class NyfalisUnits {
                     recoils = 1;
                     top = alternate = mirror = false;
                     rotate = alwaysRotate = true;
+                    ejectEffect = Fx.casing1;
 
                     weaponIconString = "olupis-pteropus-turret-ui";
 
@@ -594,8 +595,8 @@ public class NyfalisUnits {
                         lifetime = 28f;
                         splashDamage = 1f;
                         splashDamageRadius = 5f * 0.75f;
-                        frontColor = ironBullet;
-                        backColor = ironBulletBack;
+                        frontColor = rustyBullet;
+                        backColor = Items.lead.color;
                         hitEffect = despawnEffect = Fx.hitBulletSmall;
                         sprite = "mine-bullet";
                         collidesAir = false;
@@ -631,7 +632,7 @@ public class NyfalisUnits {
                     shootY = 5;
                     x = 0;
                     shootCone = 15f;
-                    ejectEffect = Fx.casing1;
+                    ejectEffect = Fx.casing2Double;
                     shootSound = NyfalisSounds.shootCncOsprey;
 
                     shoot = new ShootSpread(5, 5);
@@ -713,6 +714,7 @@ public class NyfalisUnits {
                             height = 12f;
                             shrinkY = 1f;
                             lifetime = 10f;
+                            homingPower = 0.01f;
                             backColor = rustyBulletBack;
                             frontColor = rustyBullet;
                             despawnEffect = Fx.none;
@@ -920,6 +922,9 @@ public class NyfalisUnits {
                 reload = shootCone = 15f;
                 ejectEffect = Fx.casing1;
 
+                shootSound = NyfalisSounds.shootPVC1;
+                soundPitchMax = 1.2f;
+                soundPitchMin = 1f;
                 showStatSprite = false;
                 bullet = new BasicBulletType(3.2f, 5, "olupis-triangle-bullet"){{
                     width = 4;
@@ -963,7 +968,7 @@ public class NyfalisUnits {
                 shootCone = 65f;
                 baseRotation = -7f;
                 ejectEffect = Fx.none;
-                shootSound = NyfalisSounds.shootCncOsprey;
+                shootSound = NyfalisSounds.shootPVC2;
 
                 showStatSprite = false;
                 bullet = new ShappedBulletType(){{
@@ -1038,6 +1043,9 @@ public class NyfalisUnits {
                     shootCone = 65f;
                     ejectEffect = Fx.none;
 
+                    shootSound = NyfalisSounds.shootPVC2;
+                    soundPitchMax = 0.8f;
+                    soundPitchMin = 0.6f;
                     showStatSprite = false;
                     bullet = new BasicBulletType(3f, 12f){{
                         spin = 30f;
@@ -1046,7 +1054,7 @@ public class NyfalisUnits {
                         splashDamage = 1f;
                         splashDamageRadius = 5f * 0.75f;
                         frontColor = ironBullet;
-                        backColor = ironBulletBack;
+                        mixColorTo = mixColorFrom = backColor = ironBulletBack;
                         hitEffect = despawnEffect = Fx.hitBulletSmall;
                         sprite = "mine-bullet";
                         collidesAir = false;
@@ -1068,7 +1076,7 @@ public class NyfalisUnits {
                     shoot = sht;
 
                     showStatSprite = false;
-                    shootSound = NyfalisSounds.shootCncOsprey;
+                    shootSound = NyfalisSounds.shootPVC1;
                     bullet = new BasicBulletType(5f, 4f, "olupis-triangle-bullet"){{
                         width = 4;
                         height = 6f;
@@ -1691,7 +1699,8 @@ public class NyfalisUnits {
                         homingRange = 100f;
                         homingDelay = 10;
                         splashDamageRadius = 20f * 0.75f;
-                        frontColor = trailColor = graphite.color;
+                        frontColor = trailColor = Pal.graphiteAmmoFront;
+                        backColor = Pal.graphiteAmmoBack;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
                         hitEffect = new MultiEffect(NyfalisFxs.hollowPointHit, Fx.pointHit);
@@ -1747,6 +1756,7 @@ public class NyfalisUnits {
                     shrinkY = -0.57f;
                     frontColor = ironBullet;
                     backColor = ironBulletBack;
+                    mixColorTo = mixColorFrom = Color.darkGray;
                     trailColor = rustyBulletBack;
                     hitEffect = despawnEffect = Fx.flakExplosionBig;
 
@@ -2101,7 +2111,6 @@ public class NyfalisUnits {
                 mirror = controllable = false;
                 weaponIconString = "olupis-bay-ui-front";
                 shootSound = NyfalisSounds.shootCncQuad;
-                shootSoundVolume = 0.15f;
                 bullet = new BasicBulletType(2.5f, 10){{
                     width = 3f;
                     height = 20f;
@@ -2109,6 +2118,7 @@ public class NyfalisUnits {
                     collidesAir = false;
                     frontColor = rustyBullet;
                     backColor = rustyBulletBack;
+                    shootEffect = Fx.shootScepterSecondary;
                     hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
                 }};
             }});
@@ -2194,7 +2204,6 @@ public class NyfalisUnits {
                             moves.add(new PartMove(PartProgress.recoil, 0, -2f, 0));
                     }}); }
                     shootSound = NyfalisSounds.shootCncQuad;
-                    shootSoundVolume = 0.15f;
                     bullet = new BasicBulletType(2.5f, 8, "olupis-diamond-bullet"){{
                         width = 3f;
                         height = 17f;
@@ -2204,7 +2213,7 @@ public class NyfalisUnits {
                         backColor = ironBulletBack;
 
                         hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
-                        shootEffect = Fx.shootSmallSmoke;
+                        shootEffect = Fx.shootScepterSecondary;
                         shootSound = Sounds.none;
                     }};
                 }}
@@ -2255,6 +2264,7 @@ public class NyfalisUnits {
                     collidesAir = false;
                     frontColor = ironBullet;
                     backColor = ironBulletBack;
+                    shootEffect = Fx.shootBig2;
                     hitEffect = despawnEffect = Fx.hitBulletSmall;
                 }};
             }});
@@ -2318,11 +2328,13 @@ public class NyfalisUnits {
             itemCapacity = 60;
             constructor = bay.constructor;
             weapons.addAll(
-                new Weapon("olupis-slash"){{
+                new Weapon(""){{
                     y = x = 0;
                     reload = 60f * 10;
                     mirror = false;
+                    top = false;
                     rotate = true;
+
                     layerOffset = 0.01f;
                     ejectEffect = Fx.casing1;
                     shootSound = Sounds.shootSpectre;
@@ -2331,8 +2343,9 @@ public class NyfalisUnits {
                     rotateSpeed = 2f;
 
                     bullet = new ArtilleryBulletType(2f, 200f){{
-                        shootEffect = Fx.shootBig;
-                        hitEffect = despawnEffect = deathExplosionEffect = Fx.massiveExplosion;;
+                        shootEffect = Fx.shootSmokeTitan;
+                        smokeEffect = Fx.shootSmokeTitan;
+                        hitEffect = despawnEffect = deathExplosionEffect = Fx.massiveExplosion;
                         width = 16f;
                         height = 20f;
                         shrinkX = 25f /60;
@@ -2345,19 +2358,25 @@ public class NyfalisUnits {
 
                     parts.addAll(
                         new RegionPart(){{
+                            name = "olupis-slash";
+                            mirror = false;
+                            moves.addAll(new PartMove(p -> 1, 0, 0, 0.3f, 0.3f,  0));
+                        }},
+                        new RegionPart(){{
                             name = "olupis-shear";
                             mirror = false;
                             top = true;
                             progress = PartProgress.smoothReload;
-                            moveY = 13;
+                            moveY = 18;
                             y = -1;
-
+                            moves.addAll(new PartMove(p -> 1, 0, 0, 0.3f, 0.3f,  0));
                         }}
                     );
                 }},
                 new Weapon("olupis-twin-mount"){{
                     x = 0;
-                    y = -11f;
+                    y = 0f;
+                    layerOffset = 0.1f;
                     recoils = 2;
                     recoil = 0.5f;
                     reload = 20f;
@@ -2500,6 +2519,8 @@ public class NyfalisUnits {
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
+            crashDamageMultiplier = 0f;
+
             mechSideSway = 0.25f;
             maxRange = 15f * Vars.tilesize;
 
@@ -2509,7 +2530,7 @@ public class NyfalisUnits {
             controller = u -> new SearchAndDestroyFlyingAi();
             weapons.add(new NyfalisWeapon(){{
                 y = x = 0f;
-                reload = 30f;
+                reload = 35f;
                 inaccuracy = 12f;
                 shootCone = 15f;
                 targetInterval = 30f;
@@ -2547,6 +2568,7 @@ public class NyfalisUnits {
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
+            crashDamageMultiplier = 0f;
 
 
             flying = targetGround = targetAir = drawAmmo = altResupply = true;
@@ -2622,6 +2644,7 @@ public class NyfalisUnits {
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
+            crashDamageMultiplier = 0f;
 
             flying = targetGround = targetAir = drawAmmo = true;
             playerControllable  = logicControllable = useUnitCap =  false;
@@ -2671,6 +2694,7 @@ public class NyfalisUnits {
             fogRadius = 0;
             lightRadius = 15f;
             itemCapacity = 0;
+            crashDamageMultiplier = 0f;
 
             flying = targetGround = targetAir = drawAmmo  = true;
             playerControllable  = logicControllable = useUnitCap  = false;

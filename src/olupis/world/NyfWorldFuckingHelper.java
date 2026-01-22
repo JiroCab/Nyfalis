@@ -111,7 +111,7 @@ public class NyfWorldFuckingHelper{
 
     // no longer assumes the solids do not exist
     public static void growSprigs(Tile t){
-        if(t == null || (t.block() != Blocks.air && !t.block().alwaysReplace)) return;
+        if(t == null || (t.build != null) ||(t.block() != Blocks.air && (!t.block().alwaysReplace))) return;
 
         if(t.block() instanceof RotatingProp sp && sp.replacement != null && sp.replacement != Blocks.air){
             t.setNet(sp.replacement);

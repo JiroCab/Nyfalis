@@ -26,6 +26,7 @@ import mindustry.ui.dialogs.*;
 import mindustry.ui.fragments.*;
 import olupis.*;
 import olupis.content.*;
+import olupis.input.*;
 import olupis.world.entities.packets.*;
 
 import java.util.*;
@@ -205,61 +206,89 @@ public class NyfalisStartUpUis {
     }
 
     public static void loadHints(){
-        ui.hints.hints.addAll(new HintsFragment.Hint() {
-            @Override
-            public String name() {return "hint.nyflais-command";}
+        ui.hints.hints.addAll(
+            new HintsFragment.Hint() {
+                @Override
+                public String name() {return "hint.nyflais-command";}
 
-            @Override
-            public String text() {return Core.bundle.get("hint.nyflais-command.text");}
+                @Override
+                public String text() {return Core.bundle.get("hint.nyflais-command.text");}
 
-            @Override
-            public boolean complete() {return Binding.commandMode.value.key != Binding.boost.value.key;}
+                @Override
+                public boolean complete() {return Binding.commandMode.value.key != Binding.boost.value.key;}
 
-            @Override
-            public boolean show() {return Binding.commandMode.value.key == Binding.boost.value.key;}
+                @Override
+                public boolean show() {return Binding.commandMode.value.key == Binding.boost.value.key;}
 
-            @Override
-            public int order() {return 5;}
+                @Override
+                public int order() {return 5;}
 
-            @Override
-            public boolean valid() {return !Vars.mobile ||  control.input instanceof DesktopInput;}
-        },new HintsFragment.Hint() {
-            @Override
-            public String name() {return "hint.nyflais-end-of-content";}
+                @Override
+                public boolean valid() {return !Vars.mobile ||  control.input instanceof DesktopInput;}
+            },new HintsFragment.Hint() {
+                @Override
+                public String name() {return "hint.nyflais-end-of-content";}
 
-            @Override
-            public String text() {return Core.bundle.get("hint.nyflais-end-of-content.text");}
+                @Override
+                public String text() {return Core.bundle.get("hint.nyflais-end-of-content.text");}
 
-            @Override
-            public boolean complete() {return state.isCampaign() &&  (state.getPlanet() == NyfalisPlanets.nyfalis || state.getPlanet() == NyfalisPlanets.vorgin);}
+                @Override
+                public boolean complete() {return state.isCampaign() &&  (state.getPlanet() == NyfalisPlanets.nyfalis || state.getPlanet() == NyfalisPlanets.vorgin);}
 
-            @Override
-            public boolean show() {return state.isCampaign() && (state.getPlanet() == NyfalisPlanets.nyfalis || state.getPlanet() == NyfalisPlanets.vorgin);}
+                @Override
+                public boolean show() {return state.isCampaign() && (state.getPlanet() == NyfalisPlanets.nyfalis || state.getPlanet() == NyfalisPlanets.vorgin);}
 
-            @Override
-            public int order() {return 6;}
+                @Override
+                public int order() {return 6;}
 
-            @Override
-            public boolean valid() {return true;}
-        }, new HintsFragment.Hint() {
-            @Override
-            public String name() {return "hint.nyflais-optional-sectors";}
+                @Override
+                public boolean valid() {return true;}
+            }, new HintsFragment.Hint() {
+                @Override
+                public String name() {return "hint.nyflais-optional-sectors";}
 
-            @Override
-            public String text() {return Core.bundle.get("hint.nyflais-optional-sectors.text");}
+                @Override
+                public String text() {return Core.bundle.get("hint.nyflais-optional-sectors.text");}
 
-            @Override
-            public boolean complete() {return state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet()) && state.getSector().preset == null && state.getSector().isCaptured() ;}
+                @Override
+                public boolean complete() {return state.isCampaign() && NyfalisPlanets.isNyfalianPlanet(state.getPlanet()) && state.getSector().preset == null && state.getSector().isCaptured() ;}
 
-            @Override
-            public boolean show() {return state.isCampaign() &&  NyfalisPlanets.isNyfalianPlanet(state.getPlanet()) && state.getSector().preset == null;}
+                @Override
+                public boolean show() {return state.isCampaign() &&  NyfalisPlanets.isNyfalianPlanet(state.getPlanet()) && state.getSector().preset == null;}
 
-            @Override
-            public int order() {return 7;}
+                @Override
+                public int order() {return 7;}
 
-            @Override
-            public boolean valid() {return true;}
-        });
+                @Override
+                public boolean valid() {return true;}
+            }, new HintsFragment.Hint() {
+                int prev = -1;
+                @Override
+                public String name() {return "hint.nyflais-command-append";}
+
+                @Override
+                public String text() {return Core.bundle.get("hint.nyflais-command-append.text");}
+
+                public boolean yes(){
+                    prev = control.input.selectedUnits.size;
+                    return control.input.commandMode && control.input.selectedUnits.size > 0 && control.input.selectedUnits.contains( u -> NyfalisUnitCommands.hasAppend.contains(u.command().command));
+                }
+
+                @Override
+                public boolean complete() {return  yes() && Core.input.keyDown(Binding.boost) && prev != control.input.selectedUnits.size;}
+
+                @Override
+                public boolean show() {
+                    return yes();
+                }
+
+                @Override
+                public int order() {return 8;}
+
+                @Override
+                public boolean valid() {return true;}
+            }
+        );
     }
 
     public static void nyfAdditionalRules(CustomRulesDialog in){

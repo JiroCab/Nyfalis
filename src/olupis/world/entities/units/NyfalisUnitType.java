@@ -354,7 +354,6 @@ public class NyfalisUnitType extends UnitType {
 
                 int mul = unit.vel.angle() - unit.vel.angle() >= 0 ? 2 : -2;
                 unit.vel.setAngle(unit.vel.angle() - (rotateSpeed * mul));
-                Log.err(mul + "");
 
                 unit.lookAt(unit.vel.angle());
             }
