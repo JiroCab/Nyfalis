@@ -57,9 +57,7 @@ public class HeadacheCrafter  extends GenericCrafter{
 
         configClear((HeadacheCrafterBuild build) -> build.planSelected = 0);
 
-        drawer =
-
-        new DrawMulti(new DrawDefault(),new PlanDrawer());
+        drawer = new DrawMulti(new DrawDefault(),new PlanDrawer());
     }
 
     @Override
@@ -75,14 +73,21 @@ public class HeadacheCrafter  extends GenericCrafter{
             table.table(nu -> plans.each(pl -> {
                 nu.row();
                 nu.table(Styles.grayPanel, b -> {
-
-                        //TODO THIS NO WORK LOL
-                        if(state.rules.bannedBlocks.contains(pl) && !state.rules.blockWhitelist){
+                        if(pl.isBanned()){
                             b.table(e -> {
                                 e.image(Icon.cancel.getRegion()).color(Color.scarlet).scaling(Scaling.bounded).row();
                             }).center();
 
                             b.table(e -> {
+                            if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
+                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01f, false)).pad(5).row();
+                        }).padLeft(5f);
+                    }else if(!pl.unlockedNow()){
+                        b.table(e -> {
+                            e.image(Icon.tree.getRegion()).color(Color.white).scaling(Scaling.bounded).row();
+                        }).center();
+
+                        b.table(e -> {
                             if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
                             if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01f, false)).pad(5).row();
                         }).padLeft(5f);
@@ -139,6 +144,7 @@ public class HeadacheCrafter  extends GenericCrafter{
                         outputs.add(stack.copy());
                 }
             }
+            plan.displayFactory.add(this);
         }
         outputItems  = new ItemStack[outputs.size];
         for(int is = 0; is < outputs.size; is++) outputItems[is] = outputs.get(is);
@@ -226,8 +232,8 @@ public class HeadacheCrafter  extends GenericCrafter{
                 () -> invalidPlan() ? null: plans.get(planSelected),
                 p -> {
                     int i  = plans.indexOf(f -> f  == p);
-                   configure(i);
-                   planSelected = i;
+                    configure(i);
+                    planSelected = i;
 
                 },
                 selectionRows,
@@ -261,7 +267,7 @@ public class HeadacheCrafter  extends GenericCrafter{
         public void placed(){
             super.placed();
 
-            if(plans.size >= 1) planSelected = plans.indexOf(getLivePlans().first());
+            if(getLivePlans().size >= 1) planSelected = plans.indexOf(getLivePlans().first());
         }
 
         @Override

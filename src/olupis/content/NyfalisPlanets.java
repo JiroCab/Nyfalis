@@ -1,5 +1,6 @@
 package olupis.content;
 
+import arc.*;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
@@ -13,13 +14,13 @@ import mindustry.world.meta.*;
 import olupis.world.planets.*;
 
 public class NyfalisPlanets {
-    public static Planet nyfalis, seredris, vorgin, system;
+    public static NyfPlanet nyfalis, seredris, vorgin, system;
     private static final Seq<Sector> systemSector = new Seq<>();
     public static final Seq<Planet> planetList = new Seq<>();
 
     public  static void LoadPlanets(){
         /*I Exist so Tech Tree's Item pool is shared among the 3 planets*/
-        system = new Planet("system", Planets.sun, 0.4f){{
+        system = new NyfPlanet("system", Planets.sun, 0.4f){{
             accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = false;
             hideDetails = alwaysUnlocked = true;
 
@@ -36,7 +37,7 @@ public class NyfalisPlanets {
             campaignRules = new NyfCampaignRules();
         }};
 
-        nyfalis = new Planet("nyfalis", Planets.sun, 1.1f, 3){{
+        nyfalis = new NyfPlanet("nyfalis", Planets.sun, 1.1f, 3){{
             allowSectorInvasion = allowLaunchLoadout = false;
             allowWaves = enemyCoreSpawnReplace  = prebuildBase = hasAtmosphere = true;
 
@@ -65,7 +66,7 @@ public class NyfalisPlanets {
         }};
 
         //1st moon
-        seredris = new Planet("seredris", NyfalisPlanets.nyfalis, 1.1f, 1){{
+        seredris = new NyfPlanet("seredris", NyfalisPlanets.nyfalis, 1.1f, 1){{
             accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = true;
 
             startSector = 2;
@@ -87,7 +88,7 @@ public class NyfalisPlanets {
             );
         }};
 
-        vorgin = new Planet("vorgin", NyfalisPlanets.nyfalis, 0.9f, 2){{
+        vorgin = new NyfPlanet("vorgin", NyfalisPlanets.nyfalis, 0.9f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
             clearSectorOnLose = allowSectorInvasion = updateLighting = accessible = allowCampaignRules = true;
 
@@ -108,6 +109,10 @@ public class NyfalisPlanets {
     }
 
     public static void  setDefRules(Planet planet){
+        setDefRules(planet, true);
+    }
+
+    public static void  setDefRules(Planet planet, boolean full){
         planet.allowCampaignRules = true;
 
         planet.ruleSetter = r ->{
@@ -122,6 +127,7 @@ public class NyfalisPlanets {
             r.env =  Env.oxygen | NyfalisAttributeWeather.nyfalian;
         };
 
+        if(!full)return;
         planet.campaignRuleDefaults = new NyfCampaignRules();
         planet.campaignRules = new NyfCampaignRules();
         
@@ -168,6 +174,35 @@ public class NyfalisPlanets {
             Log.info("Vorgin Check passed!");
             vorgin.quietUnlock();
             vorgin.alwaysUnlocked = vorgin.visible = true;
+        }
+    }
+
+    public static class NyfPlanet extends Planet{
+
+        public NyfPlanet(String name, Planet parent, float radius){
+            super(name, parent, radius);
+        }
+
+        public NyfPlanet(String name, Planet parent, float radius, int sectorSize){
+            super(name,parent,radius,sectorSize);
+        }
+
+
+        @Override
+        public void loadRules(){
+            campaignRules = Core.settings.getJson(name + "-campaign-rules", CampaignRules.class, () -> campaignRules);
+
+            NyfCampaignRules owo = new NyfCampaignRules();
+            owo.fog = campaignRules.fog;
+            owo.showSpawns = campaignRules.showSpawns;
+            owo.sectorInvasion = campaignRules.sectorInvasion;
+            owo.randomWaveAI = campaignRules.randomWaveAI;
+            owo.legacyLaunchPads = campaignRules.legacyLaunchPads;
+            owo.rtsAI =  campaignRules.rtsAI;
+            owo.clearSectorOnLose = campaignRules.clearSectorOnLose;
+            owo.difficulty = campaignRules.difficulty;
+
+            campaignRules = owo;
         }
     }
 }

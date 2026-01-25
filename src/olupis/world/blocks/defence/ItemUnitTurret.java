@@ -181,7 +181,8 @@ public class ItemUnitTurret extends ItemTurret {
             if(statArticulator != null && hasAlternate && (!statArticulator.unlockedNow() || !statArticulator.isVisible())){
                 table.row();
                 table.table(Styles.grayPanel, b -> {
-                    b.image(Icon.cancel.getRegion()).color(Pal.remove).size(30).pad(10f).left().scaling(Scaling.fit).tooltip(statArticulator.localizedName);
+                    if(!statArticulator.unlockedNow()) b.image(Icon.tree.getRegion()).size(30).pad(10f).left().scaling(Scaling.fit).tooltip(statArticulator.localizedName);
+                    else b.image(Icon.cancel.getRegion()).color(Pal.remove).size(30).pad(10f).left().scaling(Scaling.fit).tooltip(statArticulator.localizedName);
                     b.add(new Table(o -> o.add(new Image(statArticulator.uiIcon)).size(30f).scaling(Scaling.fit).tooltip(statArticulator.localizedName))).left().pad(10f);
                 }).growX().pad(5);
                 return;

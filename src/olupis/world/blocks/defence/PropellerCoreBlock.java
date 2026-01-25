@@ -28,8 +28,8 @@ import olupis.content.*;
 import static mindustry.Vars.*;
 
 public class PropellerCoreBlock extends CoreBlock  {
-     public TextureRegion blur;
-     public boolean singleBlade = false;
+    public TextureRegion blur;
+    public boolean singleBlade = false;
     public float rotateSpeed = 7f, offset = 10f, unitTimer = 60f * 35, unitPowerCost = 100;
     public Color lightColorAlt = NyfalisColors.floodLightColor;
     public Seq<CoreMode> modes;
@@ -262,7 +262,8 @@ public class PropellerCoreBlock extends CoreBlock  {
             }
 
             if(!currentMode().stats[0]) unitProg = 0;
-            else if(!unitType.isBanned() && unitType.unlockedNowHost()){
+            //only check for ban, shades are always accessible regardless of research
+            else if(!unitType.isBanned()){
                 unitProg += edelta() * Vars.state.rules.unitBuildSpeed(team);
                 if(unitProg >= unitTimer) {
                     unitProg %= unitTimer;
@@ -282,8 +283,8 @@ public class PropellerCoreBlock extends CoreBlock  {
                             unit.rotation = Angles.angle(fx, fy, x, y);
                             if(unit.isCommandable())unit.command().command(command == null && unit.type.defaultCommand != null ? unit.type.defaultCommand : command);
                             Fx.spawn.at(unit);
-                            Events.fire(new EventType.UnitCreateEvent(unit, this));
                             consume();
+                            Events.fire(new EventType.UnitCreateEvent(unit, this));
                         }
                     }
                 }
@@ -384,6 +385,15 @@ public class PropellerCoreBlock extends CoreBlock  {
         public Object config() {
             return currentMode;
         }
-        
+
+
+        @Override
+        public BlockStatus status(){
+            if (!this.enabled) return BlockStatus.logicDisable;
+            else if (!currentMode().stats[0] &&! currentMode().stats[1] && currentMode().stats[2]) return BlockStatus.active;
+            else if (!this.shouldConsume()) return BlockStatus.noOutput;
+            else if (!(this.efficiency <= 0.0F) && this.productionValid()) return Vars.state.tick / (double)30.0F % (double)1.0F < (double)this.efficiency ? BlockStatus.active : BlockStatus.noInput;
+            else return BlockStatus.noInput;
+        }
     }
 }

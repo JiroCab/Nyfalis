@@ -153,7 +153,7 @@ public class NyfalisMain extends Mod{
             });
 
             for(Planet planet : planetList){
-                setDefRules(planet);
+                setDefRules(planet, false);
             }
 
             seredris.uiIcon = bush.fullIcon;

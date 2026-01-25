@@ -2478,7 +2478,7 @@ public class NyfalisBlocks {
                 shootCone = 180f;
                 liquidCapacity = 5f;
                 coolantMultiplier = 3f;
-                turretLayer = Layer.legUnit +0.3f;
+                turretLayer = Layer.power +0.3f;
                 for(int i = 0; i < 6; i++){
                     int finalI = i;
                     boolean isOdd = finalI % 2 != 0;
@@ -2491,7 +2491,7 @@ public class NyfalisBlocks {
                         x = 4;
                         moveY = 8f * finalI;
                         moveRot = isOdd ? -45 : 45;
-                        layer = Layer.legUnit + 0.2f;
+                        layer = Layer.power + 0.2f;
                     }});
                 }
 

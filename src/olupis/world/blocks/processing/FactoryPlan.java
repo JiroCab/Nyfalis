@@ -3,6 +3,7 @@ package olupis.world.blocks.processing;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
@@ -10,7 +11,6 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import olupis.content.*;
 
 import java.util.*;
 
@@ -23,6 +23,8 @@ public class FactoryPlan extends Block{
     public float powerIn = 0, powerOut = 0;
     public @Nullable String overlay;
     public TextureRegion overlayRegion;
+
+    public Seq<UnlockableContent> displayFactory = new Seq<>();
 
     public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
         super(name);
@@ -41,9 +43,20 @@ public class FactoryPlan extends Block{
         update = true;
         rebuildable = false;
         generateIcons = true;
+        if(researchCostMultiplier == 1) researchCostMultiplier = 1000;
 
         requirements(Category.logic, BuildVisibility.worldProcessorOnly, with());
-        researchCost = with(NyfalisItemsLiquid.powerAmmoItem, 69);
+        if(input != null && researchCost == null){
+            ItemStack[] out = input.clone();
+            for(ItemStack itemStack : out) itemStack.amount = Math.round(itemStack.amount * researchCostMultiplier);
+            researchCost = out;
+        }
+    }
+    @Override
+    public void setStats(){
+        super.setStats();
+        stats.remove(Stat.health);
+        stats.remove(Stat.size);
     }
 
     public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
@@ -98,7 +111,7 @@ public class FactoryPlan extends Block{
     public void load(){
         super.load();
 
-        description = Core.bundle.get("block.olupis-factory-plan-description");
+        if(!Core.bundle.has(getContentType() + "." + this.name + ".description")) description = Core.bundle.get("block.olupis-factory-plan-description");
         if(Objects.equals(localizedName, name))
             localizedName = Iconc.crafting +" "+ getDisplayed().localizedName + " " + Core.bundle.get("plan");
 

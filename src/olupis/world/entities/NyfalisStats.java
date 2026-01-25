@@ -167,9 +167,9 @@ public class NyfalisStats extends StatValues {
                         in.left().top().defaults().padRight(3).left();
 
                         in.table(bt -> {
-                            boolean show = !spawn.isBanned();
-                            if(show)in.image(spawn.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-                            else in.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+                            if (!spawn.unlockedNow()) in.image(Icon.tree.getRegion()).size(40).pad(10f).left().scaling(Scaling.fit);
+                            else if(spawn.isBanned()) in.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+                            else in.image(spawn.fullIcon).size(40).pad(10f).left().scaling(Scaling.fit);
                             bt.row();
 
                             bt.table(info -> {

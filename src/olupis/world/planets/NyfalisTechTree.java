@@ -1,6 +1,7 @@
 package olupis.world.planets;
 
 import arc.struct.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.game.Objectives.*;
@@ -81,7 +82,13 @@ public class NyfalisTechTree {
 
             node(gnat, ()->{
                 node(shade, Seq.with(
-                new Objectives.Produce(shade)),
+                new Objectives.Produce(shade){
+                    @Override
+                    public boolean complete(){
+                        //Work around so it unlocks as soon as you make them
+                        return content.unlockedHost() || (!Vars.net.client() && Vars.player.team().data().units.contains(u -> u.type == shade));
+                    }
+                }),
                 () -> {
                     node(spirit, Seq.with(
                     new  Objectives.Research(construct)

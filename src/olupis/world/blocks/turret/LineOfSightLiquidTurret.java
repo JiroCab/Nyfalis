@@ -19,8 +19,8 @@ public class LineOfSightLiquidTurret extends  NyfalisLiquidTurret{
     public LineOfSightLiquidTurret(String name) {
         super(name);
         configurable = copyConfig = saveConfig = clearOnDoubleTap =  true;
-        config(Boolean.class, (LineOfSightTurretBuild build, Boolean b )-> build.ignoreLOS = b);
-        configClear((LineOfSightTurretBuild build) -> build.ignoreLOS = false);
+        config(Boolean.class, (LineOfSightLiquidTurretBuild build, Boolean b )-> build.ignoreLOS = b);
+        configClear((LineOfSightLiquidTurretBuild build) -> build.ignoreLOS = false);
     }
 
     public class LineOfSightLiquidTurretBuild extends NyfalisLiquidTurretBuild{

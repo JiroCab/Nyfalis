@@ -203,6 +203,7 @@ public class EnvUpdater implements AsyncProcess{
         tile.getLinkedTiles(t -> {
             int ptr = t.array();
             EnvStruct instance = instances[ptr];
+            if(!instance.infested) return;
 
             int arr = instance.replacedIndexes[0];
             if(arr > 0) // air is never a good replacement for floors
@@ -212,9 +213,11 @@ public class EnvUpdater implements AsyncProcess{
             if(arr >= 0)
                 t.setOverlayNet(content.block(arr));
 
-            arr = instance.replacedIndexes[2];
-            if(arr >= 0)
-                t.setNet(content.block(arr));
+            if(t.build == null){
+                arr = instance.replacedIndexes[2];
+                if(arr >= 0)
+                    t.setNet(content.block(arr));
+            }
 
             instances[ptr] = new EnvStruct();
         });
@@ -330,6 +333,10 @@ public class EnvUpdater implements AsyncProcess{
         public final byte[] tileValues = new byte[blockLayers];
         public final short[] replacedIndexes = new short[blockLayers];
         public boolean infested;
+
+        public EnvStruct(){
+            Arrays.fill(replacedIndexes, Short.MIN_VALUE);
+        }
 
         public short formatID(int layer){
             return replacedIndexes[layer] > 0 ? replacedIndexes[layer] : Blocks.air.id;
