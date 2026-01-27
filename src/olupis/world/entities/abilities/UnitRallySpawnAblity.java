@@ -1,6 +1,7 @@
 package olupis.world.entities.abilities;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
@@ -16,6 +17,7 @@ import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
+import olupis.content.*;
 import olupis.input.*;
 
 import java.util.*;
@@ -27,7 +29,7 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
     public Interp growInterp = Interp.linear, moveInterp = Interp.linear;
     public boolean invertGrow = false, invertMove = false, displayBars = true;
 
-
+    public Sound spawnSound = NyfalisSounds.shootSpawn;
 
     public UnitRallySpawnAblity(UnitType unit, float spawnTime, float spawnX, float spawnY){
         super(unit, spawnTime, spawnX, spawnY);
@@ -41,6 +43,7 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
         this.moveSpawnX = moveSpawnX;
         this.moveSpawnY = moveSpawnY;
     }
+
     public UnitRallySpawnAblity(){
         super();
     }
@@ -62,6 +65,7 @@ public class UnitRallySpawnAblity extends UnitSpawnAbility {
             //todo maybe? copy parent's stance
 
             Events.fire(new EventType.UnitCreateEvent(u, null, unit));
+            spawnSound.at(x, y, 1,0.5f);
 
             if(!Vars.net.client()) u.add();
 

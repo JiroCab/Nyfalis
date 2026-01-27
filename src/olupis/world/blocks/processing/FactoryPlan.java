@@ -47,8 +47,8 @@ public class FactoryPlan extends Block{
 
         requirements(Category.logic, BuildVisibility.worldProcessorOnly, with());
         if(input != null && researchCost == null){
-            ItemStack[] out = input.clone();
-            for(ItemStack itemStack : out) itemStack.amount = Math.round(itemStack.amount * researchCostMultiplier);
+            ItemStack[] out = new ItemStack[input.length];
+            for(int i = 0; i < input.length; i++) out[i] = new ItemStack(input[i].item, Math.round(input[i].amount * researchCostMultiplier));
             researchCost = out;
         }
     }
@@ -96,6 +96,45 @@ public class FactoryPlan extends Block{
             outputLiquid = LiquidStack.empty;
         if(output == null)
             output = ItemStack.empty;
+
+
+        if(!Core.bundle.has(getContentType() + "." + this.name + ".description")){
+            StringBuilder out = new StringBuilder();
+            //prob a better way to do this lol
+            boolean
+                inLiq = inputLiquid != null && inputLiquid != LiquidStack.empty ,
+                inItm =  input != null && input != ItemStack.empty,
+                outLiq = outputLiquid != null && outputLiquid != LiquidStack.empty,
+                outItm = output != null && output != ItemStack.empty;
+
+            if(inLiq || inItm){out.append("(");}
+            if(inLiq) for(int i = 0; i < inputLiquid.length; i++){
+                out.append(inputLiquid[i].liquid.localizedName);
+                if(i != inputLiquid.length -1) out.append(" + ");
+            }
+            if(inItm) for(int i = 0; i < input.length; i++){
+                out.append(input[i].item.localizedName);
+                if(i != input.length -1) out.append(" + ");
+            }
+            if(inLiq || inItm){out.append(")");}
+            if((inLiq || inItm) && outItm || outLiq){out.append(" = ");}
+            if(outItm || outLiq){out.append("(");}
+
+            if(outLiq) for(int i = 0; i < outputLiquid.length; i++){
+                out.append(outputLiquid[i].liquid.localizedName);
+                if(i != outputLiquid.length -1) out.append(" + ");
+            }
+            if(outItm && output.length > 0) for(int i = 0; i < output.length; i++){
+                out.append(output[i].item.localizedName);
+                if(i != output.length -1) out.append(" + ");
+            }
+            if(outItm || outLiq){out.append(")");}
+            description = out.toString();
+
+        }
+
+        if(Objects.equals(localizedName, name))
+            localizedName = Iconc.crafting +" "+ getDisplayed().localizedName + " " + Core.bundle.get("olupis.plan.name");
     }
 
     @Override
@@ -110,10 +149,6 @@ public class FactoryPlan extends Block{
     @Override
     public void load(){
         super.load();
-
-        if(!Core.bundle.has(getContentType() + "." + this.name + ".description")) description = Core.bundle.get("block.olupis-factory-plan-description");
-        if(Objects.equals(localizedName, name))
-            localizedName = Iconc.crafting +" "+ getDisplayed().localizedName + " " + Core.bundle.get("plan");
 
         overlayRegion =  Core.atlas.find("olupis-plan-overlay");
     }

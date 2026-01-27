@@ -80,7 +80,7 @@ public class ItemUnitTurret extends ItemTurret {
         super(name);
         commandable = configurable = outputsPayload = clearOnDoubleTap = true;
         playerControllable = false;
-        shootSound = Sounds.wind3;
+        shootSound = NyfalisSounds.shootSpawn;
         drawer = new DrawDefault();
         fogRadius = -1;
         range = 0f;

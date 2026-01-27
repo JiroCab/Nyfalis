@@ -1342,7 +1342,7 @@ public class NyfalisTurrets {
             itemCapacity = 60;
             lightRadius = (size * 8) + 4;
             fogRadiusMultiplier = 0.15f;
-            shootSound = Sounds.wind3;
+            shootSound = NyfalisSounds.shootSpawn;
 
             ammo(
                 lead, new SpawnHelperBulletType(){{

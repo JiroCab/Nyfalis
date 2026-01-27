@@ -2653,7 +2653,7 @@ public class NyfalisBlocks {
             );
             unitType = phorid;
             shootEffect = Fx.none;
-            shootSound = Sounds.wind3;
+            shootSound = Sounds.massdriver;
             requirements(Category.effect, with(rustyIron, 3000, lead, 3000, iron, 1500, graphite, 500, copper, 1500));
             shootType = new ArtilleryBulletType(3f, 50){{
                 lifetime = 80f;
@@ -2687,7 +2687,7 @@ public class NyfalisBlocks {
             unitType = diptera;
             limitRange(0);
             shootEffect = Fx.none;
-            shootSound = Sounds.wind3;
+            shootSound = Sounds.massdriver;
             requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500, copper, 2500));
             shootType = new SapBulletType(){{
                 damage = 150f;
@@ -2716,7 +2716,7 @@ public class NyfalisBlocks {
 
             unitType = diptera;
             shootEffect = Fx.none;
-            shootSound = Sounds.wind3;
+            shootSound = Sounds.massdriver;
             targetGround = targetHealing = targetAir = true;
             requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 4500, silicon, 4500, graphite, 4500, quartz, 2500, cobalt, 2500, copper, 2500));
             shootType = new RailBulletType(){{

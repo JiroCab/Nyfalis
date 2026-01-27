@@ -3025,7 +3025,9 @@ public class NyfalisUnits {
                     shootEffect = smokeEffect = Fx.none;
                     backColor = Color.valueOf("3ed09a");
                     frontColor = Color.white;
-                    hitSound = Sounds.wind3;
+                    hitSound = Sounds.rockBreak;
+                    hitSoundPitch = 0.5f;
+                    hitSoundPitchRange = 0.01f;
                     shootCone = 180f;
                     ejectEffect = Fx.none;
 

@@ -27,6 +27,7 @@ public class NyfalisSounds {
         shootBarrel = new Sound(),
         shootMicrowave = new Sound(),
         shootSnip = new Sound(),
+        shootSpawn = new Sound(),
         sawActiveLoop = new Sound(),
         sawCollision = new Sound(),
 
@@ -64,6 +65,7 @@ public class NyfalisSounds {
         shootPVC1 = tree.loadSound("pvc-rocket1");
         shootPVC2 = tree.loadSound("pvc-rocket2");
         shootMicrowave =  tree.loadSound("microwave-beep");
+        shootSpawn =  tree.loadSound("legacy-respawn");
 
         spaces = Seq.with(space, space2);
     }
