@@ -325,6 +325,7 @@ public class PropellerCoreBlock extends CoreBlock  {
                         t.row();
                         for(var item : spawns.commands){
                             ImageButton button = ta.button(item.getIcon(), Styles.clearNoneTogglei, 40f, () -> {
+                                command = item;
                                 configure(item);
                                 deselect();
                             }).tooltip(item.localized()).group(cmd).get();

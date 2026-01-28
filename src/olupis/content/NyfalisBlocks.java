@@ -2395,11 +2395,12 @@ public class NyfalisBlocks {
             shootY = (size * tilesize / 2f) -2f;
             liquidCapacity = 50;
 
-            hasPower = targetHealing = true;
+            hasPower = targetHealing = suppressable = true;
             targetAir = targetGround  = false;
             shootType = new HealOnlyBulletType(5.2f, -5, "olupis-diamond-bullet"){{
                 collidesTeam = despawnHit = splashDamagePierce = alwaysSplashDamage = despawnHitEffect = true;
                 collidesAir = absorbable = false;
+                allowSupress = true;
                 width = 8f;
                 height = 13f;
                 healPercent = 0.75f;
@@ -2660,11 +2661,13 @@ public class NyfalisBlocks {
                 knockback = 1f;
                 homingRange = 50f;
                 width = height = 9f;
-                splashDamage = 25f;
+                splashDamage = 50f;
                 homingPower = 0.08f;
                 reloadMultiplier = 1.2f;
                 buildCostMultiplier = 0.5f;
                 splashDamageRadius = 30f;
+                status = StatusEffects.slow;
+                statusDuration = Time.toSeconds;
 
                 collidesTiles = false;
                 frontColor = iron.color;
@@ -2690,7 +2693,7 @@ public class NyfalisBlocks {
             shootSound = Sounds.massdriver;
             requirements(Category.effect, with(rustyIron, 3400, lead, 4000, iron, 3500, silicon, 2500, graphite, 2500, quartz, 2500, copper, 2500));
             shootType = new SapBulletType(){{
-                damage = 150f;
+                damage = 225;
                 width = 0.8f;
                 lifetime = 20f;
                 sapStrength = 0f;
@@ -2700,6 +2703,8 @@ public class NyfalisBlocks {
                 color = hitColor = rustyIron.color;
                 collidesTiles = false;
                 collidesAir = collidesGround = collidesTeam = true;
+                status = StatusEffects.slow;
+                statusDuration = Time.toSeconds;
             }};
         }};
 
@@ -2717,12 +2722,15 @@ public class NyfalisBlocks {
             unitType = diptera;
             shootEffect = Fx.none;
             shootSound = Sounds.massdriver;
-            targetGround = targetHealing = targetAir = true;
+            targetGround = targetAir = true;
             requirements(Category.effect, with(rustyIron, 6000, lead, 6000, iron, 4500, silicon, 4500, graphite, 4500, quartz, 2500, cobalt, 2500, copper, 2500));
             shootType = new RailBulletType(){{
                 length = 255f;
-                damage = 500;
+                damage = 750;
+                status = StatusEffects.slow;
+                statusDuration = Time.toSeconds;
                 pierceDamageFactor = 0.5f;
+                pierce = true;
                 hitColor = iron.color;
                 hitEffect = endEffect = Fx.hitBulletColor.wrap(iron.color);
                 lineEffect = new Effect(20f, e -> {

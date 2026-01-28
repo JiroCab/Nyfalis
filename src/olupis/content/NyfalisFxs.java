@@ -14,6 +14,7 @@ import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import olupis.world.blocks.environment.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Draw.rect;
@@ -437,7 +438,10 @@ public class NyfalisFxs extends Fx {
 
         //stolen from: https://github.com/ItsKirby69/MineDusty/blob/master/src/minedusty/content/DustyEffects.java#L263
         transgenderTreeLeafEffect =  new Effect(450f, e ->{
-            color(e.color, e.color, e.fslope());
+            if(Vars.world.tileWorld(e.x, e.y).block() instanceof TrasngenderTreeBlock trans){
+                Tile tile = Vars.world.tileWorld(e.x, e.y);
+                if(!trans.flavours.isEmpty()) color(new Color().set(e.color).lerp(trans.flavours.get((int)Mathf.randomSeedRange(tile.pos(), trans.flavours.size)), Mathf.randomSeedRange(tile.pos(), 1f)), e.fslope());
+            }else  color(e.color, e.fslope());
             alpha(e.fslope() * 3f);
 
             float drift = -20f * e.fin() * 4f;
@@ -447,7 +451,10 @@ public class NyfalisFxs extends Fx {
         }).layer(Layer.darkness + 1),
 
         transgenderTreeLeafEffectUnder =  new Effect(450f, e ->{
-            color(e.color, e.color, e.fslope());
+            if(Vars.world.tileWorld(e.x, e.y).block() instanceof TrasngenderTreeBlock trans){
+                Tile tile = Vars.world.tileWorld(e.x, e.y);
+                if(!trans.flavours.isEmpty()) color(new Color().set(e.color).lerp(trans.flavours.get((int)Mathf.randomSeedRange(tile.pos(), trans.flavours.size)), Mathf.randomSeedRange(tile.pos(), 1f)), e.fslope());
+            }else  color(e.color, e.fslope());
             alpha(e.fslope() * 3f);
 
             float drift = -20f * e.fin() * 4f;

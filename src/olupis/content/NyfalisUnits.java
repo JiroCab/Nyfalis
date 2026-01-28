@@ -2342,7 +2342,7 @@ public class NyfalisUnits {
                     soundPitchMax = 0.8f;
                     rotateSpeed = 2f;
 
-                    bullet = new ArtilleryBulletType(2f, 200f){{
+                    bullet = new ArtilleryBulletType(2f, 300f){{
                         shootEffect = Fx.shootSmokeTitan;
                         smokeEffect = Fx.shootSmokeTitan;
                         hitEffect = despawnEffect = deathExplosionEffect = Fx.massiveExplosion;
@@ -2351,9 +2351,13 @@ public class NyfalisUnits {
                         shrinkX = 25f /60;
                         shrinkY = 35f /60;
                         lifetime = 110f;
-                        splashDamage = 180f;
+                        splashDamage = 220f;
                         splashDamageRadius = 60f;
+                        suppressionRange = tilesize * 10;
+                        suppressionDuration = Time.toSeconds * 15f;
                         hitSound = Sounds.explosionMissile;
+                        status = StatusEffects.slow;
+                        statusDuration = Time.toSeconds;
                     }};
 
                     parts.addAll(

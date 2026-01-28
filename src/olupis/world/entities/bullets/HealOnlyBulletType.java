@@ -9,7 +9,7 @@ import mindustry.gen.*;
 import mindustry.world.blocks.*;
 
 public class HealOnlyBulletType extends BasicBulletType {
-    public boolean fogVisible = true, alwaysSplashDamage = false, despawnHitEffect = false;
+    public boolean fogVisible = true, alwaysSplashDamage = false, despawnHitEffect = false, allowSupress = false;
 
     public HealOnlyBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage);
@@ -112,6 +112,7 @@ public class HealOnlyBulletType extends BasicBulletType {
         if(heals() && build.team == b.team && !(build.block instanceof ConstructBlock)){
             healEffect.at(build.x, build.y, 0f, healColor, build.block);
             build.heal(healPercent / 100f * build.maxHealth + healAmount);
+            if(allowSupress) build.recentlyHealed();
             if(alwaysSplashDamage)createSplashDamage(b, x, y);
             if(despawnHitEffect) despawnEffect.at(b.x, b.y, b.rotation(), hitColor);
         }else if(build.team != b.team && direct){
