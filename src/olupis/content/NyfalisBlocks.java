@@ -32,8 +32,9 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.input.*;
-import olupis.world.*;
 import olupis.world.NyfPartParms.*;
+import olupis.world.blocks.calyx.*;
+import olupis.world.blocks.calyx.ineternal.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.distribution.*;
 import olupis.world.blocks.drawers.*;
@@ -45,7 +46,6 @@ import olupis.world.blocks.turret.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.consumer.*;
 import olupis.world.entities.bullets.*;
-import olupis.world.entities.parts.*;
 import olupis.world.entities.pattern.*;
 
 import static arc.graphics.g2d.Draw.color;
@@ -66,7 +66,6 @@ public class NyfalisBlocks {
         //environment
         /*Ores / SpreadingOres / Overlays */
         oreIron, oreIronWall, oreCobalt, oreOxidizedCopper, oreOxidizedLead, oreQuartz, oreAlco,
-        mossyCopper, mossyOxidizedCopper, mossyLead, mossyOxidizedLead, mossyScrap, mossyCoal, mossyIron,
         glowSprouts, lumaSprouts, redCorals, blueCorals, greenCorals, kelp,
 
         /*Floors*/
@@ -95,6 +94,7 @@ public class NyfalisBlocks {
 
         /*Env Hazzard*/
         boomPuffPassive, boomPuffActive,
+        calyxHeart, calyxVein, calyxBloom,
 
         /*Trees*/
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, mossDeadTree, spruceTree,
@@ -973,7 +973,7 @@ public class NyfalisBlocks {
             status = StatusEffects.corroded;
         }};
 
-        theircelium = new Floor("moss", 3){{
+        theircelium = new GrownFloor("moss", 3){{
             mapColor = Color.valueOf("#1e2f0a");
             inEditor = false;
 
@@ -2883,6 +2883,16 @@ public class NyfalisBlocks {
             requirements(Category.effect, BuildVisibility.sandboxOnly, ItemStack.with(new Object[]{Items.silicon, 1}));
             fogRadius = 20;
         }};
+
+        calyxHeart = new GrowingHeart("calyx-heart"){{
+            size = 3;
+            requirements(Category.logic, ItemStack.with(new Object[]{Items.silicon, 1}));
+        }};
+        calyxVein = new GrowingVein("calyx-vein"){{
+            requirements(Category.logic, ItemStack.with(new Object[]{Items.silicon, 1}));
+
+        }};
+        //endregion
 
         if(headless) return;
     }

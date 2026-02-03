@@ -1,4 +1,4 @@
-package olupis.world.blocks.environment;
+package olupis.world.blocks.calyx;
 
 import arc.math.*;
 import mindustry.content.*;
@@ -6,7 +6,6 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
-import olupis.*;
 
 import static mindustry.Vars.*;
 import static olupis.NyfalisVars.*;
@@ -32,9 +31,9 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
     }
 
     public void updateEnv(Tile tile, EnvStruct i){
-        if(net.client() || !calyxSpreading) return;
+        if(net.client() || !nyfRule.calyxSpreading) return;
 
-        if(Mathf.chance(growChance * calyxSpreadingFactor) && i.getIncrementBlock() >= growTries){
+        if(Mathf.chance(growChance * nyfRule.calyxSpreadingFactor) && i.getIncrementBlock() >= growTries){
             i.clearBlockVal();
 
             if(next != null){

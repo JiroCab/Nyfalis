@@ -1,4 +1,4 @@
-package olupis.world.blocks.environment;
+package olupis.world.blocks.calyx;
 
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -7,10 +7,9 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
-import olupis.*;
 
-import static mindustry.Vars.*;
-import static olupis.NyfalisVars.*;
+import static mindustry.Vars.net;
+import static olupis.NyfalisVars.nyfRule;
 import static olupis.world.EnvUpdater.*;
 
 /** This class as a whole is now only for auto-generation */
@@ -41,7 +40,7 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
 
         if(net.client()) return;
 
-        if(Mathf.chance(parent.spawnChance * NyfalisVars.calyxSpreadingFactor) && i.getIncrementOverlay() >= parent.spreadTries){
+        if(Mathf.chance(parent.spawnChance * nyfRule.calyxSpreadingFactor) && i.getIncrementOverlay() >= parent.spreadTries){
             i.clearOverlayVal();
 
             if(next != null){
@@ -57,13 +56,13 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
 
                 queue(next).add(tile.pos());
 
-                if(parent.oresSpawnProps && parent.props.size > 0 && canSpawn(id, parent.propLimit, parent.dynamicLimit) && Mathf.chance(parent.spawnChance * calyxSpreadingFactor)){
+                if(parent.oresSpawnProps && parent.props.size > 0 && canSpawn(id, parent.propLimit, parent.dynamicLimit) && Mathf.chance(parent.spawnChance * nyfRule.calyxSpreadingFactor)){
                     addProp(id);
                     queue(parent.props.random()).add(tile.pos());
                 }
             }
 
-            if(parent.spread && calyxSpreading){
+            if(parent.spread && nyfRule.calyxSpreading){
                 for(int it = 0; it < 4; it++){
                     Tile near = tile.nearby(it);
                     if(near == null)

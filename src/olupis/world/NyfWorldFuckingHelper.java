@@ -22,6 +22,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.*;
 import olupis.content.*;
+import olupis.world.blocks.calyx.*;
 import olupis.world.blocks.environment.*;
 
 import static mindustry.Vars.*;

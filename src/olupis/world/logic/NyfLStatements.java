@@ -237,11 +237,11 @@ public class NyfLStatements{
         @Override
         public void run(LExecutor exec){
             switch(rule){
-                case calyxSpread -> calyxSpreading = value.bool();
-                case calyxSpreadFactor ->  calyxSpreadingFactor = value.numf();
-                case calyxBuildingFactor ->  calyxBuildingFactor = value.numf();
+                case calyxSpread -> nyfRule.calyxSpreading = value.bool();
+                case calyxSpreadFactor ->  nyfRule.calyxSpreadingFactor = value.numf();
+                case calyxBuildingFactor ->  nyfRule.calyxBuildingFactor = value.numf();
 
-                case damagingWeather -> damagingWeather = value.bool();
+                case damagingWeather -> nyfRule.damagingWeather = value.bool();
             }
         }
     }

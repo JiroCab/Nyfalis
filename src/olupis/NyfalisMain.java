@@ -1,8 +1,6 @@
 package olupis;
 
 import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.style.*;
 import arc.struct.*;
@@ -13,13 +11,11 @@ import mindustry.ai.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.mod.*;
 import mindustry.type.*;
-import mindustry.type.weather.*;
 import mindustry.world.*;
 import olupis.content.*;
 import olupis.input.*;
@@ -83,6 +79,8 @@ public class NyfalisMain extends Mod{
 
         Events.on(WorldLoadEvent.class, l ->{
             /*Delayed since custom games, for some reason needs it*/
+            nyfRule = new NyfRules();
+            nyfRule.load(state.rules.tags);
             Time.run(0.5f * Time.toSeconds, NyfalisMain::sandBoxCheck);
             nyfalianPlanet = false;
                 if(isNyfalianPlanet(state.getPlanet())) nyfalianPlanet = true;
@@ -124,6 +122,7 @@ public class NyfalisMain extends Mod{
         Events.on(UnlockEvent.class, event ->{
             unlockPlanets();
         });
+
 
         Events.on(SectorCaptureEvent.class, event -> unlockPlanets());
 

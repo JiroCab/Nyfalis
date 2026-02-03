@@ -3,7 +3,6 @@ package olupis;
 import arc.graphics.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.game.*;
 import mindustry.type.*;
 import olupis.content.*;
 import olupis.input.ui.*;
@@ -30,21 +29,6 @@ public class NyfalisVars{
     public static float pdlStatusGiverTrans, pdlStatusGiverRange, treeTransgenderRange;
     public static boolean pdlStatusGiverAnyTeam, pdlStatusGiverSimple;
 
-    //Extended Rules - todo  save/load in env updater chunk
-    /*whether  calyx is allowed to spread at all*/
-    public static boolean calyxSpreading = true;
-    /*How much Calyx tiles want to spread*/
-    public static float calyxSpreadingFactor = 1;
-    /*How much Calyx will grow "buildings" on it*/
-    public static float calyxBuildingFactor = 1;
-    /*which team the Calyx "building" team is on*/
-    public static Team calyxTeam = NyfUnitTeamMapper.verdentTeam;
-
-    public static boolean damagingWeather = true;
-
-
-
-
-
+    public static NyfRules nyfRule = new NyfRules();
 
 }

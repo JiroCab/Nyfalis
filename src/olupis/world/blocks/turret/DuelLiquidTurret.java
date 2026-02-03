@@ -5,6 +5,7 @@ import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
+import arc.struct.ObjectMap.*;
 import arc.util.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
@@ -40,7 +41,7 @@ public class DuelLiquidTurret extends NyfalisLiquidTurret {
 
         public Seq<Liquid> filterLiquid(){
             Seq<Liquid> a = new Seq<>();
-            ammoTypes.forEach( (l) -> a.add(l.key));
+            for(Entry<Liquid, BulletType> ammoType : ammoTypes) a.add(ammoType.key);
             a.removeAll(l -> liquids.get(l) <= 1f / ammoTypes.get(l).ammoMultiplier + 0.001f);
             return  a;
         }

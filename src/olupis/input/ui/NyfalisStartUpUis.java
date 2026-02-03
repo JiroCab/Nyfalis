@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.scene.*;
+import arc.scene.Element;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -18,7 +19,6 @@ import mindustry.editor.*;
 import mindustry.game.*;
 import mindustry.game.Rules.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -290,89 +290,165 @@ public class NyfalisStartUpUis {
             }
         );
     }
-
     public static void nyfAdditionalRules(CustomRulesDialog in){
+        NyfRules nyfRule= new NyfRules();
         Seq<Runnable> additionalSetup = Reflect.get(in, "additionalSetup");
-        additionalSetup.add( () -> Time.run(2 * Time.toSeconds, () -> {
+        additionalSetup.add(() -> {
 
             Rules rules = Reflect.get(in, "rules");
-            boolean[] shown = {false};
-            Table wasCurrent = in.current;
+            in.category("nyfalis");
 
-                Table teamRules = new Table(); // just button and collapser in one table
-            teamRules.button(NyfUnitTeamMapper.verdentTeam.coloredName(), Icon.downOpen, Styles.togglet, () -> {
-                shown[0] = !shown[0];
-            }).marginLeft(14f).width(260f).height(55f).update(t -> {
-                ((Image)t.getChildren().get(1)).setDrawable(shown[0] ? Icon.upOpen : Icon.downOpen);
-                t.setChecked(shown[0]);
-            }).left().padBottom(2f).row();
+            in.check("@rules.nyf-env", b ->{
+                if (b) rules.env |= NyfalisAttributeWeather.nyfalian;
+                else rules.env = ~NyfalisAttributeWeather.nyfalian;
+            }, () -> rules.hasEnv(NyfalisAttributeWeather.nyfalian));
+
+            tagCheck(in, rules, "@rules.nyf-damagingweather", b -> nyfRule.damagingWeather = b, () -> nyfRule.damagingWeather);
+
+            tagCheck(in, rules, "@rules.nyf-calyxspreading", b -> nyfRule.calyxSpreading = b, () -> nyfRule.calyxSpreading);
+            tagNumber(in, rules, "@rules.nyf-calyxspreadingfactor", f -> nyfRule.calyxSpreadingFactor = f, () -> nyfRule.calyxSpreadingFactor );
+            tagNumber(in, rules, "@rules.nyf-calyxgrowthfactor", f -> nyfRule.calyxGrowthFactor = f, () -> nyfRule.calyxGrowthFactor );
+            tagNumber(in, rules, "@rules.nyf-calyxbuildingfactor", f -> nyfRule.calyxBuildingFactor = f, () -> nyfRule.calyxBuildingFactor );
+
+            //todo: the other rules
+
+            if(Core.bundle.get("nyf-teams").toLowerCase().contains(in.ruleSearch)){
+                Seq<Cons<Team>>cons = Seq.with(te -> rules.waveTeam = te, te -> rules.defaultTeam = te, te -> nyfRule.calyxTeam = te);
+                Seq<Prov<Team>> provs = Seq.with(() -> rules.waveTeam, () -> rules.defaultTeam, () -> nyfRule.calyxTeam);
+                String[] names = new String[]{"@rules.enemyteam", "@rules.playerteam", "@rules.nyf-calyxteam"};
+                for(int ti = 0; ti < 3; ti++){
+                    int finalTi = ti;
+                    in.current.table( t -> {
+                        t.left();
+                        t.add(names[finalTi]).left().padRight(5);
+
+                        Team[] teams;
+                        if(finalTi == 2){
+                            teams = new  Team[NyfUnitTeamMapper.nyfTeams.length -1 + Team.baseTeams.length];
+                            for(int j = 0; j < teams.length; j++){
+                                if(j < Team.baseTeams.length -1) teams[j] = Team.baseTeams[j +1];
+                                else teams[j] = NyfUnitTeamMapper.nyfTeams[j -  Team.baseTeams.length +1];
+                            }
+                        }else teams = NyfUnitTeamMapper.nyfTeams;
 
 
-            teamRules.collapser(c -> {
-                c.left().defaults().fillX().left().pad(5);
-                in.current = c;
-                TeamRule teams = rules.teams.get(NyfUnitTeamMapper.verdentTeam);
-                in.check("@nyf.envrule", b ->{
-                    if (b) rules.env |= NyfalisAttributeWeather.nyfalian;
-                    else rules.env = ~NyfalisAttributeWeather.nyfalian;
-                }, () -> rules.hasEnv(NyfalisAttributeWeather.nyfalian));
+                        t.table(tam -> {
+                            for(int j = 0; j < teams.length; j++){
+                                Team team = teams[j];
+                                tam.button(Tex.whiteui, Styles.squareTogglei, 38f, () -> cons.get(finalTi).get(team)).pad(1f).checked(b -> provs.get(finalTi).get() == team).size(60f).tooltip(team.coloredName()).with(i -> i.getStyle().imageUpColor = team.color);
+                                if(finalTi == 2 && j ==( teams.length /2) -1)tam.row();
+                            }
+                        });
 
-                c.image().color(Pal.accent).height(3f).padBottom(20).fillX().left().pad(5).row();
-
-                in.table(t -> {
-
-                    for(int i = 0; i < 2; i++){
-                        String type = i == 1 ? "@rules.enemyteam" : "@rules.playerteam" ;
-                        int finalI = i;
-                        Cons<Team> cons;
-                        if(finalI == 1) cons = te -> rules.waveTeam = te;
-                        else cons = te -> rules.defaultTeam = te;
-
-                        if(!Core.bundle.get(type.substring(1)).toLowerCase().contains(in.ruleSearch)) return;
-                        in.current.table(ta -> {
-                            ta.left();
-                            ta.add(type).left().padRight(5).marginRight(10f);
-
-                            ta.button(Tex.whiteui, Styles.squareTogglei, 38f, () -> {
-                                cons.get(NyfUnitTeamMapper.verdentTeam);
-                            }).pad(1f).checked(b -> (finalI == 1 ? rules.waveTeam : rules.defaultTeam) == NyfUnitTeamMapper.verdentTeam).size(60f).tooltip(NyfUnitTeamMapper.verdentTeam.coloredName()).with(im -> im.getStyle().imageUpColor = NyfUnitTeamMapper.verdentTeam.color);
-                        }).row();
-                    }
-                }).padTop(0).row();
-
-                in.number("@rules.blockhealthmultiplier", f -> teams.blockHealthMultiplier = f, () -> teams.blockHealthMultiplier);
-                in.number("@rules.blockdamagemultiplier", f -> teams.blockDamageMultiplier = f, () -> teams.blockDamageMultiplier);
-
-                in.check("@rules.rtsai", b -> teams.rtsAi = b, () -> teams.rtsAi, () -> NyfUnitTeamMapper.verdentTeam != rules.defaultTeam);
-                in.numberi("@rules.rtsminsquadsize", f -> teams.rtsMinSquad = f, () -> teams.rtsMinSquad, () -> teams.rtsAi, 0, 100);
-                in.numberi("@rules.rtsmaxsquadsize", f -> teams.rtsMaxSquad = f, () -> teams.rtsMaxSquad, () -> teams.rtsAi, 1, 1000);
-                in.number("@rules.rtsminattackweight", f -> teams.rtsMinWeight = f, () -> teams.rtsMinWeight, () -> teams.rtsAi);
-
-                //disallow on Erekir (this is broken for mods I'm sure, but whatever)
-                in.check("@rules.buildai", b -> teams.buildAi = b, () -> teams.buildAi, () -> NyfUnitTeamMapper.verdentTeam != rules.defaultTeam && rules.env != Planets.erekir.defaultEnv && !rules.pvp);
-                in.number("@rules.buildaitier", false, f -> teams.buildAiTier = f, () -> teams.buildAiTier, () -> teams.buildAi && rules.env != Planets.erekir.defaultEnv && !rules.pvp, 0, 1);
-
-                in.number("@rules.extracorebuildradius", f -> teams.extraCoreBuildRadius = f * tilesize, () -> Math.min(teams.extraCoreBuildRadius / tilesize, 200), () -> !rules.polygonCoreProtection);
-
-                in.check("@rules.infiniteresources", b -> teams.infiniteResources = b, () -> teams.infiniteResources);
-                in.check("@rules.fillitems", b -> teams.fillItems = b, () -> teams.fillItems);
-                in.number("@rules.buildspeedmultiplier", f -> teams.buildSpeedMultiplier = f, () -> teams.buildSpeedMultiplier, 0.001f, 50f);
-
-                in.number("@rules.unitdamagemultiplier", f -> teams.unitDamageMultiplier = f, () -> teams.unitDamageMultiplier);
-                in.number("@rules.unitcrashdamagemultiplier", f -> teams.unitCrashDamageMultiplier = f, () -> teams.unitCrashDamageMultiplier);
-                in.number("@rules.unitminespeedmultiplier", f -> teams.unitMineSpeedMultiplier = f, () -> teams.unitMineSpeedMultiplier);
-                in.number("@rules.unitbuildspeedmultiplier", f -> teams.unitBuildSpeedMultiplier = f, () -> teams.unitBuildSpeedMultiplier, 0.001f, 50f);
-                in.number("@rules.unitcostmultiplier", f -> teams.unitCostMultiplier = f, () -> teams.unitCostMultiplier);
-                in.number("@rules.unithealthmultiplier", f -> teams.unitHealthMultiplier = f, () -> teams.unitHealthMultiplier);
-
-                if(!in.current.hasChildren()){
-                    teamRules.clear();
-                }else{
-                    wasCurrent.add(teamRules).row();
+                    }).padTop(0).row();
                 }
+            }
 
-            }, () -> shown[0]).left().growX().row();
-            in.current = wasCurrent;
-        }));
+
+            Team[] nyfTeams = NyfUnitTeamMapper.nyfTeams;
+            for(Team team : nyfTeams){
+                Table teamRules = new Table();
+                Table wasCurrent = in.current;
+                boolean[] shown = {false};
+                teamRules.button(team.coloredName(), Icon.downOpen, Styles.togglet, () -> {
+                    shown[0] = !shown[0];
+                }).marginLeft(14f).width(260f).height(55f).update(t -> {
+                    ((Image)t.getChildren().get(1)).setDrawable(shown[0] ? Icon.upOpen : Icon.downOpen);
+                    t.setChecked(shown[0]);
+                }).left().padBottom(2f).row();
+
+                teamRules.collapser(c -> {
+                    c.left().defaults().fillX().left().pad(5);
+                    in.current = c;
+                    TeamRule teams = rules.teams.get(team);
+
+                    in.number("@rules.blockhealthmultiplier", f -> teams.blockHealthMultiplier = f, () -> teams.blockHealthMultiplier);
+                    in.number("@rules.blockdamagemultiplier", f -> teams.blockDamageMultiplier = f, () -> teams.blockDamageMultiplier);
+
+                    in.check("@rules.rtsai", b -> teams.rtsAi = b, () -> teams.rtsAi, () -> team != rules.defaultTeam);
+                    in.numberi("@rules.rtsminsquadsize", f -> teams.rtsMinSquad = f, () -> teams.rtsMinSquad, () -> teams.rtsAi, 0, 100);
+                    in.numberi("@rules.rtsmaxsquadsize", f -> teams.rtsMaxSquad = f, () -> teams.rtsMaxSquad, () -> teams.rtsAi, 1, 1000);
+                    in.number("@rules.rtsminattackweight", f -> teams.rtsMinWeight = f, () -> teams.rtsMinWeight, () -> teams.rtsAi);
+
+                    //disallow on Erekir (this is broken for mods I'm sure, but whatever)
+                    in.check("@rules.buildai", b -> teams.buildAi = b, () -> teams.buildAi, () -> team != rules.defaultTeam && rules.env != Planets.erekir.defaultEnv && !rules.pvp);
+                    in.number("@rules.buildaitier", false, f -> teams.buildAiTier = f, () -> teams.buildAiTier, () -> teams.buildAi && rules.env != Planets.erekir.defaultEnv && !rules.pvp, 0, 1);
+
+                    in.number("@rules.extracorebuildradius", f -> teams.extraCoreBuildRadius = f * tilesize, () -> Math.min(teams.extraCoreBuildRadius / tilesize, 200), () -> !rules.polygonCoreProtection);
+
+                    in.check("@rules.infiniteresources", b -> teams.infiniteResources = b, () -> teams.infiniteResources);
+                    in.check("@rules.fillitems", b -> teams.fillItems = b, () -> teams.fillItems);
+                    in.number("@rules.buildspeedmultiplier", f -> teams.buildSpeedMultiplier = f, () -> teams.buildSpeedMultiplier, 0.001f, 50f);
+
+                    in.number("@rules.unitdamagemultiplier", f -> teams.unitDamageMultiplier = f, () -> teams.unitDamageMultiplier);
+                    in.number("@rules.unitcrashdamagemultiplier", f -> teams.unitCrashDamageMultiplier = f, () -> teams.unitCrashDamageMultiplier);
+                    in.number("@rules.unitminespeedmultiplier", f -> teams.unitMineSpeedMultiplier = f, () -> teams.unitMineSpeedMultiplier);
+                    in.number("@rules.unitbuildspeedmultiplier", f -> teams.unitBuildSpeedMultiplier = f, () -> teams.unitBuildSpeedMultiplier, 0.001f, 50f);
+                    in.number("@rules.unitcostmultiplier", f -> teams.unitCostMultiplier = f, () -> teams.unitCostMultiplier);
+                    in.number("@rules.unithealthmultiplier", f -> teams.unitHealthMultiplier = f, () -> teams.unitHealthMultiplier);
+
+                    if(!in.current.hasChildren()){
+                        teamRules.clear();
+                    }else{
+                        wasCurrent.add(teamRules).row();
+                    }
+                    in.current = wasCurrent;
+                }, () -> shown[0]).left().growX().row();
+            }
+        });
+    }
+
+    public static void tagCheck(CustomRulesDialog dia, Rules r,  String text, Boolc cons, Boolp prov){
+        tagCheck(dia, r, text, cons, prov, () -> true);
+    }
+
+    public static void tagCheck(CustomRulesDialog dia, Rules r, String text, Boolc cons, Boolp prov,  Boolp condition){
+        if(!Core.bundle.get(text.substring(1)).toLowerCase().contains(dia.ruleSearch)) return;
+
+        String tag = text.replace("@rules.", "");
+
+        Boolp provf;
+        if(r.tags.containsKey(tag)) provf = () -> r.tags.getBool(tag);
+        else provf = prov;
+
+        Boolc conf =  b-> {
+            cons.get(b);
+            r.tags.put(tag, String.valueOf(b));
+            NyfalisVars.nyfRule.load(r.tags);
+        };
+
+        dia.check(text, conf, provf, condition);
+    }
+
+    public static void tagNumber (CustomRulesDialog dia, Rules r, String text, Floatc cons, Floatp prov){
+        tagNumber(dia, r, text, false, cons, prov, () -> true, 0, Float.MAX_VALUE);
+    }
+
+    public static void tagNumber (CustomRulesDialog dia, Rules r, String text, Floatc cons, Floatp prov, Boolp condition, float min, float max){
+        tagNumber(dia, r, text, false, cons, prov, condition, min, max);
+    }
+
+    public static void tagNumber (CustomRulesDialog dia, Rules r, String text, boolean integer, Floatc cons, Floatp prov){
+        tagNumber(dia, r, text, integer, cons, prov, () -> true, 0, Float.MAX_VALUE);
+    }
+
+    public static void tagNumber (CustomRulesDialog dia, Rules r, String text, boolean integer, Floatc cons, Floatp prov, Boolp condition, float min, float max){
+
+        if(!Core.bundle.get(text.substring(1)).toLowerCase().contains(dia.ruleSearch)) return;
+        String tag = text.replace("@rules.", "");
+
+        Floatp provf;
+        if(r.tags.containsKey(tag)){
+            if(integer) provf = () -> r.tags.getInt(tag);
+            else provf = () -> r.tags.getFloat(tag);
+        }else provf = prov;
+
+        Floatc conf =  b-> {
+            cons.get(b);
+            r.tags.put(tag, String.valueOf(b));
+            NyfalisVars.nyfRule.load(r.tags);
+        };
+
+        dia.number(text, integer, conf, provf, condition, min, max);
     }
 }

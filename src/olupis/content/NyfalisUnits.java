@@ -1546,7 +1546,7 @@ public class NyfalisUnits {
         germanica = new NyfalisUnitType("germanica"){{
             constructor = MechUnit::create;
 
-            canBoost = lowAltitude = alwaysShootWhenMoving = true;
+            canBoost = lowAltitude = alwaysShootWhenMoving = canAttack = true;
             armor = 5;
             hitSize = 12f;
             range = Vars.tilesize * 8;

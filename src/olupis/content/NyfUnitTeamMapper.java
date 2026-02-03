@@ -11,11 +11,13 @@ import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
+import olupis.world.blocks.calyx.ineternal.*;
 import olupis.world.entities.entities.*;
 
 public class  NyfUnitTeamMapper{
-    public static Team verdentTeam;
-    public static int LeggedPayload, OnePayloadUnit, tonkNaval, snekUnit;
+    public static Team verdentTeam, calyxTeam;
+    public static final Team[] nyfTeams = new Team[2];
+    public static int LeggedPayload, OnePayloadUnit, tonkNaval, snekUnit, calxyUpdater;
 
     public static void load(){
         //Thank you Siede for explaining how to do this!! ^w^
@@ -23,6 +25,7 @@ public class  NyfUnitTeamMapper{
         OnePayloadUnit = EntityMapping.register("nyf-one-payload", OnePayloadUnitClass::create);
         tonkNaval = EntityMapping.register("nyf-tonk-naval", TonkNavalUnitClass::create);
         snekUnit = EntityMapping.register("nyf-snek", SnekUnitClass::create);
+        calxyUpdater = EntityMapping.register("nyf-calyx-updater", CalyxGraphUpdater::create);
 
     }
 
@@ -30,15 +33,19 @@ public class  NyfUnitTeamMapper{
     //stolen from: https://github.com/xjamiex/BioTech/blob/master/src/biotech/content/BioTeams.java
     //bc rushie lazy
     public static void loadTeam(){
-        //to lazy lmao to get the hex or whatever
-        verdentTeam = newTeam(60, "nyf-verdent", Team.get(60).color);
+        verdentTeam = newTeam(60, "nyf-verdent");
+        calyxTeam = newTeam(61, "nyf-calyx");
+
+        nyfTeams[0] = verdentTeam;
+        nyfTeams[1] = calyxTeam;
     }
 
-    private static Team newTeam(int id, String name, Color color) {
+    private static Team newTeam(int id, String name) {
         Team team = Team.get(id);
+        //to lazy lmao to get the hex or whatever
+        Color color = team.color;
         team.name = name;
         team.color.set(color);
-
         team.palette[0] = color;
         team.palette[1] = color.cpy().mul(0.75f);
         team.palette[2] = color.cpy().mul(0.5f);
