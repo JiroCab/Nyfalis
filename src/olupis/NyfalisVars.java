@@ -15,6 +15,9 @@ public class NyfalisVars{
     public static NyfalisLogicDialog logicDialog;
     public static NyfalisSettingsDialog nyfalisSettings;
 
+    // none, birttleleaf, temp
+    public static final int calyxSpecies = 3;
+
     //gaymeplay vars
     public static HashMap<UnitType, Weapon[]> payloadWeaponIndex;
     public static Seq<String> blacklistedWeaponsTypes = new Seq<>();
@@ -30,5 +33,6 @@ public class NyfalisVars{
     public static boolean pdlStatusGiverAnyTeam, pdlStatusGiverSimple;
 
     public static NyfRules nyfRule = new NyfRules();
+
 
 }

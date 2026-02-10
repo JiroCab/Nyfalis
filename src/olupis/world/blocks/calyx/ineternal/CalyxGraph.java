@@ -12,8 +12,8 @@ public class CalyxGraph{
     private static final Seq<Calyxian> outArray2 = new Seq<>();
     private static final IntSet closedSet = new IntSet();
 
-    private  final Seq<GrowingHeartBuilding> hearts = new Seq<>(false, 16, Building.class);
-    private  final Seq<Building> veins = new Seq<>(false, 16, Building.class);
+    public   final Seq<Building> hearts = new Seq<>(false, 16, Building.class);
+    public   final Seq<Building> veins = new Seq<>(false, 16, Building.class);
     public final Seq<Building> all = new Seq<>(false, 16, Building.class);
     //floors? prob not
 
@@ -39,7 +39,7 @@ public class CalyxGraph{
 
 
     public void update(){
-
+        if(getHeart() == null) species = 0;
     }
 
     public void addGraph(CalyxGraph graph){
@@ -63,7 +63,9 @@ public class CalyxGraph{
     public void  add(Building build){
         if(build == null ) return;
         if(build instanceof Calyxian module){
-            if(module.module().graph.species >= 0 && module.module().graph.species != this.species ) return;
+            if(module.module().graph.getHeart() != null && module.module().graph.species != this.species){
+                return;
+            }
 
             if(module.module().graph != this || !module.module().init){
                 //any old graph that is added here MUST be invalid, remove it
@@ -75,8 +77,8 @@ public class CalyxGraph{
                 module.module().init = true;
                 all.add(build);
 
-                if(build instanceof GrowingHeartBuilding h) module.module().graph.hearts.add(h);
-                else if( build instanceof GrowingVeinBulding h) module.module().graph.veins.add(h);
+                if(module.isHeart()) module.module().graph.hearts.add(build);
+                else module.module().graph.veins.add(build);
             }
         }
 
@@ -104,6 +106,14 @@ public class CalyxGraph{
         }
     }
 
+    public void removeAll(Building tile){
+        remove(tile);
+        all.remove(tile);
+        veins.remove(tile);
+        hearts.remove(tile);
+        reflow((Calyxian)tile);
+    }
+
     /** Note that this does not actually remove the building from the graph;
      * it creates *new* graphs that contain the correct buildings. Doing this invalidates the graph. */
     public void remove(Building tile){
@@ -112,7 +122,9 @@ public class CalyxGraph{
         //go through all the connections of this tile
         for(Calyxian other : tileC.getCalyxConnections(outArray1)){
             //a graph has already been assigned to this tile from a previous call, skip it
-            if(other.module().graph != this) continue;
+            if(other.module().graph != this){
+                continue;
+            }
 
             //create graph for this branch
             CalyxGraph graph = new CalyxGraph();
@@ -162,6 +174,16 @@ public class CalyxGraph{
     public String toString(){
         return "CalyxGraph{" +
         "graphID=" + graphID +
+        ", species=" + species +
+        ", hearts=" + hearts +
+        ", veins=" + veins +
+        //dont bother with all, bc yes
+        '}';
+    }
+
+    public String toStringFull(){
+        return "CalyxGraph{" +
+        " graphID=" + graphID +
         ", species=" + species +
         ", hearts=" + hearts +
         ", veins=" + veins +

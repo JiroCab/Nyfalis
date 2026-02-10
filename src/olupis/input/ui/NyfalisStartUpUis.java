@@ -152,20 +152,24 @@ public class NyfalisStartUpUis {
         debugTable.clear();
 
         debugTable.visibility = () -> !state.isEditor() ||  !Core.settings.getBool("editor-blocks-shown");
-        if(state.isEditor()){
-            debugTable.table(Tex.pane, z -> {
-                ImageButton button = z.button(Tex.whiteui, Styles.clearNoneTogglei, 33f, () -> Call.setPlayerTeamEditor(player,  NyfUnitTeamMapper.verdentTeam))
-                .size(45f).margin(2f).get();
-                button.getImageCell().grow();
-                button.getStyle().imageUpColor = NyfUnitTeamMapper.verdentTeam.color;
-                button.update(() -> button.setChecked(player.team() ==  NyfUnitTeamMapper.verdentTeam));
-            });
+        debugTable.table(Tex.pane, z -> {
 
-            debugTable.row();
-        }
+            ImageButton button = z.button(Tex.whiteui, Styles.clearNoneTogglei, 35, () -> updateTeam( NyfUnitTeamMapper.verdentTeam))
+            .width(77.5f).height(40f).get();
+            button.getImageCell().grow().margin(0).width(70);
+            button.getStyle().imageUpColor = NyfUnitTeamMapper.verdentTeam.color;
+            button.update(() -> button.setChecked(player.team() ==  NyfUnitTeamMapper.verdentTeam));
+
+            ImageButton button2 = z.button(Tex.whiteui, Styles.clearNoneTogglei, 35, () -> updateTeam( NyfUnitTeamMapper.calyxTeam))
+            .width(77.5f).height(40f).get();
+            button2.getImageCell().grow().margin(0).width(70);
+            button2.getStyle().imageUpColor = NyfUnitTeamMapper.calyxTeam.color;
+            button2.update(() -> button2.setChecked(player.team() ==  NyfUnitTeamMapper.calyxTeam));
+        }).width(155f).margin(12).marginBottom(0).marginTop(0).checked(false).visible( () -> Core.settings.getBool("nyfalis-debug") || state.isEditor());
+
         //debug and if someone needs to convert a map and said map does not have the Nyfalis Block set / testing
-
         if( Core.settings.getBool("nyfalis-debug")){
+            debugTable.row();
             CustomRulesDialog ruleInfo = Reflect.get(ui.paused, "rulesDialog");
             WaveInfoDialog waveInfo = new WaveInfoDialog();
 
@@ -182,6 +186,7 @@ public class NyfalisStartUpUis {
                         ui.paused.show();
                     }
                 }).width(77.5f).height(40f).checked(false).tooltip("Apply Nyfalis Settings/Env to in.current game");
+
                 z.button("C", Icon.down, Styles.squareTogglet, () -> {
                     if(state.isCampaign()) Logic.sectorCapture();
                     state.wave += 100;
@@ -189,14 +194,18 @@ public class NyfalisStartUpUis {
                         if(Core.input.keyDown(Binding.boost)) player.team().core().items.add(i, player.team().core().storageCapacity);
                         else if (i.unlocked())player.team().core().items.add(i, player.team().core().storageCapacity);
                     }
-
                 }).width(77.5f).height(40f).checked(false).tooltip("Capture Sector & fill core with Items");
+
                 z.row();
-            }).width(155f).growY().margin(12f).checked(false).row();
-            debugTable.button("@editor.rules", Icon.list, Styles.squareTogglet, ()->{
-                ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
-            }).width(155f).height(40f).margin(12f).checked(false).row();
-            debugTable.button("@editor.waves", Icon.waves, Styles.squareTogglet, waveInfo::show).width(155f).height(40f).margin(12f).checked(false);
+                z.button("R", Icon.list, Styles.squareTogglet, () -> {
+                    ruleInfo.show(Vars.state.rules, () -> Vars.state.rules = new Rules());
+                }).width(77.5f).height(40f).checked(false).tooltip("@editor.rules");
+
+                z.button("W", Icon.waves, Styles.squareTogglet, waveInfo::show).width(77.5f).height(40f).checked(false).tooltip("@editor.waves");
+                z.row();
+                z.button("G", Icon.grid, Styles.squareTogglet, NYF::gphh).width(77.5f).height(40f).checked(false).tooltip("@editor.rules");
+
+            }).width(155f).growY().margin(12f).marginBottom(0).marginTop(0).checked(false).row();
             if(mobile || testMobile){
                 debugTable.row();
                 debugTable.add(new Element()).width(155f).height(50f).margin(12f).touchable( Touchable.disabled);
@@ -204,6 +213,16 @@ public class NyfalisStartUpUis {
         }
         debugTable.marginBottom(200f);
     }
+
+    public static void updateTeam(Team t ){
+        if( state.isEditor()){
+            Call.setPlayerTeamEditor(player,  t);
+        }else if(Core.settings.getBool("nyfalis-debug")){
+            player.team(t);
+        }
+
+    }
+
 
     public static void loadHints(){
         ui.hints.hints.addAll(

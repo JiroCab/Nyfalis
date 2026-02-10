@@ -6,6 +6,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.style.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
@@ -139,8 +140,6 @@ public class NyfWorldFuckingHelper{
             return f.replacements.get(ore, ore);
         return ore;
     }
-
-
 
     //endregion
     // region == Planet gen helpers==
@@ -362,6 +361,14 @@ public class NyfWorldFuckingHelper{
                     return true;
             return false;
         }
+    }
+
+    public static Color calyxSpeciesColors(int i){
+        return   Seq.with(Pal.heal, Color.pink, Pal.graphiteAmmoBack).get(i);
+    }
+
+    public static TextureRegionDrawable calyxSpeciesICon(int i){
+        return  Seq.with(Icon.cancel, Icon.tree, Icon.terrain).get(i);
     }
     //endregion
 }

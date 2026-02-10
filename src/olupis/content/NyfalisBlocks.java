@@ -94,7 +94,7 @@ public class NyfalisBlocks {
 
         /*Env Hazzard*/
         boomPuffPassive, boomPuffActive,
-        calyxHeart, calyxVein, calyxBloom,
+        calyxHeart, calyxVein, calyxBloom, calyxBrain,
 
         /*Trees*/
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, mossDeadTree, spruceTree,
@@ -2884,14 +2884,26 @@ public class NyfalisBlocks {
             fogRadius = 20;
         }};
 
+        calyxVein = new GrowingVein("calyx-vein"){{
+            requirements(Category.logic, with(silicon, 5));
+            heartlessBlends = alwaysUnlocked =true;
+        }};
+
         calyxHeart = new GrowingHeart("calyx-heart"){{
             size = 3;
-            requirements(Category.logic, ItemStack.with(new Object[]{Items.silicon, 1}));
+            alwaysUnlocked =true;
+            requirements(Category.logic, with(silicon, 5));
         }};
-        calyxVein = new GrowingVein("calyx-vein"){{
-            requirements(Category.logic, ItemStack.with(new Object[]{Items.silicon, 1}));
 
+
+        calyxBrain = new GrowingCore("calyx-brain"){{
+            size = 3;
+            alwaysUnlocked =true;
+            requirements(Category.logic, with(silicon, 5));
+            unitType = gnat;
         }};
+
+
         //endregion
 
         if(headless) return;
@@ -2919,10 +2931,9 @@ public class NyfalisBlocks {
                 b.outlineColor = NyfalisColors.contentOutline;
             }
 
-            if(b.techNode != null && b.techNode.planet == Planets.serpulo || b.isOnPlanet(Planets.serpulo)){
+            else if(b.techNode != null && b.techNode.planet == Planets.serpulo || b.isOnPlanet(Planets.serpulo)){
                 if (!sandBoxBlocks.contains(b)) hiddenNyfalisBlocks.add(b);
                 b.shownPlanets.removeAll(NyfalisPlanets.planetList);
-
             }
             
         });

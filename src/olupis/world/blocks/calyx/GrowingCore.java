@@ -1,10 +1,7 @@
 package olupis.world.blocks.calyx;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.*;
@@ -12,45 +9,23 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.power.*;
-import olupis.world.*;
 import olupis.world.blocks.calyx.ineternal.*;
+import olupis.world.blocks.defence.*;
 
-public class GrowingVein extends Block{
-    public Color heartlessColour = Color.black;
-    public boolean heartlessBlends = false;
-    public TextureRegion heartedRegion;
-    public TextureRegion[] speciesRegion ;
+public class GrowingCore extends PropellerCoreTurret{
 
-    public GrowingVein(String name) {
+    public GrowingCore(String name) {
         super(name);
-        update = true;
-
     }
 
-    @Override
-    public void load(){
-        super.load();
-        heartedRegion = Core.atlas.find(name + "-heart");
-    }
 
-    public class GrowingVeinBulding extends Building implements Calyxian{
-        @Nullable public CalyxModule calyxModule;
 
-        @Override
-        public void draw(){
-            if(getHeart() == null){
-                Draw.color(heartlessColour);
-                if(heartedRegion.found()) Draw.rect(heartedRegion, this.x, this.y, this.drawrot());
-                if(!heartlessBlends) Draw.reset();
-            } else {
-                Draw.color(NyfWorldFuckingHelper.calyxSpeciesColors(calyxModule.graph.species));
-            }
-            super.draw();
-            Draw.reset();
-        }
+    public class GrowingCoreBuild extends PropellerCoreTurretBuild implements Calyxian{
+        @Nullable
+        public CalyxModule calyxModule;
 
-        @Override
-        public CalyxModule module(){
+
+        @Override public CalyxModule module(){
             return calyxModule;
         }
 
@@ -90,9 +65,8 @@ public class GrowingVein extends Block{
         @Override
         public void onProximityRemoved(){
             super.onProximityRemoved();
-            removedCalyxianModule();
+            if(calyxModule != null) removedCalyxianModule();
         }
-
 
         @Override
         public void changeTeam(Team next){
@@ -125,15 +99,7 @@ public class GrowingVein extends Block{
         @Override
         public void placed(){
             super.placed();
-
-            //randomized which one it adds itself too
-            Seq<Building> pro = proximity.copy();
-            pro.sort( i -> Mathf.randomSeed(pos()));
-            for(Building building : pro){
-                if(!(building instanceof  Calyxian b)) continue;
-                b.module().graph.add(this);
-
-            }
+            module().graph.reflow(this);
         }
 
         @Override
@@ -143,8 +109,13 @@ public class GrowingVein extends Block{
 
         @Override
         public @Nullable Building getHeart(){
-            if(module() == null || module().graph == null) return null;
-            return module().graph.getHeart();
+            return this;
+        }
+
+        @Override
+        public boolean isHeart(){
+            return true;
         }
     }
+
 }

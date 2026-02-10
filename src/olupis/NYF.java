@@ -2,9 +2,11 @@ package olupis;
 
 import arc.util.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.content.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 public class NYF{
@@ -30,8 +32,17 @@ public class NYF{
     }
 
     public static @Nullable CalyxGraph gph(){
+        if(cly() == null || cly().module() == null) return null;
         if(cly().module() != null) return cly().module().graph;
         return null;
+    }
+
+    public static void gphh(){
+        if(gph() == null) return;
+        for(Building b : gph().all){
+            NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
+
+        }
     }
 
 

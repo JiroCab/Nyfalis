@@ -16,6 +16,7 @@ public class CalyxModule extends BlockModule{
         for(int i = 0; i < links.size; i++){
             write.i(links.get(i));
         }
+        species = graph.species;
         write.i(0);
     }
 

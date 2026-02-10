@@ -72,6 +72,10 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
 
     @Override
     public void setStats(){
+        if(shootType == null){
+            super.setStats();
+            return;
+        }
         stats.add(Stat.weapons, table ->{
             table.table(Styles.grayPanel, t ->{
                 t.row();
@@ -230,6 +234,7 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
         }
 
         public BulletType peekAmmo() {
+            if(shootType == null) return Bullets.placeholder;
             return shootType;
         }
 
@@ -282,6 +287,11 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
         }
 
         public void updateTile() {
+            if(shootType == null){
+                super.updateTile();
+                return;
+            }
+
             unit.ammo(unit.type().ammoCapacity);
             if (!validateTarget()) target = null;
 

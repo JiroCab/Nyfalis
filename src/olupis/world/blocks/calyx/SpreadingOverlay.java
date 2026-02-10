@@ -168,7 +168,6 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
     @Override
     public void drawBase(Tile tile){
-        Color prev = Draw.getColor();
         if(!isAlive(tile)) Draw.color(noHeartColour, 0.5f);
         Draw.rect(
             variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))],
@@ -176,7 +175,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
             tile.worldy(),
             Mathf.randomSeed(tile.pos(),0, 3) * 90f
         );
-        Draw.color(prev, 1);
+        Draw.reset();
     }
 
     public String getName(Block in){
