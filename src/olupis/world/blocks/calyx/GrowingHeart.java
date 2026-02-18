@@ -1,19 +1,13 @@
 package olupis.world.blocks.calyx;
 
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.power.*;
-import olupis.*;
-import olupis.world.*;
 import olupis.world.blocks.calyx.ineternal.*;
-import olupis.world.blocks.defence.PropellerCoreBlock.*;
 
 public class GrowingHeart extends Block{
     public GrowingHeart(String name){
@@ -73,15 +67,20 @@ public class GrowingHeart extends Block{
         @Override
         public void onProximityUpdate(){
             super.onProximityUpdate();
-            if(calyxModule != null) updateCalyxianModule();
+            updateCalyxianModule();
         }
 
         @Override
         public void onProximityRemoved(){
             super.onProximityRemoved();
-            if(calyxModule != null) removedCalyxianModule();
+            removedCalyxianModule();
         }
 
+        @Override
+        public void onRemoved(){
+            super.onRemoved();
+            removedCalyxianModule();
+        }
 
         @Override
         public void changeTeam(Team next){
@@ -105,32 +104,17 @@ public class GrowingHeart extends Block{
 
         @Override
         public void buildConfiguration(Table table){
-            table.table(par -> {
-                par.table(t -> {
-                    t.background(Styles.black6);
-                    var group = new ButtonGroup<ImageButton>();
-                    group.setMinCheckCount(0);
-                    int i = 0;
-                    t.row();
-                    for(int j = 0; j < NyfalisVars.calyxSpecies; j++){
-                        int finalJ = j;
-                        ImageButton button = t.button(NyfWorldFuckingHelper.calyxSpeciesICon(j), Styles.clearNoneTogglei, 45f, () -> {
-                            calyxSpecies = finalJ;
-                            configure(finalJ);
 
-                            if(module() != null){
-                                changeSpecies(finalJ);
-                            }
-                            deselect();
-                        }).group(group).get();
-                        button.update(() -> {
-                            button.setChecked(finalJ == calyxSpecies);
-                            button.setColor(NyfWorldFuckingHelper.calyxSpeciesColors(finalJ));
-                        });
+            calyxBuildConfiguration(table, true);
+        }
 
-                    }
-                });
-            });
+        @Override
+        public int calyxSpeciesConfig(){
+            return calyxSpecies;
+        }
+        @Override
+        public void calyxSpeciesConfig(int species){
+            this.calyxSpecies = species;
         }
 
         @Override
@@ -164,7 +148,6 @@ public class GrowingHeart extends Block{
         @Override
         public void placed(){
             super.placed();
-            module().graph.reflow(this);
         }
 
         @Override
@@ -181,5 +164,6 @@ public class GrowingHeart extends Block{
         public boolean isHeart(){
             return true;
         }
+
     }
 }

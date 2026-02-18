@@ -84,7 +84,7 @@ public class GrowingVein extends Block{
         @Override
         public void onProximityUpdate(){
             super.onProximityUpdate();
-            if(calyxModule != null) updateCalyxianModule();
+            updateCalyxianModule();
         }
 
         @Override

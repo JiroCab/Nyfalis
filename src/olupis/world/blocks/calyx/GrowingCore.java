@@ -1,14 +1,13 @@
 package olupis.world.blocks.calyx;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.world.*;
-import mindustry.world.blocks.power.*;
+import olupis.world.blocks.calyx.GrowingHeart.*;
 import olupis.world.blocks.calyx.ineternal.*;
 import olupis.world.blocks.defence.*;
 
@@ -16,6 +15,16 @@ public class GrowingCore extends PropellerCoreTurret{
 
     public GrowingCore(String name) {
         super(name);
+
+        //todo: crash
+        config(Integer.class, (GrowingHeartBuilding build, Integer i) -> {
+            if(!configurable) return;
+            build.calyxSpecies = i;
+            if (build.module() != null){
+                build.module().species = i;
+                build.module().graph.species = i;
+            }
+        });
     }
 
 
@@ -23,6 +32,7 @@ public class GrowingCore extends PropellerCoreTurret{
     public class GrowingCoreBuild extends PropellerCoreTurretBuild implements Calyxian{
         @Nullable
         public CalyxModule calyxModule;
+        public int calyxSpecies = 0;
 
 
         @Override public CalyxModule module(){
@@ -44,6 +54,7 @@ public class GrowingCore extends PropellerCoreTurret{
         @Override
         public Building create(Block block, Team team){
             calyxModule = new CalyxModule();
+            calyxModule.graph.species =  calyxModule.species = calyxSpecies;
             calyxModule.graph.add(self());
 
             return super.create(block, team);
@@ -89,6 +100,23 @@ public class GrowingCore extends PropellerCoreTurret{
         }
 
         @Override
+        public void buildConfiguration(Table table){
+            super.buildConfiguration(table);
+            table.row();
+
+            calyxBuildConfiguration(table, false);
+        }
+
+        @Override
+        public int calyxSpeciesConfig(){
+            return calyxSpecies;
+        }
+        @Override
+        public void calyxSpeciesConfig(int species){
+            this.calyxSpecies = species;
+        }
+
+        @Override
         public void afterPickedUp(){
             if(calyxModule != null){
                 this.calyxModule = new CalyxModule();
@@ -99,7 +127,6 @@ public class GrowingCore extends PropellerCoreTurret{
         @Override
         public void placed(){
             super.placed();
-            module().graph.reflow(this);
         }
 
         @Override
@@ -115,6 +142,25 @@ public class GrowingCore extends PropellerCoreTurret{
         @Override
         public boolean isHeart(){
             return true;
+        }
+
+        @Override
+        public byte version(){
+            return 3;
+        }
+
+        @Override
+        public void write(Writes write){
+            super.write(write);
+            write.i(calyxSpecies);
+        }
+
+        @Override
+        public void read(Reads read, byte revision) {
+            super.read(read, revision);
+            if(revision >= 3){
+                calyxSpecies = read.i();
+            }
         }
     }
 

@@ -1,12 +1,16 @@
 package olupis.world.blocks.calyx.ineternal;
 
 import arc.math.*;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import olupis.*;
+import olupis.world.*;
 
 public interface Calyxian{
     Seq<Calyxian> tempBuilds = new Seq<>();
@@ -26,7 +30,15 @@ public interface Calyxian{
 
             if(build().team == bul.team && !module().links.contains(bul.pos())){
                 if(other.module().graph == module().graph) continue;
-                if(other.module().graph.species == module().graph.species) out.add(other);
+                if(other.module().graph.getHeart() == null){
+                    out.add(other);
+                    continue;
+                }
+
+                //check if same species and merge
+                if(other.module().graph.species == module().graph.species){
+                    out.add(other);
+                }
             }
         }
 
@@ -51,7 +63,10 @@ public interface Calyxian{
     default void updateCalyxianModule(){
         tempBuilds.clear();
         for(Calyxian c : getCalyxConnections(tempBuilds)){
-            if(c.module() != null && (c.module().graph.species == module().graph.species || c.module().graph.getHeart() == null)){
+            if(c.module().graph == null) continue;
+            if(c.module().graph == module().graph) continue;
+
+            if(c.module().graph.species == module().graph.species || c.module().graph.getHeart() == null){
                 c.module().graph.addGraph(module().graph);
             }
         }
@@ -71,14 +86,14 @@ public interface Calyxian{
         tmp.species = module().graph.species = in;
 
         tmp.addGraph(module().graph);
-
+        Log.err(tmp.all.size + " vs " + module().graph.all.size);
 
     }
 
     default void removedCalyxianModule(){
         if(module() == null) return;
 
-        module().graph.remove(build());
+        module().graph.remove(build().self());
         for(int i = 0; i < module().links.size; ++i){
             Tile other = Vars.world.tile(module().links.get(i));
             if(other != null && other.build instanceof Calyxian c && c.module() != null){
@@ -93,5 +108,37 @@ public interface Calyxian{
         return false;
     }
 
+
+    default void calyxBuildConfiguration(Table table, boolean call){
+        table.table(par -> {
+            par.table(t -> {
+                t.background(Styles.black6);
+                var group = new ButtonGroup<ImageButton>();
+                group.setMinCheckCount(0);
+                int i = 0;
+                t.row();
+                for(int j = 0; j < NyfalisVars.calyxSpecies; j++){
+                    int finalJ = j;
+                    ImageButton button = t.button(NyfWorldFuckingHelper.calyxSpeciesICon(j), Styles.clearNoneTogglei, 45f, () -> {
+                        calyxSpeciesConfig(finalJ);
+                        if(call)build().configure(finalJ);
+
+                        if(module() != null){
+                            changeSpecies(finalJ);
+                        }
+                        build().deselect();
+                    }).group(group).color(NyfWorldFuckingHelper.calyxSpeciesColors(finalJ)).get();
+                    button.update(() -> {
+                        button.setChecked(finalJ == calyxSpeciesConfig());
+                        button.setColor(NyfWorldFuckingHelper.calyxSpeciesColors(finalJ));
+                    });
+
+                }
+            });
+        });
+    }
+
+    default int calyxSpeciesConfig(){return 0;}
+    default void calyxSpeciesConfig(int species){}
     //todo handle payload pick up & change team()
 }

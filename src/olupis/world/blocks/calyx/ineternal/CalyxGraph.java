@@ -86,6 +86,7 @@ public class CalyxGraph{
     }
 
     public @Nullable Building getHeart(){
+        checkHeart();
         if(hearts.isEmpty()) return null;
         return hearts.first();
     }
@@ -114,17 +115,13 @@ public class CalyxGraph{
         reflow((Calyxian)tile);
     }
 
-    /** Note that this does not actually remove the building from the graph;
-     * it creates *new* graphs that contain the correct buildings. Doing this invalidates the graph. */
+    /**it creates *new* graphs that contain the correct buildings. Doing this invalidates the graph. */
     public void remove(Building tile){
-
         if(!(tile instanceof Calyxian tileC)) return;
         //go through all the connections of this tile
         for(Calyxian other : tileC.getCalyxConnections(outArray1)){
             //a graph has already been assigned to this tile from a previous call, skip it
-            if(other.module().graph != this){
-                continue;
-            }
+            if(other.module().graph != this) continue;
 
             //create graph for this branch
             CalyxGraph graph = new CalyxGraph();
@@ -158,6 +155,17 @@ public class CalyxGraph{
 
     public void checkAdd(){
         if(entity != null) entity.add();
+    }
+
+    public void checkHeart(){
+        if(hearts.isEmpty()) return;
+        if(hearts.first() == null  || !hearts.first().isAdded() || hearts.first().dead){
+            Building heart = hearts.first();
+            all.remove(heart);
+            hearts.remove(heart);
+            checkHeart();
+        }
+
     }
 
     public void clear(){
