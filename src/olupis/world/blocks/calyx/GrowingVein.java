@@ -93,6 +93,11 @@ public class GrowingVein extends Block{
             removedCalyxianModule();
         }
 
+        @Override
+        public void onRemoved(){
+            super.onRemoved();
+            removedCalyxianModule();
+        }
 
         @Override
         public void changeTeam(Team next){

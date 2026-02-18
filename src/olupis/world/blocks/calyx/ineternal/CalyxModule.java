@@ -17,7 +17,7 @@ public class CalyxModule extends BlockModule{
             write.i(links.get(i));
         }
         species = graph.species;
-        write.i(0);
+        write.i(species);
     }
 
     @Override

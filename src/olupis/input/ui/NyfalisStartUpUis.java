@@ -203,7 +203,7 @@ public class NyfalisStartUpUis {
 
                 z.button("W", Icon.waves, Styles.squareTogglet, waveInfo::show).width(77.5f).height(40f).checked(false).tooltip("@editor.waves");
                 z.row();
-                z.button("G", Icon.grid, Styles.squareTogglet, NYF::gphh).width(77.5f).height(40f).checked(false).tooltip("@editor.rules");
+                z.button("G", Icon.grid, Styles.squareTogglet, NYF::gphh).width(77.5f).height(40f).checked(false).tooltip("highlight graph of calyx network under plater");
 
             }).width(155f).growY().margin(12f).marginBottom(0).marginTop(0).checked(false).row();
             if(mobile || testMobile){

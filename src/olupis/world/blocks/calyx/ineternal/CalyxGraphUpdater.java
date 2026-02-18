@@ -54,7 +54,7 @@ public class CalyxGraphUpdater implements Entityc{
     @Override
     public boolean isLocal(){
         //?????
-        return false;
+        return true;
     }
 
     @Override
@@ -73,9 +73,10 @@ public class CalyxGraphUpdater implements Entityc{
 
     @Override
     public void add(){
-        if(!this.added){}
-        this.index__all = Groups.all.addIndex(this);
-        this.added = true;
+        if(!this.added){
+            this.index__all = Groups.all.addIndex(this);
+            this.added = true;
+        }
     }
 
 

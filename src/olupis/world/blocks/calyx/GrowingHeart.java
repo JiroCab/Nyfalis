@@ -117,10 +117,9 @@ public class GrowingHeart extends Block{
                         ImageButton button = t.button(NyfWorldFuckingHelper.calyxSpeciesICon(j), Styles.clearNoneTogglei, 45f, () -> {
                             calyxSpecies = finalJ;
                             configure(finalJ);
+
                             if(module() != null){
-                                module().species = finalJ;
-                                module().graph.species = finalJ;
-                                module().graph.reflow(this);
+                                changeSpecies(finalJ);
                             }
                             deselect();
                         }).group(group).get();

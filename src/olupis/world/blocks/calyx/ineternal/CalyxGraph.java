@@ -55,7 +55,7 @@ public class CalyxGraph{
         if(graph.entity != null) graph.entity.remove();
 
         for(Building tile : graph.all){
-            add(tile);
+            if(!tile.dead && tile.isAdded())add(tile);
         }
         checkAdd();
     }

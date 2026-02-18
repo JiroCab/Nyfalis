@@ -1,10 +1,12 @@
 package olupis.world.blocks.calyx.ineternal;
 
+import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.world.*;
+import olupis.*;
 
 public interface Calyxian{
     Seq<Calyxian> tempBuilds = new Seq<>();
@@ -23,7 +25,8 @@ public interface Calyxian{
             if(!(bul instanceof Calyxian other)) continue;
 
             if(build().team == bul.team && !module().links.contains(bul.pos())){
-                if(other.module().graph.species == module().species) out.add(other);
+                if(other.module().graph == module().graph) continue;
+                if(other.module().graph.species == module().graph.species) out.add(other);
             }
         }
 
@@ -54,19 +57,36 @@ public interface Calyxian{
         }
     }
 
-    default void removedCalyxianModule(){
-        if(module() != null){
-            module().graph.removeAll(build().self());
+    default void changeSpecies (int species){
+        int in  = Mathf.clamp(species ,0,  NyfalisVars.calyxSpecies);
+        CalyxGraph tmp =  new CalyxGraph();
 
+        Seq<Building> prev = module().graph.all.copy();
+        module().species = in;
+        for(Building building : prev){
+            if((!(building instanceof Calyxian bu)))return;
 
-            for(int i = 0; i < module().links.size; ++i){
-                Tile other = Vars.world.tile(module().links.get(i));
-                if(other != null && other.build instanceof Calyxian c && c.module() != null){
-                    c.module().links.removeValue(build().pos());
-                }
-            }
-            module().links.clear();
+            if (bu.module() != null ) bu.module().species = in;
         }
+        tmp.species = module().graph.species = in;
+
+        tmp.addGraph(module().graph);
+
+
+    }
+
+    default void removedCalyxianModule(){
+        if(module() == null) return;
+
+        module().graph.remove(build());
+        for(int i = 0; i < module().links.size; ++i){
+            Tile other = Vars.world.tile(module().links.get(i));
+            if(other != null && other.build instanceof Calyxian c && c.module() != null){
+                c.module().links.removeValue(build().pos());
+                Log.err(build() + "");
+            }
+        }
+        module().links.clear();
     }
 
     default boolean isHeart(){
