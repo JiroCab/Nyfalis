@@ -20,10 +20,12 @@ public class GrowingVein extends Block{
     public boolean heartlessBlends = false;
     public TextureRegion heartedRegion;
     public TextureRegion[] speciesRegion ;
+    public @Nullable Seq<Block> replacements; //todo, also theactual spreading in env updater :p
 
     public GrowingVein(String name) {
         super(name);
         update = true;
+        schematicPriority = -5;
 
     }
 

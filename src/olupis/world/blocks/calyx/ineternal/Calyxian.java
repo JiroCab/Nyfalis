@@ -1,6 +1,8 @@
 package olupis.world.blocks.calyx.ineternal;
 
+import arc.graphics.*;
 import arc.math.*;
+import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -29,14 +31,11 @@ public interface Calyxian{
             if(!(bul instanceof Calyxian other)) continue;
 
             if(build().team == bul.team && !module().links.contains(bul.pos())){
-                if(other.module().graph == module().graph) continue;
                 if(other.module().graph.getHeart() == null){
                     out.add(other);
-                    continue;
-                }
 
                 //check if same species and merge
-                if(other.module().graph.species == module().graph.species){
+                }else if(other.module().graph.species == module().graph.species){
                     out.add(other);
                 }
             }
@@ -98,7 +97,6 @@ public interface Calyxian{
             Tile other = Vars.world.tile(module().links.get(i));
             if(other != null && other.build instanceof Calyxian c && c.module() != null){
                 c.module().links.removeValue(build().pos());
-                Log.err(build() + "");
             }
         }
         module().links.clear();
@@ -109,7 +107,7 @@ public interface Calyxian{
     }
 
 
-    default void calyxBuildConfiguration(Table table, boolean call){
+    default void calyxBuildConfiguration(Table table){
         table.table(par -> {
             par.table(t -> {
                 t.background(Styles.black6);
@@ -121,7 +119,6 @@ public interface Calyxian{
                     int finalJ = j;
                     ImageButton button = t.button(NyfWorldFuckingHelper.calyxSpeciesICon(j), Styles.clearNoneTogglei, 45f, () -> {
                         calyxSpeciesConfig(finalJ);
-                        if(call)build().configure(finalJ);
 
                         if(module() != null){
                             changeSpecies(finalJ);

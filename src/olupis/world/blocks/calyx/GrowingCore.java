@@ -1,11 +1,15 @@
 package olupis.world.blocks.calyx;
 
+import arc.graphics.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
+import mindustry.ai.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import olupis.world.blocks.calyx.GrowingHeart.*;
 import olupis.world.blocks.calyx.ineternal.*;
@@ -15,17 +19,33 @@ public class GrowingCore extends PropellerCoreTurret{
 
     public GrowingCore(String name) {
         super(name);
-
-        //todo: crash
-        config(Integer.class, (GrowingHeartBuilding build, Integer i) -> {
-            if(!configurable) return;
-            build.calyxSpecies = i;
-            if (build.module() != null){
-                build.module().species = i;
-                build.module().graph.species = i;
-            }
-        });
     }
+
+
+        @Override
+        public void configs(){
+            consumePowerDynamic((GrowingCoreBuild b) -> b.producingUnits() ? unitPowerCost : 0);
+            config(IntSeq.class, (GrowingCoreBuild build, IntSeq s) -> {
+                if(!configurable) return;
+                if(s.size > 2 || s.size == 0) return;
+
+                int mI =  s.get(0);
+                if(build.currentMode != mI){
+                    build.currentMode = mI < 0 || mI > modes.size ? 0 : mI;
+                }
+
+                int sI = s.get(1);
+                build.calyxSpecies = sI;
+                if (build.module() != null){
+                    build.module().species = sI;
+                    build.module().graph.species = sI;
+                }
+            });
+
+            config(UnitCommand.class, (GrowingCoreBuild build, UnitCommand command) -> build.command = command);
+
+            configClear((GrowingCoreBuild build) -> build.currentMode = 0);
+        }
 
 
 
@@ -103,8 +123,12 @@ public class GrowingCore extends PropellerCoreTurret{
         public void buildConfiguration(Table table){
             super.buildConfiguration(table);
             table.row();
+            table.table(t -> {
+                t.defaults().center();
+                t.image().color(team.color.cpy().lerp(Color.black, 0.25f).a(0.55f)).height(2f).center().growX().row();
+            }).growX().row();
 
-            calyxBuildConfiguration(table, false);
+            calyxBuildConfiguration(table);
         }
 
         @Override
@@ -113,7 +137,14 @@ public class GrowingCore extends PropellerCoreTurret{
         }
         @Override
         public void calyxSpeciesConfig(int species){
+            configure(IntSeq.with(currentMode, species));
             this.calyxSpecies = species;
+        }
+
+        @Override
+        public void configMode(int mode){
+            currentMode = mode;
+            configure(IntSeq.with(mode, calyxSpecies));
         }
 
         @Override

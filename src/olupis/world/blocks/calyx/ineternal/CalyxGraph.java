@@ -28,6 +28,13 @@ public class CalyxGraph{
         graphID = lastGraphID++;
     }
 
+    public CalyxGraph(int sp){
+        entity =  CalyxGraphUpdater.create();
+        entity.graph = this;
+        graphID = lastGraphID++;
+        this.species = sp;
+    }
+
     public CalyxGraph(boolean noEnitity){
         entity = null;
         graphID = lastGraphID++;
@@ -51,12 +58,12 @@ public class CalyxGraph{
             return;
         }
 
-        //other entity should be removed as the graph was merged
-        if(graph.entity != null) graph.entity.remove();
-
         for(Building tile : graph.all){
             if(!tile.dead && tile.isAdded())add(tile);
         }
+
+        //other entity should be removed as the graph was merged
+        if(graph.entity != null) graph.entity.remove();
         checkAdd();
     }
 
@@ -124,9 +131,9 @@ public class CalyxGraph{
             if(other.module().graph != this) continue;
 
             //create graph for this branch
-            CalyxGraph graph = new CalyxGraph();
+            CalyxGraph graph = new CalyxGraph(this.species);
             graph.checkAdd();
-            graph.add(other.build());
+            graph.add(tile);
             //add to queue for BFS
             queue.clear();
             queue.addLast(other);

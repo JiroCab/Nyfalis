@@ -50,6 +50,10 @@ public class PropellerCoreBlock extends CoreBlock  {
             new CoreMode(true, false, true )
         );
 
+        configs();
+    }
+
+    public void configs(){
         consumePowerDynamic((PropellerCoreBuild b) -> b.producingUnits() ? unitPowerCost : 0);
         config(Integer.class, (PropellerCoreBuild build, Integer i) -> {
             if(!configurable) return;
@@ -304,8 +308,7 @@ public class PropellerCoreBlock extends CoreBlock  {
                     t.row();
                     for(var item : modes){
                         ImageButton button = t.button(icons[modes.indexOf(item)], Styles.clearNoneTogglei, 45f, () -> {
-                            currentMode = modes.indexOf(item);
-                            configure(modes.indexOf(item));
+                            configMode(modes.indexOf(item));
                             deselect();
                         }).group(group).get();
 
@@ -316,6 +319,10 @@ public class PropellerCoreBlock extends CoreBlock  {
                         }
                     }
                 }).row();
+                par.table(t -> {
+                    t.defaults().center();
+                    t.image().color(team.color.cpy().lerp(Color.black, 0.25f).a(0.55f)).height(2f).center().growX().row();
+                }).visible(() -> currentMode().stats[0]).growX().row();
                 par.collapser(ta -> {
                     ta.table( t ->{
                         ta.background(Styles.black6);
@@ -324,7 +331,7 @@ public class PropellerCoreBlock extends CoreBlock  {
                         int ic = 0, columnsC = 6;
                         t.row();
                         for(var item : spawns.commands){
-                            ImageButton button = ta.button(item.getIcon(), Styles.clearNoneTogglei, 40f, () -> {
+                            ImageButton button = ta.button(item.getIcon(), Styles.clearNoneTogglei, 45f, () -> {
                                 command = item;
                                 configure(item);
                                 deselect();
@@ -339,6 +346,13 @@ public class PropellerCoreBlock extends CoreBlock  {
                     });
                 },() -> currentMode().stats[0]);
             });
+        }
+
+        /*Config calls are now a functions. as game confuse if two configs with ints crashie
+        * This allows for Growing core to have configs for species and mode*/
+        public void configMode(int mode) {
+            currentMode = mode;
+            configure(mode);
         }
 
         public CoreMode currentMode(){

@@ -25,11 +25,11 @@ public class GrowingHeart extends Block{
         });
     }
 
-
+    //TODO WHY TF IS IT NOT LOADING/MAKING THE GRAPH CONFIGED SPECIES AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh
     public class GrowingHeartBuilding extends Building implements Calyxian{
         @Nullable
         public CalyxModule calyxModule;
-        public int calyxSpecies = 0;
+        public int calyxSpecies;
 
         @Override
         public CalyxModule module(){
@@ -42,7 +42,7 @@ public class GrowingHeart extends Block{
             if(initialized) {
                 //reinit calyx graph like power one bc idk
                 calyxModule.init = false;
-                new CalyxGraph().add(self());
+                new CalyxGraph(calyxSpecies).add(self());
             }
 
             return out;
@@ -50,8 +50,7 @@ public class GrowingHeart extends Block{
 
         @Override
         public Building create(Block block, Team team){
-            calyxModule = new CalyxModule();
-            calyxModule.graph.species =  calyxModule.species = calyxSpecies;
+            calyxModule = new CalyxModule(calyxSpecies);
             calyxModule.graph.add(self());
 
             return super.create(block, team);
@@ -95,7 +94,7 @@ public class GrowingHeart extends Block{
                     if(other instanceof Calyxian cal){
                         module().links.removeIndex(i);
                         cal.module().links.removeValue(this.pos());
-                        (new CalyxGraph()).remove(other);
+                        (new CalyxGraph(calyxSpecies)).remove(other);
                         --i;
                     }
                 }
@@ -105,7 +104,7 @@ public class GrowingHeart extends Block{
         @Override
         public void buildConfiguration(Table table){
 
-            calyxBuildConfiguration(table, true);
+            calyxBuildConfiguration(table);
         }
 
         @Override
@@ -120,7 +119,8 @@ public class GrowingHeart extends Block{
         @Override
         public void afterPickedUp(){
             if(calyxModule != null){
-                this.calyxModule = new CalyxModule();
+                this.calyxModule = new CalyxModule(calyxSpecies);
+                this.calyxModule.graph.species = calyxSpecies;
                 this.calyxModule.graph.clear();
             }
         }
