@@ -8,7 +8,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
@@ -17,8 +16,6 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
-import olupis.world.blocks.calyx.GrowingVein.*;
-import olupis.world.blocks.calyx.GrowingHeart.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 import static mindustry.Vars.*;
@@ -88,8 +85,15 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     /** Prefix used by ore generation**/
     public String orePrefix;
 
+    /**Requires a Calyx graph with an active heart to spread **/
     public boolean spreadRequiresHeart = true;
+    /** Range from a calyx network to grow to consider alive**/
     public int connectionRange = tilesize * 10;
+    /**List of building that can grow on this tile **/
+    public Seq<Block> sprouts = new Seq<>();
+    /** Base chance for the tile to try to spread, updated every second */
+    public double sproutChance = 0.013 / 60f;
+
     public Color noHeartColour = Pal.accentBack;
 
     public SpreadingOverlay(String name, int variants){
@@ -182,15 +186,28 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         return in.name.replaceAll("ore-|olupis-|nyfalis-", "") + name.replaceAll("olupis|nyfalis|-overlay", "");
     }
 
+    @Override
+    public void lazyEnv(Tile tile){
+        boolean heart =Units.closestBuilding(nyfRule.calyxTeam, tile.x * tilesize, tile.y * tilesize, connectionRange,  b -> !b.dead && b instanceof  Calyxian c && c.getHeart() != null && !c.getHeart().dead) != null;
+        if(heart) aliveOverlays.add(tile.pos());
+    }
+
+    @Override
     public void updateEnv(Tile tile, EnvStruct i){
         if(net.client()) return;
+        lazyEnv(tile);
+
         boolean
             growth =
-                (!spreadRequiresHeart || isAlive(tile))
+                isAlive(tile)
                 && Mathf.chance(growChance * nyfRule.calyxGrowthFactor) ,
-            spreads= nyfRule.calyxSpreading && Mathf.chance(spreadChance * nyfRule.calyxSpreadingFactor);
+            spreads= isAlive(tile) && nyfRule.calyxSpreading && Mathf.chance(spreadChance * nyfRule.calyxSpreadingFactor),
+            sprout =
+            isAlive(tile)
+                && (tile.block() == Blocks.air || (tile.block().alwaysReplace))
+                && sprouts.any() && Mathf.chance(sproutChance * nyfRule.calyxSproutFactor);
 
-        if( (growth || spreads) && i.getIncrementFloor() >= spreadTries){
+        if( (growth || spreads || sprout) && i.getIncrementFloor() >= spreadTries){
             i.clearFloorVal();
 
             if(next != null && growth){
@@ -234,6 +251,24 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                     }
                 }
             }
+
+            if(sprout){
+
+                Seq<Block> out = sprouts.copy();
+                out.retainAll( b -> b.canPlaceOn(tile, nyfRule.calyxTeam, 0));
+                if(out.any()){
+
+                    if(upgradeEffect != null){
+                        tasks.post(() -> {
+                            upgradeEffect.at(tile.worldx(), tile.worldy(), 0f, upgradeColor);
+                            Call.effect(upgradeEffect, tile.worldx(), tile.worldy(), 0, upgradeColor);
+                        });
+                    }
+
+                    if(spreadSound != null) tasks.post(() -> Call.soundAt(spreadSound, tile.worldx(), tile.worldy(), spreadVolume, 1f));
+                    tile.setBlock(out.random(), nyfRule.calyxTeam, 0);
+                }
+            }
         }
     }
 
@@ -274,10 +309,8 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     }
 
     public boolean canSpread(Tile tile){
-        boolean heart = !spreadRequiresHeart || heart(tile) != null;
         return(
-            heart
-            && filter.get(tile.floor())
+            filter.get(tile.floor())
             && filter.get(tile.overlay())
             && filter.get(tile.block())
         );
@@ -292,19 +325,10 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     }
 
     public boolean isAlive(Tile tile){
-        return heart(tile ) != null;
+        return !spreadRequiresHeart || aliveOverlays.contains(tile.pos());
     }
 
     public Block replacement(){
         return replacement;
-    }
-
-    public @Nullable Building heart(Tile tile){
-        if(nyfRule.calyxTeam == null) {
-            return null;
-        }
-
-        return Groups.build.find( b -> b != null && !b.dead &&b.within(tile.x * tilesize, tile.y * tilesize, connectionRange) && b instanceof  Calyxian c && c.getHeart() != null && !c.getHeart().dead);
-
     }
 }

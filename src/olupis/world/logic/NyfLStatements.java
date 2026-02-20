@@ -239,7 +239,7 @@ public class NyfLStatements{
             switch(rule){
                 case calyxSpread -> nyfRule.calyxSpreading = value.bool();
                 case calyxSpreadFactor ->  nyfRule.calyxSpreadingFactor = value.numf();
-                case calyxBuildingFactor ->  nyfRule.calyxBuildingFactor = value.numf();
+                case calyxSproutFactor ->  nyfRule.calyxSproutFactor = value.numf();
 
                 case damagingWeather -> nyfRule.damagingWeather = value.bool();
             }

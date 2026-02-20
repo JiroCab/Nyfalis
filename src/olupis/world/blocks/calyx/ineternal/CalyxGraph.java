@@ -165,14 +165,7 @@ public class CalyxGraph{
     }
 
     public void checkHeart(){
-        if(hearts.isEmpty()) return;
-        if(hearts.first() == null  || !hearts.first().isAdded() || hearts.first().dead){
-            Building heart = hearts.first();
-            all.remove(heart);
-            hearts.remove(heart);
-            checkHeart();
-        }
-
+        if(hearts.any()) hearts.retainAll(b -> b != null  && !b.isAdded() && !b.dead);
     }
 
     public void clear(){

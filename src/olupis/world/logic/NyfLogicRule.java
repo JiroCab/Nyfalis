@@ -3,7 +3,7 @@ package olupis.world.logic;
 public enum NyfLogicRule{
     calyxSpread,
     calyxSpreadFactor,
-    calyxBuildingFactor,
+    calyxSproutFactor,
     damagingWeather;
 
 

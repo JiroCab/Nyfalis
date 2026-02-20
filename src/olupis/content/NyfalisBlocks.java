@@ -94,7 +94,7 @@ public class NyfalisBlocks {
 
         /*Env Hazzard*/
         boomPuffPassive, boomPuffActive,
-        calyxHeart, calyxVein, calyxBloom, calyxBrain,
+        calyxHeart, calyxVein, calyxBloom, calyxBrain, calyxBone, calyxBoneLarge,
 
         /*Trees*/
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, mossDeadTree, spruceTree,
@@ -2887,6 +2887,7 @@ public class NyfalisBlocks {
         calyxVein = new GrowingVein("calyx-vein"){{
             requirements(Category.logic, with(silicon, 5));
             heartlessBlends = alwaysUnlocked =true;
+            drawTeamOverlay = false;
         }};
 
         calyxHeart = new GrowingHeart("calyx-heart"){{
@@ -2949,6 +2950,9 @@ public class NyfalisBlocks {
         siliconArcSmelter.replacement = compoundCrucible;
         hydrochloricGraphitePress.replacement = compoundCrucible;
         mushBlender.replacement = rustyScrapWallLarge;
+
+        ((SpreadingOverlay)ourcelium).sprouts = Seq.with(calyxVein);
+        ((SpreadingOverlay)yourcelium).sprouts = Seq.with(calyxVein);
 
         if(headless)return;
 

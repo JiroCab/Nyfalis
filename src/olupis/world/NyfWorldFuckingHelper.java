@@ -364,7 +364,7 @@ public class NyfWorldFuckingHelper{
     }
 
     public static Color calyxSpeciesColors(int i){
-        return   Seq.with(Pal.heal, Color.pink, Pal.graphiteAmmoBack).get(i);
+        return   Seq.with(Color.green, Color.pink, Pal.graphiteAmmoBack).get(i);
     }
 
     public static TextureRegionDrawable calyxSpeciesICon(int i){

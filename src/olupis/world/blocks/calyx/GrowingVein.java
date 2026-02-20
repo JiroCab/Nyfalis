@@ -35,12 +35,15 @@ public class GrowingVein extends Block{
         heartedRegion = Core.atlas.find(name + "-heart");
     }
 
+    //TODO: performance drop when alot of spreading has happened, this is tick based not rendering
     public class GrowingVeinBulding extends Building implements Calyxian{
         @Nullable public CalyxModule calyxModule;
+        public boolean hasHeart = false;
+        public int laziness = 0;
 
         @Override
         public void draw(){
-            if(getHeart() == null){
+            if(!hasHeart){
                 Draw.color(heartlessColour);
                 if(heartedRegion.found()) Draw.rect(heartedRegion, this.x, this.y, this.drawrot());
                 if(!heartlessBlends) Draw.reset();
@@ -87,6 +90,16 @@ public class GrowingVein extends Block{
         public void onProximityUpdate(){
             super.onProximityUpdate();
             updateCalyxianModule();
+            laziness = 69420;
+        }
+
+        @Override
+        public void update(){
+            super.update();
+            if(laziness >= 60){
+                hasHeart = getHeart() != null;
+                laziness = 69420;
+            } else laziness += (int)Mathf.randomSeed(1, 5);
         }
 
         @Override

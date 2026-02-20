@@ -3,7 +3,6 @@ package olupis.world;
 import arc.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.async.*;
 import mindustry.content.*;
 import mindustry.game.*;
@@ -35,6 +34,10 @@ public class EnvUpdater implements AsyncProcess{
 
     // amount of layers to keep track of, 3 for vanilla (floor, overlay, block)
     static final int blockLayers = 3;
+
+    //reduces the cost of checking if a floor is alive by moving into a spread tick + laziness instead of per game tick
+    public static IntSeq aliveOverlays = new IntSeq();
+    public static int floorLaziness = 69420;
 
 
     public static void load(){
@@ -94,6 +97,7 @@ public class EnvUpdater implements AsyncProcess{
 
         instances = new EnvStruct[wsize];
         props = new short[content.blocks().size];
+        floorLaziness = 69420;
 
         for(int i = 0; i < wsize; i++)
             instances[i] = getStruct(i);
@@ -105,12 +109,22 @@ public class EnvUpdater implements AsyncProcess{
 
     @Override
     public void process(){
+//todo otherwise shit performance xd
+/*        boolean full= false;
+        if(floorLaziness > 30){
+            full = true;
+            floorLaziness =0;
+            aliveOverlays.clear();
+        }else floorLaziness++;*/
+
         for(int i = 0; i < wsize; i++){
             Tile lookup = world.tiles.geti(i);
             EnvStruct instance = instances[i];
 
             boolean state = false;
             if(lookup.floor() instanceof UpdatingEnvironment e){
+                /*Log.err(full + " " + aliveOverlays);
+                if(full) e.lazyEnv(lookup);*/
                 e.updateEnv(lookup, instance);
                 state = true;
             }
@@ -405,6 +419,10 @@ public class EnvUpdater implements AsyncProcess{
 
     public interface UpdatingEnvironment{
         void updateEnv(Tile tile, EnvStruct i);
+
+        default void lazyEnv(Tile tile){
+
+        }
 
         boolean isValid(Tile tile);
 

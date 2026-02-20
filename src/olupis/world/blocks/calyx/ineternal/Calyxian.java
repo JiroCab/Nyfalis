@@ -85,7 +85,6 @@ public interface Calyxian{
         tmp.species = module().graph.species = in;
 
         tmp.addGraph(module().graph);
-        Log.err(tmp.all.size + " vs " + module().graph.all.size);
 
     }
 

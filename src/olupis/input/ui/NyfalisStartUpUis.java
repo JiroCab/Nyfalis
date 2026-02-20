@@ -327,7 +327,7 @@ public class NyfalisStartUpUis {
             tagCheck(in, rules, "@rules.nyf-calyxspreading", b -> nyfRule.calyxSpreading = b, () -> nyfRule.calyxSpreading);
             tagNumber(in, rules, "@rules.nyf-calyxspreadingfactor", f -> nyfRule.calyxSpreadingFactor = f, () -> nyfRule.calyxSpreadingFactor );
             tagNumber(in, rules, "@rules.nyf-calyxgrowthfactor", f -> nyfRule.calyxGrowthFactor = f, () -> nyfRule.calyxGrowthFactor );
-            tagNumber(in, rules, "@rules.nyf-calyxbuildingfactor", f -> nyfRule.calyxBuildingFactor = f, () -> nyfRule.calyxBuildingFactor );
+            tagNumber(in, rules, "@rules.nyf-calyxsproutfactor", f -> nyfRule.calyxSproutFactor = f, () -> nyfRule.calyxSproutFactor );
 
             //todo: the other rules
 
