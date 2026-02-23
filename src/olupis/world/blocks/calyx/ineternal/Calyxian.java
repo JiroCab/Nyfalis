@@ -58,6 +58,10 @@ public interface Calyxian{
         return null;
     }
 
+    default boolean isAlive(){
+        return false;
+    }
+
 
     default void updateCalyxianModule(){
         tempBuilds.clear();

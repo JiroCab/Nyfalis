@@ -176,6 +176,11 @@ public class GrowingCore extends PropellerCoreTurret{
         }
 
         @Override
+        public boolean isAlive(){
+            return true;
+        }
+
+        @Override
         public byte version(){
             return 3;
         }

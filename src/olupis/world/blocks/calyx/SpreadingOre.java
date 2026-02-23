@@ -87,6 +87,11 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
         }
     }
 
+    @Override
+    public void lazyEnv(Tile tile){
+
+    }
+
     public boolean isValid(Tile tile){
         return parent.isValid(tile);
     }

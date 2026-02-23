@@ -25,7 +25,6 @@ public class GrowingHeart extends Block{
         });
     }
 
-    //TODO WHY TF IS IT NOT LOADING/MAKING THE GRAPH CONFIGED SPECIES AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHhh
     public class GrowingHeartBuilding extends Building implements Calyxian{
         @Nullable
         public CalyxModule calyxModule;
@@ -158,6 +157,11 @@ public class GrowingHeart extends Block{
         @Override
         public Building getHeart(){
             return this;
+        }
+
+        @Override
+        public boolean isAlive(){
+            return true;
         }
 
         @Override

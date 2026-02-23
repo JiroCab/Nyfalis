@@ -49,6 +49,11 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
         }
     }
 
+    @Override
+    public void lazyEnv(Tile tile){
+
+    }
+
     public boolean isValid(Tile tile){
         return true;
     }

@@ -20,7 +20,7 @@ public class GrowingVein extends Block{
     public boolean heartlessBlends = false;
     public TextureRegion heartedRegion;
     public TextureRegion[] speciesRegion ;
-    public @Nullable Seq<Block> replacements; //todo, also theactual spreading in env updater :p
+    public Seq<Block>  replacements = new Seq<>(); //todo, also theactual spreading in env updater :p
 
     public GrowingVein(String name) {
         super(name);
@@ -154,6 +154,11 @@ public class GrowingVein extends Block{
                 b.module().graph.add(this);
 
             }
+        }
+
+        @Override
+        public boolean isAlive(){
+            return hasHeart;
         }
 
         @Override

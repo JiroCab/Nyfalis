@@ -8,6 +8,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
@@ -188,14 +189,15 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
     @Override
     public void lazyEnv(Tile tile){
-        boolean heart =Units.closestBuilding(nyfRule.calyxTeam, tile.x * tilesize, tile.y * tilesize, connectionRange,  b -> !b.dead && b instanceof  Calyxian c && c.getHeart() != null && !c.getHeart().dead) != null;
-        if(heart) aliveOverlays.add(tile.pos());
+        Building heart =Units.closestBuilding(nyfRule.calyxTeam, tile.x * tilesize , tile.y * tilesize, connectionRange, b -> !b.dead && b instanceof  Calyxian c && c.getHeart() != null && !c.getHeart().dead);
+        if(heart != null){
+            aliveOverlays.add(tile.pos());
+        }
     }
 
     @Override
     public void updateEnv(Tile tile, EnvStruct i){
         if(net.client()) return;
-        lazyEnv(tile);
 
         boolean
             growth =

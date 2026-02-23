@@ -93,7 +93,7 @@ public class CalyxGraph{
     }
 
     public @Nullable Building getHeart(){
-        checkHeart();
+//        checkHeart();
         if(hearts.isEmpty()) return null;
         return hearts.first();
     }
@@ -165,7 +165,7 @@ public class CalyxGraph{
     }
 
     public void checkHeart(){
-        if(hearts.any()) hearts.retainAll(b -> b != null  && !b.isAdded() && !b.dead);
+        if(hearts.any()) hearts.retainAll(b -> b != null  && b.isAdded() && !b.dead);
     }
 
     public void clear(){

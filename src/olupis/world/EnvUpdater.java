@@ -109,13 +109,12 @@ public class EnvUpdater implements AsyncProcess{
 
     @Override
     public void process(){
-//todo otherwise shit performance xd
-/*        boolean full= false;
-        if(floorLaziness > 30){
-            full = true;
+//todo otherwise shit performance xd, flickering on clear, prob do something about that
+        boolean full= floorLaziness > 30;
+        if(full){
             floorLaziness =0;
             aliveOverlays.clear();
-        }else floorLaziness++;*/
+        }else floorLaziness++;
 
         for(int i = 0; i < wsize; i++){
             Tile lookup = world.tiles.geti(i);
@@ -123,13 +122,12 @@ public class EnvUpdater implements AsyncProcess{
 
             boolean state = false;
             if(lookup.floor() instanceof UpdatingEnvironment e){
-                /*Log.err(full + " " + aliveOverlays);
-                if(full) e.lazyEnv(lookup);*/
                 e.updateEnv(lookup, instance);
                 state = true;
             }
 
             if(lookup.overlay() instanceof UpdatingEnvironment e){
+                if(full) e.lazyEnv(lookup);
                 e.updateEnv(lookup, instance);
                 state = true;
             }
@@ -420,9 +418,7 @@ public class EnvUpdater implements AsyncProcess{
     public interface UpdatingEnvironment{
         void updateEnv(Tile tile, EnvStruct i);
 
-        default void lazyEnv(Tile tile){
-
-        }
+        void lazyEnv(Tile tile);
 
         boolean isValid(Tile tile);
 
