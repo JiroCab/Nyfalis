@@ -41,6 +41,14 @@ public class GrownFloor extends Floor{
         Draw.color(prev);
     }
 
+    @Override
+    protected void drawBlended(Tile tile, boolean checkId){
+        Color prev = Draw.getColor();
+        if(!isAlive(tile))Draw.color(noHeartColour);
+        super.drawBlended(tile, checkId);
+        Draw.color(prev);
+    }
+
     public boolean isAlive(Tile tile){
         return heart(tile ) != null;
     }
@@ -50,7 +58,7 @@ public class GrownFloor extends Floor{
             return null;
         }
 
-        return Groups.build.find( b -> b != null && !b.dead &&b.within(tile.x * tilesize, tile.y * tilesize, connectionRange) && b instanceof  Calyxian c && c.getHeart() != null && !c.getHeart().dead);
+        return Groups.build.find( b -> b != null && !b.dead &&b.within(tile.x * tilesize, tile.y * tilesize, connectionRange) && b instanceof  Calyxian c &&c.isAlive());
 
     }
 }

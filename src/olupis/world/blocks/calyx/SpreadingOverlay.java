@@ -8,7 +8,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
@@ -55,6 +54,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     public Func<Block, Boolean>
         validator = t ->
             !blacklist(blacklistKey).contains(t)
+            && !(t instanceof Calyxian)
             && !t.isStatic()
             && !(t instanceof Floor f && f.isLiquid),
         filter = t ->
@@ -89,7 +89,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     /**Requires a Calyx graph with an active heart to spread **/
     public boolean spreadRequiresHeart = true;
     /** Range from a calyx network to grow to consider alive**/
-    public int connectionRange = tilesize * 10;
+    public int connectionRange = 8 * tilesize;
     /**List of building that can grow on this tile **/
     public Seq<Block> sprouts = new Seq<>();
     /** Base chance for the tile to try to spread, updated every second */
@@ -189,10 +189,9 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
     @Override
     public void lazyEnv(Tile tile){
-        Building heart =Units.closestBuilding(nyfRule.calyxTeam, tile.x * tilesize , tile.y * tilesize, connectionRange, b -> !b.dead && b instanceof  Calyxian c && c.getHeart() != null && !c.getHeart().dead);
-        if(heart != null){
-            aliveOverlays.add(tile.pos());
-        }
+        Building heart =Units.closestBuilding(nyfRule.calyxTeam, tile.x * tilesize , tile.y * tilesize, connectionRange, b -> !b.dead && b instanceof  Calyxian c && c.isAlive());
+        if(heart != null) aliveOverlays.add(tile.pos());
+        else aliveOverlays.removeValue(tile.pos());
     }
 
     @Override
@@ -205,7 +204,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                 && Mathf.chance(growChance * nyfRule.calyxGrowthFactor) ,
             spreads= isAlive(tile) && nyfRule.calyxSpreading && Mathf.chance(spreadChance * nyfRule.calyxSpreadingFactor),
             sprout =
-            isAlive(tile)
+                isAlive(tile) &&  adjacentCalyxian(tile)
                 && (tile.block() == Blocks.air || (tile.block().alwaysReplace))
                 && sprouts.any() && Mathf.chance(sproutChance * nyfRule.calyxSproutFactor);
 
@@ -308,6 +307,14 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         }
 
         return replaces;
+    }
+
+    public boolean adjacentCalyxian(Tile tile){
+        for(int i = 0; i <= 3; i++){
+            if(tile.nearby(i) == null) continue;
+            if(tile.nearby(i).build instanceof Calyxian cal && cal.isAlive()){return true;}
+        }
+        return false;
     }
 
     public boolean canSpread(Tile tile){

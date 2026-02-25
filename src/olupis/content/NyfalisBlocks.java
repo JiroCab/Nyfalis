@@ -2953,6 +2953,7 @@ public class NyfalisBlocks {
 
         ((SpreadingOverlay)ourcelium).sprouts = Seq.with(calyxVein);
         ((SpreadingOverlay)yourcelium).sprouts = Seq.with(calyxVein);
+        ((GrowingVein) calyxVein).roots = Seq.with(mycelium);
 
         if(headless)return;
 

@@ -111,10 +111,8 @@ public class EnvUpdater implements AsyncProcess{
     public void process(){
 //todo otherwise shit performance xd, flickering on clear, prob do something about that
         boolean full= floorLaziness > 30;
-        if(full){
-            floorLaziness =0;
-            aliveOverlays.clear();
-        }else floorLaziness++;
+        if(full) floorLaziness = 0;
+        else floorLaziness++;
 
         for(int i = 0; i < wsize; i++){
             Tile lookup = world.tiles.geti(i);

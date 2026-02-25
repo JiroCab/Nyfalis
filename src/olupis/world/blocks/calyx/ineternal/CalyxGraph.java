@@ -70,7 +70,7 @@ public class CalyxGraph{
     public void  add(Building build){
         if(build == null ) return;
         if(build instanceof Calyxian module){
-            if(module.module().graph.getHeart() != null && module.module().graph.species != this.species){
+            if(module.isAlive() && module.module().graph.species != this.species){
                 return;
             }
 

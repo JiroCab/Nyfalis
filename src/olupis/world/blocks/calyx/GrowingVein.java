@@ -12,8 +12,13 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.power.*;
+import olupis.content.*;
 import olupis.world.*;
+import olupis.world.EnvUpdater.*;
 import olupis.world.blocks.calyx.ineternal.*;
+
+import static olupis.NyfalisVars.nyfRule;
+import static olupis.world.EnvUpdater.queue;
 
 public class GrowingVein extends Block{
     public Color heartlessColour = Color.black;
@@ -21,6 +26,8 @@ public class GrowingVein extends Block{
     public TextureRegion heartedRegion;
     public TextureRegion[] speciesRegion ;
     public Seq<Block>  replacements = new Seq<>(); //todo, also theactual spreading in env updater :p
+    public double rootChance = 0.010 / 60f;
+    public Seq<Block>  roots = new Seq<>();
 
     public GrowingVein(String name) {
         super(name);
@@ -100,6 +107,10 @@ public class GrowingVein extends Block{
                 hasHeart = getHeart() != null;
                 laziness = 69420;
             } else laziness += (int)Mathf.randomSeed(1, 5);
+
+            if(roots.any() && !NyfalisBlocks.spreadingTiles.contains(tileOn().overlay()) && Mathf.chance(rootChance * nyfRule.calyxSpreadingFactor)){
+                queue(roots.random()).add(tileOn().pos());
+            }
         }
 
         @Override
