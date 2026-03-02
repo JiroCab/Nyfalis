@@ -3,15 +3,18 @@ package olupis.world.blocks.calyx.ineternal;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.world.EnvUpdater.*;
 
 import static mindustry.Vars.tilesize;
 import static olupis.NyfalisVars.nyfRule;
+import static olupis.world.EnvUpdater.*;
 
-public class GrownFloor extends Floor{
+public class GrownFloor extends Floor implements LazyUpdatingEnvironment{
     public int connectionRange = tilesize * 10;
     public Color noHeartColour = Pal.accentBack;
 
@@ -50,15 +53,13 @@ public class GrownFloor extends Floor{
     }
 
     public boolean isAlive(Tile tile){
-        return heart(tile ) != null;
+        return aliveFloors.contains(tile.pos());
     }
 
-    public @Nullable Building heart(Tile tile){
-        if(nyfRule.calyxTeam == null) {
-            return null;
-        }
-
-        return Groups.build.find( b -> b != null && !b.dead &&b.within(tile.x * tilesize, tile.y * tilesize, connectionRange) && b instanceof  Calyxian c &&c.isAlive());
-
+    @Override
+    public void lazyEnv(Tile tile){
+        Building heart = Units.closestBuilding(nyfRule.calyxTeam, tile.x * tilesize , tile.y * tilesize, connectionRange, b -> !b.dead && b instanceof  Calyxian c && c.isAlive());
+        if(heart != null) aliveFloors.add(tile.pos());
+        else aliveFloors.removeValue(tile.pos());
     }
 }

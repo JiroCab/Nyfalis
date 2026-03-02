@@ -13,6 +13,9 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import olupis.*;
 import olupis.world.*;
+import olupis.world.blocks.calyx.*;
+import olupis.world.blocks.calyx.GrowingCore.*;
+import olupis.world.blocks.calyx.GrowingHeart.*;
 
 public interface Calyxian{
     Seq<Calyxian> tempBuilds = new Seq<>();
@@ -84,6 +87,9 @@ public interface Calyxian{
         for(Building building : prev){
             if((!(building instanceof Calyxian bu)))return;
 
+            if(bu instanceof GrowingCoreBuild cb) cb.calyxSpecies = in;
+            else if(bu instanceof GrowingHeartBuilding ch) ch.calyxSpecies = in;
+
             if (bu.module() != null ) bu.module().species = in;
         }
         tmp.species = module().graph.species = in;
@@ -140,5 +146,11 @@ public interface Calyxian{
 
     default int calyxSpeciesConfig(){return 0;}
     default void calyxSpeciesConfig(int species){}
+
+    default Color colourState(){
+        return isAlive() ? NyfWorldFuckingHelper.calyxSpeciesColors(module().graph.species) : Color.black;
+    }
+
+
     //todo handle payload pick up & change team()
 }

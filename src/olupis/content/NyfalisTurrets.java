@@ -22,6 +22,7 @@ import mindustry.world.blocks.legacy.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import olupis.world.blocks.calyx.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.drawers.*;
 import olupis.world.blocks.processing.*;
@@ -42,6 +43,7 @@ public class NyfalisTurrets {
     public static boolean cascadeAlt;
     public static Color cascadeColor = updateColor();
     public static Effect cascadeEffect = updateTrail();
+
     public static void LoadTurrets(){
 
         //region Turrets
@@ -1971,6 +1973,68 @@ public class NyfalisTurrets {
             }
         };
         //endregion
+    }
+
+    public static void LoadSpecialTurrets(){
+        calyxFruit = new GrowingTurret("calyx-fruit"){{
+            requirements(Category.logic, with(silicon, 5));
+            shootType = new BasicBulletType(3.5f, 18){{
+                width = 9f;
+                height = 12f;
+                ammoMultiplier = 4;
+                lifetime = 60f;
+                reloadMultiplier = 0.8f;
+                rangeChange = 16f;
+
+                hitEffect = despawnEffect = Fx.hitBulletColor;
+                hitColor = backColor = trailColor = Pal.graphiteAmmoBack;
+                frontColor = Pal.graphiteAmmoFront;
+            }};
+
+            drawer = new DrawGrowingTurret();
+            reload = 35f;
+            shootCone = 40f;
+            rotateSpeed = 8f;
+            targetAir = false;
+            range = 160;
+            heatColor = Color.green;
+            recoil = 1f;
+            size = 1;
+            health = 260;
+            shootSound = Sounds.shootAlpha;
+        }};
+
+        calyxFruit = new GrowingTurret("calyx-calyxPropagate"){{
+            requirements(Category.logic, with(silicon, 5));
+            shootType = new BasicBulletType(7.5f, 85){{
+                width = 12f;
+                hitSize = 7f;
+                height = 20f;
+                smokeEffect = Fx.shootBigSmoke;
+                ammoMultiplier = 1;
+                pierceCap = 2;
+                pierce = true;
+                pierceBuilding = true;
+                hitColor = backColor = trailColor = Pal.berylShot;
+                frontColor = Color.white;
+                trailWidth = 2.1f;
+                trailLength = 10;
+                hitEffect = despawnEffect = Fx.hitBulletColor;
+                buildingDamageMultiplier = 0.3f;
+            }};
+
+            drawer = new DrawGrowingTurret();
+            reload = 40;
+            shootCone = 40f;
+            rotateSpeed = 8f;
+            targetAir = false;
+            range = 190f;
+            heatColor = Color.green;
+            recoil = 1f;
+            size = 3;
+            health = 260;
+            shootSound = Sounds.shootAlpha;
+        }};
     }
 
     public static Color updateColor(){

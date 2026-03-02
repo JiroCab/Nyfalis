@@ -13,6 +13,7 @@ import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.input.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
@@ -204,8 +205,8 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                 && Mathf.chance(growChance * nyfRule.calyxGrowthFactor) ,
             spreads= isAlive(tile) && nyfRule.calyxSpreading && Mathf.chance(spreadChance * nyfRule.calyxSpreadingFactor),
             sprout =
-                isAlive(tile) &&  adjacentCalyxian(tile)
-                && (tile.block() == Blocks.air || (tile.block().alwaysReplace))
+                (tile.block() == Blocks.air || (tile.block().alwaysReplace) || (tile.block().unitMoveBreakable))
+                && isAlive(tile) &&  adjacentCalyxian(tile)
                 && sprouts.any() && Mathf.chance(sproutChance * nyfRule.calyxSproutFactor);
 
         if( (growth || spreads || sprout) && i.getIncrementFloor() >= spreadTries){

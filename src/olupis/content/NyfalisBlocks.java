@@ -94,7 +94,7 @@ public class NyfalisBlocks {
 
         /*Env Hazzard*/
         boomPuffPassive, boomPuffActive,
-        calyxHeart, calyxVein, calyxBloom, calyxBrain, calyxBone, calyxBoneLarge,
+        calyxHeart, calyxVein, calyxBloom, calyxBrain, calyxBone, calyxBoneLarge, calyxFruit, calyxPropagate,
 
         /*Trees*/
         nyfalisTree, mossTree, pinkTree, yellowTree, yellowTreeBlooming, infernalMegaBloom, orangeTree, deadTree, mossDeadTree, spruceTree,
@@ -2870,7 +2870,7 @@ public class NyfalisBlocks {
             consumeLiquid(lubricant, 0.25f);
         }};
         //endregion
-        //special
+        //region special
         scarabRadar = new Ladar("scarab-block-radar"){{
             underBullets = true;
             health = 100;
@@ -2890,12 +2890,13 @@ public class NyfalisBlocks {
             drawTeamOverlay = false;
         }};
 
+        NyfalisTurrets.LoadSpecialTurrets();
+
         calyxHeart = new GrowingHeart("calyx-heart"){{
             size = 3;
             alwaysUnlocked =true;
             requirements(Category.logic, with(silicon, 5));
         }};
-
 
         calyxBrain = new GrowingCore("calyx-brain"){{
             size = 3;
