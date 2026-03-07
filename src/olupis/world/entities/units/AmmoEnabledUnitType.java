@@ -49,6 +49,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     }
 
     public void drawAmmo(Unit unit){
+        if(!ammoRegion.found()) return;
         float z = !unit.isAdded() ? Draw.z() : unit.elevation > 0.5f ? (lowAltitude ? Layer.flyingUnitLow : Layer.flyingUnit) : groundLayer + Mathf.clamp(hitSize / 4000f, 0, 0.01f);
         if(ammoZ > 0) z = ammoZ;
         Draw.z(z);
@@ -68,7 +69,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
 
     @Override
     public void load() {
-        if(drawAmmo)ammoRegion = Core.atlas.find(name + "-ammo", name);
+        if(drawAmmo)ammoRegion = Core.atlas.find(name + "-ammo");
         super.load();
     }
 

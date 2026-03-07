@@ -107,6 +107,8 @@ public class NyfalisMain extends Mod{
         Events.on(SectorLaunchEvent.class, e -> {
             //When launching, prevents exporting to items to where you launched from if it's out of range
             if(NyfalisPlanets.isNyfalianPlanet(e.sector.planet) && !e.sector.near().contains(e.sector.info.destination)) e.sector.info.destination = e.sector;
+
+            Time.run(renderer.landTime + Time.toSeconds, NyfWorldFuckingHelper::youPickedTheWrongCoreLmao);
         });
         if(headless)return;
         Events.on(TurnEvent.class, e -> sectorPostTurn());

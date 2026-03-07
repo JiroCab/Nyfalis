@@ -13,7 +13,6 @@ import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.input.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
@@ -93,8 +92,10 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     public int connectionRange = 8 * tilesize;
     /**List of building that can grow on this tile **/
     public Seq<Block> sprouts = new Seq<>();
-    /** Base chance for the tile to try to spread, updated every second */
+    /** Base chance for the tile to try to sprout a building, updated every second */
     public double sproutChance = 0.013 / 60f;
+    /** how unlikely a tile will get a sprout if there already crowded. -1 to disable */
+    public float sproutAdjacentPenalty = 0.8f;
 
     public Color noHeartColour = Pal.accentBack;
 
@@ -204,10 +205,10 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                 isAlive(tile)
                 && Mathf.chance(growChance * nyfRule.calyxGrowthFactor) ,
             spreads= isAlive(tile) && nyfRule.calyxSpreading && Mathf.chance(spreadChance * nyfRule.calyxSpreadingFactor),
-            sprout =
-                (tile.block() == Blocks.air || (tile.block().alwaysReplace) || (tile.block().unitMoveBreakable))
+            sprout = sprouts.any()
+                && (tile.block() == Blocks.air || (tile.block().alwaysReplace) || (tile.block().unitMoveBreakable))
                 && isAlive(tile) &&  adjacentCalyxian(tile)
-                && sprouts.any() && Mathf.chance(sproutChance * nyfRule.calyxSproutFactor);
+                && Mathf.chance(sproutChance * nyfRule.calyxSproutFactor);
 
         if( (growth || spreads || sprout) && i.getIncrementFloor() >= spreadTries){
             i.clearFloorVal();
@@ -311,11 +312,16 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     }
 
     public boolean adjacentCalyxian(Tile tile){
+        int near = 0;
         for(int i = 0; i <= 3; i++){
-            if(tile.nearby(i) == null) continue;
-            if(tile.nearby(i).build instanceof Calyxian cal && cal.isAlive()){return true;}
+            if(tile.nearbyBuild(i) == null) continue;
+            if(tile.nearbyBuild(i) instanceof Calyxian cal && cal.isAlive()){
+                if(sproutAdjacentPenalty <= -1) return true;
+                near++;
+            }
         }
-        return false;
+        if(near == 0) return false;
+        return Mathf.chance(sproutAdjacentPenalty / near);
     }
 
     public boolean canSpread(Tile tile){

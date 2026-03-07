@@ -11,6 +11,7 @@ import mindustry.gen.*;
 import mindustry.io.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import olupis.world.blocks.calyx.ineternal.*;
 
 import java.io.*;
 import java.util.Arrays;
@@ -38,6 +39,8 @@ public class EnvUpdater implements AsyncProcess{
 
     //reduces the cost of checking if a floor is alive by moving into a spread tick + laziness instead of per game tick
     public static IntSeq aliveOverlays = new IntSeq(), aliveFloors = new IntSeq();
+    //Tiles with extra chance, usually the furthest to give vein growth more outward movement
+    public static IntSeq spearTiles;
     public static int floorLaziness = 0;
 
 
@@ -112,12 +115,19 @@ public class EnvUpdater implements AsyncProcess{
     public void process(){
         //todo rushie has no idea if this helped, it prob made it worse but alas
         boolean full= floorLaziness == 0 ;
-        if(full) floorLaziness = (int)(30 + Mathf.range(0, 5));
+        if(full){
+            floorLaziness = (int)(30 + Mathf.range(0, 5));
+
+//            Groups.all.find( e -> e instanceof CalyxGraphUpdater)
+
+        }
         else floorLaziness--;
 
         for(int i = 0; i < wsize; i++){
             Tile lookup = world.tiles.geti(i);
             EnvStruct instance = instances[i];
+
+
 
             boolean state = false;
             if(lookup.floor() instanceof UpdatingEnvironment e){

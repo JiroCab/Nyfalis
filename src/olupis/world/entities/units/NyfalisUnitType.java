@@ -65,13 +65,14 @@ public class NyfalisUnitType extends UnitType {
                             payloadUpdateRequiresStatus = false,
                             pickupBlocks = true,  //Only used in LeggedPayloadUnit
                             payloadDisarms = false,
-                            healingIgnoresMines = false
+                            healingIgnoresMines = false,
+                            attackRotationLock = false
     ;
-    public float minVel = -1;
+    public float minVel = -1, idleCircleRaduis = rotateSpeed;
     public HashMap<Unit, Integer> velPreviousAngle = new HashMap<>();
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
     public float secondaryLightRadius = lightRadius  * 2, deathRegrowChance = 0.1f;
-    public StatusEffect payloadUpdateSE = StatusEffects.none, payloadDisarmSE = StatusEffects.disarmed;
+    public StatusEffect payloadUpdateSE = StatusEffects.none, payloadDisarmSE = StatusEffects.disarmed, vLockSE;
 
     public TextureRegion bossRegion, borrowRegion;
 
@@ -346,22 +347,33 @@ public class NyfalisUnitType extends UnitType {
             unit.apply(payloadDisarmSE, Time.toSeconds);
         }
 
-        if(minVel > 0 && unit.speedMultiplier >= 0.5){
-            if (!velPreviousAngle.containsKey(unit)) velPreviousAngle.put(unit, Math.round(unit.vel.angle()));
+        boolean circle = minVel > 0 && unit.speedMultiplier >= 0.5;
+        boolean vlock = attackRotationLock && unit.hasEffect(vLockSE);
 
-            unit.vel.setLength2(Math.max(minVel, unit.vel.len2()));
-            if(!unit.isShooting &unit.vel.len2() <= (minVel * 1.25f)){
+        if(circle || vlock){
+            if (!velPreviousAngle.containsKey(unit)) velPreviousAngle.put(unit, Math.round(unit.vel.angle() * 100));
 
-                int mul = unit.vel.angle() - unit.vel.angle() >= 0 ? 2 : -2;
-                unit.vel.setAngle(unit.vel.angle() - (rotateSpeed * mul));
+            if(circle){
+                unit.vel.setLength2(Math.max(minVel, unit.vel.len2()));
+                if(!unit.isShooting &unit.vel.len2() <= (minVel * 1.25f)){
+                    int mul = unit.vel.angle() - unit.vel.angle() >= 0 ? 2 : -2;
+                    unit.vel.setAngle(unit.vel.angle() - (idleCircleRaduis * mul));
 
-                unit.lookAt(unit.vel.angle());
+                    unit.lookAt(unit.vel.angle());
+            }}
+
+            if(vlock){
+                Tmp.v1.set(unit).setAngle(velPreviousAngle.get(unit) * 0.01f);
+                unit.vel.setAngle(velPreviousAngle.get(unit) * 0.01f);
+                unit.rotation(Tmp.v1.angle());
             }
-            velPreviousAngle.put(unit, Math.round(unit.vel.angle()));
+            unit.prefRotation();
+            velPreviousAngle.put(unit, Math.round(unit.vel.angle() * 100));
         }
-        if(velPreviousAngle.containsKey(unit)){
-            if(unit.dead())velPreviousAngle.remove(unit);
-        }
+
+        if(velPreviousAngle.containsKey(unit) && unit.dead()) velPreviousAngle.remove(unit);
+
+
     }
 
 

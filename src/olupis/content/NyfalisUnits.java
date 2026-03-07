@@ -941,8 +941,8 @@ public class NyfalisUnits {
             }});
         }};
 
-        //re.gioner - flak aircraft!
-        regioner = new NyfalisUnitType("regioner"){{
+        //re.gioner - Yak from cnc games burst fire, needs to resupply
+        regioner = new AmmoEnabledUnitType("regioner"){{
             drag = 0.05f;
             accel = 0.10f;
             health = 450f;
@@ -951,22 +951,35 @@ public class NyfalisUnits {
             rotateSpeed = 19f;
             itemCapacity = 25;
             engineOffset = 4.6f;
-            armor = speed = 3f;
+            armor = 3f;
+            speed = 2.5f;
+            minVel = 0.5f;
             hitSize = 9f;
+            idleCircleRaduis =  10f;
+            circleTargetRadius = 5f;
+            ammoCapacity = 2;
 
 
             constructor = UnitEntity::create;
             aiController = WaveAiHandler::new;
-            lowAltitude = flying = canGuardUnits = waveHunts =true;
+            ammoType = carrierTypeAmmo;
+            lowAltitude = flying = canGuardUnits = waveHunts =attackRotationLock = circleTarget = altResupply = drawAmmo = canRetreat =  true;
+            retreatStatus = NyfalisStatusEffects.retreating;
+            omniMovement = false;
 
-            weapons.add(new Weapon("olupis-regioner-weapon"){{
-                top  = false;
+            weapons.add(new NyfalisWeapon("olupis-regioner-weapon"){{
+                top  = alternate = false;
+                rotate = alwaysUseAmmo =  true;
+
                 y = 0.9f;
                 x = -3.6f;
                 recoil = 0.47f;
-                reload = 23f;
-                shootCone = 65f;
+                reload = 200f;
+                shootCone = 10f;
                 baseRotation = -7f;
+                rotationLimit = 10f;
+                shoot.shots = 10;
+                shoot.shotDelay = 5f;
                 ejectEffect = Fx.none;
                 shootSound = NyfalisSounds.shootPVC2;
 
@@ -974,11 +987,13 @@ public class NyfalisUnits {
                 bullet = new ShappedBulletType(){{
                     speed = 1.5f;
                     damage = 10f;
-                    lifetime = 35f;
+                    lifetime = 60f;
                     widthIn = heightIn = 2.5f;
                     buildingDamageMultiplier = 0.3f;
 
                     hitEffect = despawnEffect =NyfalisFxs.hollowPointHitSmall;
+                    vLockSE = shootStatus = StatusEffects.slow;
+                    shootStatusDuration = 60 * 1.2f;
                     colourIn= ironBullet;
                     colourOut = ironBulletBack;
                     trailColor = rustyBulletBack;

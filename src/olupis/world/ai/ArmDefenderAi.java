@@ -19,8 +19,15 @@ public class ArmDefenderAi extends AIController {
         if(target != null){
             Tmp.v1.set(target);
             if(target instanceof Unit unt &&unt.moving()) Tmp.v1.set(Predict.intercept(unit, target, ((Unit) target).speed()));
-            moveTo(Tmp.v1, (target instanceof Sized s ? s.hitSize()/2f * 1.1f : 0f) + unit.hitSize/2f + (unit.range() * 0.85f), 50f);
-            unit.aimLook(target);
+
+            if(unit.type.circleTarget){
+                circleAttack(unit.type.circleTargetRadius);
+//                circle(Tmp.v1, unit.type.circleTargetRadius);
+                unit.prefRotation();
+            } else{
+                moveTo(Tmp.v1, (target instanceof Sized s ? s.hitSize()/2f * 1.1f : 0f) + unit.hitSize/2f + (unit.range() * 0.85f), 50f);
+                unit.aimLook(target);
+            }
         } else if (follow != null){
             moveTo(follow, (follow instanceof Sized s ? s.hitSize()/2f * 1.1f : 0f) + unit.hitSize/2f + 15f, 50f);
             unit.lookAt(follow);

@@ -61,6 +61,13 @@ public interface Calyxian{
         return null;
     }
 
+    @Nullable default Building closestHeart(){
+        if(module() == null || build() == null) return null;
+         Seq<Building> owo = module().graph.hearts.copy().sort(b -> b.dst(build()));
+         return owo.first();
+    }
+
+
     default boolean isAlive(){
         return false;
     }

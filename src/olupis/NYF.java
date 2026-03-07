@@ -1,5 +1,6 @@
 package olupis;
 
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -41,7 +42,38 @@ public class NYF{
         if(gph() == null) return;
         for(Building b : gph().all){
             NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
+        }
+    }
 
+    public static void gg(){
+        Log.err("===========");
+        int[] umu = {0};
+        Groups.all.each( e -> {
+            if(e instanceof CalyxGraphUpdater ee){
+                Log.err("- " + ee.id + " = " + ee.graph.getID() + " | " + ee.graph.all.size);
+                umu[0]++;
+            }
+        });
+
+        Log.err("==========="  + umu[0]);
+
+    }
+
+    public static Seq<CalyxGraph> ggg(){
+        Seq<CalyxGraph> owo = new Seq<>();
+        Groups.all.each( e -> {
+            if(e instanceof CalyxGraphUpdater ee){
+                owo.add(ee.graph);
+            }
+        });
+
+        return owo;
+    }
+
+    public static void ggg(int index){
+
+        for(Building b : ggg().get(index).all){
+            NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
         }
     }
 

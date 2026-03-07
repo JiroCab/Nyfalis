@@ -108,6 +108,25 @@ public class NyfWorldFuckingHelper{
 
         return result[0];
     }
+
+    public static void youPickedTheWrongCoreLmao(){
+        if(!NyfalisPlanets.planetList.contains(state.rules.planet)) return;
+
+        Building build = state.rules.defaultTeam.core();
+        if(build != null && !NyfalisBlocks.nyfalisCores.contains(build.block)){;
+            build.tile.setNet(coreRemnant, state.rules.defaultTeam, 0);
+            //idk i cant get it to work so todo
+            Time.run( 20f, () -> {
+                Building build2 = state.rules.defaultTeam.core();
+                Call.effect(Fx.impactReactorExplosion, build2.tile.centerX(), build2.tile.centerY(), 0, Color.white);
+
+                //skil issh
+                build2.items.clear();
+            });
+
+        }
+
+    }
     //endregion
     // region == Weather helpers
 
