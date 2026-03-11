@@ -12,8 +12,6 @@ import static olupis.NyfalisVars.*;
 import static olupis.world.EnvUpdater.*;
 
 public class GrowingWall extends StaticWall implements UpdatingEnvironment{
-    public static final int arrayID = 2;
-
     /** The amount of times the chance must be rolled */
     public int growTries = 3;
     /** Base chance for the tile to try to grow, updated every second */
@@ -47,11 +45,6 @@ public class GrowingWall extends StaticWall implements UpdatingEnvironment{
                 queue(next).add(tile.pos());
             }
         }
-    }
-
-    @Override
-    public void lazyEnv(Tile tile){
-
     }
 
     public boolean isValid(Tile tile){

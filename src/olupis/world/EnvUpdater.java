@@ -33,15 +33,16 @@ public class EnvUpdater implements AsyncProcess{
     static boolean ready;
     static int space, wsize;
     static float wwidth, wheight;
+    static double lastTick;
 
     // amount of layers to keep track of, 3 for vanilla (floor, overlay, block)
     static final int blockLayers = 3;
 
     //reduces the cost of checking if a floor is alive by moving into a spread tick + laziness instead of per game tick
-    public static IntSeq aliveOverlays = new IntSeq(), aliveFloors = new IntSeq();
+    public static Bits aliveOverlays, aliveFloors;
     //Tiles with extra chance, usually the furthest to give vein growth more outward movement
     public static IntSeq spearTiles;
-    public static int floorLaziness = 0;
+    public static float lazyTickPeriod = 5f;
 
 
     public static void load(){
@@ -101,7 +102,9 @@ public class EnvUpdater implements AsyncProcess{
 
         instances = new EnvStruct[wsize];
         props = new short[content.blocks().size];
-        floorLaziness = 0;
+
+        aliveFloors = new Bits(wsize);
+        aliveOverlays = new Bits(wsize);
 
         for(int i = 0; i < wsize; i++)
             instances[i] = getStruct(i);
@@ -113,36 +116,23 @@ public class EnvUpdater implements AsyncProcess{
 
     @Override
     public void process(){
-        //todo rushie has no idea if this helped, it prob made it worse but alas
-        boolean full= floorLaziness == 0 ;
-        if(full){
-            floorLaziness = (int)(30 + Mathf.range(0, 5));
-
-//            Groups.all.find( e -> e instanceof CalyxGraphUpdater)
-
-        }
-        else floorLaziness--;
+        boolean full = state.tick - lastTick > lazyTickPeriod;
 
         for(int i = 0; i < wsize; i++){
             Tile lookup = world.tiles.geti(i);
             EnvStruct instance = instances[i];
 
-
-
             boolean state = false;
             if(lookup.floor() instanceof UpdatingEnvironment e){
-                if(full) e.lazyEnv(lookup);
+                if(full)
+                    e.lazyEnv(lookup);
                 e.updateEnv(lookup, instance);
                 state = true;
             }
 
-            if(lookup.floor() instanceof LazyUpdatingEnvironment e){
-                //just update aliveness here instead
-                if(full) e.lazyEnv(lookup);
-            }
-
             if(lookup.overlay() instanceof UpdatingEnvironment e){
-                if(full) e.lazyEnv(lookup);
+                if(full)
+                    e.lazyEnv(lookup);
                 e.updateEnv(lookup, instance);
                 state = true;
             }
@@ -431,16 +421,12 @@ public class EnvUpdater implements AsyncProcess{
     }
 
     public interface UpdatingEnvironment{
-        void updateEnv(Tile tile, EnvStruct i);
+        default void updateEnv(Tile tile, EnvStruct i){}
 
-        void lazyEnv(Tile tile);
+        default void lazyEnv(Tile tile){}
 
-        boolean isValid(Tile tile);
+        default boolean isValid(Tile tile){ return false; }
 
-        Block replacement();
-    }
-
-    public interface LazyUpdatingEnvironment{
-        void lazyEnv(Tile tile);
+        default Block replacement(){ return null; }
     }
 }

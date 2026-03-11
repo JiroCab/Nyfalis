@@ -14,8 +14,6 @@ import static olupis.world.EnvUpdater.*;
 
 /** This class as a whole is now only for auto-generation */
 public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
-    public static final int arrayID = 1;
-
     public SpreadingOverlay parent;
     public Block next;
     public Block set;
@@ -85,11 +83,6 @@ public class SpreadingOre extends OreBlock implements UpdatingEnvironment{
                 }
             }
         }
-    }
-
-    @Override
-    public void lazyEnv(Tile tile){
-
     }
 
     public boolean isValid(Tile tile){

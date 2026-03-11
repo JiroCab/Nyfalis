@@ -24,8 +24,6 @@ import static olupis.world.EnvUpdater.*;
 import static olupis.world.NyfWorldFuckingHelper.spreadLevels;
 
 public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironment{
-    public static final int arrayID = 1;
-
     /** Default replacement block */
     public Block replacement = Blocks.air;
     /** The amount of times the chance must be rolled */
@@ -191,9 +189,8 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
     @Override
     public void lazyEnv(Tile tile){
-        Building heart =Units.closestBuilding(nyfRule.calyxTeam, tile.x * tilesize , tile.y * tilesize, connectionRange, b -> !b.dead && b instanceof  Calyxian c && c.isAlive());
-        if(heart != null) aliveOverlays.add(tile.pos());
-        else aliveOverlays.removeValue(tile.pos());
+        Building heart = Units.closestBuilding(nyfRule.calyxTeam, tile.drawx(), tile.drawy(), connectionRange, b -> !b.dead && b instanceof Calyxian c && c.isAlive());
+        aliveOverlays.set(tile.array(), heart != null);
     }
 
     @Override
@@ -341,7 +338,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     }
 
     public boolean isAlive(Tile tile){
-        return !spreadRequiresHeart || aliveOverlays.contains(tile.pos());
+        return !spreadRequiresHeart || aliveOverlays.get(tile.array());
     }
 
     public Block replacement(){
