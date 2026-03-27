@@ -3,18 +3,25 @@ package olupis.world;
 import arc.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.struct.Bits;
 import arc.util.*;
+import arc.util.TaskQueue;
+import mindustry.*;
+import mindustry.ai.*;
 import mindustry.async.*;
 import mindustry.content.*;
+import mindustry.core.*;
+import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.io.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
 import static mindustry.Vars.*;
 
@@ -40,9 +47,10 @@ public class EnvUpdater implements AsyncProcess{
 
     //reduces the cost of checking if a floor is alive by moving into a spread tick + laziness instead of per game tick
     public static Bits aliveOverlays, aliveFloors;
-    //Tiles with extra chance, usually the furthest to give vein growth more outward movement
-    public static IntSeq spearTiles;
+    // Tiles with (0.5 * n)  extra chance, usually the furthest to give vein growth more outward movement
+    public static HashMap<Tile, Integer> spearTiles; //TODO: maybe something not a hash map
     public static float lazyTickPeriod = 5f;
+    static int rushieIsTooLazyToNameThisProperlly;
 
 
     public static void load(){
@@ -105,6 +113,9 @@ public class EnvUpdater implements AsyncProcess{
 
         aliveFloors = new Bits(wsize);
         aliveOverlays = new Bits(wsize);
+        spearTiles = new HashMap<>();
+
+        rushieIsTooLazyToNameThisProperlly = 0;
 
         for(int i = 0; i < wsize; i++)
             instances[i] = getStruct(i);
@@ -116,7 +127,15 @@ public class EnvUpdater implements AsyncProcess{
 
     @Override
     public void process(){
-        boolean full = state.tick - lastTick > lazyTickPeriod;
+        boolean
+            full = state.tick - lastTick > lazyTickPeriod,
+            reCalc = rushieIsTooLazyToNameThisProperlly >= 120
+        ;
+
+        if(full){
+            lastTick = state.tick;
+            rushieIsTooLazyToNameThisProperlly++;
+        }
 
         for(int i = 0; i < wsize; i++){
             Tile lookup = world.tiles.geti(i);
@@ -124,8 +143,7 @@ public class EnvUpdater implements AsyncProcess{
 
             boolean state = false;
             if(lookup.floor() instanceof UpdatingEnvironment e){
-                if(full)
-                    e.lazyEnv(lookup);
+                if(full) e.lazyEnv(lookup);
                 e.updateEnv(lookup, instance);
                 state = true;
             }
@@ -144,6 +162,48 @@ public class EnvUpdater implements AsyncProcess{
 
             instance.infested = state;
         }
+
+        if(reCalc){
+            //todo: optimize this shit, something something rushie makes thing exist then improve later
+            rushieIsTooLazyToNameThisProperlly = 0;
+
+            Seq<Building> cores = new Seq<>();
+            Groups.build.each( b ->{
+                if (b instanceof CoreBuild && !(b instanceof Calyxian)) cores.add(b);
+            });
+
+//            Seq<Tile> debug = new Seq<>();
+            for(Building building : Groups.build){
+                if(!(building instanceof Calyxian cal)) continue;
+                if(!cal.isHeart()) continue;
+
+                Seq<Tile> out= new Seq<>();
+
+                //Guaranteed move towards core fuckery
+                @Nullable Building  core = cores.random();
+                if(core != null && core.tileOn() != null)out.add(core.tileOn());
+
+
+
+                //Random aesthetic spreading
+                Seq<Tile> umu = new Seq<>();
+                for(Tile tile : world.tiles) umu.addUnique(tile);
+                umu.removeAll(t -> t.solid() || t.floor().hasLiquids);
+
+//                debug.addAll(umu);
+
+                for(int i = 0; i < 3; i++)out.add(umu.random());
+
+                for(Tile meow : out){
+                    Seq<Tile> owo = Astar.pathfind(building.tileOn(), meow, t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
+                    for(Tile tile : owo) spearTiles.put(tile, spearTiles.getOrDefault(tile, 0) + 1);
+                }
+
+            }
+
+//            Log.err(debug.toString());
+        }
+
     }
 
     @Override
@@ -178,6 +238,10 @@ public class EnvUpdater implements AsyncProcess{
         Arrays.fill(queue, null);
         instances = null;
         props = null;
+
+        aliveFloors = new Bits(wsize);
+        aliveOverlays = new Bits(wsize);
+        spearTiles = new HashMap<>();
 
         ready = false;
     }
@@ -428,5 +492,15 @@ public class EnvUpdater implements AsyncProcess{
         default boolean isValid(Tile tile){ return false; }
 
         default Block replacement(){ return null; }
+    }
+
+    public static double lastTick(){
+        //debuging
+        return lastTick;
+    }
+
+    public static double lazy(){
+        //debuging
+        return rushieIsTooLazyToNameThisProperlly;
     }
 }

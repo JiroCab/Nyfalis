@@ -16,6 +16,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
+import olupis.world.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 import static mindustry.Vars.*;
@@ -94,6 +95,10 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     public double sproutChance = 0.013 / 60f;
     /** how unlikely a tile will get a sprout if there already crowded. -1 to disable */
     public float sproutAdjacentPenalty = 0.8f;
+    /** Addition chance added to spread for being in a spear tile. ((x * 0.5) * bonus) **/
+    public float spearSpreadBonus = 0.30f;
+    public float spearSproutBonus = 0.25f;
+    public float spearGrowthBonus = 0.16f;
 
     public Color noHeartColour = Pal.accentBack;
 
@@ -200,12 +205,16 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         boolean
             growth =
                 isAlive(tile)
-                && Mathf.chance(growChance * nyfRule.calyxGrowthFactor) ,
-            spreads= isAlive(tile) && nyfRule.calyxSpreading && Mathf.chance(spreadChance * nyfRule.calyxSpreadingFactor),
+                && Mathf.chance((growChance * nyfRule.calyxGrowthFactor) + (spearTiles.getOrDefault(tile, 0) * spearGrowthBonus * nyfRule.calyxSpearFactor) ) ,
+            spreads=
+                isAlive(tile) && nyfRule.calyxSpreading
+                && Mathf.chance(
+                    (spreadChance * nyfRule.calyxSpreadingFactor) +
+                    ((spearTiles.getOrDefault(tile, 0) * spearSpreadBonus * nyfRule.calyxSpearFactor))),
             sprout = sprouts.any()
                 && (tile.block() == Blocks.air || (tile.block().alwaysReplace) || (tile.block().unitMoveBreakable))
                 && isAlive(tile) &&  adjacentCalyxian(tile)
-                && Mathf.chance(sproutChance * nyfRule.calyxSproutFactor);
+                && Mathf.chance((sproutChance * nyfRule.calyxSproutFactor) + (spearTiles.getOrDefault(tile, 0) * spearSproutBonus * nyfRule.calyxSpearFactor));
 
         if( (growth || spreads || sprout) && i.getIncrementFloor() >= spreadTries){
             i.clearFloorVal();

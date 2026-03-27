@@ -8,8 +8,10 @@ import olupis.content.*;
 public class NyfRules{
     /*whether  calyx is allowed to spread at all*/
     public  boolean calyxSpreading = true;
-    /*How much Calyx tiles want to spread*/
+    /*How much Calyx tiles want to spread overall*/
     public  float calyxSpreadingFactor = 1;
+    /*How much Calyx tiles on "spear tiles" gets a bonus */
+    public  float calyxSpearFactor = 1;
     /*How much Calyx tiles would grow on to it's next stage*/
     public  float calyxGrowthFactor = 1;
     /*How much Calyx will sprout "buildings" on it*/
@@ -26,5 +28,6 @@ public class NyfRules{
         calyxGrowthFactor = tags.getFloat("nyf-calyxgrowthfactor", 1);
         calyxSpreadingFactor = tags.getFloat("nyf-calyxspreadingfactor", 1);
         calyxTeam = tags.containsKey("nyf-calyxteam") ? Team.get(tags.getInt("nyf-calyxteam")) : NyfUnitTeamMapper.calyxTeam;
+        calyxSpearFactor = tags.getFloat("nyf-calyxspearfactor", 1);
     }
 }

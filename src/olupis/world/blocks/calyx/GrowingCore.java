@@ -1,6 +1,7 @@
 package olupis.world.blocks.calyx;
 
 import arc.graphics.*;
+import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -11,19 +12,24 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import olupis.content.*;
 import olupis.world.blocks.calyx.GrowingHeart.*;
 import olupis.world.blocks.calyx.ineternal.*;
 import olupis.world.blocks.defence.*;
 
+import static olupis.NyfalisVars.nyfRule;
+import static olupis.world.EnvUpdater.queue;
+
 public class GrowingCore extends PropellerCoreTurret{
+    public double rootChance = 0.010 / 60f;
+    public Seq<Block> roots = new Seq<>();
 
     public GrowingCore(String name) {
         super(name);
     }
 
-
-        @Override
-        public void configs(){
+    @Override
+    public void configs(){
             consumePowerDynamic((GrowingCoreBuild b) -> b.producingUnits() ? unitPowerCost : 0);
             config(IntSeq.class, (GrowingCoreBuild build, IntSeq s) -> {
                 if(!configurable) return;
@@ -47,13 +53,24 @@ public class GrowingCore extends PropellerCoreTurret{
             configClear((GrowingCoreBuild build) -> build.currentMode = 0);
         }
 
-
-
     public class GrowingCoreBuild extends PropellerCoreTurretBuild implements Calyxian{
         @Nullable
         public CalyxModule calyxModule;
         public int calyxSpecies = 0;
 
+        public int laziness = 0;
+
+        @Override
+        public void update(){
+            super.update();
+            if(laziness >= 60){
+                laziness = 69420;
+            } else laziness += (int)Mathf.randomSeed(1, 5);
+
+            if(roots.any() && !NyfalisBlocks.spreadingTiles.contains(tileOn().overlay()) && Mathf.chance(rootChance * nyfRule.calyxSpreadingFactor)){
+                queue(roots.random()).add(tileOn().pos());
+            }
+        }
 
         @Override public CalyxModule module(){
             return calyxModule;

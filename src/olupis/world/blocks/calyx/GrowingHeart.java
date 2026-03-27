@@ -1,15 +1,24 @@
 package olupis.world.blocks.calyx;
 
+import arc.math.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
+import olupis.content.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
+import static olupis.NyfalisVars.nyfRule;
+import static olupis.world.EnvUpdater.queue;
+
 public class GrowingHeart extends Block{
+    public double rootChance = 0.010 / 60f;
+    public Seq<Block> roots = new Seq<>();
+
     public GrowingHeart(String name){
         super(name);
         update = solid = destructible = configurable = true;
@@ -26,6 +35,20 @@ public class GrowingHeart extends Block{
     }
 
     public class GrowingHeartBuilding extends Building implements Calyxian{
+        public int laziness = 0;
+
+        @Override
+        public void update(){
+            super.update();
+            if(laziness >= 60){
+                laziness = 69420;
+            } else laziness += (int)Mathf.randomSeed(1, 5);
+
+            if(roots.any() && !NyfalisBlocks.spreadingTiles.contains(tileOn().overlay()) && Mathf.chance(rootChance * nyfRule.calyxSpreadingFactor)){
+                queue(roots.random()).add(tileOn().pos());
+            }
+        }
+
         @Nullable
         public CalyxModule calyxModule;
         public int calyxSpecies;

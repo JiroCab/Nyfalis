@@ -108,7 +108,7 @@ public class GrowingVein extends Block{
                 laziness = 69420;
             } else laziness += (int)Mathf.randomSeed(1, 5);
 
-            if(roots.any() && !NyfalisBlocks.spreadingTiles.contains(tileOn().overlay()) && Mathf.chance(rootChance * nyfRule.calyxSpreadingFactor)){
+            if(roots.any() && isAlive() && !NyfalisBlocks.spreadingTiles.contains(tileOn().overlay())  && Mathf.chance(rootChance * nyfRule.calyxSpreadingFactor)){
                 queue(roots.random()).add(tileOn().pos());
             }
         }
