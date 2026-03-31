@@ -6,12 +6,9 @@ import arc.struct.*;
 import arc.struct.Bits;
 import arc.util.*;
 import arc.util.TaskQueue;
-import mindustry.*;
 import mindustry.ai.*;
 import mindustry.async.*;
 import mindustry.content.*;
-import mindustry.core.*;
-import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.io.*;
@@ -48,9 +45,10 @@ public class EnvUpdater implements AsyncProcess{
     //reduces the cost of checking if a floor is alive by moving into a spread tick + laziness instead of per game tick
     public static Bits aliveOverlays, aliveFloors;
     // Tiles with (0.5 * n)  extra chance, usually the furthest to give vein growth more outward movement
-    public static HashMap<Tile, Integer> spearTiles; //TODO: maybe something not a hash map
+    public static HashMap<Tile, Float> spearTiles; //TODO: maybe something not a hash map
     public static float lazyTickPeriod = 5f;
     static int rushieIsTooLazyToNameThisProperlly;
+    public static int spearSpread = 2;
 
 
     public static void load(){
@@ -194,9 +192,41 @@ public class EnvUpdater implements AsyncProcess{
 
                 for(int i = 0; i < 3; i++)out.add(umu.random());
 
+                Tile uwu = building.tileOn();
+
+                if(Mathf.randomSeed(uwu.pos(), 0, 1) == 0){
+                    int sizes = 2;
+                    if(uwu.build != null) sizes += uwu.build.block.size;
+
+                    uwu = world.tiles.get(
+                        Mathf.randomSeed(uwu.pos(), -sizes, sizes) + uwu.x,
+                        Mathf.randomSeed(uwu.pos(), -sizes, sizes) +  uwu.y
+                    );
+
+                    if(uwu == null) uwu = building.tileOn();
+                }
+
+
+                Seq<Tile> owo = new Seq<>();
+                Seq<Tile> qmq = new Seq<>();
                 for(Tile meow : out){
-                    Seq<Tile> owo = Astar.pathfind(building.tileOn(), meow, t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
-                    for(Tile tile : owo) spearTiles.put(tile, spearTiles.getOrDefault(tile, 0) + 1);
+                    owo = Astar.pathfind(uwu, meow, t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
+
+                    for(Tile tile : owo){
+                        spearTiles.put(tile, spearTiles.getOrDefault(tile, 0f) + 4);
+                        qmq.clear();
+
+                        //TODO: is this actually in line for longish small veins
+                        for(int iy = -spearSpread; iy < spearSpread; iy++){
+                            for(int ix = -spearSpread; ix < spearSpread; ix++){
+                                qmq.addUnique(world.tiles.get(tile.x + ix, tile.y + iy));
+                            }
+                        }
+
+                        for(Tile idk : qmq){
+                            spearTiles.put(idk, spearTiles.getOrDefault(tile, 0f) + 0.15f);
+                        }
+                    }
                 }
 
             }

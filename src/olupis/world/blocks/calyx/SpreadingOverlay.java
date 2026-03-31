@@ -30,9 +30,9 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     /** The amount of times the chance must be rolled */
     public byte spreadTries = 3;
     /** Base chance for the tile to try to spread, updated every second */
-    public double spreadChance = 0.013 / 60f;
+    public double spreadChance = 0.0017 / 60f;
     /** Base chance for the tile to try to Upgrade, updated every second */
-    public double growChance = 0.013 / 60f;
+    public double growChance = 0.0003 / 60f;
     /** Whether this block spreads to all surrounding tiles */
     public boolean spread = false;
 
@@ -94,11 +94,11 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     /** Base chance for the tile to try to sprout a building, updated every second */
     public double sproutChance = 0.013 / 60f;
     /** how unlikely a tile will get a sprout if there already crowded. -1 to disable */
-    public float sproutAdjacentPenalty = 0.8f;
-    /** Addition chance added to spread for being in a spear tile. ((x * 0.5) * bonus) **/
-    public float spearSpreadBonus = 0.30f;
-    public float spearSproutBonus = 0.25f;
-    public float spearGrowthBonus = 0.16f;
+    public float sproutAdjacentPenalty = 0.65f;
+    /** Addition chance added to spread for being in a spear tile. ((x * 0.25) * bonus) **/
+    public double spearSpreadBonus = 0.0007;
+    public double spearSproutBonus = 0.00055;
+    public double spearGrowthBonus = 0.00025 ;
 
     public Color noHeartColour = Pal.accentBack;
 
@@ -205,16 +205,16 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         boolean
             growth =
                 isAlive(tile)
-                && Mathf.chance((growChance * nyfRule.calyxGrowthFactor) + (spearTiles.getOrDefault(tile, 0) * spearGrowthBonus * nyfRule.calyxSpearFactor) ) ,
+                && Mathf.chance((growChance * nyfRule.calyxGrowthFactor) + (spearTiles.getOrDefault(tile, 0f) * spearGrowthBonus * nyfRule.calyxSpearFactor * 0.25f) ) ,
             spreads=
                 isAlive(tile) && nyfRule.calyxSpreading
                 && Mathf.chance(
                     (spreadChance * nyfRule.calyxSpreadingFactor) +
-                    ((spearTiles.getOrDefault(tile, 0) * spearSpreadBonus * nyfRule.calyxSpearFactor))),
+                    ((spearTiles.getOrDefault(tile, 0f) * spearSpreadBonus * nyfRule.calyxSpearFactor * 0.25f))),
             sprout = sprouts.any()
                 && (tile.block() == Blocks.air || (tile.block().alwaysReplace) || (tile.block().unitMoveBreakable))
                 && isAlive(tile) &&  adjacentCalyxian(tile)
-                && Mathf.chance((sproutChance * nyfRule.calyxSproutFactor) + (spearTiles.getOrDefault(tile, 0) * spearSproutBonus * nyfRule.calyxSpearFactor));
+                && Mathf.chance((sproutChance * nyfRule.calyxSproutFactor) + (spearTiles.getOrDefault(tile, 0f) * spearSproutBonus * nyfRule.calyxSpearFactor* 0.25f));
 
         if( (growth || spreads || sprout) && i.getIncrementFloor() >= spreadTries){
             i.clearFloorVal();
