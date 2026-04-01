@@ -954,6 +954,8 @@ public class NyfalisBlocks {
 
             upgradeColor = Color.valueOf("#5a8d1d");
             spreadSound = NyfalisSounds.mossSpread;
+
+            spearGrowthBonus = 0.000085;
         }};
 
         ourcelium = new SpreadingOverlay("mossiest-overlay", 3){{
@@ -971,6 +973,7 @@ public class NyfalisBlocks {
             spreadSound = NyfalisSounds.mossSpread;
 
             status = StatusEffects.corroded;
+            spearGrowthBonus = 0.000085;
         }};
 
         theircelium = new GrownFloor("moss", 3){{

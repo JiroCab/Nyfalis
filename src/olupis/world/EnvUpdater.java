@@ -164,33 +164,36 @@ public class EnvUpdater implements AsyncProcess{
         if(reCalc){
             //todo: optimize this shit, something something rushie makes thing exist then improve later
             rushieIsTooLazyToNameThisProperlly = 0;
+            spearTiles.clear();
 
-            Seq<Building> cores = new Seq<>();
+            Seq<Building> cores = new Seq<>(), hearts = new Seq<>();
             Groups.build.each( b ->{
                 if (b instanceof CoreBuild && !(b instanceof Calyxian)) cores.add(b);
+                if(b instanceof Calyxian cal && cal.isHeart()) hearts.add(b);
             });
 
-//            Seq<Tile> debug = new Seq<>();
-            for(Building building : Groups.build){
-                if(!(building instanceof Calyxian cal)) continue;
-                if(!cal.isHeart()) continue;
+            Seq<Tile> worldTile = new Seq<>();
+            for(Tile tile : world.tiles) worldTile.addUnique(tile);
+            worldTile.removeAll(t -> t.solid() || t.floor().hasLiquids);
+            Seq<Tile> out= new Seq<>(), outP = new Seq<>();
 
-                Seq<Tile> out= new Seq<>();
+            for(Building building : hearts){
+                out.clear();
+                outP.clear();
+
 
                 //Guaranteed move towards core fuckery
                 @Nullable Building  core = cores.random();
                 if(core != null && core.tileOn() != null)out.add(core.tileOn());
 
-
-
                 //Random aesthetic spreading
-                Seq<Tile> umu = new Seq<>();
-                for(Tile tile : world.tiles) umu.addUnique(tile);
-                umu.removeAll(t -> t.solid() || t.floor().hasLiquids);
 
-//                debug.addAll(umu);
-
-                for(int i = 0; i < 3; i++)out.add(umu.random());
+                outP= worldTile.copy();
+                for(int i = 0; i < 3; i++){
+                    Tile t = worldTile.random();
+                    out.add(t);
+                    outP.remove(t);
+                }
 
                 Tile uwu = building.tileOn();
 
@@ -207,7 +210,7 @@ public class EnvUpdater implements AsyncProcess{
                 }
 
 
-                Seq<Tile> owo = new Seq<>();
+                Seq<Tile> owo;
                 Seq<Tile> qmq = new Seq<>();
                 for(Tile meow : out){
                     owo = Astar.pathfind(uwu, meow, t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
@@ -219,12 +222,13 @@ public class EnvUpdater implements AsyncProcess{
                         //TODO: is this actually in line for longish small veins
                         for(int iy = -spearSpread; iy < spearSpread; iy++){
                             for(int ix = -spearSpread; ix < spearSpread; ix++){
-                                qmq.addUnique(world.tiles.get(tile.x + ix, tile.y + iy));
+                                Tile t = world.tiles.get(tile.x + ix, tile.y + iy);
+                                if(t != null)qmq.addUnique(t);
                             }
                         }
 
                         for(Tile idk : qmq){
-                            spearTiles.put(idk, spearTiles.getOrDefault(tile, 0f) + 0.15f);
+                            spearTiles.put(idk, spearTiles.getOrDefault(idk, 0f) + 0.15f);
                         }
                     }
                 }

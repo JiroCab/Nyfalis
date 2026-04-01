@@ -1,14 +1,20 @@
 package olupis;
 
+import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
+import olupis.world.*;
 import olupis.world.blocks.calyx.ineternal.*;
+
+import java.text.*;
+import java.util.Map.*;
 
 public class NYF{
     //Just a quick console helper class for debugging and development.bc rushie lazy
@@ -74,6 +80,17 @@ public class NYF{
 
         for(Building b : ggg().get(index).all){
             NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
+        }
+    }
+
+    public static void sss (){
+        DecimalFormat decFor = new DecimalFormat("#.##");
+        for(Entry<Tile, Float> entry : EnvUpdater.spearTiles.entrySet()){
+            Tile tile = entry.getKey();
+            String i = decFor.format((entry.getValue()));
+
+
+            NyfalisFxs.debugEffect.at(tile.x * 8, tile.y * 8, 0, NyfalisColors.acidRainColour, i);
         }
     }
 

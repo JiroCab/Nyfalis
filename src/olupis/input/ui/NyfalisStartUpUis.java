@@ -188,12 +188,15 @@ public class NyfalisStartUpUis {
                 }).width(77.5f).height(40f).checked(false).tooltip("Apply Nyfalis Settings/Env to in.current game");
 
                 z.button("C", Icon.down, Styles.squareTogglet, () -> {
-                    if(state.isCampaign()) Logic.sectorCapture();
-                    state.wave += 100;
-                    for (Item i : content.items()){
-                        if(Core.input.keyDown(Binding.boost)) player.team().core().items.add(i, player.team().core().storageCapacity);
-                        else if (i.unlocked())player.team().core().items.add(i, player.team().core().storageCapacity);
+                    if(Core.input.keyDown(Binding.boost)){
+                        if(state.isCampaign()) Logic.sectorCapture();
+                        state.wave += 100;
+                        for (Item i : content.items()){
+                            if(Core.input.keyDown(Binding.commandMode)) player.team().core().items.add(i, player.team().core().storageCapacity);
+                            else if (i.unlocked())player.team().core().items.add(i, player.team().core().storageCapacity);
+                        }
                     }
+
                 }).width(77.5f).height(40f).checked(false).tooltip("Capture Sector & fill core with Items");
 
                 z.row();
@@ -203,7 +206,8 @@ public class NyfalisStartUpUis {
 
                 z.button("W", Icon.waves, Styles.squareTogglet, waveInfo::show).width(77.5f).height(40f).checked(false).tooltip("@editor.waves");
                 z.row();
-                z.button("G", Icon.grid, Styles.squareTogglet, NYF::gphh).width(77.5f).height(40f).checked(false).tooltip("highlight graph of calyx network under plater");
+                z.button("G", Icon.grid, Styles.squareTogglet, NYF::gphh).width(77.5f).height(40f).checked(false).tooltip("highlight graph of calyx network under player");
+                z.button("S", Icon.commandAttack, Styles.squareTogglet, NYF::sss).width(77.5f).height(40f).checked(false).tooltip("highlight spear tiles");
 
             }).width(155f).growY().margin(12f).marginBottom(0).marginTop(0).checked(false).row();
             if(mobile || testMobile){

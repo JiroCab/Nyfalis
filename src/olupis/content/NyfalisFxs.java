@@ -13,6 +13,7 @@ import mindustry.entities.*;
 import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import olupis.world.blocks.environment.*;
 
@@ -403,6 +404,12 @@ public class NyfalisFxs extends Fx {
             mixcol(e.color, 1f);
             alpha(e.fout());
             Draw.rect(block.fullIcon, e.x, e.y);
+        }),
+
+        debugEffect = new Effect(30, e -> {
+            if(!(e.data instanceof String i)) return;
+            WorldLabel.drawAt(i, e.x, e.y, Layer.overlayUI, WorldLabel.flagOutline, 0.4f, Align.center, Align.center);
+
         }),
 
         strataBulletMine = new Effect(13, e -> {

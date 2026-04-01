@@ -98,7 +98,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     /** Addition chance added to spread for being in a spear tile. ((x * 0.25) * bonus) **/
     public double spearSpreadBonus = 0.0007;
     public double spearSproutBonus = 0.00055;
-    public double spearGrowthBonus = 0.00025 ;
+    public double spearGrowthBonus = 0.00025;
 
     public Color noHeartColour = Pal.accentBack;
 
