@@ -172,6 +172,8 @@ public class EnvUpdater implements AsyncProcess{
                 if(b instanceof Calyxian cal && cal.isHeart()) hearts.add(b);
             });
 
+            if(hearts.size < 1) return;
+
             Seq<Tile> worldTile = new Seq<>();
             for(Tile tile : world.tiles) worldTile.addUnique(tile);
             worldTile.removeAll(t -> t.solid() || t.floor().hasLiquids);

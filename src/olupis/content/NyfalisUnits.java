@@ -955,15 +955,15 @@ public class NyfalisUnits {
             speed = 2.5f;
             minVel = 0.5f;
             hitSize = 9f;
-            idleCircleRaduis =  10f;
-            circleTargetRadius = 5f;
+            idleCircleRaduis =  100f;
+            circleTargetRadius = 10f;
             ammoCapacity = 2;
 
 
             constructor = UnitEntity::create;
             aiController = WaveAiHandler::new;
             ammoType = carrierTypeAmmo;
-            lowAltitude = flying = canGuardUnits = waveHunts =attackRotationLock = circleTarget = altResupply = drawAmmo = canRetreat =  true;
+            lowAltitude = flying = waveHunts =attackRotationLock = circleTarget = altResupply = drawAmmo = canRetreat =  true;
             retreatStatus = NyfalisStatusEffects.retreating;
             omniMovement = false;
 
@@ -980,6 +980,7 @@ public class NyfalisUnits {
                 rotationLimit = 10f;
                 shoot.shots = 10;
                 shoot.shotDelay = 5f;
+                shoot.firstShotDelay = 25;
                 ejectEffect = Fx.none;
                 shootSound = NyfalisSounds.shootPVC2;
 

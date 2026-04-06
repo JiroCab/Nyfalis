@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id("com.xpdustry.toxopid") version "4.1.2"
+    id("com.xpdustry.toxopid") version "4.2.0"
     id 'maven-publish'
 }
 
@@ -29,7 +29,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v155.1'
+    mindustryVersion = 'v156.2'
     jabelVersion = "93fde537c7"
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")

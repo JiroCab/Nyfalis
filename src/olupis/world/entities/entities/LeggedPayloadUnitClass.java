@@ -64,6 +64,30 @@ public class LeggedPayloadUnitClass extends LegsUnit implements Payloadc{
     }
 
     @Override
+    public boolean canDropPayload(){
+        //just stolen from PayloadUnit bc lazy and idk
+        if (this.payloads.isEmpty()) {
+            return false;
+        } else {
+            Payload payload = this.payloads.peek();
+            Tile on = this.tileOn();
+            if (on != null && on.build != null && on.build.team == this.team && on.build.acceptPayload(on.build, payload)) return true;
+            else if (payload instanceof BuildPayload b) {
+                Building tile = b.build;
+                int tx = World.toTile(this.x - tile.block.offset);
+                int ty = World.toTile(this.y - tile.block.offset);
+                on = Vars.world.tile(tx, ty);
+                return on != null && Build.validPlace(tile.block, tile.team, tx, ty, tile.rotation, false);
+            } else if (!(payload instanceof UnitPayload p)) {
+                return false;
+            } else {
+                Unit u = p.unit;
+                return u.canPass(World.toTile(this.x + Tmp.v1.x), World.toTile(this.y + Tmp.v1.y)) && Units.count(this.x, this.y, u.physicSize(), (o) -> o.isGrounded() && o.hitSize > 14.0F) <= 1;
+            }
+        }
+    }
+
+    @Override
     public boolean canPickup(Building build){
         if(type instanceof NyfalisUnitType n && !n.pickupBlocks)  return false;
         return this.payloadUsed() + (float)(build.block.size * build.block.size * 8 * 8) <= this.type.payloadCapacity + 0.001F && build.canPickup() && build.team == this.team;
@@ -128,19 +152,16 @@ public class LeggedPayloadUnitClass extends LegsUnit implements Payloadc{
     @Override
     public boolean tryDropPayload(Payload payload){
         Tile on = this.tileOn();
-        if (Vars.net.client() && payload instanceof UnitPayload) {
-            UnitPayload u = (UnitPayload)payload;
+        if (Vars.net.client() && payload instanceof UnitPayload u) {
             Vars.netClient.clearRemovedEntity(u.unit.id);
         }
         if (on != null && on.build != null && on.build.acceptPayload(on.build, payload)) {
             Fx.unitDrop.at(on.build);
             on.build.handlePayload(on.build, payload);
             return true;
-        } else if (payload instanceof BuildPayload) {
-            BuildPayload b = (BuildPayload)payload;
+        } else if (payload instanceof BuildPayload b) {
             return this.dropBlock(b);
-        } else if (payload instanceof UnitPayload) {
-            UnitPayload p = (UnitPayload)payload;
+        } else if (payload instanceof UnitPayload p) {
             return this.dropUnit(p);
         } else {
             return false;

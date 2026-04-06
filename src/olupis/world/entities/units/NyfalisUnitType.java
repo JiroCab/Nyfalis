@@ -109,7 +109,7 @@ public class NyfalisUnitType extends UnitType {
             if (canGuardUnits) commands.add(NyfalisUnitCommands.nyfalisGuardCommand);
             if (canDash)commands.add(NyfalisUnitCommands.nyfalisDashCommand);
             if (canCharge) commands.add(NyfalisUnitCommands.nyfalisChargeCommand);
-            if (canBoost && alwaysBoosts) commands.remove(UnitCommand.boostCommand);
+            //if (canBoost && alwaysBoosts) commands.remove(UnitCommand.boostCommand);
             if(canRetreat) commands.add(NyfalisUnitCommands.nyfalisRetreatCommand);
             //Move it to last
             if (commands.contains(UnitCommand.enterPayloadCommand)){
@@ -339,7 +339,7 @@ public class NyfalisUnitType extends UnitType {
             }
         }
 
-        if(alwaysBoostOnSolid && canBoost && (unit.controller() instanceof CommandAI c && c.command != UnitCommand.boostCommand)){
+        if(alwaysBoostOnSolid && canBoost && (unit.controller() instanceof CommandAI c && !c.hasStance(UnitStance.boost))){
             unit.updateBoosting(unit.onSolid());
         }
 
