@@ -1,3 +1,4 @@
+//this file is a mess of stuff rushie has no idea what of half things do
 plugins {
     id 'java'
     id("com.xpdustry.toxopid") version "4.2.0"
@@ -19,6 +20,30 @@ import com.xpdustry.toxopid.spec.ModPlatform
 
 repositories{
     mavenCentral()
+    //MindustryJavaModTemplate
+
+    //Downloads the server-release JAR file from Mindustry releases; does not use any real repository. Surprisingly, this is the most reliable option.
+    ivy{
+        url 'https://github.com/'
+        patternLayout{artifact '/[organisation]/[module]/releases/download/[revision]/dependencies.jar'}
+        metadataSources{ artifact() }
+    }
+
+    //"Latest" option to depend on BE builds.
+    ivy{
+        url 'https://github.com/'
+        patternLayout{artifact '/[organisation]/[module]/releases/download/master/[revision].jar'}
+        metadataSources{ artifact() }
+    }
+
+    //Do the same with jabel
+    ivy{
+        url 'https://github.com/'
+        patternLayout{artifact '/[organisation]/[module]/releases/download/[revision]/jabel.jar'}
+        metadataSources{ artifact() }
+    }
+
+    //Toxopid
     maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven{ url "https://maven.xpdustry.com/mindustry" }
     maven { url 'https://jitpack.io' }
@@ -29,7 +54,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v156.2'
+    mindustryVersion = 'v157.3'
     jabelVersion = "93fde537c7"
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")

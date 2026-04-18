@@ -69,57 +69,14 @@ public class HeadacheCrafter  extends GenericCrafter{
             table.row();
 
             float[] widths = new float[] {0, 0, 0};
-            Seq<Cell<Table>> inTab = new Seq<>(), arwTab  = new Seq<>(), outTab = new Seq<>();
+            Seq<Cell<Table>>[] tabs = new Seq[]{new Seq<>(), new Seq<>(), new Seq<>()};
             table.table(nu -> plans.each(pl -> {
                 nu.row();
-                nu.table(Styles.grayPanel, b -> {
-                        if(pl.isBanned()){
-                            b.table(e -> {
-                                e.image(Icon.cancel.getRegion()).color(Color.scarlet).scaling(Scaling.bounded).row();
-                            }).center();
-
-                            b.table(e -> {
-                            if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
-                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01f, false)).pad(5).row();
-                        }).padLeft(5f);
-                    }else if(!pl.unlockedNow()){
-                        b.table(e -> {
-                            e.image(Icon.tree.getRegion()).color(Color.white).scaling(Scaling.bounded).row();
-                        }).center();
-
-                        b.table(e -> {
-                            if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
-                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01f, false)).pad(5).row();
-                        }).padLeft(5f);
-                    }else {
-                        Cell<Table>  in = b.table( e -> {
-                            if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).left().row();
-                            if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).left().pad(5).row();
-                            if(pl.powerIn > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerIn * 60f) + "[lightgray] " + StatUnit.perSecond.localized()).left();
-                        }).left().padLeft(5f);
-                        inTab.add(in);
-                        widths[0] = Math.max(in.minWidth(), widths[0]);
-
-                        Cell<Table> arw = b.table( e -> {
-                            e.image(Icon.right.getRegion()).scaling(Scaling.bounded).growX().row();
-                            e.add("[lightgray]" + Strings.autoFixed(pl.time /60f, 2) + StatUnit.perSecond.localized());
-                        }).center().pad(5f);
-                        arwTab.add(arw);
-                        widths[1] = Math.max(arw.minWidth(), widths[1]);
-
-                        Cell<Table>  out = b.table( e -> {
-                            if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).left().pad(5).row();
-                            if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).left().pad(5).row();
-                            if(pl.powerOut > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerOut * 60f) + "[lightgray] " + StatUnit.perSecond.localized()).left();
-                        }).right().padRight(5f).padLeft(5f);
-                        widths[2] = Math.max(out.minWidth(), widths[2]);
-                        outTab.add(out);
-                    }
-                }).growX().pad(5).margin(20).row();
+                nu.table(Styles.grayPanel, b -> planTable(b, pl, tabs, widths)).growX().pad(5).margin(20).row();
             })).minWidth((widths[0] + widths[1] + widths [2]) * 1.25f).growX();
-            for(int i = 0; i < inTab.size; i++) inTab.get(i).width(widths[0]);
-            for(int i = 0; i < arwTab.size; i++) arwTab.get(i).width(widths[1]);
-            for(int i = 0; i < outTab.size; i++) outTab.get(i).width(widths[2]);
+            for(int i = 0; i < tabs[0].size; i++) tabs[0].get(i).width(widths[0]);
+            for(int i = 0; i < tabs[1].size; i++) tabs[1].get(i).width(widths[1]);
+            for(int i = 0; i < tabs[2].size; i++) tabs[2].get(i).width(widths[2]);
             Log.err(widths[0] + " " + widths[1] + " " + widths[2] );
 
         });
@@ -390,5 +347,52 @@ public class HeadacheCrafter  extends GenericCrafter{
         });
 
         return t;
+    }
+
+    public static void planTable(Table b, FactoryPlan pl, @Nullable Seq<Cell<Table>>[] tabs, float[] widths ){
+
+        if(pl.isBanned()){
+            b.table(e -> {
+                e.image(Icon.cancel.getRegion()).color(Color.scarlet).scaling(Scaling.bounded).row();
+            }).center();
+
+            b.table(e -> {
+                if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
+                if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01f, false)).pad(5).row();
+            }).padLeft(5f);
+        }else if(!pl.unlockedNow()){
+            b.table(e -> {
+                e.image(Icon.tree.getRegion()).color(Color.white).scaling(Scaling.bounded).row();
+            }).center();
+
+            b.table(e -> {
+                if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, 0, false)).pad(5).row();
+                if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, 01f, false)).pad(5).row();
+            }).padLeft(5f);
+        }else {
+            Cell<Table>  in = b.table( e -> {
+                if(pl.input != null && pl.input.length >= 1) for(ItemStack stack : pl.input) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).pad(5).left().row();
+                if(pl.inputLiquid != null && pl.inputLiquid.length >= 1) for(LiquidStack stack : pl.inputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).left().pad(5).row();
+                if(pl.powerIn > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerIn * 60f) + "[lightgray] " + StatUnit.perSecond.localized()).left();
+            }).left().padLeft(5f);
+            if(tabs != null)tabs[0].add(in);
+            widths[0] = Math.max(in.minWidth(), widths[0]);
+
+            Cell<Table> arw = b.table( e -> {
+                e.image(Icon.right.getRegion()).scaling(Scaling.bounded).growX().row();
+                e.add("[lightgray]" + Strings.autoFixed(pl.time /60f, 2) + StatUnit.perSecond.localized());
+            }).center().pad(5f);
+            if(tabs != null)tabs[1].add(arw);
+            widths[1] = Math.max(arw.minWidth(), widths[1]);
+
+            Cell<Table>  out = b.table( e -> {
+                if(pl.output != null && pl.output.length >= 1) for(ItemStack stack : pl.output) e.add(StatValues.displayItem(stack.item, stack.amount, pl.time, true)).left().pad(5).row();
+                if(pl.outputLiquid != null && pl.outputLiquid.length >= 1) for(LiquidStack stack : pl.outputLiquid) e.add(displayLiquid(stack.liquid, stack.amount, true)).left().pad(5).row();
+                if(pl.powerOut > 0) e.add("[accent]" + Iconc.power + " []" + Mathf.round(pl.powerOut * 60f) + "[lightgray] " + StatUnit.perSecond.localized()).left();
+            }).right().padRight(5f).padLeft(5f);
+            widths[2] = Math.max(out.minWidth(), widths[2]);
+            if(tabs != null)tabs[2].add(out);
+        }
+
     }
 }

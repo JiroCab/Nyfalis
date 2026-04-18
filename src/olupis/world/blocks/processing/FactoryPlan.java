@@ -1,20 +1,27 @@
 package olupis.world.blocks.processing;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import olupis.content.*;
 
 import java.util.*;
 
+import static mindustry.Vars.ui;
 import static mindustry.type.ItemStack.with;
+import static olupis.world.blocks.processing.HeadacheCrafter.*;
 
 public class FactoryPlan extends Block{
     public float time;
@@ -22,8 +29,7 @@ public class FactoryPlan extends Block{
     public @Nullable LiquidStack[] outputLiquid, inputLiquid;
     public float powerIn = 0, powerOut = 0;
     public @Nullable String overlay;
-    public TextureRegion overlayRegion;
-
+    public TextureRegion overlayRegion, underlayRegion;
     public Seq<UnlockableContent> displayFactory = new Seq<>();
 
     public FactoryPlan(String name, String overlay, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
@@ -57,6 +63,31 @@ public class FactoryPlan extends Block{
         super.setStats();
         stats.remove(Stat.health);
         stats.remove(Stat.size);
+        stats.add(Stat.output, table -> {
+            table.row();
+            table.table(Styles.grayPanel, b -> planTable(b, this, null, new float[]{0f, 0f ,0f})).growX().pad(5).margin(20).row();
+            if(displayFactory.size >= 1){
+                displayFactory.each(fac -> {
+                    table.row();
+                    table.table(NyfalisColors.infoPanel, t -> {
+                        boolean show = (fac instanceof Block b && b.isVisible()) || (fac instanceof  UnitType u && !u.isBanned());
+                        if(!fac.unlocked() && (Vars.state.isCampaign() || !Vars.state.isPlaying())) t.image(Icon.lock.getRegion()).tooltip(fac.localizedName).size(25).pad(10f).left().scaling(Scaling.fit);
+                        else {
+                            if(show) t.image(fac.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit).get().clicked(()-> ui.content.show(fac));
+                            else t.image(Icon.cancel.getRegion()).color(Pal.remove).size(40).pad(10f).left().scaling(Scaling.fit);
+                            t.table(info -> {
+                                info.add(fac.localizedName).left();
+                                if (Core.settings.getBool("console")) {
+                                    info.row();
+                                    info.add(fac.name).left().color(Color.lightGray);
+                                }
+                            });
+                            t.button("?", Styles.flatBordert, () -> ui.content.show(fac)).size(40f).pad(10).right().grow().visible(fac::unlockedNow);
+                        }
+                    }).growX().padBottom(5f).padLeft(10f).padRight(10f).row();
+                });
+            }
+        });
     }
 
     public FactoryPlan(String name, float time, ItemStack[] input, @Nullable ItemStack[] output, LiquidStack[] inputLiquid, @Nullable LiquidStack[] outputLiquid, float powerIn, float powerOut){
@@ -143,14 +174,15 @@ public class FactoryPlan extends Block{
 
         region = dis.isModded() ? Core.atlas.find(dis.name) : Core.atlas.find( dis.getContentType() + "-" + dis.name);
         if(!region.found()) region = Core.atlas.find(Mathf.randomBoolean(0.5f) ? "alphaaaa" :  "ranai");
-        return new TextureRegion[]{region, overlayRegion};
+        return new TextureRegion[]{underlayRegion, region, overlayRegion};
     }
 
     @Override
     public void load(){
         super.load();
 
-        overlayRegion =  Core.atlas.find("olupis-plan-overlay");
+        overlayRegion =  Core.atlas.find( name + "-overlay","olupis-plan-overlay");
+        underlayRegion =  Core.atlas.find(name + "-underlay", "olupis-plan-underlay");
     }
 
     public UnlockableContent getDisplayed(){

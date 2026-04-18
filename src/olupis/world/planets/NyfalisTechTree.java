@@ -80,6 +80,77 @@ public class NyfalisTechTree {
                 });
             });
 
+            nodeProduce(rustyIron, () ->{
+                nodeProduce(copper, () ->{
+                    nodeProduce(scrap, () ->{
+
+                    });
+                    nodeProduce(ironFrame, () -> {
+                        nodeProduce(graphiteFrame, () -> {
+
+                        });
+                    });
+                    nodeProduce(copperWire, () ->{
+                        nodeProduce(siliconCircuit, () ->{
+
+                        });
+                    });
+                });
+                nodeProduce(lead, () ->{
+                    nodeProduce(sand, () ->{
+                        nodeProduce(quartz, () ->{
+
+                        });
+                    });
+                    nodeProduce(crudeBattery, () ->{
+                        nodeProduce(graphiteCell, () ->{
+
+                        });
+                    });
+                    nodeProduce(ironPlate, () ->{
+                        nodeProduce(graphitePlan, () ->{
+
+                        });
+                    });
+                });
+                nodeProduce(iron, () ->{
+                    nodeProduce(basicRotor, () ->{
+                        nodeProduce(electricMotor, () -> {
+
+                        });
+                    });
+                    nodeProduce(alcoAlloy, ()->{
+                        nodeProduce(aluminum, () -> {
+
+                        });
+                        nodeProduce(cobalt, ()->{
+
+                        });
+                        nodeProduce(Liquids.slag, () ->{
+
+                        });
+                    });
+                    nodeProduce(condensedBiomatter, () ->{
+
+                    });
+                });
+                nodeProduce(Liquids.water, ()->{
+                    nodeProduce(steam, () ->{
+
+                    });
+                    nodeProduce(emulsiveSlop, () ->{
+                        nodeProduce(Liquids.oil,()->{
+                            nodeProduce(graphite, ()->{
+
+                            });
+                            nodeProduce(silicon, ()->{
+
+                            });
+                        });
+                    });
+                });
+            });
+
             node(gnat, ()->{
                 node(shade, Seq.with(
                 new Objectives.Produce(shade){
@@ -225,17 +296,17 @@ public class NyfalisTechTree {
                 });
             });
 
-            node(mossyBoulder, ()-> {
+            node(coreEmergent, () ->{
+                node(corePrime, () -> {
+                    node(coreApex, () -> {
+                        node(coreAscendant, () -> {
 
-                node(coreEmergent, () ->{
-                    node(corePrime, () -> {
-                        node(coreApex, () -> {
-                            node(coreAscendant, () -> {
-
-                            });
                         });
                     });
                 });
+            });
+
+            node(mossyBoulder, ()-> {
 
                 node(wire, Seq.with(new Objectives.Research(rustyDrill)), () -> {
                     node(windMills, () -> {
@@ -534,78 +605,6 @@ public class NyfalisTechTree {
                         });
                         node(mechanicalRegistry, ()->{
 
-                        });
-                    });
-                });
-
-
-                nodeProduce(rustyIron, () ->{
-                    nodeProduce(copper, () ->{
-                        nodeProduce(scrap, () ->{
-
-                        });
-                        nodeProduce(ironFrame, () -> {
-                            nodeProduce(graphiteFrame, () -> {
-
-                            });
-                        });
-                        nodeProduce(copperWire, () ->{
-                            nodeProduce(siliconCircuit, () ->{
-
-                            });
-                        });
-                    });
-                    nodeProduce(lead, () ->{
-                        nodeProduce(sand, () ->{
-                            nodeProduce(quartz, () ->{
-
-                            });
-                        });
-                        nodeProduce(crudeBattery, () ->{
-                            nodeProduce(graphiteCell, () ->{
-
-                            });
-                        });
-                        nodeProduce(ironPlate, () ->{
-                            nodeProduce(graphitePlan, () ->{
-
-                            });
-                        });
-                    });
-                    nodeProduce(iron, () ->{
-                        nodeProduce(basicRotor, () ->{
-                            nodeProduce(electricMotor, () -> {
-
-                            });
-                        });
-                        nodeProduce(alcoAlloy, ()->{
-                            nodeProduce(aluminum, () -> {
-
-                            });
-                            nodeProduce(cobalt, ()->{
-
-                            });
-                            nodeProduce(Liquids.slag, () ->{
-
-                            });
-                        });
-                        nodeProduce(condensedBiomatter, () ->{
-
-                        });
-                    });
-                    nodeProduce(Liquids.water, ()->{
-                        nodeProduce(steam, () ->{
-
-                        });
-                        nodeProduce(emulsiveSlop, () ->{
-                            nodeProduce(Liquids.oil,()->{
-                                nodeProduce(graphite, ()->{
-
-                                });
-                                nodeProduce(silicon, ()->{
-
-                                });
-                            });
                         });
                     });
                 });
