@@ -1,6 +1,7 @@
 package olupis.world.blocks.turret;
 
 import arc.math.*;
+import arc.scene.ui.layout.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -10,7 +11,7 @@ import olupis.world.*;
 import olupis.world.entities.*;
 
 public class NyfalisItemTurret extends ItemTurret {
-    public boolean statsBlocksOnly = false;
+    public boolean statsBlocksOnly = false, removeItemsBars = true;
     public float illuminateTime = 30f;
 
     public  NyfalisItemTurret(String name){
@@ -30,6 +31,12 @@ public class NyfalisItemTurret extends ItemTurret {
         stats.remove(Stat.ammo);
         if(statsBlocksOnly) stats.add(Stat.ammo, NyfalisStats.ammoBlocksOnly(ammoTypes, this));
         else stats.add(Stat.ammo, NyfalisStats.ammoWithInfo(ammoTypes, this));
+    }
+
+    @Override
+    public void setBars(){
+        super.setBars();
+        if(removeItemsBars)removeBar("items");
     }
 
     public class NyfalisItemTurretBuild extends ItemTurretBuild{

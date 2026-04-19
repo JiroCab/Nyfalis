@@ -41,6 +41,7 @@ public class NyfalisSettingsDialog {
         pdlStatusGiverAnyTeam = !Core.settings.getBool("nyfalis-pdl-status-anyteam");
         pdlStatusGiverSimple = Core.settings.getBool("nyfalis-pdl-status-simple");
         treeTransgenderRange = settings.getInt("nyfalis-tree-trans-range") * tilesize;
+        turretConfigIndicator = settings.getInt("nyfalis-turret-config-indicator");
     }
 
     public void BuildDialog(){
@@ -65,6 +66,7 @@ public class NyfalisSettingsDialog {
             check(table, "nyfalis-pdl-status-anyteam", false);
             check(table, "nyfalis-pdl-status-simple", false);
             slider(table, "nyfalis-tree-trans-range",5, 0, 51, 1, i -> i == 0 ? "@off" : i == 51 ? "@yes" : i + " " + Core.bundle.get("unit.blocks"));
+            slider(table, "nyfalis-turret-config-indicator",0, 0, 9, 1, i -> i == 0 ? "@off": Core.bundle.get("turret-indicator-side" + i)) ;
 
             table.pref(new CollapserSetting("div-gameplay", 6));
             table.checkPref("nyfalis-sandbox-super-weapon-cap", false);
@@ -356,7 +358,7 @@ public class NyfalisSettingsDialog {
     }
 
     //Same as the normal ones but also calls updateSettings()
-    public void slider(SettingsTable  table, String name, int def, int min, int max, int step, StringProcessor s){
+    public static void slider(SettingsTable  table, String name, int def, int min, int max, int step, StringProcessor s){
         table.sliderPref(name,def, min, max, step, owo -> {
             updateSettings();
             return s.get(owo);

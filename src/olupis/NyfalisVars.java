@@ -31,6 +31,7 @@ public class NyfalisVars{
     public static boolean musicModPresent = false;
     public static float pdlStatusGiverTrans, pdlStatusGiverRange, treeTransgenderRange;
     public static boolean pdlStatusGiverAnyTeam, pdlStatusGiverSimple;
+    public static int turretConfigIndicator;
 
     public static NyfRules nyfRule = new NyfRules();
 

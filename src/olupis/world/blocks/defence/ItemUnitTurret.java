@@ -35,6 +35,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.world.blocks.defence.Articulator.*;
+import olupis.world.blocks.turret.*;
 import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.packets.*;
@@ -48,7 +49,7 @@ import static mindustry.Vars.*;
 /*The cross bread of a Turret and Unit factory, for the sake of being different
 Now with hints of UnitAssembler for extra spice
 This whole thing is a overcomplicated mess, thank you and why rushie*/
-public class ItemUnitTurret extends ItemTurret {
+public class ItemUnitTurret extends NyfalisItemTurret{
     /*common required items for all unit types*/
     public ItemStack[] requiredItems = ItemStack.with(Items.copper, 20);
     public ItemStack[] requiredAlternate = ItemStack.with(NyfalisItemsLiquid.aluminum, 30, Items.copper, 60);
@@ -79,7 +80,7 @@ public class ItemUnitTurret extends ItemTurret {
     public ItemUnitTurret(String name){
         super(name);
         commandable = configurable = outputsPayload = clearOnDoubleTap = true;
-        playerControllable = false;
+        playerControllable = removeItemsBars =  false;
         shootSound = NyfalisSounds.shootSpawn;
         drawer = new DrawDefault();
         fogRadius = -1;
@@ -299,7 +300,7 @@ public class ItemUnitTurret extends ItemTurret {
         return NyfalisItemsLiquid.powerAmmoItem;
     }
 
-    public class ItemUnitTurretBuild<T extends UnitPayload> extends ItemTurretBuild implements Moduleable{
+    public class ItemUnitTurretBuild<T extends UnitPayload> extends NyfalisItemTurretBuild implements Moduleable{
         public @Nullable Vec2 commandPos;
         public float time, speedScl;
         public int direction = -1, readUnitId = -1;
