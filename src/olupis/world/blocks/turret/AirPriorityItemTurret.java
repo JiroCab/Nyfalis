@@ -1,7 +1,5 @@
 package olupis.world.blocks.turret;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -13,12 +11,9 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
-import olupis.*;
 import olupis.world.*;
-import olupis.world.blocks.turret.LineOfSightItemTurret.*;
 
 import static mindustry.Vars.*;
-import static olupis.NyfalisVars.*;
 
 public class AirPriorityItemTurret extends NyfalisItemTurret {
     public float discoveryTime = 60f * 60f * 1f;
@@ -174,27 +169,7 @@ public class AirPriorityItemTurret extends NyfalisItemTurret {
         public void draw(){
             super.draw();
 
-            //todo the other
-            if(turretConfigIndicator > 0 && this.team == player.team()){
-                float multiplier = this.block.size > 1 ? 1.0F : 0.64F;
-                float xm =
-                    turretConfigIndicator == 1 || turretConfigIndicator == 4 || turretConfigIndicator == 7 ? -1 :
-                    turretConfigIndicator == 2 || turretConfigIndicator == 5||  turretConfigIndicator == 8 ? 1:
-                    0;
-                float ym =
-                    turretConfigIndicator >= 1 && turretConfigIndicator <= 3 ? 1 :
-                    turretConfigIndicator >= 4 && turretConfigIndicator <= 6 ? -1 :
-                    0;
-                float bs = (this.block.size * 8) / 2.0F;
-                float brcx = this.x + (bs * xm) + ( 8f * (multiplier /2 * -xm));
-                float brcy = this.y + (bs * ym) + (8f * (multiplier /2* -ym));
-                float pz = Draw.z();
-                Draw.z(71.0F);
-                Draw.color(Color.white);
-                Draw.rect(icon[attackMode].getRegion(), brcx, brcy);
-                Draw.reset();
-                Draw.z(pz);
-            }
+            NyfWorldFuckingHelper.renderConfigIndicator(this, icon[attackMode].getRegion());
         }
 
 

@@ -1653,11 +1653,11 @@ public class NyfalisBlocks {
         //region Units
         construct = new PowerUnitTurret("construct"){{
             size = 4;
-            shootY = 0f;
             reload = 1200f;
             maxAmmo = 16;
             itemCapacity = 40;
             alternateCapacity = 40;
+            shootY = 3f * Vars.tilesize;
             failedMakeSoundPitch = 0.7f;
             boosterAlternate = true;
             hasAlternate = squareSprite = false;
@@ -1695,17 +1695,19 @@ public class NyfalisBlocks {
             requirements(Category.units, with(iron, 50, lead, 50, rustyIron, 50));
         }};
 
+        //todo globalize the shoot bullets like gnat for easier configs
+
         // arialConstruct -> offensive air units
         arialConstruct = new ItemUnitTurret("arial-construct"){{
             squareSprite = false;
 
             size = 4;
-            shootY = 0f;
             reload = 1200f;
             maxAmmo = 15;
             itemCapacity = 80;
             alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
+            shootY = 3f * Vars.tilesize;
 
             ammo(
                 lead, new SpawnHelperBulletType(){{
@@ -1766,7 +1768,7 @@ public class NyfalisBlocks {
             );
             requiredItems = with(lead, 10, copper, 10, crudeBattery, 5);
             requiredAlternate = with(ironPlate, 10, copperWire, 10, crudeBattery, 10, ironFrame, 10);
-            alwaysShooting = hoverShowsSpawn = arrowShootPos = unitFactory = true;
+            alwaysShooting  = unitFactory = true;
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
             researchCost = with(rustyIron, 500, copper, 500,  iron, 300);
             requirements(Category.units, with(iron, 100, rustyIron, 100, copper, 100));
@@ -1782,7 +1784,7 @@ public class NyfalisBlocks {
             itemCapacity = 80;
             alternateCapacity = 120;
             failedMakeSoundPitch = 0.7f;
-            shootY = 2.5f * Vars.tilesize;
+            shootY = 3 * Vars.tilesize;
 
             ammo(
                 graphite, new SpawnHelperBulletType(){{
@@ -1811,7 +1813,7 @@ public class NyfalisBlocks {
             requiredItems = with(copper, 10, lead, 10, crudeBattery, 3, basicRotor , 3);
             requiredAlternate = with(ironPlate, 10, copperWire, 10, crudeBattery, 10, basicRotor, 10, ironFrame, 10);
             failedMakeSound = NyfalisSounds.as2ArmorBreak;
-            alwaysShooting = hoverShowsSpawn = floating = arrowShootPos = unitFactory = true;
+            alwaysShooting = floating = unitFactory = true;
             researchCost = with(lead, 1500, graphite, 500,  iron, 800);
             requirements(Category.units, with(iron, 100, lead, 100, graphite, 50));
         }};
@@ -2550,6 +2552,7 @@ public class NyfalisBlocks {
             rotateSpeed = 5f;
             glowMag = glowScl = 0f;
             discoveryTime = 60f * 40f;
+            spotRange = 75f;
             spotted = NyfalisStatusEffects.marked;
             consumePower(400/60f);
             type = ladarHelper;

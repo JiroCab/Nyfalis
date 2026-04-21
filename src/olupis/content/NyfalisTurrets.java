@@ -1378,7 +1378,7 @@ public class NyfalisTurrets {
                 }}
             );
             playerControllable = drawOnTarget = emitLight =  boosterAlternate= true;
-            commandable = configurable = rallyAim = hasAlternate = false;
+            commandable = configurable = rallyAim = hasAlternate = hoverShowsSpawn =  false;
             requiredAlternate = with();
             buildingFilter = b -> false; //dont
             lightColor = floodLightColor;

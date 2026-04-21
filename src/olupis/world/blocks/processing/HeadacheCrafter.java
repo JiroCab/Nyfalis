@@ -31,6 +31,7 @@ import java.awt.*;
 import java.util.*;
 
 import static mindustry.Vars.*;
+import static olupis.world.NyfWorldFuckingHelper.renderConfigIndicator;
 
 
 public class HeadacheCrafter  extends GenericCrafter{
@@ -253,6 +254,13 @@ public class HeadacheCrafter  extends GenericCrafter{
         public FactoryPlan getPlanSelected(){
             return plans.get(planSelected);
         }
+
+        @Override
+        public void draw(){
+            super.draw();
+            renderConfigIndicator(this, getPlanSelected().uiIcon);
+        }
+
     }
 
 

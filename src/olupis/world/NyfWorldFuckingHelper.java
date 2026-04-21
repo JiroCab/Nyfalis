@@ -210,6 +210,53 @@ public class NyfWorldFuckingHelper{
             Drawf.tri(x + x1, y + y1, width, length, Angles.angle(x, y, x + x1, y + y1));
         }
     }
+
+    public static void  renderConfigIndicator(Building build, float scale, Seq<TextureRegion> seq){
+        if(turretConfigIndicator == 0 || build.team !=  player.team()) return;
+        float pz = Draw.z();
+
+        Block block = build.block;
+        //yeah yeah tell me this is bad, i just cant be assed, if  you think its that bad make a PR already
+        int xm =
+            turretConfigIndicator == 1 || turretConfigIndicator == 4 || turretConfigIndicator == 7 ? -1 :
+            turretConfigIndicator == 2 || turretConfigIndicator == 5||  turretConfigIndicator == 8 ? 1:
+            0;
+        int ym =
+            turretConfigIndicator >= 1 && turretConfigIndicator <= 3 ? 1 :
+            turretConfigIndicator >= 4 && turretConfigIndicator <= 6 ? -1 :
+            0;
+        float multiplier = build.block.size > 1 ? 1.0F : 0.64F;
+        float bs = (block.size * 8) / 2.0F;
+        float brcx = build.x + (bs * xm) + ( 8f * (multiplier /2 * -xm));
+        float brcy = build.y + (bs * ym) + ( 8f * (multiplier /2* -ym));
+
+
+        Draw.z(71.0F);
+        Draw.color(Color.white);
+        Draw.scl(scale);
+
+        for(int i = 0; i < seq.size; i++){
+            if(!seq.get(i).found()) continue;
+            //((offset * 2 * scale) + 1)
+            float xf = ( 8f * (multiplier /2 * Mathf.clamp(-xm, -1, 1)) * i * 2  * scale +1);
+            Draw.rect(seq.get(i), brcx + xf , brcy);
+        }
+        Draw.reset();
+        Draw.z(pz);
+    }
+
+    public static void renderConfigIndicator(Building build, TextureRegion tex){
+        renderConfigIndicator(build, 1, Seq.with(tex));
+    }
+
+    public static void renderConfigIndicator(Building build, Seq<TextureRegion> tex){
+        renderConfigIndicator(build, 1, tex);
+    }
+
+    public static void renderConfigIndicator(Building build, float scl, TextureRegion tex){
+        renderConfigIndicator(build, scl, Seq.with(tex));
+    }
+
     //endregion
     //region == Ambience Helper ==
     public static void allUpdaters(){

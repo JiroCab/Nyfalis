@@ -28,7 +28,6 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
-import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
@@ -45,6 +44,7 @@ import olupis.world.interfaces.*;
 import java.util.*;
 
 import static mindustry.Vars.*;
+import static olupis.world.NyfWorldFuckingHelper.renderConfigIndicator;
 
 /*The cross bread of a Turret and Unit factory, for the sake of being different
 Now with hints of UnitAssembler for extra spice
@@ -60,7 +60,7 @@ public class ItemUnitTurret extends NyfalisItemTurret{
     public Effect failedMakeFx = NyfalisFxs.failedMake;
     public TextureRegion bottomRegion, rotatorRegion, radarRegion;
     /*Hovering Shows the unit creation*/
-    public boolean hoverShowsSpawn = false, payloadExitShow = true, drawOnTarget = false, arrowShootPos = false, unitFactory = false;
+    public boolean hoverShowsSpawn = true, payloadExitShow = true, drawOnTarget = false, arrowShootPos = true, unitFactory = false;
     /*Aim at the rally point*/
     public boolean rallyAim = true;
     /*Aim for closest liquid*/
@@ -335,8 +335,16 @@ public class ItemUnitTurret extends NyfalisItemTurret{
         public void checkTier(){
             if(!hasAlternate && !boosterAlternate) return;
             boolean check =  modules.size > 0;
-            if(check != useAlternate) reloadCounter = 0;
+            if(check != useAlternate) tierChange();
             useAlternate = check;
+        }
+
+        public void tierChange(){
+            if(reloadCounter > 0){
+                failedMakeFx.create(x, y, rotation -90, Pal.plasticSmoke, null);
+                failedMakeSound.at(x, y, failedMakeSoundPitch, getFailedMakeSoundVolume);
+            }
+            reloadCounter = 0;
         }
 
         @Override
@@ -698,6 +706,17 @@ public class ItemUnitTurret extends NyfalisItemTurret{
                 }
                 Draw.rect(region, x, y);
             }
+
+            if(unitFactory){
+                float scl  = 0.75f;
+                TextureRegionDrawable[] icons = new TextureRegionDrawable[]{Icon.export, Icon.up, Icon.left, Icon.down, Icon.right};
+                Seq<TextureRegion> out = new Seq<>();
+                out.add(icons[direction + 1].getRegion());
+                out.add(command != null ? command.getIcon().getRegion() : getUnit() != null ? getUnit().defaultCommand.getIcon().getRegion() : Icon.cancel.getRegion());
+                out.add( cheatConfig != null ? cheatConfig.uiIcon : Core.atlas.find("error"));
+                renderConfigIndicator(this, scl, out);
+            } //todo draw to child when not a unit factory
+
         }
 
         @Override
@@ -848,7 +867,7 @@ public class ItemUnitTurret extends NyfalisItemTurret{
                     this::requestCheat,
                     selectionRows, selectionColumns
                 )).fillX();
-              }
+                }
 
         }
 
@@ -868,7 +887,7 @@ public class ItemUnitTurret extends NyfalisItemTurret{
 
             totalAmmo = 0;
             this.handleItem(this, cheatConfig);
-            this.reloadCounter = 0;
+            tierChange();
         }
 
         public boolean cheatingAlt() {

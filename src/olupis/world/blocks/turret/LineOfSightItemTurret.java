@@ -12,6 +12,8 @@ import mindustry.gen.*;
 import mindustry.ui.*;
 import olupis.world.*;
 
+import static olupis.world.NyfWorldFuckingHelper.renderConfigIndicator;
+
 public class LineOfSightItemTurret extends  NyfalisItemTurret{
     public boolean angleCheck = false;
     public LineOfSightItemTurret(String name){
@@ -88,10 +90,14 @@ public class LineOfSightItemTurret extends  NyfalisItemTurret{
 
         @Override
         public void read(Reads read, byte revision){
-            super.read(read);
-            if(version() >= 3){
-                ignoreLOS = read.bool();
-            }
+            super.read(read, revision);
+            if(revision >= 3) ignoreLOS = read.bool();
+        }
+
+        @Override
+        public void draw(){
+            super.draw();
+            renderConfigIndicator(this, ignoreLOS ? Icon.eyeSmall.getRegion(): Icon.line.getRegion() );
         }
     }
 }

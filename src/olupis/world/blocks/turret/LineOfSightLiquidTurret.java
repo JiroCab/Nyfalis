@@ -13,6 +13,8 @@ import olupis.world.*;
 import olupis.world.blocks.turret.LineOfSightItemTurret.*;
 import olupis.world.blocks.turret.NyfalisItemTurret.*;
 
+import static olupis.world.NyfWorldFuckingHelper.renderConfigIndicator;
+
 public class LineOfSightLiquidTurret extends  NyfalisLiquidTurret{
     public boolean angleCheck = false;
 
@@ -89,10 +91,16 @@ public class LineOfSightLiquidTurret extends  NyfalisLiquidTurret{
 
         @Override
         public void read(Reads read, byte revision){
-            super.read(read);
+            super.read(read, revision);
             if(version() >= 3){
                 ignoreLOS = read.bool();
             }
+        }
+
+        @Override
+        public void draw(){
+            super.draw();
+            renderConfigIndicator(this, ignoreLOS ? Icon.eyeSmall.getRegion(): Icon.line.getRegion() );
         }
     }
 }

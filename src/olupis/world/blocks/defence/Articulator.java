@@ -62,6 +62,7 @@ public class Articulator extends Block {
             if(link != null){
                 link.removeModule(this);
             }
+            if(this.front() == null) return;
             if(this.front().team != team()) return;
 
             link = this.front() instanceof Moduleable bld  ? bld : null;

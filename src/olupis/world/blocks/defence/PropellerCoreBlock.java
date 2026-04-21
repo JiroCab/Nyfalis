@@ -24,6 +24,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
+import olupis.world.*;
 
 import static mindustry.Vars.*;
 
@@ -409,6 +410,16 @@ public class PropellerCoreBlock extends CoreBlock  {
             else if (!this.shouldConsume()) return BlockStatus.noOutput;
             else if (!(this.efficiency <= 0.0F) && this.productionValid()) return Vars.state.tick / (double)30.0F % (double)1.0F < (double)this.efficiency ? BlockStatus.active : BlockStatus.noInput;
             else return BlockStatus.noInput;
+        }
+
+        @Override
+        public void draw(){
+            super.draw();
+
+            Seq<TextureRegion> out = new Seq<>();
+            out.add(icons[currentMode].getRegion());
+            out.add(currentMode().stats[0] ? command != null ? command.getIcon().getRegion() : spawns.defaultCommand.getIcon().getRegion() :  Core.atlas.find("error"));
+            NyfWorldFuckingHelper.renderConfigIndicator(this, out);
         }
     }
 }

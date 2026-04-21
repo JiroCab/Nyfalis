@@ -153,10 +153,16 @@ public class NyfalisFxs extends Fx {
                 Lines.circle(e.x, e.y, s.fin() * 7f);
             });
             randLenVectors(e.id, 5, e.finpow() * 17f, (x, y) -> Fill.rect(
-               e.x + x + Mathf.randomSeedRange((long) (e.id + e.rotation + 7), 3f * e.fin()),
-               e.y + y + Mathf.randomSeedRange((long) (e.id + e.rotation + 8), 3f * e.fin()),
-               1f, 2f, e.rotation + e.fin() * 50f * e.rotation
-           ));
+                e.x + x + Mathf.randomSeedRange((long) (e.id + e.rotation + 7), 3f * e.fin()),
+                e.y + y + Mathf.randomSeedRange((long) (e.id + e.rotation + 8), 3f * e.fin()),
+                1f, 2f, e.rotation + e.fin() * 50f * e.rotation
+            ));
+
+            randLenVectors(e.id, 10, e.finpow() * 15f, (x, y) -> Fill.circle(
+            e.x + x + Mathf.randomSeedRange((long) (e.id + e.rotation + 7), 3f * e.fin()),
+            e.y + y + Mathf.randomSeedRange((long) (e.id + e.rotation + 8), 3f * e.fin()),
+            e.fout() * 3f
+            ));
             Drawf.light(e.x, e.y, 20f, Pal.lightOrange, 0.6f * e.fout());
         }).layer(Layer.bullet),
 
