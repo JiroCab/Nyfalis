@@ -2891,7 +2891,7 @@ public class NyfalisBlocks {
         }};
 
         calyxVein = new GrowingVein("calyx-vein"){{
-            requirements(Category.logic, with(silicon, 5));
+            requirements(Category.logic, BuildVisibility.sandboxOnly, with(silicon, 5));
             heartlessBlends = alwaysUnlocked =true;
             drawTeamOverlay = false;
         }};
@@ -2901,13 +2901,13 @@ public class NyfalisBlocks {
         calyxHeart = new GrowingHeart("calyx-heart"){{
             size = 3;
             alwaysUnlocked =true;
-            requirements(Category.logic, with(silicon, 5));
+            requirements(Category.logic, BuildVisibility.sandboxOnly, with(silicon, 5));
         }};
 
         calyxBrain = new GrowingCore("calyx-brain"){{
             size = 3;
             alwaysUnlocked =true;
-            requirements(Category.logic, with(silicon, 5));
+            requirements(Category.logic, BuildVisibility.sandboxOnly, with(silicon, 5));
             unitType = gnat;
         }};
 

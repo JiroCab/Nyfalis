@@ -21,6 +21,7 @@ import java.io.*;
 import java.util.*;
 
 import static mindustry.Vars.*;
+import static olupis.NyfalisVars.nyfRule;
 
 /** Yes, this class has race conditions and possibly memory leaks, cry about it */
 public class EnvUpdater implements AsyncProcess{
@@ -77,7 +78,9 @@ public class EnvUpdater implements AsyncProcess{
 
         // cleanup & setup
         if(floor instanceof UpdatingEnvironment e){
-            if(!e.isValid(lookup))
+            if(e.replacement() == null){
+                Log.err(e +  "'s floor is null!");
+            }else if(!e.isValid(lookup))
                 lookup.setFloorNet(e.replacement(), overlay);
             else struct.setFloorIndex(e.replacement());
         }
@@ -161,85 +164,96 @@ public class EnvUpdater implements AsyncProcess{
             instance.infested = state;
         }
 
-        if(reCalc){
-            //todo: optimize this shit, something something rushie makes thing exist then improve later
-            rushieIsTooLazyToNameThisProperlly = 0;
-            spearTiles.clear();
-
-            Seq<Building> cores = new Seq<>(), hearts = new Seq<>();
-            Groups.build.each( b ->{
-                if (b instanceof CoreBuild && !(b instanceof Calyxian)) cores.add(b);
-                if(b instanceof Calyxian cal && cal.isHeart()) hearts.add(b);
-            });
-
-            if(hearts.size < 1) return;
-
-            Seq<Tile> worldTile = new Seq<>();
-            for(Tile tile : world.tiles) worldTile.addUnique(tile);
-            worldTile.removeAll(t -> t.solid() || t.floor().hasLiquids);
-            Seq<Tile> out= new Seq<>(), outP = new Seq<>();
-
-            for(Building building : hearts){
-                out.clear();
-                outP.clear();
-
-
-                //Guaranteed move towards core fuckery
-                @Nullable Building  core = cores.random();
-                if(core != null && core.tileOn() != null)out.add(core.tileOn());
-
-                //Random aesthetic spreading
-
-                outP= worldTile.copy();
-                for(int i = 0; i < 3; i++){
-                    Tile t = worldTile.random();
-                    out.add(t);
-                    outP.remove(t);
-                }
-
-                Tile uwu = building.tileOn();
-
-                if(Mathf.randomSeed(uwu.pos(), 0, 1) == 0){
-                    int sizes = 2;
-                    if(uwu.build != null) sizes += uwu.build.block.size;
-
-                    uwu = world.tiles.get(
-                        Mathf.randomSeed(uwu.pos(), -sizes, sizes) + uwu.x,
-                        Mathf.randomSeed(uwu.pos(), -sizes, sizes) +  uwu.y
-                    );
-
-                    if(uwu == null) uwu = building.tileOn();
-                }
-
-
-                Seq<Tile> owo;
-                Seq<Tile> qmq = new Seq<>();
-                for(Tile meow : out){
-                    owo = Astar.pathfind(uwu, meow, t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
-
-                    for(Tile tile : owo){
-                        spearTiles.put(tile, spearTiles.getOrDefault(tile, 0f) + 4);
-                        qmq.clear();
-
-                        //TODO: is this actually in line for longish small veins
-                        for(int iy = -spearSpread; iy < spearSpread; iy++){
-                            for(int ix = -spearSpread; ix < spearSpread; ix++){
-                                Tile t = world.tiles.get(tile.x + ix, tile.y + iy);
-                                if(t != null)qmq.addUnique(t);
-                            }
-                        }
-
-                        for(Tile idk : qmq){
-                            spearTiles.put(idk, spearTiles.getOrDefault(idk, 0f) + 0.15f);
-                        }
-                    }
-                }
-
-            }
-
-//            Log.err(debug.toString());
+        if(reCalc && nyfRule.calyxSpearDepth >= 0 && nyfRule.calyxSpearFactor > 0){
+            processSpear();
         }
 
+    }
+
+    public void processSpear(){
+
+        //todo: optimize this shit, something something rushie makes thing exist then improve later
+        rushieIsTooLazyToNameThisProperlly = 0;
+        spearTiles.clear();
+
+        Seq<Building> cores = new Seq<>(), hearts = new Seq<>();
+        Groups.build.each( b ->{
+            if (b instanceof CoreBuild && !(b instanceof Calyxian)) cores.add(b);
+            if(b instanceof Calyxian cal && cal.isHeart()) hearts.add(b);
+        });
+
+        if(hearts.size < 1) return;
+
+        Seq<Tile> worldTile = new Seq<>();
+        for(Tile tile : world.tiles) worldTile.addUnique(tile);
+        worldTile.removeAll(t -> t.solid() || t.floor().hasLiquids);
+        Seq<Tile> out= new Seq<>(), outP = new Seq<>();
+
+        for(Building heart : hearts){
+            out.clear();
+            outP.clear();
+
+
+            //Guaranteed move towards core fuckery
+            @Nullable Building  core = cores.random();
+            if(core != null && core.tileOn() != null)out.add(core.tileOn());
+
+            //Random aesthetic spreading
+
+            outP= worldTile.copy();
+            for(int i = 0; i < 3; i++){
+                Tile t = worldTile.random();
+                out.add(t);
+                outP.remove(t);
+            }
+
+            Seq<Tile> owo, qmq = new Seq<>();
+
+            for(Tile meow : out){
+
+                Tile[] temps = new Tile[]{meow, heart.tileOn()};
+                if(Mathf.randomSeed(meow.pos(), 0, 1) == 0){
+                    int sizes = 2;
+                    if(meow.build != null) sizes += meow.build.block.size;
+
+                    temps[0] = world.tiles.get(
+                    Mathf.randomSeed(meow.pos(), -sizes, sizes) + meow.x,
+                    Mathf.randomSeed(meow.pos(), -sizes, sizes) +  meow.y
+                    );
+                    if(temps[0] == null) temps[0] = meow;
+                }
+
+                if(heart instanceof  Calyxian cc){
+                    temps[1] = cc.module().graph.all.sort(b -> temps[1].dst(b)).first().tileOn();
+                }
+
+                owo = Astar.pathfind(temps[1], temps[0], t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
+
+                int[] depth = {0};
+                for(Tile tile : owo){
+                    if(depth[0] > nyfRule.calyxSpearDepth) continue;
+                    else  depth[0]++;
+
+                    spearTiles.put(tile, spearTiles.getOrDefault(tile, 0f) + 4);
+                    qmq.clear();
+
+                    //TODO: is this actually in line for longish small veins
+                    for(int iy = -spearSpread; iy < spearSpread; iy++){
+                        for(int ix = -spearSpread; ix < spearSpread; ix++){
+                            Tile t = world.tiles.get(tile.x + ix, tile.y + iy);
+                            if(t != null)qmq.addUnique(t);
+                        }
+                    }
+
+                    for(Tile idk : qmq){
+                        spearTiles.put(idk, spearTiles.getOrDefault(idk, 0f) + 0.15f);
+                    }
+                }
+            }
+
+        }
+
+//            Log.err(debug.toString());
     }
 
     @Override

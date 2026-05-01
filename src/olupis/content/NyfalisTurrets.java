@@ -1977,7 +1977,7 @@ public class NyfalisTurrets {
 
     public static void LoadSpecialTurrets(){
         calyxFruit = new GrowingTurret("calyx-fruit"){{
-            requirements(Category.logic, with(silicon, 5));
+            requirements(Category.logic, BuildVisibility.sandboxOnly, with(silicon, 5));
             shootType = new BasicBulletType(3.5f, 18){{
                 width = 9f;
                 height = 12f;
