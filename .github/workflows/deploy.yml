@@ -41,7 +41,7 @@ jobs:
           file: mod.json
           field: subtitle
           value:  | 
-            "v${{steps.version.outputs.prop}} | ${{steps.short-sha.outputs.sha}}, Yet another planet mod"
+            v${{steps.version.outputs.prop}} | ${{steps.short-sha.outputs.sha}}, Yet another planet mod
 
 
       - name: Convert mod.json back to mod.hjson
