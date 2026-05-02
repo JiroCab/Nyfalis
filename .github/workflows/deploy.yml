@@ -21,6 +21,31 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Setup Hjson
+        run: npm install hjson -g
+      - name: Convert mod.hjson to mod.json
+        run: hjson -j mod.hjson > mod.json
+      - name: Get Version
+        id: version
+        uses: notiz-dev/github-action-json-property@release
+        with:
+          path: 'mod.json'
+          prop_path: 'version'
+      - name: Get & shorten SHA
+        uses: benjlevesque/short-sha@v3.0
+        id: short-sha
+
+      - name: Override Subtitle w/ Version + Commit
+        uses: jossef/action-set-json-field@v2.1
+        with:
+          file: mod.json
+          field: subtitle
+          value: "Yet another planet mod, v${{steps.version.outputs.prop}} - [${{steps.short-sha.outputs.sha}}]"
+
+
+      - name: Convert mod.json back to mod.hjson
+        run: hjson mod.json > mod.hjson
+
       - name: Build with Gradle
         run: ./gradlew deploy
 
