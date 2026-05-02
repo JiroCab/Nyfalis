@@ -40,7 +40,7 @@ jobs:
         with:
           file: mod.json
           field: subtitle
-          value: "Yet another planet mod, v${{steps.version.outputs.prop}} - [${{steps.short-sha.outputs.sha}}]"
+          value: "\"Yet another planet mod, v${{steps.version.outputs.prop}} - [${{steps.short-sha.outputs.sha}}]\""
 
 
       - name: Convert mod.json back to mod.hjson
