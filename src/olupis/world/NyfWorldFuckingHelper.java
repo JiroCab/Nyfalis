@@ -118,7 +118,7 @@ public class NyfWorldFuckingHelper{
             //idk i cant get it to work so todo
             Time.run( 20f, () -> {
                 Building build2 = state.rules.defaultTeam.core();
-                Call.effect(Fx.impactReactorExplosion, build2.tile.centerX(), build2.tile.centerY(), 0, Color.white);
+                Call.effect(Fx.impactReactorExplosion, build.tile.centerX(), build.tile.centerY(), 0, Color.white);
 
                 //skil issh
                 build2.items.clear();
@@ -211,7 +211,7 @@ public class NyfWorldFuckingHelper{
         }
     }
 
-    public static void  renderConfigIndicator(Building build, float scale, Seq<TextureRegion> seq){
+    public static void  renderConfigIndicator(Building build, float scaleIn, Seq<TextureRegion> seq){
         if(turretConfigIndicator == 0 || build.team !=  player.team()) return;
         float pz = Draw.z();
 
@@ -229,6 +229,7 @@ public class NyfWorldFuckingHelper{
         float bs = (block.size * 8) / 2.0F;
         float brcx = build.x + (bs * xm) + ( 8f * (multiplier /2 * -xm));
         float brcy = build.y + (bs * ym) + ( 8f * (multiplier /2* -ym));
+        float scale = scaleIn * ((Vars.mobile || testMobile) ? 0.8f : 1f);
 
 
         Draw.z(71.0F);

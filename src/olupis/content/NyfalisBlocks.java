@@ -1959,6 +1959,7 @@ public class NyfalisBlocks {
             hasShadow = rebuildable = false;
             floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
+            buildTime = Time.toSeconds;
             size = 1;
             health = 100;
             armor = 2;
@@ -1990,6 +1991,7 @@ public class NyfalisBlocks {
             hasShadow = rebuildable = false;
             floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
+            buildTime = Time.toSeconds;
             size = 1;
             health = 60;
             armor = 2;
@@ -2020,6 +2022,7 @@ public class NyfalisBlocks {
             hasShadow = rebuildable = false;
             floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
+            buildTime = Time.toSeconds;
             size = 1;
             shots = 1;
             health = 40;
@@ -2047,6 +2050,7 @@ public class NyfalisBlocks {
             hasShadow = rebuildable = false;
             floating = placeableLiquid = alwaysReplace = true;
             instantDeconstruct = true; //statra nerf
+            buildTime = Time.toSeconds;
             size = 1;
             health = 20;
             shots = 1;
