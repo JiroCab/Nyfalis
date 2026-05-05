@@ -23,9 +23,11 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.*;
 import olupis.content.*;
+import olupis.world.EnvUpdater.*;
 import olupis.world.blocks.calyx.*;
 import olupis.world.blocks.environment.*;
 
+import static arc.Core.camera;
 import static mindustry.Vars.*;
 import static olupis.NyfalisVars.*;
 import static olupis.content.NyfalisBlocks.*;
@@ -260,21 +262,24 @@ public class NyfWorldFuckingHelper{
 
     //endregion
     //region == Ambience Helper ==
+
     public static void allUpdaters(){
         if(state.isPaused() || state.isEditor() || ui.editor.isShown())
             return;
 
+        if(worldFuckeryTimer <= 0) worldFuckeryTimer = 240;
+        worldFuckeryTimer--;
+
         transgenderTreeLeaves();
         updateFloodPlane();
         updateFlows();
+        updateCalyxTiles();
     }
 
     public static void restUpdaters(){
         trees = new Seq<>();
         flows = new Seq<>();
 
-        updatesTree = 3;
-        updatesFlows = 0;
         floodPlaneLevel = 0.30f;
     }
 
@@ -298,13 +303,11 @@ public class NyfWorldFuckingHelper{
         }
     }
 
-    static int updatesTree = 0;
     static Seq<Tile> trees  = new Seq<>();
     public static void transgenderTreeLeaves(){
         if(!renderer.enableEffects || !Mathf.randomBoolean(0.1f)) return;
 
-        if(--updatesTree <= 0){
-            updatesTree = 120;
+        if(worldFuckeryTimer % 120 == 0){
 
             for(int i = 0; i < world.width() * world.height(); i++)
                 if(world.tiles.geti(i).block() instanceof TrasngenderTreeBlock tg && tg.leaf && world.tiles.geti(i).staticDarkness() < 5)
@@ -319,12 +322,10 @@ public class NyfWorldFuckingHelper{
     }
 
     public static Seq<IntTile> flows = new Seq<>();
-    static int updatesFlows = 0;
     public static void updateFlows(){
         if(!renderer.enableEffects) return;
 
-        if(--updatesFlows <= 0){
-            updatesFlows = 240;
+        if(worldFuckeryTimer % 240 == 0){
 
             for(int i = 0; i < world.width() * world.height(); i++){
                 Tile tile = world.tiles.geti(i);
@@ -436,6 +437,16 @@ public class NyfWorldFuckingHelper{
 
     public static TextureRegionDrawable calyxSpeciesICon(int i){
         return  Seq.with(Icon.cancel, Icon.tree, Icon.terrain).get(i);
+    }
+
+    public static void updateCalyxTiles(){
+        if(!(worldFuckeryTimer % 60 == 0))return;
+        camera.bounds(Tmp.r1);
+        EnvUpdater.eachInfested(Tmp.r1.x,  Tmp.r1.y, Math.max(Tmp.r1.width, Tmp.r1.height), 0, t -> {
+            if(t.floor() instanceof UpdatingEnvironment e) e.lazyEnv(t);
+            if(t.block() instanceof UpdatingEnvironment e) e.lazyEnv(t);
+            if(t.overlay() instanceof UpdatingEnvironment e) e.lazyEnv(t);
+        });
     }
     //endregion
 }

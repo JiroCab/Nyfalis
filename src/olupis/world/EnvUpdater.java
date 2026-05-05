@@ -1,16 +1,19 @@
 package olupis.world;
 
 import arc.*;
+import arc.func.*;
 import arc.math.*;
 import arc.struct.*;
-import arc.struct.Bits;
 import arc.util.*;
 import arc.util.TaskQueue;
+import mindustry.*;
 import mindustry.ai.*;
 import mindustry.async.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.input.*;
 import mindustry.io.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
@@ -36,20 +39,22 @@ public class EnvUpdater implements AsyncProcess{
     private static short[] props = new short[]{};
 
     static boolean ready;
-    static int space, wsize;
+    public static int space, wsize;
     static float wwidth, wheight;
     static double lastTick;
 
     // amount of layers to keep track of, 3 for vanilla (floor, overlay, block)
     static final int blockLayers = 3;
 
-    //reduces the cost of checking if a floor is alive by moving into a spread tick + laziness instead of per game tick
-    public static Bits aliveOverlays, aliveFloors;
+
     // Tiles with (0.5 * n)  extra chance, usually the furthest to give vein growth more outward movement
-    public static HashMap<Tile, Float> spearTiles; //TODO: maybe something not a hash map
+    public static short[]spearTiles; // %, actually value is  n * 0.01 (max of 327.67)
     public static float lazyTickPeriod = 5f;
-    static int rushieIsTooLazyToNameThisProperlly;
+    static int spearTimer;
     public static int spearSpread = 2;
+    public static Seq<Tile> spearQueue;
+    //Lazy way of checking infested blocks
+
 
 
     public static void load(){
@@ -112,11 +117,8 @@ public class EnvUpdater implements AsyncProcess{
         instances = new EnvStruct[wsize];
         props = new short[content.blocks().size];
 
-        aliveFloors = new Bits(wsize);
-        aliveOverlays = new Bits(wsize);
-        spearTiles = new HashMap<>();
-
-        rushieIsTooLazyToNameThisProperlly = 0;
+        spearTiles = new short[wsize];
+        spearTimer = Integer.MAX_VALUE;
 
         for(int i = 0; i < wsize; i++)
             instances[i] = getStruct(i);
@@ -128,53 +130,87 @@ public class EnvUpdater implements AsyncProcess{
 
     @Override
     public void process(){
+        if(Core.input.keyDown(Binding.control)) return;
         boolean
             full = state.tick - lastTick > lazyTickPeriod,
-            reCalc = rushieIsTooLazyToNameThisProperlly >= 120
+            reCalc = spearTimer >= 120
         ;
 
         if(full){
             lastTick = state.tick;
-            rushieIsTooLazyToNameThisProperlly++;
+            spearTimer++;
         }
+        if(nyfRule.calyxSpreading){
+            for(int i = 0; i < wsize; i++){
+                Tile lookup = world.tiles.geti(i);
+                EnvStruct instance = instances[i];
 
-        for(int i = 0; i < wsize; i++){
-            Tile lookup = world.tiles.geti(i);
-            EnvStruct instance = instances[i];
+                boolean state = false;
+                if(lookup.floor() instanceof UpdatingEnvironment e){
+                    e.updateEnv(lookup, instance);
+                    state = true;
+                }
 
-            boolean state = false;
-            if(lookup.floor() instanceof UpdatingEnvironment e){
-                if(full) e.lazyEnv(lookup);
-                e.updateEnv(lookup, instance);
-                state = true;
+                if(lookup.overlay() instanceof UpdatingEnvironment e){
+                    e.updateEnv(lookup, instance);
+                    state = true;
+                }
+
+                if(lookup.block() instanceof UpdatingEnvironment e){
+                    e.updateEnv(lookup, instance);
+                    state = true;
+                }
+
+                instance.infested = state;
             }
 
-            if(lookup.overlay() instanceof UpdatingEnvironment e){
-                if(full)
-                    e.lazyEnv(lookup);
-                e.updateEnv(lookup, instance);
-                state = true;
+            if( nyfRule.calyxSpearFactor > 0){
+                if(reCalc)calculateSpear();
+                else if(spearTimer % 5 == 0) processSpear();
             }
-
-            if(lookup.block() instanceof UpdatingEnvironment e){
-                e.updateEnv(lookup, instance);
-                state = true;
+        } else {
+            //Cut down version just for infested checks why? idk debugging
+            for(int i = 0; i < wsize; i++){
+                Tile lookup = world.tiles.geti(i);
+                EnvStruct instance = instances[i];
+                if(lookup.floor() instanceof UpdatingEnvironment || lookup.overlay() instanceof UpdatingEnvironment || lookup.block() instanceof UpdatingEnvironment){
+                    instance.infested = true;
+                }
             }
-
-            instance.infested = state;
         }
-
-        if(reCalc && nyfRule.calyxSpearDepth >= 0 && nyfRule.calyxSpearFactor > 0){
-            processSpear();
-        }
-
     }
 
+    //per tick
     public void processSpear(){
+        if(spearQueue == null || spearQueue.size < 2) return;
+
+        Seq<Tile> qmq = new Seq<>(), omo;
+        Tile in = spearQueue.pop(), out = spearQueue.pop();
+        omo = Astar.pathfind(in, out, t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
+
+        for(Tile tile : omo){
+
+            spearTiles[tile.array()] += 400;
+
+            qmq.clear();
+
+            //TODO: is this actually in line for longish smanywall veins
+            for(int iy = -spearSpread; iy < spearSpread; iy++){
+                for(int ix = -spearSpread; ix < spearSpread; ix++){
+                    Tile t = world.tiles.get(tile.x + ix, tile.y + iy);
+                    if(t != null) qmq.addUnique(t);
+                }
+            }
+
+            for(Tile idk : qmq) spearTiles[idk.array()] += 15;
+        }
+    }
+
+    public void calculateSpear(){
 
         //todo: optimize this shit, something something rushie makes thing exist then improve later
-        rushieIsTooLazyToNameThisProperlly = 0;
-        spearTiles.clear();
+        spearTimer = 0;
+        spearTiles = new short[wsize];
 
         Seq<Building> cores = new Seq<>(), hearts = new Seq<>();
         Groups.build.each( b ->{
@@ -183,15 +219,13 @@ public class EnvUpdater implements AsyncProcess{
         });
 
         if(hearts.size < 1) return;
+        spearQueue = new Seq<>();
 
-        Seq<Tile> worldTile = new Seq<>();
-        for(Tile tile : world.tiles) worldTile.addUnique(tile);
-        worldTile.removeAll(t -> t.solid() || t.floor().hasLiquids);
-        Seq<Tile> out= new Seq<>(), outP = new Seq<>();
+        Seq<Tile> out= new Seq<>();
 
-        for(Building heart : hearts){
+        for(int h = 0; h < hearts.size; h++){
+            Building heart = hearts.get(h);
             out.clear();
-            outP.clear();
 
 
             //Guaranteed move towards core fuckery
@@ -199,18 +233,24 @@ public class EnvUpdater implements AsyncProcess{
             if(core != null && core.tileOn() != null)out.add(core.tileOn());
 
             //Random aesthetic spreading
-
-            outP= worldTile.copy();
             for(int i = 0; i < 3; i++){
-                Tile t = worldTile.random();
-                out.add(t);
-                outP.remove(t);
+                int fx = Mathf.random(0, world.width());
+                int fy = Mathf.random(0, world.height());
+
+                Seq<Tile> set = new Seq<>(false);
+                World.raycast(heart.tileX(), heart.tileY(), fx, fy, (x, y ) ->{
+                    Tile tile = Vars.world.tile(x, y);
+                    if(tile != null && (!tile.solid() || tile.build != null) && !tile.floor().isLiquid) set.add(tile);
+
+                    return false;
+                });
+
+                //try again
+                if(!set.any()) i--;
+                out.add(set.random());
             }
 
-            Seq<Tile> owo, qmq = new Seq<>();
-
             for(Tile meow : out){
-
                 Tile[] temps = new Tile[]{meow, heart.tileOn()};
                 if(Mathf.randomSeed(meow.pos(), 0, 1) == 0){
                     int sizes = 2;
@@ -227,33 +267,21 @@ public class EnvUpdater implements AsyncProcess{
                     temps[1] = cc.module().graph.all.sort(b -> temps[1].dst(b)).first().tileOn();
                 }
 
-                owo = Astar.pathfind(temps[1], temps[0], t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
+                spearQueue.add(temps);
 
-                int[] depth = {0};
-                for(Tile tile : owo){
-                    if(depth[0] > nyfRule.calyxSpearDepth) continue;
-                    else  depth[0]++;
-
-                    spearTiles.put(tile, spearTiles.getOrDefault(tile, 0f) + 4);
-                    qmq.clear();
-
-                    //TODO: is this actually in line for longish small veins
-                    for(int iy = -spearSpread; iy < spearSpread; iy++){
-                        for(int ix = -spearSpread; ix < spearSpread; ix++){
-                            Tile t = world.tiles.get(tile.x + ix, tile.y + iy);
-                            if(t != null)qmq.addUnique(t);
-                        }
-                    }
-
-                    for(Tile idk : qmq){
-                        spearTiles.put(idk, spearTiles.getOrDefault(idk, 0f) + 0.15f);
-                    }
-                }
             }
-
         }
-
+        Log.err(spearQueue.toString());
 //            Log.err(debug.toString());
+    }
+
+    public static float getSpearChance(int tile){
+        if(spearTiles == null || spearTiles.length == 0) return 0;
+        return spearTiles[tile] * 0.01f;
+    }
+
+    public static void spearDebugCalc(){
+        if(ready) spearTimer = Integer.MAX_VALUE;
     }
 
     @Override
@@ -289,9 +317,9 @@ public class EnvUpdater implements AsyncProcess{
         instances = null;
         props = null;
 
-        aliveFloors = new Bits(wsize);
-        aliveOverlays = new Bits(wsize);
-        spearTiles = new HashMap<>();
+        spearTiles = new short[wsize];
+        spearTimer = 0;
+        lastTick = state.tick;
 
         ready = false;
     }
@@ -325,6 +353,15 @@ public class EnvUpdater implements AsyncProcess{
         }
 
         return null;
+    }
+
+    public static void eachInfested(float x, float y, float radius, float offset, Cons<Tile> run){
+        for(float dx = Math.max(x - radius, 0); dx <= Math.min(x + radius, wwidth); dx += tilesize){
+            for(float dy = Math.max(y - radius, 0); dy <= Math.min(y + radius, wheight); dy += tilesize){
+                Tile ret = world.tileWorld(dx, dy);
+                if(ret != null && ret.within(x, y, radius) && (offset <= 0f || !ret.within(x, y, offset)) && instances[ret.array()].infested) run.get(ret);
+            }
+        }
     }
 
     // using the queue in this method is unnecessary, all this stuff is done on the main thread anyway
@@ -542,15 +579,5 @@ public class EnvUpdater implements AsyncProcess{
         default boolean isValid(Tile tile){ return false; }
 
         default Block replacement(){ return null; }
-    }
-
-    public static double lastTick(){
-        //debuging
-        return lastTick;
-    }
-
-    public static double lazy(){
-        //debuging
-        return rushieIsTooLazyToNameThisProperlly;
     }
 }

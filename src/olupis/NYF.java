@@ -11,6 +11,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
 import olupis.world.*;
+import olupis.world.EnvUpdater.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 import java.text.*;
@@ -85,12 +86,13 @@ public class NYF{
 
     public static void sss (){
         DecimalFormat decFor = new DecimalFormat("#.##");
-        for(Entry<Tile, Float> entry : EnvUpdater.spearTiles.entrySet()){
-            Tile tile = entry.getKey();
-            String i = decFor.format((entry.getValue()));
 
+        for(int i = 0; i < EnvUpdater.spearTiles.length; i++){
+            if(EnvUpdater.spearTiles[i] <= 0) continue;
+            Tile tile = Vars.world.tiles.geti(i);
+            String out = decFor.format(EnvUpdater.spearTiles[i]);
 
-            NyfalisFxs.debugEffect.at(tile.x * 8, tile.y * 8, 0, NyfalisColors.acidRainColour, i);
+            NyfalisFxs.debugEffect.at(tile.x * 8, tile.y * 8, 0, NyfalisColors.acidRainColour, out);
         }
     }
 

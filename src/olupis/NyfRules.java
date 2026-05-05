@@ -18,8 +18,6 @@ public class NyfRules{
     public  float calyxSproutFactor = 1;
     /*which team the Calyx "building" team is on*/
     public  Team calyxTeam = NyfUnitTeamMapper.calyxTeam;
-    /*Determines how many tiles deep spear tiles will go for peformance reasons*/
-    public int calyxSpearDepth = 50;
 
 
     public  boolean damagingWeather = true;
@@ -32,6 +30,5 @@ public class NyfRules{
         calyxSpreadingFactor = tags.getFloat("nyf-calyxspreadingfactor", 1);
         calyxTeam = tags.containsKey("nyf-calyxteam") ? Team.get(tags.getInt("nyf-calyxteam")) : NyfUnitTeamMapper.calyxTeam;
         calyxSpearFactor = tags.getFloat("nyf-calyxspearfactor", 1);
-        calyxSpearDepth = tags.getInt("nyf-calyxspeardepth", 50);
     }
 }

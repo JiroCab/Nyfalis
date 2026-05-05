@@ -20,7 +20,7 @@ import olupis.world.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 import static mindustry.Vars.*;
-import static olupis.NyfalisVars.nyfRule;
+import static olupis.NyfalisVars.*;
 import static olupis.world.EnvUpdater.*;
 import static olupis.world.NyfWorldFuckingHelper.spreadLevels;
 
@@ -205,16 +205,16 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
         boolean
             growth =
                 isAlive(tile)
-                && Mathf.chance((growChance * nyfRule.calyxGrowthFactor) + (spearTiles.getOrDefault(tile, 0f) * spearGrowthBonus * nyfRule.calyxSpearFactor * 0.25f) ) ,
+                && Mathf.chance((growChance * nyfRule.calyxGrowthFactor) + (getSpearChance(tile.array()) * spearGrowthBonus * nyfRule.calyxSpearFactor * 0.25f) ) ,
             spreads=
                 isAlive(tile) && nyfRule.calyxSpreading
                 && Mathf.chance(
                     (spreadChance * nyfRule.calyxSpreadingFactor) +
-                    ((spearTiles.getOrDefault(tile, 0f) * spearSpreadBonus * nyfRule.calyxSpearFactor * 0.25f))),
+                    (getSpearChance(tile.array()) * spearSpreadBonus * nyfRule.calyxSpearFactor * 0.25f)),
             sprout = sprouts.any()
                 && (tile.block() == Blocks.air || (tile.block().alwaysReplace) || (tile.block().unitMoveBreakable))
                 && isAlive(tile) &&  adjacentCalyxian(tile)
-                && Mathf.chance((sproutChance * nyfRule.calyxSproutFactor) + (spearTiles.getOrDefault(tile, 0f) * spearSproutBonus * nyfRule.calyxSpearFactor* 0.25f));
+                && Mathf.chance((sproutChance * nyfRule.calyxSproutFactor) + (getSpearChance(tile.array()) * spearSproutBonus * nyfRule.calyxSpearFactor* 0.25f));
 
         if( (growth || spreads || sprout) && i.getIncrementFloor() >= spreadTries){
             i.clearFloorVal();
@@ -275,6 +275,7 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
                     }
 
                     if(spreadSound != null) tasks.post(() -> Call.soundAt(spreadSound, tile.worldx(), tile.worldy(), spreadVolume, 1f));
+                    tasks.post(() -> lazyEnv(tile));
                     tile.setBlock(out.random(), nyfRule.calyxTeam, 0);
                 }
             }

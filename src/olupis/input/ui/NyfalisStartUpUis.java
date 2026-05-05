@@ -27,6 +27,7 @@ import mindustry.ui.fragments.*;
 import olupis.*;
 import olupis.content.*;
 import olupis.input.*;
+import olupis.world.*;
 import olupis.world.entities.packets.*;
 
 import java.util.*;
@@ -207,7 +208,10 @@ public class NyfalisStartUpUis {
                 z.button("W", Icon.waves, Styles.squareTogglet, waveInfo::show).width(77.5f).height(40f).checked(false).tooltip("@editor.waves");
                 z.row();
                 z.button("G", Icon.grid, Styles.squareTogglet, NYF::gphh).width(77.5f).height(40f).checked(false).tooltip("highlight graph of calyx network under player");
-                z.button("S", Icon.commandAttack, Styles.squareTogglet, NYF::sss).width(77.5f).height(40f).checked(false).tooltip("highlight spear tiles");
+                z.button("S", Icon.commandAttack, Styles.squareTogglet, () -> {
+                    if(Core.input.keyDown(Binding.boost) && Core.input.keyDown(Binding.control)) EnvUpdater.spearDebugCalc();
+                    NYF.sss();
+                }).width(77.5f).height(40f).checked(false).tooltip("highlight spear tiles");
 
             }).width(155f).growY().margin(12f).marginBottom(0).marginTop(0).checked(false).row();
             if(mobile || testMobile){
@@ -331,7 +335,6 @@ public class NyfalisStartUpUis {
             tagCheck(in, rules, "@rules.nyf-calyxspreading", b -> nyfRule.calyxSpreading = b, () -> nyfRule.calyxSpreading);
             tagNumber(in, rules, "@rules.nyf-calyxspreadingfactor", f -> nyfRule.calyxSpreadingFactor = f, () -> nyfRule.calyxSpreadingFactor );
             tagNumber(in, rules, "@rules.nyf-calyxspearfactor", f -> nyfRule.calyxSpearFactor = f, () -> nyfRule.calyxSpearFactor );
-            tagNumber(in, rules, "@rules.nyf-calyxspeardepth", f -> nyfRule.calyxSpearDepth = Math.round(f), () -> nyfRule.calyxSpearDepth );
             tagNumber(in, rules, "@rules.nyf-calyxgrowthfactor", f -> nyfRule.calyxGrowthFactor = f, () -> nyfRule.calyxGrowthFactor );
             tagNumber(in, rules, "@rules.nyf-calyxsproutfactor", f -> nyfRule.calyxSproutFactor = f, () -> nyfRule.calyxSproutFactor );
 

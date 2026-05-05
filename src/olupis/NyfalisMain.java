@@ -79,8 +79,7 @@ public class NyfalisMain extends Mod{
 
         Events.on(WorldLoadEvent.class, l ->{
             /*Delayed since custom games, for some reason needs it*/
-            nyfRule = new NyfRules();
-            nyfRule.load(state.rules.tags);
+            NyfalisVars.reset();
             Time.run(0.5f * Time.toSeconds, NyfalisMain::sandBoxCheck);
             nyfalianPlanet = false;
                 if(isNyfalianPlanet(state.getPlanet())) nyfalianPlanet = true;
@@ -90,7 +89,6 @@ public class NyfalisMain extends Mod{
                     break;
                 }
             }
-            NyfWorldFuckingHelper.restUpdaters();
 
             //Clean up of the old system of banning stuff
             NyfalisPlanets.unlockPlanets();
@@ -245,6 +243,7 @@ public class NyfalisMain extends Mod{
 
     public static void globalLoadEvent(){
         NyfalisUnits.GenerateWeapons();
+        NyfalisVars.load();
 
         for(SectorPreset sector : content.sectors()){
             if(sector.planet == nyfalis){

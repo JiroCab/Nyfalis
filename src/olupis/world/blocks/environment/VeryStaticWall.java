@@ -99,7 +99,8 @@ public class VeryStaticWall extends StaticWall{
     boolean eq(int rx, int ry, int s){
         for(int fx = 0; fx <= s; fx++){
             for(int fy = 0; fy <= s; fy++){
-                if(world.tile(rx + fx, ry + fy).block() != this )return false;
+                @Nullable Tile owo = world.tile(rx + fx, ry + fy);
+                if(owo == null || owo.block() != this )return false;
             }
         }
         return true;
