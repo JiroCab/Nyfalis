@@ -6,7 +6,8 @@ sawblades -> ota (custom recorded and made :3)
 warning sound -> ota
 funi rainbow music -> https://youtu.be/6-8E4Nirh9s (Caramella Girls)
 
-pvc-rocket1 -> https://freesound.org/people/bowlingballout/sounds/151713/
-pvc-rocket2 -> https://freesound.org/people/bowlingballout/sounds/151714/
-microwave-beep -> https://freesound.org/people/vestibule-door/sounds/668982/
+pvc-rocket1 -> https://freesound.org/s/151713/
+pvc-rocket2 -> https://freesound.org/s/151714/
+microwave-beep -> https://freesound.org/s/668982/
 legacy-respawn -> (legacy Mindustry sound) https://github.com/Anuken/Mindustry/blob/26b66f9bdbd3a77b32f10f3cb350a9a737d5f012/core/assets/sounds/respawn.ogg
+dunk1 -> https://freesound.org/s/511644/

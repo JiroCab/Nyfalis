@@ -528,7 +528,22 @@ public class NyfalisFxs extends Fx {
                 Drawf.square(e.x + x, e.y + y, 0);
                 lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
             });
-        })
+        }),
+
+        burstSplash = new Effect(110, e -> {
+            float length = 10f + e.finpow() * 30f;
+            rand.setSeed(e.id);
+            for(int i = 0; i < 13; i++){
+                v.trns(rand.random(360f), rand.random(length));
+                float sizer = rand.random(0.6f, 2.1f);
+
+                e.scaled(e.lifetime * rand.random(0.5f, 1f), b -> {
+                    color(Pal.water, b.fslope() * 0.93f);
+
+                    Fill.circle(e.x + v.x, e.y + v.y, sizer + b.fslope() * 1.2f);
+                });
+            }
+        }).startDelay(5f)
 
 
     ;

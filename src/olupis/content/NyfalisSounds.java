@@ -38,7 +38,8 @@ public class NyfalisSounds {
         rainbow1 = new Sound(),
         rainbow2 = new Sound(),
 
-        mossSpread = new Sound()
+        mossSpread = new Sound(),
+        dunk = new Sound();
     ;
     public static Seq<Sound> spaces;
 
@@ -66,6 +67,8 @@ public class NyfalisSounds {
         shootPVC2 = tree.loadSound("pvc-rocket2");
         shootMicrowave =  tree.loadSound("microwave-beep");
         shootSpawn =  tree.loadSound("legacy-respawn");
+
+        dunk =  tree.loadSound("dunk1");
 
         spaces = Seq.with(space, space2);
     }

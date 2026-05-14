@@ -280,11 +280,16 @@ public class NyfWorldFuckingHelper{
         trees = new Seq<>();
         flows = new Seq<>();
 
-        floodPlaneLevel = 0.30f;
+        floodPlaneLevel = 0.50f;
     }
 
     public static void updateFloodPlane(){
-        if(!renderer.animateWater) return;
+
+        if(Groups.weather.isEmpty()){
+            floodPlaneLevel = Mathf.lerpDelta(floodPlaneLevel, 0.0f, 0.0025f);
+            return;
+        }
+
 
         if(Groups.weather.contains(w -> w.weather instanceof RainWeather)){
             int cnt = 0;
@@ -299,7 +304,7 @@ public class NyfWorldFuckingHelper{
                 }
             }
 
-            floodPlaneLevel = Mathf.lerpDelta(floodPlaneLevel, Math.max(0.30f, avrg/cnt), 0.0025f);
+            floodPlaneLevel = Mathf.lerpDelta(floodPlaneLevel, Math.max(0.0f, avrg/cnt), 0.0025f);
         }
     }
 

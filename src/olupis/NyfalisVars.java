@@ -28,7 +28,7 @@ public class NyfalisVars{
 
     //env visuals
     public static @Nullable Texture cloudNoise;
-    public static float  floodPlaneLevel = 0.30f;
+    public static float  floodPlaneLevel = 0.5f;
 
     public static Bits aliveOverlays, aliveFloors;
 

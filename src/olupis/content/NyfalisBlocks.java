@@ -72,7 +72,7 @@ public class NyfalisBlocks {
         redSand, riverSand, lumaGrass, yellowGrass, pinkGrass, mossierDirt, mossyDirt,  hardenMud, mossyhardenMud, muddyGrass,
         frozenGrass, frozenDirt, frozenMud, crackedIce, redSandSnow, snowySand, frozenTar, frozenSlop,
         cinderBloomGrass, cinderBloomy, cinderBloomier, cinderBloomiest, mossyStone, mossStone, mossierStone, mossiestStone,
-        mudFloodPlane, stoneFloodPlane, mossyFloodPlane, sandyFloodPlane,
+        mudFloodPlane, stoneFloodPlane, mossyFloodPlane, sandyFloodPlane, waterFloodPlane,
         grassyVent, mossyVent, stoneVent, basaltVent, hardenMuddyVent, dirtVent,
         redSandVent, snowVent, mycelium, yourcelium, ourcelium, theircelium,
         beachSandFloor, gypsumFloor, pumiceFloor, galenaFloor, rustyFloor, rustFloor, forestGrass,
@@ -148,6 +148,7 @@ public class NyfalisBlocks {
             rainRegrowables = new ObjectSet<>(), spreadingTiles = new ObjectSet<>(), vents = new ObjectSet<>(),
             factoryPlans = new ObjectSet<>(), alternateModules = new ObjectSet<>()
     ;
+    public static Seq<FloodPlaneFloor> floodPlanes = new Seq<>();
 
     public static void LoadWorldTiles() {
         //region Ores / Overlays
@@ -227,11 +228,10 @@ public class NyfalisBlocks {
             attributes.set(Attribute.oil, 1.2f);
         }};
 
-        sandyFloodPlane= new Floor("river-sand-plane") {{
+        sandyFloodPlane= new FloodPlaneFloor("river-sand-plane") {{
             variants = 3;
             itemDrop = Items.sand;
             attributes.set(Attribute.oil, 1.2f);
-            attributes.set(Attribute.water, 25f);
             cacheLayer = NyfalisShaders.floodPlaneC;
         }};
         // endregion
@@ -282,7 +282,6 @@ public class NyfalisBlocks {
         // region > metal & rusts
         rustyFloor = new Floor("rusty-floor") {{
             variants = 4;
-            blendGroup = metalFloor;
         }};
 
         rustFloor = new Floor("rust-floor") {{
@@ -396,7 +395,6 @@ public class NyfalisBlocks {
             status = StatusEffects.wet;
             liquidDrop = Liquids.water;
             cacheLayer = CacheLayer.water; //cacheLayer = NyfalisShaders.algaeC;
-            blendGroup = water;
         }};
 
         algaeWaterDeep = new Floor("mossy-water-deep") {{ //Remind rushie to update the bundles thx -past rushie
@@ -410,7 +408,6 @@ public class NyfalisBlocks {
             liquidDrop = Liquids.water;
             status = StatusEffects.wet;
             cacheLayer = CacheLayer.water; //cacheLayer = NyfalisShaders.algaeC;
-            blendGroup = water;
         }};
 
         mossyStone = new RotatingFloor("mossy-stone") {{
@@ -443,11 +440,8 @@ public class NyfalisBlocks {
             attributes.set(Attribute.water, 0.1f);
         }};
 
-        mossyFloodPlane = new Floor("mossy-plane") {{
+        mossyFloodPlane = new FloodPlaneFloor("mossy-plane") {{
             variants = 3;
-            attributes.set(bio, 0.1f);
-            attributes.set(Attribute.water, 0.5f);
-            cacheLayer = NyfalisShaders.floodPlaneC;
         }};
 
         mossyhardenMud = new RotatingFloor("mossy-harden-mud") {{
@@ -482,13 +476,8 @@ public class NyfalisBlocks {
             attributes.set(Attribute.water, 0.3f);
         }};
 
-        mudFloodPlane = new Floor("mud-plane") {{
-            speedMultiplier = 0.7f;
+        mudFloodPlane = new FloodPlaneFloor("mud-plane") {{
             variants = 3;
-            statusDuration = 15f;
-            status = StatusEffects.muddy;
-            attributes.set(Attribute.water, 1f);
-            cacheLayer = NyfalisShaders.floodPlaneC;
         }};
 
         hardenMud = new Floor("harden-mud") {{
@@ -503,10 +492,8 @@ public class NyfalisBlocks {
         }};
         //endregion
         //region > stones
-        stoneFloodPlane = new Floor("stone-plane") {{
+        stoneFloodPlane = new FloodPlaneFloor("stone-plane") {{
             variants = 3;
-            attributes.set(Attribute.water, 0.25f);
-            cacheLayer = NyfalisShaders.floodPlaneC;
         }};
 
         stoneVent = new SteamVent("stone-vent") {{
@@ -641,6 +628,15 @@ public class NyfalisBlocks {
             liquidDrop = Liquids.water;
             status = StatusEffects.wet;
             cacheLayer = CacheLayer.water;
+        }};
+
+        waterFloodPlane = new Floor("water-flood-plane") {{
+            speedMultiplier = 0.7f;
+            variants = 3;
+            statusDuration = 15f;
+            status = StatusEffects.muddy;
+            attributes.set(Attribute.water, 1f);
+            cacheLayer = NyfalisShaders.floodPlaneC;
         }};
         //endregion
         //endregion
@@ -1294,7 +1290,7 @@ public class NyfalisBlocks {
             dumpScale = 1.3f;
             leakAmount = 4.5f / 60f;
             pumpAmount = (150f/ size);
-            liquidCapacity = 500f;
+            liquidCapacity = 750f;
             consumePower(25f/60f);
             researchCost = with(iron, 250, alcoAlloy, 800, graphite, 250, rustyIron, 800);
             requirements(Category.liquid, with(iron, 15, graphite, 15, alcoAlloy, 30, rustyIron, 30));

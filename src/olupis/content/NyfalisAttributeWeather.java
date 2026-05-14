@@ -25,10 +25,15 @@ import static olupis.content.NyfalisBlocks.*;
 public class NyfalisAttributeWeather {
     public static final int nyfalian = 1 << 910; //this is a random number from rushie keyboard smashing
 
-    /*Used by the biomatter compressor */
-    public static final Attribute bio = Attribute.add("bio");
-    /*Used by hydroMill yield*/
-    public static final Attribute hydro = Attribute.add("hydro");
+
+    public static final Attribute
+        /*Used by the biomatter compressor */
+        bio = Attribute.add("bio"),
+        /*Used by hydroMill yield*/
+        hydro = Attribute.add("hydro"),
+        /*Water extra output during rain in flood pains*/
+        flood = Attribute.add("flood")
+    ;
     public static Weather acidRain, mossMist, cloudShadow;
 
     public static void AddAttributes(){
