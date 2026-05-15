@@ -1157,7 +1157,7 @@ public class NyfalisBlocks {
             drillTime = 60f * 8.5f;
             variants = topVariant = 3;
 
-            drillEffect = new MultiEffect(Fx.mineImpact, Fx.drillSteam, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
+            drillEffect = new MultiEffect(Fx.mineImpact, Fx.mineHuge, Fx.mineImpactWave.wrap(Pal.redLight, 40f));
             consumePower(10f/60f);
             consumeLiquid(Liquids.water, 5f/ 60f).boost();
             requirements(Category.production, with(rustyIron, 15    ));
@@ -1294,6 +1294,7 @@ public class NyfalisBlocks {
             consumePower(25f/60f);
             researchCost = with(iron, 250, alcoAlloy, 800, graphite, 250, rustyIron, 800);
             requirements(Category.liquid, with(iron, 15, graphite, 15, alcoAlloy, 30, rustyIron, 30));
+            drawer = new DrawMulti(new DrawDefault(), new DrawPumpLiquid(), new DrawImpactPumpArrow(){{arrows = 1;}}  );
         }};
 
         massDisplacementPump = new BurstPump("mass-displacement-pump"){{

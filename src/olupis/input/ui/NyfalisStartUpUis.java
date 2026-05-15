@@ -1,12 +1,12 @@
 package olupis.input.ui;
 
 import arc.*;
+import arc.audio.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
 import arc.math.*;
 import arc.scene.*;
-import arc.scene.Element;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -36,6 +36,39 @@ import static mindustry.Vars.*;
 
 public class NyfalisStartUpUis {
     public static Table debugTable = new Table();
+
+    public static void  debugDialog(){
+        //debuging DONOT in full release
+        BaseDialog dialog = new BaseDialog("@nyfalis-disclaimer.name");
+        dialog.centerWindow();
+
+        //NyfalisStartUpUis.debugDialog()
+        dialog.cont.setOrigin(Align.center);
+        dialog.cont.table(t -> {
+            t.defaults().center().scaling(Scaling.bounded);
+
+            int[] row = {0, 0};
+            for(int i = 0; i < 204; i++){
+                int fi = i;
+
+                t.button(Icon.play, () -> {
+                    Sounds.getSound(row[1]).stop();
+                    Sounds.getSound(fi).play();
+                    row[1] = fi;
+                }).tooltip(i +  "");
+                row[0]++;
+                if(row[0] >= 10){
+                    row[0] = 0;
+                    t.row();
+                }
+            }
+
+        }).center().top().row();
+
+        dialog.cont.button("@back", Icon.left, dialog::hide).padTop(-1f).size(220f, 55f).bottom();
+        dialog.closeOnBack();
+        dialog.show();
+    }
 
     public static void  disclaimerDialog(){
         BaseDialog dialog = new BaseDialog("@nyfalis-disclaimer.name");

@@ -7,7 +7,9 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -34,9 +36,9 @@ public class BurstPump extends Pump {
         shake = 2f,
         leakAmount = 2f,
         skimAmount = 0.1f;
-    public Effect pumpEffect = NyfalisFxs.burstSplash;
+    public Effect pumpEffect = new MultiEffect(Fx.shockwaveSmaller, NyfalisFxs.burstSplash, Fx.mineImpactWave);
 
-    
+
     /** Multipliers of drill speed for each item. Defaults to 1. */
     public ObjectFloatMap<Liquid> pumpMultipliers = new ObjectFloatMap<>();
 
@@ -167,9 +169,6 @@ public class BurstPump extends Pump {
         @Override
         public void updateTile(){
             if (liquidDrop == null) return;
-
-            //if(invertTime > 0f) invertTime -= delta() / invertedTime;
-            smoothProgress = Mathf.lerpDelta(smoothProgress, progress / (pumpTime - 20f), 0.1f);
 
             if (timer(timerDump, dumpTime)){
                 dumpLiquid(liquidDrop, 1.5f);

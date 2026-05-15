@@ -8,16 +8,25 @@ import arc.math.geom.*;
 import arc.util.*;
 import mindustry.content.Liquids;
 import mindustry.entities.Effect;
+import mindustry.entities.effect.*;
 import mindustry.graphics.*;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
+import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.production.BurstDrill;
+import olupis.content.*;
 
 public class BoostableBurstDrill extends BurstDrill {
     public float liqMul = 1.89f;
     public Liquid boostLiquid = Liquids.water;
     public int topVariant = 0;
     public TextureRegion[] topRegions, topInvertedRegions;
+    public  Effect boostedEffect = new MultiEffect(NyfalisFxs.burstSmallSplashs).startDelay(10);
+
+    //Used by the boost liquid under the alpha (yes this is just DrawLiquidTile xd
+    public float padding  = 2;
+    public float padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
+    public float alpha = 0.45f;
 
 
     public BoostableBurstDrill(String name){
@@ -57,6 +66,11 @@ public class BoostableBurstDrill extends BurstDrill {
             if(topRegion == null) topRegion = topRegions[0];
             if(topInvertedRegions == null) topInvertRegion = topInvertedRegions[0];
         }
+
+        if(padLeft < 0) padLeft = padding;
+        if(padRight < 0) padRight = padding;
+        if(padTop < 0) padTop = padding;
+        if(padBottom < 0) padBottom = padding;
     }
 
     @Override
@@ -111,12 +125,18 @@ public class BoostableBurstDrill extends BurstDrill {
                     Effect.shake(shake, shake, this);
                     drillSound.at(x, y, 1f + Mathf.range(drillSoundPitchRand), drillSoundVolume);
                     drillEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), dominantItem.color);
+                    if(b == liqMul) boostedEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), boostLiquid.color);
                 }
             }
         }
 
         @Override
         public void draw(){
+            if(boostLiquid != null && liquids.get(boostLiquid) > 0){
+                LiquidBlock.drawTiledFrames(size, x, y, padLeft, padRight, padTop, padBottom, boostLiquid, liquids.get(boostLiquid) / block.liquidCapacity * alpha);
+                Draw.reset();
+            }
+
             if(variants <= 0)Draw.rect(region, x, y);
             else Draw.rect(variantRegions[Mathf.randomSeed(Point2.pack((int)x, (int)y), 0,variants-1)], x, y);
             drawDefaultCracks();
