@@ -4,25 +4,19 @@ import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.graphics.MultiPacker.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
 
-import java.util.*;
-
 public class FlowWaterTile extends Floor{
     public @Nullable Block parent;
-    public Effect effect = NyfalisFxs.flowWater;
+    public Effect effect = NyfalisFxs.envFlowWater;
     public Sound soundEffect = Sounds.none;
     public int effectSpacing = 6;
     public TextureRegion arrow;
@@ -88,20 +82,20 @@ public class FlowWaterTile extends Floor{
                 b.add(" | ").pad(5f);
 
                 b.button(Icon.undo, () -> {
-                    int o = ls + 90;
+                    int o = ls + 45;
                     if(o >= 360) o = Math.abs(360 - o);
                     lastConfig = o;
 
                     rebuild[0].run();
-                });
+                }).tooltip("+45");
 
                 b.button(Icon.redo, () -> {
-                    int o = ls - 90;
+                    int o = ls - 45;
                     if(o < 0) o = o + 360;
                     lastConfig = o;
 
                     rebuild[0].run();
-                });
+                }).tooltip("-45");
 
                 b.field(ls + "", s -> {
                     lastConfig = Strings.parseInt(s);

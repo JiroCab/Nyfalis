@@ -201,7 +201,7 @@ public class BurstPump extends Pump {
                     if(wasVisible){
                         Effect.shake(shake, shake, this);
                         drillSound.at(x, y, Mathf.range(burstSoundPitchRandMin, burstSoundPitchRandMax), burstSoundVolume);
-                        pumpEffect.at(x + Mathf.range(pumpEffectRnd), y + Mathf.range(pumpEffectRnd), liquidDrop.color);
+                        pumpEffect.at(x + Mathf.range(pumpEffectRnd), y + Mathf.range(pumpEffectRnd), Tmp.c1.set(liquidDrop.color).lerp(Color.white, 0.35f));
                     }
                 }
 

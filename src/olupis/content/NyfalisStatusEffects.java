@@ -264,7 +264,7 @@ public class NyfalisStatusEffects {
             damageMultiplier = 1.30f;
             reloadMultiplier = 1.30f;
             effectChance = 0.07f;
-            effect = NyfalisFxs.overTuned;
+            effect = NyfalisFxs.statusOverTuned;
         }};
 
         magnetized = new TrackedSatusEffect("magnetized"){{

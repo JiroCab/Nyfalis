@@ -205,7 +205,7 @@ public class NyfalisTurrets {
                     backColor = trailColor = copper.color;
                     collidesAir = collidesGround = flatDamage = true;
                     shootEffect = Fx.shootBigColor;
-                    hitEffect = NyfalisFxs.hollowPointHit;
+                    hitEffect = NyfalisFxs.hitHollowPoint;
                     status = StatusEffects.shocked;
                     groundDamageMultiplier = 10f;
                     groundDamageSplashMultiplier = splashPenalty;
@@ -226,7 +226,7 @@ public class NyfalisTurrets {
                     backColor = trailColor = lead.color;
                     collidesAir = collidesGround = flatDamage = true;
                     shootEffect = Fx.shootBigColor;
-                    hitEffect = NyfalisFxs.hollowPointHit;
+                    hitEffect = NyfalisFxs.hitHollowPoint;
                     status = NyfalisStatusEffects.drained;
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
@@ -247,7 +247,7 @@ public class NyfalisTurrets {
                     backColor = trailColor = iron.color;
                     collidesAir = collidesGround = flatDamage = true;
                     shootEffect = Fx.shootBigColor;
-                    hitEffect = NyfalisFxs.hollowPointHit;
+                    hitEffect = NyfalisFxs.hitHollowPoint;
                     status = StatusEffects.slow;
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
@@ -287,7 +287,7 @@ public class NyfalisTurrets {
                     absorbable = false;
                     collidesAir =  collidesGround = flatDamage = true;
                     shootEffect = Fx.shootBigColor;
-                    hitEffect = NyfalisFxs.hollowPointHit;
+                    hitEffect = NyfalisFxs.hitHollowPoint;
                     status = NyfalisStatusEffects.corupt;
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
@@ -684,7 +684,7 @@ public class NyfalisTurrets {
                 lifetime = 2f;
             }});
             trailRotation = true;
-            trailEffect =NyfalisFxs.strataBulletMine;
+            trailEffect =NyfalisFxs.trailStrataBulletMine;
             fragBullets = 1;
             fragRandomSpread = 0;
             fragSpread = 360;
@@ -825,7 +825,7 @@ public class NyfalisTurrets {
                         frontColor = trailColor = aluminum.color;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
+                        hitEffect = NyfalisFxs.hitHollowPoint;
                         status = StatusEffects.shocked;
                         groundDamageMultiplier = airGroundPend;
                         buildingDamageMultiplier = airBuildPend;
@@ -846,7 +846,7 @@ public class NyfalisTurrets {
                         frontColor = trailColor = lead.color;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
+                        hitEffect = NyfalisFxs.hitHollowPoint;
                         status = NyfalisStatusEffects.drained;
                         groundDamageMultiplier = 0.8f;
                         buildingDamageMultiplier = airBuildPend;
@@ -869,7 +869,7 @@ public class NyfalisTurrets {
                         frontColor = trailColor = iron.color;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
+                        hitEffect = NyfalisFxs.hitHollowPoint;
                         status = StatusEffects.corroded;
                         groundDamageMultiplier = airGroundPend;
                         buildingDamageMultiplier = airBuildPend;
@@ -889,7 +889,7 @@ public class NyfalisTurrets {
                         frontColor = trailColor = cobalt.color;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
+                        hitEffect = NyfalisFxs.hitHollowPoint;
                         status = NyfalisStatusEffects.corupt;
                         groundDamageMultiplier = airGroundPend;
                         buildingDamageMultiplier = airBuildPend;
@@ -911,7 +911,7 @@ public class NyfalisTurrets {
                         frontColor = trailColor = graphite.color;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
-                        hitEffect = NyfalisFxs.hollowPointHit;
+                        hitEffect = NyfalisFxs.hitHollowPoint;
                         buildingDamageMultiplier = airBuildPend;
                     }}
                 );
@@ -1302,7 +1302,7 @@ public class NyfalisTurrets {
                     fragBullet = new FirePuddleBulletType(50,30){{
                         splashDelay = 10;
                         splashAmount = 16;
-                        specialEffect = NyfalisFxs.oilyFlame;
+                        specialEffect = NyfalisFxs.envOilyFlame;
                     }};
                 }},
                 lubricant, new BarrelBulletType(4, 150){{
@@ -1327,7 +1327,7 @@ public class NyfalisTurrets {
                     fragBullet = new FirePuddleBulletType(50,60){{
                         splashDelay = 5;
                         splashAmount = 8;
-                        specialEffect = NyfalisFxs.lubeFlame;
+                        specialEffect = NyfalisFxs.envLubeFlame;
                     }};
                 }}
             );
@@ -1870,7 +1870,7 @@ public class NyfalisTurrets {
             var T = this;
 
             shootType = new ExplosionBulletType(200,100){{
-                shootEffect = NyfalisFxs.smolPorpolKaboom;
+                shootEffect = NyfalisFxs.shootSmallPorpolKaboom;
                 killShooter = false;
             }};
 
@@ -1898,7 +1898,7 @@ public class NyfalisTurrets {
             var T = this;
 
             shootType = new ExplosionBulletType(50,100){{
-                shootEffect = NyfalisFxs.smolPorpolKaboom;
+                shootEffect = NyfalisFxs.shootSmallPorpolKaboom;
                 killShooter = true;
                 fragBullets = 8;
                 fragRandomSpread = 0;
@@ -2043,6 +2043,6 @@ public class NyfalisTurrets {
 
     public static Effect updateTrail(){
         if(cascadeAlt) return Fx.none;
-        return new MultiEffect(Fx.disperseTrail, NyfalisFxs.hollowPointHit);
+        return new MultiEffect(Fx.disperseTrail, NyfalisFxs.hitHollowPoint);
     }
 }

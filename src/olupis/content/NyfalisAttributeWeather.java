@@ -158,13 +158,16 @@ public class NyfalisAttributeWeather {
             if(damageBlock > 0){
                 Groups.build.each(b -> b.team != Team.derelict, b -> {
                     b.damage(damageBlock);
-                    NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
+                    NyfalisFxs.hitAcidRain.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
                 });
             }
 
             /*Using corroded is too much & annoying, use a custom effect if we made one instead of this*/
             if(damageUnits > 0)
-                Groups.unit.each(u -> u.damage(damageUnits));
+                Groups.unit.each(u ->{
+                    u.damage(damageUnits);
+                    NyfalisFxs.hitAcidRain.at(u.x, u.y, u.rotation, NyfalisColors.acidRainColour, u.type);
+                });
         }
     }
 

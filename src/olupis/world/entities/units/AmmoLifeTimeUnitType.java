@@ -52,7 +52,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
     /*Time out params */
     public boolean inoperable = false, inoperableDepletes = false, lookForParent = false;
     public Sound timedOutSound = Sounds.explosion;
-    public Effect timedOutFx = NyfalisFxs.unitBreakdown;
+    public Effect timedOutFx = NyfalisFxs.explosionUnitDepleted;
     public float timedOutSoundPitch = 1f, timedOutSoundVolume = 0.4f, maxRange = -1;
     public Vec2 startPos;
 
@@ -199,7 +199,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
     public static void timedOut(Unit unit){
         if(unit.type instanceof  AmmoLifeTimeUnitType a) a.timedOutTyped(unit);
         else {
-            NyfalisFxs.unitBreakdown.at(unit.x, unit.y, unit.rotation, unit);
+            NyfalisFxs.explosionUnitDepleted.at(unit.x, unit.y, unit.rotation, unit);
             unit.remove();
         }
     }

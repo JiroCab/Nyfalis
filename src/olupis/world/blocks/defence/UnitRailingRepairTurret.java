@@ -13,6 +13,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.meta.*;
+import olupis.content.*;
 
 public class UnitRailingRepairTurret extends RepairTurret {
     /*Yes, we *rail* units in order to repair them ;3 */
@@ -24,7 +25,7 @@ public class UnitRailingRepairTurret extends RepairTurret {
     public float cooldownTime = 20f;
 
     public float reload = 100f, statusDuration = 60f * 6f, shootX = 0f, shootY = 0f;
-    public Effect fireFx = Fx.none, lineFx = Fx.none;
+    public Effect fireFx = NyfalisFxs.shootRepairPin, lineFx = NyfalisFxs.shootRepairPinBeam, hitFx = NyfalisFxs.hitRepairPinSpark;
     public StatusEffect healStatus = StatusEffects.none;
 
 
@@ -93,7 +94,7 @@ public class UnitRailingRepairTurret extends RepairTurret {
             if(target != null && efficiency > 0){
                 float angle = Angles.angle(x, y, target.x + offset.x, target.y + offset.y);
                 if(Angles.angleDist(angle, rotation) < (target.hitSize() * 0.9f) && (reloadTimer += (Time.delta * multiplier)) >= reload){
-                   shoot();
+                    shoot();
                 }
                 rotation = Mathf.slerpDelta(rotation, angle, 0.5f * efficiency * timeScale);
             }
@@ -117,9 +118,9 @@ public class UnitRailingRepairTurret extends RepairTurret {
             if(onTop)fireFx.at(xf, yf, rotation, Pal.heal);
             else fireFx.at(target.x, target.y, rotation, Pal.heal);
 
-            if(lineFx != Fx.none && onTop){
-                lineFx.at(xf, yf, rotation, Pal.heal, new Vec2().set(target));
-            }
+            if(lineFx != Fx.none && onTop) lineFx.at(xf, yf, rotation, Pal.heal, new Vec2().set(target));
+            if(hitFx != Fx.none) hitFx.at(target.x, target.y,  target.rotation, Pal.heal);
+
             if(healStatus != StatusEffects.none) target.apply(healStatus, statusDuration);
         }
     }

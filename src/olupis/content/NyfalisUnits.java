@@ -208,7 +208,7 @@ public class NyfalisUnits {
                     homingPower = 0.1f;
 
                     status = StatusEffects.none;
-                    hitEffect= shootEffect = Fx.hitLancer;
+                    hitEffect= shootEffect = NyfalisFxs.hitSurgeZapped;
                     lightningColor = hitColor = Pal.surge;
                     lightningCone = 540;
                     failLightningBullet = true;
@@ -223,7 +223,7 @@ public class NyfalisUnits {
                         shootEffect = Fx.none;
                         lightningCone = 540;
                         lightningColor = hitColor = Pal.surge;
-                        hitEffect = Fx.hitLancer;
+                        hitEffect = NyfalisFxs.hitSurgeZapped;
 
                         lightningType = new BulletType(0.0001f, 0f){{
                             pierceCap = 2;
@@ -322,7 +322,7 @@ public class NyfalisUnits {
             );
             abilities.add(new OrblessEnergyFieldAbillity(100f, 40f, 200f){{
                 color = new Color().set(aeroLaserColours[0]).a(1);
-                damageEffect = NyfalisFxs.chainLightningAlt;
+                damageEffect = NyfalisFxs.shootChainLightning;
                 layer = Layer.flyingUnitLow - 0.01f;
                 status=  StatusEffects.none;
                 shootSound = Sounds.shootPulsar;
@@ -356,7 +356,7 @@ public class NyfalisUnits {
                     frontColor = backColor = Pal.surge;
                     collides = collidesAir = collidesGround = collidesTeam = collidesTiles = keepVelocity = hittable = reflectable =false;
                     absorbable = true;
-                    hitEffect = Fx.hitLancer;
+                    hitEffect = NyfalisFxs.hitSurgeZapped;
                     despawnEffect = trailEffect = Fx.none;
                     hitSound = Sounds.none;
 
@@ -367,7 +367,7 @@ public class NyfalisUnits {
                         homingPower = 0.1f;
 
                         status = StatusEffects.none;
-                        hitEffect= shootEffect = Fx.hitLancer;
+                        hitEffect= shootEffect = NyfalisFxs.hitSurgeZapped;
                         lightningColor = hitColor = Pal.surge;
                     }};
                 }};
@@ -440,8 +440,8 @@ public class NyfalisUnits {
                     minTargetDistance = 30f;
 
                     status = StatusEffects.none;
-                    hitEffect= shootEffect = Fx.hitLancer;
-                    chainEffect = NyfalisFxs.miniMikuMikuBeam;
+                    hitEffect= shootEffect = NyfalisFxs.hitSurgeZappedBig;
+                    chainEffect = NyfalisFxs.shootMiniMikuMikuBeam;
                     lightningColor = hitColor = Pal.surge;
                     failLightningBullet = true;
                     lightningType = new LightningBulletType(){{
@@ -454,7 +454,7 @@ public class NyfalisUnits {
                         pierce = true;
                         shootEffect = Fx.none;
                         lightningColor = hitColor = Pal.surge;
-                        hitEffect = Fx.hitLancer;
+                        hitEffect = NyfalisFxs.hitSurgeZappedBig;
                         status = StatusEffects.electrified;
 
                         lightningType = new BulletType(0.0001f, 0f){{
@@ -462,7 +462,7 @@ public class NyfalisUnits {
                             statusDuration = 10f;
                             hittable = false;
                             pierce = true;
-                            hitEffect = Fx.hitLancer;
+                            hitEffect = NyfalisFxs.hitSurgeZappedBig;
                             despawnEffect = Fx.none;
                             status = StatusEffects.shocked;
                             lifetime = Fx.lightning.lifetime;
@@ -480,7 +480,7 @@ public class NyfalisUnits {
                         frontColor = backColor = Pal.surge;
                         collides = collidesAir = collidesGround = collidesTeam = collidesTiles = keepVelocity = hittable = reflectable =false;
                         absorbable = true;
-                        hitEffect = Fx.hitLancer;
+                        hitEffect = NyfalisFxs.hitSurgeZappedBig;
                         despawnEffect = trailEffect = Fx.none;
                         hitSound = Sounds.none;
 
@@ -492,7 +492,7 @@ public class NyfalisUnits {
                             homingPower = 0.1f;
 
                             status = StatusEffects.none;
-                            hitEffect= shootEffect = Fx.hitLancer;
+                            hitEffect= shootEffect = NyfalisFxs.hitSurgeZappedBig;
                             lightningColor = hitColor = Pal.surge;
                         }};
                     }};
@@ -546,7 +546,7 @@ public class NyfalisUnits {
                         shootEffect = Fx.none;
                         smokeEffect = Fx.shootSmallSmoke;
                         frontColor = rustyBullet;
-                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        hitEffect = despawnEffect = NyfalisFxs.hitHollowPointSmall;
                         backColor = rustyBulletBack;
 
                         trailColor = rustyBullet;
@@ -648,7 +648,7 @@ public class NyfalisUnits {
                         frontColor = ironBullet;
                         trailWidth = 1.8f;
                         trailLength = 3;
-                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        hitEffect = despawnEffect = NyfalisFxs.hitHollowPointSmall;
                         collidesAir = false;
                     }};
                 }},
@@ -700,7 +700,7 @@ public class NyfalisUnits {
                         shootEffect = Fx.none;
                         smokeEffect = Fx.shootSmallSmoke;
                         frontColor = ironBullet;
-                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        hitEffect = despawnEffect = NyfalisFxs.hitHollowPointSmall;
                         backColor = ironBulletBack;
 
                         trailColor = rustyBullet;
@@ -796,7 +796,7 @@ public class NyfalisUnits {
                         trailEffect = Fx.artilleryTrail;
                         backColor = Color.purple.cpy().add(Color.lightGray);
                         frontColor = Color.blue.cpy().add(Color.gray);
-                        hitEffect = despawnEffect = new MultiEffect(NyfalisFxs.highYieldExplosive, NyfalisFxs.highYieldSmoke).layer(Layer.bullet);
+                        hitEffect = despawnEffect = NyfalisFxs.hitHighYield;
                         shrinkInterp = Interp.slope;
                         collidesAir = false;
                         fragBullet = null;
@@ -862,7 +862,7 @@ public class NyfalisUnits {
                     ownerStatus = StatusEffects.slow;
                     incendChance = incendSpread = 0f;
                     smokeEffect = hitEffect = shootEffect = Fx.none;
-                    chargeEffect = NyfalisFxs.hitTracter;
+                    chargeEffect = NyfalisFxs.hitTractor;
                     colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
                 }};
 
@@ -935,7 +935,7 @@ public class NyfalisUnits {
                     shootEffect = Fx.none;
                     smokeEffect = Fx.shootSmallSmoke;
                     frontColor = rustyBullet;
-                    hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                    hitEffect = despawnEffect = NyfalisFxs.hitHollowPointSmall;
                     backColor = rustyBulletBack;
                 }};
             }});
@@ -992,7 +992,7 @@ public class NyfalisUnits {
                     widthIn = heightIn = 2.5f;
                     buildingDamageMultiplier = 0.3f;
 
-                    hitEffect = despawnEffect =NyfalisFxs.hollowPointHitSmall;
+                    hitEffect = despawnEffect =NyfalisFxs.hitHollowPointSmall;
                     vLockSE = shootStatus = StatusEffects.slow;
                     shootStatusDuration = 60 * 1.2f;
                     colourIn= ironBullet;
@@ -1100,7 +1100,7 @@ public class NyfalisUnits {
                         buildingDamageMultiplier = 0.3f;
 
                         frontColor = rustyBullet;
-                        hitEffect = despawnEffect = NyfalisFxs.scatterDebris;
+                        hitEffect = despawnEffect = NyfalisFxs.explosionScatteredDebris;
                         backColor = rustyBulletBack;
                     }};
                 }}
@@ -1483,7 +1483,7 @@ public class NyfalisUnits {
                         ownerStatus = StatusEffects.slow;
                         incendChance = incendSpread = 0f;
                         smokeEffect = hitEffect = shootEffect = Fx.none;
-                        chargeEffect  = NyfalisFxs.hitTracter;
+                        chargeEffect  = NyfalisFxs.hitTractor;
                         colors = new Color[]{Pal.regen.cpy().a(.2f), Pal.regen.cpy().a(.5f), Pal.regen.cpy().mul(1.2f), Color.white};
                     }};
                 }});
@@ -1551,7 +1551,7 @@ public class NyfalisUnits {
                         lifetime = 36f;
                         frontColor = rustyBullet;
                         backColor = rustyBulletBack;
-                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        hitEffect = despawnEffect = NyfalisFxs.hitHollowPointSmall;
                     }};
                 }}
             );
@@ -1719,7 +1719,7 @@ public class NyfalisUnits {
                         backColor = Pal.graphiteAmmoBack;
                         collidesAir = collidesGround = true;
                         shootEffect = Fx.shootBigColor;
-                        hitEffect = new MultiEffect(NyfalisFxs.hollowPointHit, Fx.pointHit);
+                        hitEffect = new MultiEffect(NyfalisFxs.hitHollowPoint, Fx.pointHit);
                     }};
                 }}
             );
@@ -1886,10 +1886,10 @@ public class NyfalisUnits {
                 mirror = false;
                 shootSound = NyfalisSounds.shootCncAvengerPdl;
 
-                hitAoeEffect = new MultiEffect( NyfalisFxs.miniPointHit);
+                hitAoeEffect = NyfalisFxs.hitMiniPointDefence;
                 bullet = new BulletType(){{
                     shootEffect = Fx.shootSmokeSquare;
-                    aoeBeamEffect = NyfalisFxs.getMiniPointHit;
+                    aoeBeamEffect = NyfalisFxs.hitAoePointDefence;
                     hitEffect = Fx.pointHit;
                     maxRange = 320f;
                     damage = 60f;
@@ -2010,7 +2010,7 @@ public class NyfalisUnits {
                         });
                         incendChance = incendSpread = 0f;
                         smokeEffect = shootEffect = Fx.none;
-                        chargeEffect = hitEffect = NyfalisFxs.hitTracter;
+                        chargeEffect = hitEffect = NyfalisFxs.hitTractor;
                         hitColor = Pal.accent;
                     }};
             }},
@@ -2025,10 +2025,10 @@ public class NyfalisUnits {
                     targetInterval = targetSwitchInterval = 12f;
                     shootSound = NyfalisSounds.shootCncAvengerPdl;
 
-                    hitAoeEffect = new MultiEffect( NyfalisFxs.miniPointHit);
+                    hitAoeEffect = NyfalisFxs.hitMiniPointDefence;
                     bullet = new BulletType(){{
                         shootEffect = Fx.shootSmokeSquare;
-                        aoeBeamEffect = NyfalisFxs.getMiniPointHit;
+                        aoeBeamEffect = NyfalisFxs.hitAoePointDefence;
                         hitEffect = Fx.pointHit;
                         maxRange = 350f;
                         damage = 60f;
@@ -2135,7 +2135,7 @@ public class NyfalisUnits {
                     frontColor = rustyBullet;
                     backColor = rustyBulletBack;
                     shootEffect = Fx.shootScepterSecondary;
-                    hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                    hitEffect = despawnEffect = NyfalisFxs.hitHollowPointSmall;
                 }};
             }});
         }};
@@ -2228,7 +2228,7 @@ public class NyfalisUnits {
                         frontColor = ironBullet;
                         backColor = ironBulletBack;
 
-                        hitEffect = despawnEffect = NyfalisFxs.hollowPointHitSmall;
+                        hitEffect = despawnEffect = NyfalisFxs.hitHollowPointSmall;
                         shootEffect = Fx.shootScepterSecondary;
                         shootSound = Sounds.none;
                     }};
@@ -2741,7 +2741,7 @@ public class NyfalisUnits {
                     hitSound = Sounds.explosion;
                     status = NyfalisStatusEffects.glitch;
 
-                    hitEffect = NyfalisFxs.obliteratorShockwave;
+                    hitEffect = NyfalisFxs.hitObliterator;
                     instantDisappear = collidesAir = killShooter = true;
                     collides = hittable = collidesTiles = false;
                 }};
@@ -3129,12 +3129,13 @@ public class NyfalisUnits {
             intervalRandomSpread = 360;
             height = width =  healAmount = 20;
             bulletInterval = 10f;
-            trailInterval =  NyfalisFxs.gnatBullCharge.lifetime /2f;
+            trailInterval =  NyfalisFxs.intervalGnatBullCharge.lifetime /2f;
+            layer = Layer.bullet + 0.001f;
 
             collidesTeam = true;
             keepVelocity = false;
             hitEffect = despawnEffect = Fx.heal;
-            trailEffect = NyfalisFxs.gnatBullCharge;
+            trailEffect = NyfalisFxs.intervalGnatBullCharge;
             backColor = frontColor = trailColor = lightColor = Pal.heal;
 
             intervalBullet = gnatIntervals;
@@ -3152,7 +3153,7 @@ public class NyfalisUnits {
             followAimSpeed = 10f;
             buildingDamageMultiplier = 0.1f;
 
-            hitEffect = despawnEffect =NyfalisFxs.hollowPointHitSmall;
+            hitEffect = despawnEffect =NyfalisFxs.hitHollowPointSmall;
             colourIn= rustyBullet;
             colourOut = rustyBulletBack;
             trailColor = NyfalisItemsLiquid.rustyIron.color;
@@ -3214,7 +3215,7 @@ public class NyfalisUnits {
                         collides = hittable = collidesTiles = mirror = false;
                         instantDisappear = collidesAir = true;
                         hitSound = Sounds.explosion;
-                        hitEffect = NyfalisFxs.unitDischarge;
+                        hitEffect = NyfalisFxs.shootUnitDischarge;
 
                         splashDamage = 65f;
                         rangeOverride = 30f;
@@ -3281,7 +3282,7 @@ public class NyfalisUnits {
                         collides = hittable = collidesTiles = mirror = false;
                         instantDisappear = collidesAir = true;
                         hitSound = Sounds.explosion;
-                        hitEffect = NyfalisFxs.unitDischarge;
+                        hitEffect = NyfalisFxs.shootUnitDischarge;
 
                         splashDamage = 65f;
                         rangeOverride = 30f;
@@ -3360,7 +3361,7 @@ public class NyfalisUnits {
                             instantDisappear = collidesAir = true;
                             collidesTiles = collides = hittable = mirror = false;
                             hitSound = Sounds.explosion;
-                            hitEffect = NyfalisFxs.unitDischarge;
+                            hitEffect = NyfalisFxs.shootUnitDischarge;
 
                             rangeOverride = 30f;
                             splashDamage = 70f;
@@ -3430,7 +3431,7 @@ public class NyfalisUnits {
                                 instantDisappear = collidesAir = true;
                                 collidesTiles = collides = hittable = mirror = false;
                                 hitSound = Sounds.explosion;
-                                hitEffect = NyfalisFxs.unitDischarge;
+                                hitEffect = NyfalisFxs.shootUnitDischarge;
 
                                 rangeOverride = 30f;
                                 splashDamage = 70f;
@@ -3439,7 +3440,7 @@ public class NyfalisUnits {
                                 intervalBullet = gnatHealNade.copy();
                                 BulletType dipetaInterval = gnatIntervals.copy();
                                 dipetaInterval.splashDamageRadius = Vars.tilesize * 2;
-                                dipetaInterval.hitEffect = dipetaInterval.despawnEffect = NyfalisFxs.taurusHeal;
+                                dipetaInterval.hitEffect = dipetaInterval.despawnEffect = NyfalisFxs.hitTaurusHeal;
 
                                 intervalBullet.intervalBullet = dipetaInterval;
                             }};

@@ -10,7 +10,6 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.entities.effect.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -29,7 +28,7 @@ import static mindustry.Vars.tilesize;
 
 public class UnstablePowerTurret extends PowerTurret {
 
-    public Effect explodeEffect = new MultiEffect(NyfalisFxs.cascadeSun, NyfalisFxs.cascadeSmoke);
+    public Effect explodeEffect = NyfalisFxs.explosionCascade;
     public Sound explodeSound = Sounds.blockExplodeElectricBig;
     public Sound warningSound = NyfalisSounds.cascadeDangerWarning;
 

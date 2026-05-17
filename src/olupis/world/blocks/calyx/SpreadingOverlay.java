@@ -16,7 +16,6 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
-import olupis.world.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 import static mindustry.Vars.*;
@@ -41,9 +40,9 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
     /** Volume at which the spreadSound plays */
     public float spreadVolume = 0.13f;
     /** An effect spawned at the target tile when spreading */
-    public Effect spreadEffect = NyfalisFxs.mossSpread,
+    public Effect spreadEffect = NyfalisFxs.envMossSpread,
     /** An effect this spawns when it upgrades */
-    upgradeEffect = NyfalisFxs.mossSpread;
+    upgradeEffect = NyfalisFxs.envMossSpread;
     public Color upgradeColor = Color.clear;
 
     /** Spreading blacklist */

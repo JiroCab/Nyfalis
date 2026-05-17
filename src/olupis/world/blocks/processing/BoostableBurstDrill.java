@@ -21,7 +21,7 @@ public class BoostableBurstDrill extends BurstDrill {
     public Liquid boostLiquid = Liquids.water;
     public int topVariant = 0;
     public TextureRegion[] topRegions, topInvertedRegions;
-    public  Effect boostedEffect = new MultiEffect(NyfalisFxs.burstSmallSplashs).startDelay(10);
+    public  Effect boostedEffect = new MultiEffect(NyfalisFxs.burstSmallSplashes).startDelay(10);
 
     //Used by the boost liquid under the alpha (yes this is just DrawLiquidTile xd
     public float padding  = 2;
@@ -125,7 +125,7 @@ public class BoostableBurstDrill extends BurstDrill {
                     Effect.shake(shake, shake, this);
                     drillSound.at(x, y, 1f + Mathf.range(drillSoundPitchRand), drillSoundVolume);
                     drillEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), dominantItem.color);
-                    if(b == liqMul) boostedEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), boostLiquid.color);
+                    if(b == liqMul) boostedEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), Tmp.c1.set(boostLiquid.color).lerp(dominantItem.color, 0.25f).lerp(Color.white, 0.3f));
                 }
             }
         }

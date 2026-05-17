@@ -57,7 +57,7 @@ public class ItemUnitTurret extends NyfalisItemTurret{
     /*Parameters when failing to make a unit*/
     public Sound failedMakeSound = Sounds.explosionDull;
     public float failedMakeSoundPitch = 0.7f, getFailedMakeSoundVolume = 0.6f;
-    public Effect failedMakeFx = NyfalisFxs.failedMake;
+    public Effect failedMakeFx = NyfalisFxs.explosionFailedMake;
     public TextureRegion bottomRegion, rotatorRegion, radarRegion;
     /*Hovering Shows the unit creation*/
     public boolean hoverShowsSpawn = true, payloadExitShow = true, drawOnTarget = false, arrowShootPos = true, unitFactory = false;

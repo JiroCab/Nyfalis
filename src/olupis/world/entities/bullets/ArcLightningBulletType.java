@@ -17,7 +17,7 @@ public class ArcLightningBulletType extends BulletType{
     ;
 
     public float minTargetDistance = -1f;
-    public Effect chainEffect = NyfalisFxs.chainLightningAlt;
+    public Effect chainEffect = NyfalisFxs.shootChainLightning;
 
     public ArcLightningBulletType(){
         damage = 1f;

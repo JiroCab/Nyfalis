@@ -543,7 +543,7 @@ public class NyfalisBlocks {
             liquidDrop = emulsiveSlop;
             cacheLayer = NyfalisShaders.slopC;
             status = NyfalisStatusEffects.sloppy;
-            walkEffect = NyfalisFxs.bubbleSlow;
+            walkEffect = NyfalisFxs.envBubbleSlow;
         }};
 
         slopDeep = new Floor("slop-deep") {{
@@ -557,7 +557,7 @@ public class NyfalisBlocks {
             liquidDrop = emulsiveSlop;
             cacheLayer = NyfalisShaders.slopC;
             status = NyfalisStatusEffects.sloppy;
-            walkEffect = NyfalisFxs.bubbleSlow;
+            walkEffect = NyfalisFxs.envBubbleSlow;
         }};
 
         coralReef = new Floor("coral-reef") {{
@@ -1910,8 +1910,8 @@ public class NyfalisBlocks {
             length = 100f;
             acceptCoolant = true;
             outlineColor = NyfalisColors.contentOutline;
-            lineFx = NyfalisFxs.repairPinBeam;
-            fireFx = NyfalisFxs.repairPinShoot;
+            lineFx = NyfalisFxs.shootRepairPinBeam;
+            fireFx = NyfalisFxs.shootRepairPin;
             requirements(Category.units, with(iron, 15, Items.lead, 20, copper, 20));
         }};
 
@@ -2416,7 +2416,7 @@ public class NyfalisBlocks {
                 homingPower = 0.2f;
                 splashDamageRadius = Vars.tilesize * 2;
                 backColor = Pal.heal;
-                hitEffect = despawnEffect = NyfalisFxs.taurusHeal;
+                hitEffect = despawnEffect = NyfalisFxs.hitTaurusHeal;
                 frontColor = Color.white;
                 shootSound = Sounds.shootSap;
             }};

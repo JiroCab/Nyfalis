@@ -116,7 +116,7 @@ public class NyfalisMain extends Mod{
                     Tile tile = r.tile;
                     tile.setNet(r.getReplacement());
                     r.remove();
-                    NyfalisFxs.replicatorDie.at(r.x, r.y, 0, b.team.color, r.getReplacement());
+                    NyfalisFxs.explosionReplicatorDie.at(r.x, r.y, 0, b.team.color, r.getReplacement());
                 }
         });
         Events.on(UnlockEvent.class, event ->{

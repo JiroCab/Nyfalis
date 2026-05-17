@@ -48,7 +48,7 @@ public class NYF{
     public static void gphh(){
         if(gph() == null) return;
         for(Building b : gph().all){
-            NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
+            NyfalisFxs.hitAcidRain.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
         }
     }
 
@@ -80,7 +80,7 @@ public class NYF{
     public static void ggg(int index){
 
         for(Building b : ggg().get(index).all){
-            NyfalisFxs.acidRainDamage.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
+            NyfalisFxs.hitAcidRain.at(b.x, b.y, 0, NyfalisColors.acidRainColour, b.block);
         }
     }
 
