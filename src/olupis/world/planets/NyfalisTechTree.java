@@ -22,10 +22,10 @@ public class NyfalisTechTree {
             node(system, () -> {
                 node(seredris, () ->{
                     node(sanctuary, () -> {
-                        node(terrarootCaves,
+                        node(terrarootCavern,
                                 Seq.with(new Objectives.SectorComplete(sanctuary)),
                         () -> {
-                            node(dyingForest, Seq.with(new Objectives.SectorComplete(terrarootCaves)), () -> {
+                            node(dyingForest, Seq.with(new Objectives.SectorComplete(terrarootCavern)), () -> {
                                 node(coldFlats, Seq.with(new Objectives.SectorComplete(conciditRuins)),  () -> {
                                     node(glasierSea,Seq.with(new Objectives.SectorComplete(coldFlats), new Objectives.SectorComplete(dyingForest)), () -> {
 
@@ -60,9 +60,7 @@ public class NyfalisTechTree {
                             new Objectives.SectorComplete(glasierSea),
                             new Objectives.SectorComplete(coldFlats)
                     ), () ->{
-                        node(forestOfSerenity,Seq.with(new Objectives.SectorComplete(conservatorium)), () -> {
 
-                        });
                     });
                 });
                 node(vorgin, Seq.with(
@@ -366,7 +364,7 @@ public class NyfalisTechTree {
 
                             });
                             node(steamBoiler,
-                                    Seq.with(new Objectives.OnSector(terrarootCaves)),
+                                    Seq.with(new Objectives.OnSector(terrarootCavern)),
                             ()->{
                                 node(steamAgitator, Seq.with(new Objectives.Research(steam)),()->{
                                     node(fortifiedRadiator, () ->{
@@ -534,7 +532,7 @@ public class NyfalisTechTree {
                     });
                 });
 
-                node(unitReplicatorSmall, Seq.with(new Objectives.OnSector(terrarootCaves)),()->{
+                node(unitReplicatorSmall, Seq.with(new Objectives.OnSector(terrarootCavern)),()->{
                     node(construct, Seq.with(new Objectives.Research(componentFabricator), new Objectives.OnSector(dyingForest)), ()->{
                         node(groundConstruct, Seq.with(new Objectives.Research(iron)), () ->{
                             node(arialConstruct, Seq.with(new Objectives.SectorComplete(dyingForest)), () ->{

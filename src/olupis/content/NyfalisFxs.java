@@ -266,7 +266,7 @@ public class NyfalisFxs extends Fx {
 
         shootMiniMikuMikuBeam = new Effect(15f, 300f, e -> {
             if(!(e.data instanceof Position v)) return;
-            color(e.color);
+            color(e.color, 0.75f);
             stroke(e.fout() * 0.9f + 0.6f);
             Fx.rand.setSeed(e.id);
 

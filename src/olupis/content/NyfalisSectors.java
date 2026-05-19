@@ -6,7 +6,6 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.type.*;
-import mindustry.type.Weather.*;
 import mindustry.world.*;
 
 import static olupis.content.NyfalisBlocks.*;
@@ -17,9 +16,9 @@ public class NyfalisSectors {
 
     public static SectorPreset
         /*Seredris*/
-        sanctuary, dyingForest, terrarootCaves, muddyLakes, ironCurtain, glasierSea, abandonedPayloadTerminal, conciditRuins, coldFlats,
+        sanctuary, dyingForest, terrarootCavern, muddyLakes, ironCurtain, glasierSea, abandonedPayloadTerminal, conciditRuins, coldFlats,
         /*Nyfalis*/
-        conservatorium, forestOfSerenity,
+        conservatorium,
         /*Vorgin*/
          dormantCell, forestOfHope
     ;
@@ -61,11 +60,11 @@ public class NyfalisSectors {
             rules = commonRules(captureWave, ItemStack.with());
         }};
 
-        terrarootCaves = new SectorPreset("terraroot-caves", seredris, 31){{
+        terrarootCavern = new SectorPreset("terraroot-cavern", seredris, 31){{
             overrideLaunchDefaults =  true;
             addStartingItems = allowLaunchLoadout = allowLaunchSchematics = false;
 
-            difficulty = 2;
+            difficulty = 1;
             captureWave = 13;
             rules = commonRules(captureWave, ItemStack.with(NyfalisItemsLiquid.rustyIron, 300, Items.lead, 200));
         }};
@@ -137,11 +136,6 @@ public class NyfalisSectors {
         conservatorium = new SectorPreset("conservatorium", nyfalis, 0){{
             captureWave = 20;
             difficulty = 3;
-            rules = commonRules(captureWave);
-        }};
-
-        forestOfSerenity  = new SectorPreset("forest-of-serenity", nyfalis, 43){{
-            difficulty = 4;
             rules = commonRules(captureWave);
         }};
 

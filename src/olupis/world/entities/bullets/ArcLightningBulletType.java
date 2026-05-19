@@ -8,6 +8,8 @@ import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import olupis.content.*;
 
+import static arc.Core.camera;
+
 public class ArcLightningBulletType extends BulletType{
     public int maxTargets = 3;
     public boolean hitAir = true,
@@ -69,12 +71,16 @@ public class ArcLightningBulletType extends BulletType{
                 lightningType.create(b.owner, b.team, b.x, b.y, 0);
             }
             return;
-        };
+        }
 
         if( b.aimX > 0 &&  b.aimY > 0 )all.sort(t -> t.dst(b.aimX, b.aimY));
+        camera.bounds(Tmp.r1);
+        Tmp.r1.setWidth(Tmp.r1.width * 1.1f);
+        Tmp.r1.setHeight(Tmp.r1.width * 1.1f);
+
 
         for(int i = 0; i < maxTargets; i++){
-             @Nullable Healthc tar = all.random();
+            @Nullable Healthc tar = all.random();
              //guaranteed to hit aimed target
             if(i == 0 && !all.isEmpty())tar = all.first();
 
@@ -83,7 +89,11 @@ public class ArcLightningBulletType extends BulletType{
             if(fragBullet != null) createFrags(b, tar.x(), tar.y());
             tar.damage(damage);
             if(tar instanceof Statusc s)s.apply(status, statusDuration);
-            chainEffect.at(b.x , b.y, b.rotation(), lightningColor, tar);
+
+            if(Tmp.r1.contains(tar.x(), tar.y()) && Tmp.r1.contains(b.x, b.y)){
+                chainEffect.at(b.x , b.y, b.rotation(), lightningColor, tar);
+                hitEffect.at(tar.x(), tar.y(), b.rotation(), lightningColor);
+            }
             all.remove(tar);
         }
     }

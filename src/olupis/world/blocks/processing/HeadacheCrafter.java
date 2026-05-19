@@ -251,14 +251,16 @@ public class HeadacheCrafter  extends GenericCrafter{
             return super.status();
         }
 
-        public FactoryPlan getPlanSelected(){
+        public @Nullable FactoryPlan getPlanSelected(){
+            if( planSelected < 0 || planSelected > plans.size ) return null;
             return plans.get(planSelected);
         }
 
         @Override
         public void draw(){
             super.draw();
-            renderConfigIndicator(this, getPlanSelected().uiIcon);
+
+            if(!invalidPlan())renderConfigIndicator(this, getPlanSelected().uiIcon);
         }
 
     }

@@ -2004,7 +2004,7 @@ public class NyfalisTurrets {
             shootSound = Sounds.shootAlpha;
         }};
 
-        calyxFruit = new GrowingTurret("calyx-calyxPropagate"){{
+        calyxPropagate = new GrowingTurret("calyx-propagate"){{
             requirements(Category.logic, with(silicon, 5));
             shootType = new BasicBulletType(7.5f, 85){{
                 width = 12f;

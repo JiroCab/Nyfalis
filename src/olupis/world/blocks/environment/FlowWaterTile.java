@@ -7,6 +7,7 @@ import arc.graphics.g2d.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -35,6 +36,8 @@ public class FlowWaterTile extends Floor{
     public void load(){
         super.load();
         arrow = Core.atlas.find("olupis-flow-overlay");
+
+        if(parent != null && localizedName.equals(name)) localizedName = Core.bundle.get("olupis.flow.name") + parent.localizedName;
     }
 
     @Override

@@ -39,7 +39,7 @@ public class BatHelperUnitType extends NyfalisUnitType {
         super.load();
         region = Core.atlas.find(main.name);
         overlayRegion = Core.atlas.find("olupis-bat-helper");
-        localizedName = main.localizedName + " " + Core.bundle.get("nyfalis-helper-air");
+        localizedName = main.localizedName + " " + Core.bundle.get("olupis.air.name");
     }
 
         @Override

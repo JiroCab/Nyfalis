@@ -3473,7 +3473,7 @@ public class NyfalisUnits {
 
 
         //Since blocks' frog of war is always on them, this is a work around as FogControl has no ways to add custom stuff
-        ladarHelper = new NyfalisUnitType("ladarHeler"){{
+        ladarHelper = new NyfalisUnitType("ladar-hepler"){{
             isEnemy = logicControllable = playerControllable = bounded = hittable = targetable = physics = useUnitCap = hoverable = drawBody = drawCell = drawMinimap = false;
             hidden = flying = true;
             fogRadius = 10;
