@@ -45,7 +45,7 @@ public class AirPriorityItemTurret extends NyfalisItemTurret {
         public float lastRadius = 0f;
         public float smoothEfficiency = 1f;
         //{both, airOnly, GroundOnly}
-        public byte attackMode = 0;
+        public int attackMode = 0;
 
 
         @Override
@@ -89,7 +89,7 @@ public class AirPriorityItemTurret extends NyfalisItemTurret {
             super.write(write);
 
             if(slowFogOfWar) write.f(progressFog);
-            if(supportsModes) write.b(attackMode);
+            if(supportsModes) write.i(attackMode);
         }
 
         @Override
@@ -104,7 +104,7 @@ public class AirPriorityItemTurret extends NyfalisItemTurret {
 
         @Override
         public byte version(){
-            return 4;
+            return 5;
         }
 
         @Override
@@ -112,7 +112,10 @@ public class AirPriorityItemTurret extends NyfalisItemTurret {
             super.read(read, revision);
 
             if(revision >= 3 && slowFogOfWar) progressFog = read.f();
-            if(revision >= 4 && supportsModes) attackMode = read.b();
+            if(supportsModes){
+                if(version() == 4) attackMode = read.b();
+                if(version()>= 5) attackMode = read.i();
+            }
         }
 
         @Override
