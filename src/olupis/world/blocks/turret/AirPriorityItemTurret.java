@@ -113,8 +113,8 @@ public class AirPriorityItemTurret extends NyfalisItemTurret {
 
             if(revision >= 3 && slowFogOfWar) progressFog = read.f();
             if(supportsModes){
-                if(version() == 4) attackMode = read.b();
-                if(version()>= 5) attackMode = read.i();
+                if(revision == 4) attackMode = read.b();
+                if(revision >= 5) attackMode = read.i();
             }
         }
 

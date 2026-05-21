@@ -3127,13 +3127,12 @@ public class NyfalisUnits {
             shrinkY = 35f/60f;
             intervalBullets = 1;
             intervalRandomSpread = 360;
-            height = width =  healAmount = 20;
+            height = width = 20;
             bulletInterval = 10f;
             trailInterval =  NyfalisFxs.intervalGnatBullCharge.lifetime /2f;
             layer = Layer.bullet + 0.001f;
 
-            collidesTeam = true;
-            keepVelocity = false;
+            collidesTeam = keepVelocity = false;
             hitEffect = despawnEffect = Fx.heal;
             trailEffect = NyfalisFxs.intervalGnatBullCharge;
             backColor = frontColor = trailColor = lightColor = Pal.heal;
