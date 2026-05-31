@@ -49,7 +49,7 @@ public class NyfPartParms {
                 } else this.floating = this.treads = 0;
             }  else {
                 this.floating = this.treads = 0;
-                this.ammo = unit.ammo();
+                this.ammo = 0.369f;
             }
 
             return this;

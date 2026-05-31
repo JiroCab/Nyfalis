@@ -26,7 +26,6 @@ public class SnekPointDefence extends  SnekWeapon{
         autoTarget = true;
         controllable = false;
         rotate = true;
-        useAmmo = false;
         useAttackRange = false;
         targetInterval = 10f;
     }

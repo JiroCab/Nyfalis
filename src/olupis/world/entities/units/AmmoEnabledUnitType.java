@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -13,11 +14,13 @@ import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.abilities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import olupis.content.*;
 import olupis.input.*;
 import olupis.world.ai.*;
 import olupis.world.interfaces.*;
@@ -32,11 +35,11 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     public boolean drawAmmo = false, altResupply = false;
     public TextureRegion ammoRegion;
     public float ammoZ = -1f;
-    public HashMap<Unit, Teamc> relationship = new HashMap<>();
     //used by relationship for recreating it on load for unit to unit gayness
     public @Nullable Seq<MappableContent> parentTypes = null;
     public StatusEffect retreatStatus = StatusEffects.none;
-    public float minRetreatAmmo = 0.1f;
+    public float minRetreatAmmo = 0.25f;
+    public int ammoCapacity = 150;
     public boolean setRetreat = false;
 
     public AmmoEnabledUnitType(String name){
@@ -44,8 +47,11 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     }
 
     public Color ammoColor(Unit unit){
-        float f = Mathf.clamp(unit.ammo / unit.type.ammoCapacity);
-        return Tmp.c1.set(Color.black).lerp(unit.team.color, f);
+        if(unit instanceof AmmoNyf ae){
+            float f = Mathf.clamp(ae.ammof());
+            return Tmp.c1.set(Color.black).lerp(unit.team.color, f);
+        }
+        return Color.black;
     }
 
     public void drawAmmo(Unit unit){
@@ -144,7 +150,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
         bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
         bars.row();
 
-        bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo ) / (ammoCapacity) ));
+        //bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo ) / (ammoCapacity) ));
         bars.row();
 
         for(Ability ability : unit.abilities){
@@ -167,26 +173,20 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
 
     @Override
     public void update(Unit unit){
-        if(altResupply && unit.ammo < ammoCapacity - 0.0001f){
-            resupplyTime += Time.delta;
-
-            //resupply only at a fixed interval to prevent lag
-            if(resupplyTime > 10f){
-                ammoType.resupply(unit.self());
-                resupplyTime = 0f;
-            }
-        }
-
-        if(relationship.containsKey(unit)){
-            if(unit.dead())relationship.remove(unit);
-        }
-
         super.update(unit);
 
-        if(canRetreat && retreatStatus != null){
-            int min = Math.round(setRetreat ? minRetreatAmmo : ammoCapacity * minRetreatAmmo);
-            if(min <= unit.ammo && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisRetreatCommand) unit.apply(retreatStatus, Time.toSeconds);
+        if(canRetreat && retreatStatus != null && unit instanceof AmmoNyf an){
+            int min = Math.round(setRetreat ? minRetreatAmmo : an.ammoCapacity() * minRetreatAmmo);
+            if(min <= an.currentAmmo() && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisRetreatCommand) unit.apply(retreatStatus, Time.toSeconds);
         }
+    }
+
+    @Override
+    public Unit create(Team team){
+        Unit unit =  super.create(team);
+
+        if(unit instanceof  AmmoNyf ae) ae.fillAmmo();
+        return unit;
     }
 }
 

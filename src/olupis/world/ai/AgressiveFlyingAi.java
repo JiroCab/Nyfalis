@@ -6,6 +6,7 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.type.weapons.RepairBeamWeapon.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.state;
@@ -41,16 +42,16 @@ public class AgressiveFlyingAi extends FlyingAI {
     public void updateMovement(){
         unloadPayloads();
         Unit parent = null;
-        if(unit.type instanceof AmmoEnabledUnitType em && em.relationship.containsKey(unit) && em.relationship.get(unit) instanceof  Unit up) parent = up;
+        if(unit instanceof  AmmoEnabledUnitClass em && em.parent() != null && em.parent() instanceof  Unit up) parent = up;
 
         //Allways follow parent regardless
         if(parent != null && !parent.dead() && unit.isAdded()) {
             /*Perhaps with more units, use the v5 formations instead*/
             float speed =  unit.within(parent, parentCircle * 1.1f) ?Math.min(parent.speed(), unit.isShooting ? unit.speed() * shootSlowDown: unit.speed()) : unit.speed() ;
             circle(parent, parentCircle, speed);
-        }else if(unit.type instanceof AmmoLifeTimeUnitType unt && parent != null){
+        }else/* if(unit.type instanceof AmmoLifeTimeUnitType unt && parent != null){
             unit.ammo = unt.deathThreshold * 0.5f;
-        }else if(target != null && unit.hasWeapons()){
+        }else*/ if(target != null && unit.hasWeapons()){
             if(unit.type.circleTarget || shouldCircle){
                 circleAttack(circleDistance);
             }else{
@@ -69,7 +70,7 @@ public class AgressiveFlyingAi extends FlyingAI {
 
         }else{
             Unit parent = null;
-            if(unit.type instanceof AmmoEnabledUnitType em && em.relationship.containsKey(unit) && em.relationship.get(unit) instanceof  Unit up) parent = up;
+            if(unit instanceof AmmoEnabledUnitClass ae && ae.parent() != null && ae.parent() instanceof  Unit up) parent = up;
             if(parent != null && !parent.dead){
 
                 Vec2 aimVec = Predict.intercept(vec , new Vec2(parent.aimX, parent.aimY), unit.type.weapons.first().bullet.speed);
@@ -105,7 +106,7 @@ public class AgressiveFlyingAi extends FlyingAI {
 
     @Override
     public boolean useFallback(){ /*allowed to be used in waves*/
-        boolean hasParent = unit.type instanceof AmmoEnabledUnitType em && em.relationship.containsKey(unit) && em.relationship.get(unit) instanceof  Unit;
+        boolean hasParent = unit instanceof  AmmoEnabledUnitClass em && em.parent() != null&& em.parent() instanceof  Unit;
         return hasParent && (unit.team.isAI() || unit.team == state.rules.waveTeam);
     }
 

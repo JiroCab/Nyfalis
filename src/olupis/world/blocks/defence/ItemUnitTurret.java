@@ -37,6 +37,7 @@ import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.blocks.turret.*;
 import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.packets.*;
 import olupis.world.entities.units.*;
 import olupis.world.interfaces.*;
@@ -431,13 +432,13 @@ public class ItemUnitTurret extends NyfalisItemTurret{
                 child = Groups.unit.getByID(readUnitId);
 
                 if(child != null && !net.client()){
-                    if(child.type instanceof  AmmoEnabledUnitType ae ) ae.relationship.put(child, this);
+                    if(child instanceof AmmoEnabledUnitClass ae && ae.parent == null) ae.setParent(this);
                     readUnitId = -1;
                 }
             }
 
             if(child != null && child.dead){
-                if(child.type instanceof  AmmoEnabledUnitType aa) aa.relationship.remove(child);
+                if(child instanceof AmmoEnabledUnitClass ae && ae.parent == null) ae.setParent(null);
                 child = null;
 
             }
@@ -572,7 +573,7 @@ public class ItemUnitTurret extends NyfalisItemTurret{
             updatePayload();
 
             Vec2 dest = Tmp.v1.trns((direction + 1) * 90, size * tilesize / 2f);
-            payloadRotation = Angles.moveToward(payloadRotation, rotdeg(), payloadRotateSpeed * delta());
+//            payloadRotation = Angles.moveToward(payloadRotation, rotdeg(), payloadRotateSpeed * delta());
             payVector.approach(dest, payloadSpeed * delta());
 
             int trns = this.block.size / 2 + 1;

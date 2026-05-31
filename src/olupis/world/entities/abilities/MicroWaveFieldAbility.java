@@ -79,6 +79,7 @@ public class MicroWaveFieldAbility extends Ability {
     @Override
     public void draw(Unit unit){
         super.draw(unit);
+        //Todo Rendering "cracking" on the ground to show dryness idk look at rise of the reds one
 
         Draw.z(layer);
         Draw.color(color);
@@ -105,7 +106,7 @@ public class MicroWaveFieldAbility extends Ability {
         range = Mathf.lerpDelta(range, unit.isFlying() ? boostRange : groundRange, 0.25f);
         maxTargets = unit.isFlying() ? maxTargetBoost : maxTargetsGround;
 
-        if((timer += Time.delta) >= reload && shouldShoot && (!useAmmo || unit.ammo > 0 || !state.rules.unitAmmo)){
+        if((timer += Time.delta) >= reload && shouldShoot ){
             Tmp.v1.trns(unit.rotation - 90, x, y).add(unit.x, unit.y);
             float rx = Tmp.v1.x, ry = Tmp.v1.y;
             anyNearby = false;
@@ -164,8 +165,6 @@ public class MicroWaveFieldAbility extends Ability {
 
             if(anyNearby){
                 shootSound.at(unit);
-
-                if(useAmmo && state.rules.unitAmmo) unit.ammo--;
             }
 
             timer = 0f;

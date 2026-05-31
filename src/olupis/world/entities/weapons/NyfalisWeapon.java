@@ -14,6 +14,7 @@ import olupis.input.*;
 import olupis.world.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.units.*;
+import olupis.world.interfaces.*;
 
 import static mindustry.Vars.*;
 
@@ -34,8 +35,8 @@ public  class NyfalisWeapon extends Weapon {
     fireOnTimeOut = false,
     /*Stats*/
     statsBlocksOnly = false,
-    /*Check for ammo regardless of the rule*/
-    alwaysUseAmmo = false,
+    /*Shoot even if the unit has no ammo*/
+    ignoreAmmo = false,
     statusOnlyOnHit = false,
     /*Determines if the weapon can shoot while Borrowed or not*/
     borrowShoot = true, unBorrowShoot = true,
@@ -76,8 +77,6 @@ public  class NyfalisWeapon extends Weapon {
             elevation = (!unit.isAdded() && activePayloadShoot) || (!unit.type.canBoost || (unit.isFlying() && boostShoot  && unit.elevation >= boostedEvaluation || unit.isGrounded() && groundShoot  && unit.elevation <= groundedEvaluation)),
             can = !unit.disarmed
                 && (unit.onSolid() && fireOverSolids || !unit.onSolid()) && elevation;
-
-        if(unit.type instanceof  NyfalisUnitType nyf && nyf.borrows ) can = can && ((unit.hasEffect(nyf.deployEffect) && borrowShoot) || unBorrowShoot);
 
         float lastReload = mount.reload;
         mount.reload =Math.max(mount.reload - Time.delta *unit.reloadMultiplier,0);
@@ -206,7 +205,7 @@ public  class NyfalisWeapon extends Weapon {
         if((mount.shoot || partialControl && unit.isShooting && !controllable) && //must be shooting
                 can && //must be able to shoot
                 !(bullet.killShooter &&mount.totalShots >0)&& //if the bullet kills the shooter, you should only ever be able to shoot once
-                (!useAmmo ||unit.ammo >0|| (!state.rules.unitAmmo && !alwaysUseAmmo) ||unit.team.rules().infiniteAmmo)&& //check ammo
+                (!(unit instanceof AmmoNyf an) || an.currentAmmo() > 0f) &&
                 (!alternate ||wasFlipped ==flipSprite)&&
                 mount.warmup >=minWarmup && //must be warmed up
                 unit.vel.len()>=minShootVelocity && //check velocity requirements
@@ -217,11 +216,7 @@ public  class NyfalisWeapon extends Weapon {
 
             mount.reload = reload;
 
-            if (useAmmo) {
-                if(ammoPerShot == -1)unit.ammo--;
-                else if (ammoPerShot > 0) unit.ammo -= ammoPerShot;
-                if (unit.ammo < 0) unit.ammo = 0;
-            }
+            if(unit instanceof AmmoNyf an)an.setAmmo(Math.min(an.currentAmmo() - ammoPerShot, 0));
         }
     }
 

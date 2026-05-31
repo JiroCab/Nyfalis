@@ -23,7 +23,6 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.type.ammo.*;
 import mindustry.type.unit.*;
 import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
@@ -51,7 +50,6 @@ import static olupis.content.NyfalisItemsLiquid.steam;
 import static olupis.world.ai.NyfalisPathfind.costLeggedNaval;
 
 public class NyfalisUnits {
-    public static AmmoType lifeTimeDrill, lifeTimeWeapon, lifeTimeSupport, carrierTypeAmmo;
     public static NyfalisUnitType
         /*Air units*/
         //Spearhead
@@ -104,7 +102,6 @@ public class NyfalisUnits {
     public static Seq<BatHelperUnitType> batHelpers;
 
     public static void LoadUnits() {
-        LoadAmmoType();
 
         //region Air - Aero
         //Aero -> decently quick and shoot a tiny constant beam, make it fixed and do 10dps
@@ -896,7 +893,7 @@ public class NyfalisUnits {
         mirimiriAir = new BatHelperUnitType(mirimiri);
         //endregion
         //region Air - Area / from naval
-        zoner = new NyfalisUnitType("zoner"){{
+        zoner = new AmmoEnabledUnitType("zoner"){{
             armor = 1f;
             speed = 3f;
             hitSize = 5.5f;
@@ -910,9 +907,9 @@ public class NyfalisUnits {
             strafePenalty = 0.35f;
             engineOffset = 4.6f;
 
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             aiController = WaveAiHandler::new;
-            lowAltitude = flying = canGuardUnits = waveHunts = true;
+            lowAltitude = flying = canGuardUnits = waveHunts = canRetreat=  true;
             defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
             weapons.add(new Weapon("olupis-zoner-weapon"){{
                 top = alternate = false;
@@ -953,23 +950,19 @@ public class NyfalisUnits {
             engineOffset = 4.6f;
             armor = 3f;
             speed = 2.5f;
-            minVel = 0.5f;
             hitSize = 9f;
-            idleCircleRaduis =  100f;
             circleTargetRadius = 10f;
-            ammoCapacity = 2;
 
 
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             aiController = WaveAiHandler::new;
-            ammoType = carrierTypeAmmo;
             lowAltitude = flying = waveHunts =attackRotationLock = circleTarget = altResupply = drawAmmo = canRetreat =  true;
             retreatStatus = NyfalisStatusEffects.retreating;
             omniMovement = false;
 
             weapons.add(new NyfalisWeapon("olupis-regioner-weapon"){{
                 top  = alternate = false;
-                rotate = alwaysUseAmmo =  true;
+                rotate =  true;
 
                 y = 0.9f;
                 x = -3.6f;
@@ -993,7 +986,6 @@ public class NyfalisUnits {
                     buildingDamageMultiplier = 0.3f;
 
                     hitEffect = despawnEffect =NyfalisFxs.hitHollowPointSmall;
-                    vLockSE = shootStatus = StatusEffects.slow;
                     shootStatusDuration = 60 * 1.2f;
                     colourIn= ironBullet;
                     colourOut = ironBulletBack;
@@ -1038,10 +1030,9 @@ public class NyfalisUnits {
             ammoZ = Layer.flyingUnitLow;
             range = 115f;
 
-
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             aiController = WaveAiHandler::new;
-            ammoType = carrierTypeAmmo;
+            
             retreatStatus = NyfalisStatusEffects.retreating;
             faceTarget = false;
             lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
@@ -1049,7 +1040,7 @@ public class NyfalisUnits {
             weapons.addAll(
                 new NyfalisWeapon("olupis-district pew"){{
                     alternate = mirror =   top =  false;
-                    rotate = alwaysUseAmmo =true;
+                    rotate = true;
                     x = 0f;
                     y = 2.1f;
                     shootY = 8f;
@@ -1077,7 +1068,7 @@ public class NyfalisUnits {
                     }};
                 }},
                 new Weapon(""){{
-                    alternate = mirror = useAmmo = false;
+                    alternate = mirror = false;
                     rotate = true;
                     x = 0;
                     y = 3;
@@ -1128,27 +1119,25 @@ public class NyfalisUnits {
             engineOffset = 7.5f;
             rotateSpeed = 2.5f;
             itemCapacity = 15;
-            ammoCapacity = 4;
             armor = 10f;
             speed = 5f;
             hitSize = 20f;
             ammoZ = Layer.flyingUnitLow;
             range = 125;
-            minVel = speed * 0.8f;
             trailLength = 7;
 
             omniMovement = circleTarget = false;
             lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             aiController = WaveAiHandler::new;
-            ammoType = carrierTypeAmmo;
+
             retreatStatus = NyfalisStatusEffects.retreating;
             defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
 
             weapons.addAll(
                 new NyfalisWeapon(""){{
                     top = false;
-                    rotate = alwaysUseAmmo =true;
+                    rotate = true;
                     x = 7f;
                     y = shootY = 0f;
                     recoil = 0.47f;
@@ -2088,7 +2077,6 @@ public class NyfalisUnits {
 
             faceTarget = customMoveCommand = idleFaceTargets = true;
             constructor = UnitWaterMove::create;
-            ammoType = new PowerAmmoType(900);
             weapons.add(new Weapon("olupis-missiles-mount-teamed"){{
                 x = 0f;
                 y = -8;
@@ -2555,12 +2543,10 @@ public class NyfalisUnits {
                 shootCone = 15f;
                 targetInterval = 30f;
                 targetSwitchInterval = 60f;
-                ammoPerShot = (float) ammoCapacity / 4f;
 
                 shoot.shots = 4;
                 shoot.shotDelay = 2.5f;
                 shootSound = NyfalisSounds.shootCncOsprey;;
-                ammoType = lifeTimeWeapon;
                 bullet = new FlakBulletType(7f, 13){{
                     sprite = "mine-bullet";
                     width = 6f;
@@ -2593,7 +2579,7 @@ public class NyfalisUnits {
 
             flying = targetGround = targetAir = drawAmmo = altResupply = true;
             playerControllable  = logicControllable = useUnitCap = false;
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
             controller = u -> new SearchAndDestroyFlyingAi(true){{
                 targetFlames = true;
@@ -2608,11 +2594,8 @@ public class NyfalisUnits {
                     targetSwitchInterval = 60f;
 
                     shootSound = Sounds.shootDuo;
-                    ammoType = lifeTimeWeapon;
-                    alwaysUseAmmo = true;
                     /*Gave up using LiquidBulletType*/
                     bullet = new NoBoilLiquidBulletType(NyfalisItemsLiquid.steam){{
-                        useAmmo = true;
                         pierce = true;
 
                         speed = 2f;
@@ -2634,7 +2617,6 @@ public class NyfalisUnits {
                     soundPitchMax = 6f;
                     soundPitchMin = 0.2f;
                     ejectEffect  = Fx.none;
-                    ammoPerShot = ammoCapacity ;
                     shootSound = Sounds.none;
                     mirror = controllable = aiControllable = false;
                     shootOnDeath = fireOnTimeOut = true;
@@ -2668,7 +2650,7 @@ public class NyfalisUnits {
 
             flying = targetGround = targetAir = drawAmmo = true;
             playerControllable  = logicControllable = useUnitCap =  false;
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             controller = u -> new SearchAndDestroyFlyingAi(true);
             weapons.add(new NyfalisWeapon(){{
                 y = x = 0f;
@@ -2676,11 +2658,9 @@ public class NyfalisUnits {
                 shootCone = 15f;
                 targetInterval = 30f;
                 targetSwitchInterval = 60f;
-                ammoPerShot = (float) ammoCapacity / 2f;
 
                 fireOverSolids = false;
                 shootSound = NyfalisSounds.shootCncBattleMaster;
-                ammoType = lifeTimeWeapon;
 
                 bullet = new BarrelBulletType(3.5f, 38, "bullet"){{
                     status = StatusEffects.slow;
@@ -2718,7 +2698,7 @@ public class NyfalisUnits {
 
             flying = targetGround = targetAir = drawAmmo  = true;
             playerControllable  = logicControllable = useUnitCap  = false;
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             controller = u -> new SearchAndDestroyFlyingAi(true);
             weapons.add(new NyfalisWeapon(){{
                 reload = 24f;
@@ -2727,7 +2707,6 @@ public class NyfalisUnits {
                 soundPitchMax = 6f;
                 soundPitchMin = 0.2f;
                 ejectEffect = Fx.none;
-                ammoPerShot = ammoCapacity ;
                 shootSound = NyfalisSounds.shootCncBattleMaster;
                 mirror = false;
                 shootOnDeath = fireOnTimeOut = true;
@@ -2760,11 +2739,9 @@ public class NyfalisUnits {
             fogRadius =0;
             mineSpeed = 3.5f;
             itemCapacity = 20;
-            ammoCapacity = 150;
             passiveAmmoDepletion = 0.1f;
             ammoDepletionAmount = 0.15f;
 
-            ammoType = lifeTimeDrill;
             constructor = UnitEntity::create;
             timedOutSound = Sounds.explosionDull;
             controller = u -> new NyfalisMiningAi();
@@ -2778,7 +2755,6 @@ public class NyfalisUnits {
             speed = 3.25f;
             fogRadius = 0f;
             health = 300;
-            ammoCapacity = 320;
             engineSize = -1f;
 
             weapons.add(new LimitedRepairBeamWeapon(""){{
@@ -2789,7 +2765,7 @@ public class NyfalisUnits {
                 beamWidth = 0.3f;
                 repairSpeed = 0.5f;
 
-                targetBuildings = useAmmo = autoTarget = healingIgnoresMines = true;
+                targetBuildings = autoTarget = healingIgnoresMines = true;
                 controllable = top = mirror = false;
                 bullet = new BulletType(){{
                     aimDst = 0f;
@@ -2824,7 +2800,6 @@ public class NyfalisUnits {
 
             );
 
-            ammoType = lifeTimeSupport;
             constructor = UnitEntity::create;
             aiController = UnitHealerAi::new;
             defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
@@ -2847,9 +2822,7 @@ public class NyfalisUnits {
             legForwardScl = 0.8f;
             legBaseOffset = -2f;
             legMoveSpace = 1.4f;
-            ammoCapacity = 300;
 
-            ammoType = lifeTimeDrill;
             groundLayer = Layer.legUnit;
             constructor = LegsUnit::create;
             timedOutSound = Sounds.explosionDull;
@@ -2863,10 +2836,9 @@ public class NyfalisUnits {
             speed = 3.25f;
             fogRadius = 0f;
             buildSpeed = 0.8f;
-            ammoCapacity = 2500;
 
             weapons.add(new BuildWeapon("build-weapon"){{
-                    rotate = useAmmo = true;
+                    rotate = true;
                     rotateSpeed = 7f;
                     x = 14/4f;
                     y = 15/4f;
@@ -2887,16 +2859,15 @@ public class NyfalisUnits {
                         lastProgress = unit.buildPlan().progress;
                     }
 
-                    if(unit.activelyBuilding() && useAmmo ){ //TODO: AMMO SHOULDN'T USE WHEN TRYING TO BUILD W/O ITEMS FOR IT
+/*                    if(unit.activelyBuilding() && useAmmo ){ //TODO: AMMO SHOULDN'T USE WHEN TRYING TO BUILD W/O ITEMS FOR IT
                         //Since it isn't really shooting, ammo isn't used properly handled
                         unit.ammo--;
                         if(unit.ammo < 0) unit.ammo = 0;
                     }
-                    super.update(unit, mount);
+                    super.update(unit, mount);*/
                 }
             });
 
-            ammoType = lifeTimeSupport;
             constructor = UnitEntity::create;
             aiController = BuilderAI::new;
             defaultCommand = UnitCommand.rebuildCommand;
@@ -2913,11 +2884,9 @@ public class NyfalisUnits {
             speed = 3f;
             fogRadius = 0f;
             itemCapacity = 0;
-            ammoCapacity = 300;
             ammoDepletionAmount = ammoCapacity;
             ammoDepletionOffset = 60*10;
 
-            ammoType = lifeTimeSupport;
             flying = alwaysShootWhenMoving = drawAmmo = lookForParent = true;
             playerControllable = useUnitCap = false;
             constructor = UnitEntity::create;
@@ -2931,7 +2900,7 @@ public class NyfalisUnits {
                 fractionRepairSpeed = 0.02f;
                 beamWidth = repairSpeed = 0.18f;
 
-                useAmmo = autoTarget = healingIgnoresMines = targetUnits= true;
+                autoTarget = healingIgnoresMines = targetUnits= true;
                 controllable = top = targetBuildings = mirror =  false;
                 bullet = new BulletType(){{
                     aimDst = 0f;
@@ -2952,11 +2921,9 @@ public class NyfalisUnits {
             fogRadius = 0;
             mineSpeed = 3.5f;
             itemCapacity = 10;
-            ammoCapacity = 150;
             passiveAmmoDepletion = 0.07f;
             ammoDepletionAmount = 0.15f;
 
-            ammoType = lifeTimeDrill;
             aiController = RepairAI::new    ;
             constructor = UnitEntity::create;
             timedOutSound = Sounds.explosionDull;
@@ -3187,7 +3154,6 @@ public class NyfalisUnits {
             canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi = weaponsStartEmpty = true;
             constructor = LegsUnit::create;
             pathCost = costLeggedNaval;
-            ammoType = new PowerAmmoType(1000);
 
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             mineItems = Seq.with(rustyIron, lead, scrap);
@@ -3253,7 +3219,6 @@ public class NyfalisUnits {
             canBoost = allowLegStep = hovering = alwaysBoostOnSolid= customMineAi =  weaponsStartEmpty = true;
             constructor = LegsUnit::create;
             pathCost = costLeggedNaval;
-            ammoType = new PowerAmmoType(1000);
 
             defaultCommand = NyfalisUnitCommands.nyfalisMineCommand;
             mineItems = Seq.with(rustyIron, lead, scrap);
@@ -3331,7 +3296,6 @@ public class NyfalisUnits {
             constructor = LegsUnit::create;
             mineItems = Seq.with(rustyIron, lead, scrap);
             pathCost = costLeggedNaval;
-            ammoType = new PowerAmmoType(1000);
             setEnginesMirror(
                     new UnitEngine(26.5f / 4f, 30 / 4f, 2f, 45f), //front
                     new UnitEngine(24 / 4f, -40 / 4f, 2.2f, 315f)
@@ -3407,7 +3371,6 @@ public class NyfalisUnits {
             constructor = UnitEntity::create;
             mineItems = Seq.with(rustyIron, lead, scrap);
             pathCost = costLeggedNaval;
-            ammoType = new PowerAmmoType(1000);
             setEnginesMirror(
                     new UnitEngine(24.5f / 4f, 18 / 4f, 2f, 45f), //front
                     new UnitEngine(22 / 4f, -20 / 4f, 2.2f, 315f)
@@ -3499,7 +3462,6 @@ public class NyfalisUnits {
         //Why do i exist? no reason, hope u don't cause any bugs even if you are one
         firefly = new NyfalisUnitType("firefly"){{
             constructor = UnitTypes.mono.constructor;
-            ammoType = new PowerAmmoType(500);
 
             flying = hidden = true;
             isEnemy = false;
@@ -3559,124 +3521,6 @@ public class NyfalisUnits {
          Air - missile-large, olupis-arc-bullet
          Both - missile, bullet, olupis-triangle-bullet
         */
-    }
-
-    /*Common custom ammo types for the lifetime units*/
-    public static void LoadAmmoType()   {
-        //Make them last long
-        //TODO: refactor this
-
-        lifeTimeDrill = new AmmoType() {
-            @Override
-            public String icon() {
-                return Iconc.production + "";
-            }
-
-            @Override
-            public Color color() {
-                return Pal.ammo;
-            }
-
-            @Override
-            public Color barColor() {
-                return Color.green;
-            }
-
-            @Override
-            public void resupply(Unit unit) {}
-        };
-
-        lifeTimeWeapon = new AmmoType() {
-            @Override
-            public String icon() {
-                return Iconc.commandAttack + "";
-            }
-
-            @Override
-            public Color color() {
-                return Pal.accent;
-            }
-
-            @Override
-            public Color barColor() {
-                return Pal.ammo;
-            }
-
-            @Override
-            public void resupply(Unit unit) {
-                if(unit.type instanceof AmmoEnabledUnitType ae && ae.relationship.containsKey(unit)){
-                    Teamc p = ae.relationship.get(unit);
-                    if(p != null && unit.within(p, ae.range * 0.75f)){
-                        if(p instanceof ItemUnitTurretBuild b)b.resupplied();
-                        Fx.itemTransfer.at(p.x(), p.y(), 45f, unit.team.color, unit);
-                        unit.ammo = unit.type.ammoCapacity;
-                    }
-                }
-            }
-        };
-
-        lifeTimeSupport = new AmmoType() {
-            @Override
-            public String icon() {
-                return Iconc.add + "";
-            }
-
-            @Override
-            public Color color() {
-                return Pal.ammo;
-            }
-
-            @Override
-            public Color barColor() {
-                return Color.green;
-            }
-
-            @Override
-            public void resupply(Unit unit) {}
-        };
-
-        carrierTypeAmmo = new AmmoType() {
-            @Override
-            public String icon() {
-                return Iconc.itchio + "";
-            }
-
-            @Override
-            public Color color() {
-                return Pal.ammo;
-            }
-
-            @Override
-            public Color barColor() {
-                return Pal.ammo;
-            }
-
-            @Override
-            public void resupply(Unit unit) {
-                float ammoPerTier = 2.5f;
-                float range = 90f + unit.hitSize;
-
-                Unit carrier = Units.closest(unit.team, unit.x, unit.y, range,
-                    u -> Arrays.stream(u.abilities).anyMatch(a -> a instanceof CarrierResupplyAbility)
-                , UnitSorts.strongest);
-
-                if(carrier != null){
-                    int tier = 1;
-                    for(Ability ability : carrier.abilities){
-                        if(ability instanceof CarrierResupplyAbility owo && owo.tier > tier) tier = owo.tier;
-                    }
-                    //Dont resupply when possible to reduce reload pentalties
-                    if(unit.ammo >= (0.25f * unit.type.ammoCapacity) && unit.type.ammoCapacity - (ammoPerTier * tier) <= unit.ammo ) return;
-
-                    Fx.itemTransfer.at(carrier.x, carrier.y, 15f , Pal.ammo, unit);
-                    unit.ammo = Math.min(unit.ammo + ((ammoPerTier * tier)), unit.type.ammoCapacity);
-                    unit.apply(StatusEffects.disarmed, Time.toSeconds);
-                    unit.apply(StatusEffects.slow, Time.toSeconds * 2);
-
-                };
-
-            }
-        };
     }
 
     public static void GenerateWeapons(){

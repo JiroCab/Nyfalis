@@ -7,7 +7,9 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import olupis.content.*;
 import olupis.world.entities.abilities.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
+import olupis.world.interfaces.*;
 
 public class RetreatAi extends ArmDefenderAi{
 
@@ -34,16 +36,15 @@ public class RetreatAi extends ArmDefenderAi{
     }
 
     public boolean checkMin(){
-        int min = Math.round(unit.type.ammoCapacity * 0.1f);
-        if(unit.type instanceof AmmoEnabledUnitType a){
-            min = Math.round(a.setRetreat ? a.minRetreatAmmo : a.ammoCapacity * a.minRetreatAmmo);
+        if(unit instanceof AmmoNyf a){
+            return a.shouldRetreat();
         }
-        return  min >= unit.ammo;
+        return  false;
     }
 
     @Override
     public Teamc findFollow(float x, float y, float range){
-        if(unit.type.ammoType == NyfalisUnits.carrierTypeAmmo){
+        if(unit instanceof AmmoEnabledUnitClass){
             return  Units.closest(unit.team, x, y, Float.MAX_VALUE, u -> !u.dead() && u.type != unit.type && u.type.abilities.contains(a -> a instanceof CarrierResupplyAbility),
             (u, tx, ty) -> -u.maxHealth + Mathf.dst2(u.x, u.y, tx, ty) / 6400f);
         }

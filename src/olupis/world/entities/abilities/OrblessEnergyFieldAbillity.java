@@ -73,7 +73,7 @@ public class OrblessEnergyFieldAbillity extends EnergyFieldAbility{
 
         curStroke = Mathf.lerpDelta(curStroke, anyNearby ? 1 : 0, 0.09f);
 
-        if((timer += Time.delta) >= reload && (!useAmmo || unit.ammo > 0 || !state.rules.unitAmmo)){
+        if((timer += Time.delta) >= reload){
             Tmp.v1.trns(unit.rotation - 90, x, y).add(unit.x, unit.y);
             float rx = Tmp.v1.x, ry = Tmp.v1.y;
             anyNearby = false;
@@ -141,10 +141,6 @@ public class OrblessEnergyFieldAbillity extends EnergyFieldAbility{
 
             if(anyNearby){
                 shootSound.at(unit);
-
-                if(useAmmo && state.rules.unitAmmo){
-                    unit.ammo --;
-                }
             }
 
             timer = 0f;

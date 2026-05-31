@@ -14,6 +14,7 @@ import mindustry.world.blocks.*;
 import olupis.world.ai.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.defence.ItemUnitTurret.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
@@ -58,10 +59,9 @@ public class SpawnHelperBulletType extends BasicBulletType {
                 }
                 if(hasParent){
                     if(shooter instanceof ItemUnitTurretBuild b) b.child = spawned;
-                    if(spawned.type instanceof AmmoEnabledUnitType b && shooter instanceof Teamc unit){
-                        if (shooter instanceof ControlBlock control) b.relationship.put(spawned, control.unit());
-                        else b.relationship.put(spawned, unit);
-
+                    if(spawned instanceof AmmoEnabledUnitClass b && shooter instanceof Teamc unit){
+                        if (shooter instanceof ControlBlock control) b.setParent(control.unit());
+                        else b.setParent(unit);
                     }
                 }
 

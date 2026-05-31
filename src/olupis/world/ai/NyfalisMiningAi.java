@@ -11,6 +11,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import olupis.content.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
 
 import static mindustry.Vars.*;
@@ -51,7 +52,7 @@ public class NyfalisMiningAi extends AIController {
 
         if(dynamicItems)updateMineItems(core);
 
-        if(unit.type instanceof AmmoLifeTimeUnitType al && al.deathThreshold * 2f >= unit.ammo){
+        /*if(unit.type instanceof AmmoLifeTimeUnitType al && al.deathThreshold * 2f >= unit.ammo){
             if(unit.stack.amount > 0 ){
                 unit.mineTile = ore = null;
                 mineType = 1;
@@ -68,7 +69,7 @@ public class NyfalisMiningAi extends AIController {
                 al.callTimeOut(unit);
             }
         }
-
+*/
         if(unit.mineTile != null && !unit.mineTile.within(unit, unit.type.mineRange)){
             unit.mineTile(null);
         }
@@ -88,7 +89,7 @@ public class NyfalisMiningAi extends AIController {
                 return;
             }
 
-            if(unit.type instanceof AmmoLifeTimeUnitType al && al.deathThreshold * 1.5f >= unit.ammo){
+            if(unit instanceof AmmoEnabledUnitClass al && al.shouldRetreat()){
                 mining = false;
                 unit.mineTile(null);
                 ore = null;

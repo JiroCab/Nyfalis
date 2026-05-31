@@ -1,11 +1,10 @@
 package olupis.world.ai;
 
-import arc.math.Mathf;
-import arc.util.Tmp;
+import arc.math.*;
+import arc.util.*;
 import mindustry.entities.*;
-import mindustry.entities.units.AIController;
-import mindustry.gen.Teamc;
-import mindustry.gen.Unit;
+import mindustry.entities.units.*;
+import mindustry.gen.*;
 
 import static mindustry.Vars.state;
 
@@ -34,7 +33,6 @@ public class ArmDefenderAi extends AIController {
         }
 
     }
-
     @Override
     public void updateTargeting(){
         if(follow == null) follow = findFollow(unit.x, unit.y, unit.team != state.rules.waveTeam ? unit.range() : Float.MAX_VALUE);

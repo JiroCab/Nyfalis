@@ -17,7 +17,6 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.type.ammo.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.*;
@@ -31,7 +30,6 @@ import olupis.world.ai.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.unit.*;
 import olupis.world.entities.*;
-import olupis.world.entities.entities.*;
 
 import java.util.*;
 
@@ -41,7 +39,7 @@ import static mindustry.Vars.*;
 public class NyfalisUnitType extends UnitType {
     /*Custom RTS commands*/
     public boolean canCircleTarget = false, canHealUnits = false, canGuardUnits  = false, canMend = false, canDeploy = false, canDash = false, canCharge = false, canRetreat = false,
-                            constructHideDefault = false, customMineAi = false, waveHunts = false, cantMove = false, AiCircleBomb = false, borrows = false;
+                            constructHideDefault = false, customMineAi = false, waveHunts = false, cantMove = false, AiCircleBomb = false;
     /*Makes (legged) units boost automatically regardless of Ai*/
     public boolean alwaysBoostOnSolid = false;
     /*Replace Move Command to a custom one*/
@@ -68,20 +66,20 @@ public class NyfalisUnitType extends UnitType {
                             healingIgnoresMines = false,
                             attackRotationLock = false
     ;
-    public float minVel = -1, idleCircleRaduis = rotateSpeed;
-    public HashMap<Unit, Integer> velPreviousAngle = new HashMap<>();
     public Color secondaryLightColor = NyfalisColors.floodLightColor;
-    public float secondaryLightRadius = lightRadius  * 2, deathRegrowChance = 0.1f;
-    public StatusEffect payloadUpdateSE = StatusEffects.none, payloadDisarmSE = StatusEffects.disarmed, vLockSE;
+public float secondaryLightRadius = lightRadius  * 2, deathRegrowChance = 0.1f;
+    public StatusEffect
+        payloadUpdateSE = StatusEffects.none,
+        payloadDisarmSE = StatusEffects.disarmed
+        ;
 
-    public TextureRegion bossRegion, borrowRegion;
+    public TextureRegion bossRegion;
 
     //TODO: This is a mess, mostly a proof of concept please replace
 
     public NyfalisUnitType(String name){
         super(name);
         outlineColor = NyfalisColors.contentOutline;
-        ammoType = new ItemAmmoType(NyfalisItemsLiquid.rustyIron);
         researchCostMultiplier = 0f;
         generateIcons = true;
         if(customMoveCommand) defaultCommand = NyfalisUnitCommands.nyfalisMoveCommand;
@@ -287,12 +285,11 @@ public class NyfalisUnitType extends UnitType {
     public void load() {
         super.load();
         bossRegion = Core.atlas.find(name + "-boss", name);
-        borrowRegion = Core.atlas.find(name + "-borrowed", name);
-
     }
 
     public float partAmmo(Unit unit){
-        return unit.ammo/ ammoCapacity;
+        return 0.369f;
+//        return unit.ammo/ ammoCapacity;
     }
 
     @Override
@@ -305,21 +302,6 @@ public class NyfalisUnitType extends UnitType {
     public void killed(Unit unit){
         super.killed(unit);
         if(deathRegrowChance > 0 &&  Mathf.randomBoolean(deathRegrowChance) &&unit.team ==  state.rules.waveTeam) NyfWorldFuckingHelper.growSprigs(unit.tileOn());
-    }
-
-    @Override
-    public <T extends Unit&Legsc> void drawLegs(T unit){
-        if(borrows && unit.hasEffect(deployEffect)){
-            applyColor(unit);
-
-            Color mix = Pal.darkestestGray;
-            if(unit.floorOn() != null) mix.set(unit.floorOn().mapColor).lerp(Color.black, 0.45f);
-            Draw.color(mix, 0.8f);
-            Draw.scl(1.1f, 1.1f);
-            Draw.rect(borrowRegion, unit.x, unit.y, unit.rotation - 90);
-
-            Draw.reset();
-        }else super.drawLegs(unit);
     }
 
     @Override
@@ -347,35 +329,7 @@ public class NyfalisUnitType extends UnitType {
             unit.apply(payloadDisarmSE, Time.toSeconds);
         }
 
-        boolean circle = minVel > 0 && unit.speedMultiplier >= 0.5;
-        boolean vlock = attackRotationLock && unit.hasEffect(vLockSE);
-
-        if(circle || vlock){
-            if (!velPreviousAngle.containsKey(unit)) velPreviousAngle.put(unit, Math.round(unit.vel.angle() * 100));
-
-            if(circle){
-                unit.vel.setLength2(Math.max(minVel, unit.vel.len2()));
-                if(!unit.isShooting &unit.vel.len2() <= (minVel * 1.25f)){
-                    int mul = unit.vel.angle() - unit.vel.angle() >= 0 ? 2 : -2;
-                    unit.vel.setAngle(unit.vel.angle() - (idleCircleRaduis * mul));
-
-                    unit.lookAt(unit.vel.angle());
-            }}
-
-            if(vlock){
-                Tmp.v1.set(unit).setAngle(velPreviousAngle.get(unit) * 0.01f);
-                unit.vel.setAngle(velPreviousAngle.get(unit) * 0.01f);
-                unit.rotation(Tmp.v1.angle());
-            }
-            unit.prefRotation();
-            velPreviousAngle.put(unit, Math.round(unit.vel.angle() * 100));
-        }
-
-        if(velPreviousAngle.containsKey(unit) && unit.dead()) velPreviousAngle.remove(unit);
-
-
     }
-
 
     public static boolean onWater(Unit unit){
         return unit.floorOn().isLiquid;

@@ -17,7 +17,7 @@ import olupis.world.entities.entities.*;
 public class  NyfUnitTeamMapper{
     public static Team verdentTeam, calyxTeam;
     public static final Team[] nyfTeams = new Team[2];
-    public static int LeggedPayload, OnePayloadUnit, tonkNaval, snekUnit, calxyUpdater;
+    public static int LeggedPayload, OnePayloadUnit, tonkNaval, snekUnit, calxyUpdater, ammoEnbaled, ammoLegged;
 
     public static void load(){
         //Thank you Siede for explaining how to do this!! ^w^
@@ -26,6 +26,8 @@ public class  NyfUnitTeamMapper{
         tonkNaval = EntityMapping.register("nyf-tonk-naval", TonkNavalUnitClass::create);
         snekUnit = EntityMapping.register("nyf-snek", SnekUnitClass::create);
         calxyUpdater = EntityMapping.register("nyf-calyx-updater", CalyxGraphUpdater::create);
+        ammoEnbaled = EntityMapping.register("nyf-ammo-unit", AmmoEnabledUnitClass::create);
+        //ammoLegged = EntityMapping.register("nyf-ammo-legged", CalyxGraphUpdater::create);
 
     }
 

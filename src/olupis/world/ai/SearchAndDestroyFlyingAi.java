@@ -11,6 +11,7 @@
  import mindustry.logic.*;
  import mindustry.type.*;
  import mindustry.world.meta.*;
+ import olupis.world.entities.entities.*;
  import olupis.world.entities.units.*;
  import olupis.world.interfaces.*;
 
@@ -55,10 +56,10 @@ public class SearchAndDestroyFlyingAi extends FlyingAI  implements InoperableAi{
             if(updateTargeting) target = null;
         }
         Teamc parent = null;
-        if(unit.type instanceof  AmmoEnabledUnitType ae && ae.relationship.containsKey(unit)){
-            parent= ae.relationship.get(unit);
+        if(unit instanceof  AmmoEnabledUnitClass ae){
+            parent= ae.parent;
             if(parent != null){
-                if( unit.ammo <= 0 || (parent instanceof Ranged pr && (!unit.within(pr, pr.range()) || (target == null || !target.within(pr, pr.range()))) )){
+                if( (parent instanceof Ranged pr && (!unit.within(pr, pr.range()) || (target == null || !target.within(pr, pr.range()))) )){
                     justMove(parent);
                     target = null;
                     return;
@@ -83,7 +84,7 @@ public class SearchAndDestroyFlyingAi extends FlyingAI  implements InoperableAi{
             else findMainTarget(unit.x, unit.y, unit.range(), unit.type().targetAir, unit.type().targetGround);
         }
         /*screw crawlers in particular*/
-        float range = ((suicideOnSuicideUnits || (targetFlames && tarFire != null && unit.ammo < (unit.type.ammoCapacity * 0.05f))) && suicideOnTarget) ? 0f : Math.min(unit.range() -5f, 5f) ;
+        float range = (suicideOnSuicideUnits || (targetFlames && tarFire != null & suicideOnTarget) ? 0f : Math.min(unit.range() -5f, 5f) );
 
         if(target != null && unit.hasWeapons()){
             idleAfter = Time.time + delay;
@@ -171,10 +172,10 @@ public class SearchAndDestroyFlyingAi extends FlyingAI  implements InoperableAi{
     @Override
     public Teamc findMainTarget(float x, float y, float range, boolean air, boolean ground){
 
-        if(unit.type instanceof  AmmoEnabledUnitType ae && ae.relationship.containsKey(unit)){
-            Teamc parent = ae.relationship.get(unit);
+        if(unit instanceof AmmoEnabledUnitClass ae){
+            Teamc parent = ae.parent;
             if(parent != null){
-                if(unit.ammo <= 0) return null;
+                if(ae.isDepleted()) return null;
                 if(parent instanceof  Ranged pr){
                     if(!unit.within(pr, pr.range())) return null;
                     return Units.closestTarget(unit.team, parent.x(), parent.y(), pr.range() + 16f, u -> air && !u.inFogTo(unit.team), b -> ground && !b.inFogTo(unit.team)) ;

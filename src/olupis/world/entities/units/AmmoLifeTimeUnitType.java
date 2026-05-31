@@ -1,6 +1,5 @@
 package olupis.world.entities.units;
 
-import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -19,13 +18,14 @@ import mindustry.ui.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.world.ai.*;
+import olupis.world.entities.entities.*;
 import olupis.world.entities.packets.*;
 import olupis.world.entities.weapons.*;
 import olupis.world.interfaces.*;
 
 import java.util.*;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.net;
 
 /*Unit that dies when it runs out of ammo, ammo Depletes over time*/
 public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
@@ -81,11 +81,11 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
 
         bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
         bars.row();
-
-        if(state.rules.unitAmmo || killOnAmmoDepletion){
-            bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> Mathf.clamp((unit.ammo - deathThreshold ) / (ammoCapacity - deathThreshold) )));
-            bars.row();
-        }
+//
+//        if(state.rules.unitAmmo || killOnAmmoDepletion){
+//            bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> Mathf.clamp((unit.ammo - deathThreshold ) / (ammoCapacity - deathThreshold) )));
+//            bars.row();
+//        }
 
         for(Ability ability : unit.abilities){
             ability.displayBars(unit, bars);
@@ -107,27 +107,38 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
 
     @Override
     public Color ammoColor(Unit unit){
-        float f = Mathf.clamp((unit.ammo - deathThreshold) / (unit.type.ammoCapacity - deathThreshold));
+
+        float
+            a = unit instanceof AmmoEnabledUnitClass na ? na.currentAmmo() : 0,
+            c = unit instanceof AmmoEnabledUnitClass na ? na.ammoCapacity() : 0,
+            f = Mathf.clamp((a - deathThreshold) / (c - deathThreshold));
         if(ammoDepletesInRange && !inRange(unit)) return Color.black;
         return Tmp.c1.set(Color.black).lerp(unit.team.color, f + Mathf.absin(Time.time, Math.max(f * 2.5f, 1f), 1f - f));
     }
 
-    @Override
-    public void update(Unit unit){
-        if(!startTimeTracker.containsKey(unit))startTimeTracker.put(unit, Time.time + (ammoDepletionOffset / 2f));
-
-        boolean multiplier =((unit.count() > unit.cap() && unit.type.useUnitCap)), op = false;
+    public boolean operational(AmmoEnabledUnitClass unit){
+        boolean out =((unit.count() > unit.cap() && unit.type.useUnitCap)), op = false;
         if(inoperableDepletes) op = (( unit.ammo >= deathThreshold && unit.controller() instanceof NyfalisMiningAi ai  && (ai.targetItem == null || unit.closestCore() == null || ai.inoperable) )
-                            || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding())) //TODO: keep track of building prog and dont dep when no progress
-                            || (unit.controller() instanceof InoperableAi ai && ai.inoperable());
+        || !unit.moving() && (unit.hasWeapons() && !unit.isShooting || !unit.activelyBuilding())) //TODO: keep track of building prog and dont dep when no progress
+        || (unit.controller() instanceof InoperableAi ai && ai.inoperable());
 
         boolean shouldDeplete = ( startTimeTracker.get(unit) <= Time.time) || (ammoDepletesInRange && !inRange(unit));
         if(op || (ammoDepletesOverTime && shouldDeplete && (!overCapacityPenalty || (unit.count() > unit.cap())))){
-            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (multiplier || op ? penaltyMultiplier : 1f));
+            unit.ammo  -= ((depleteOnInteractionUsesPassive ? passiveAmmoDepletion : ammoDepletionAmount) * (out || op ? penaltyMultiplier : 1f));
         }
+        return out;
+    }
+
+    @Override
+    public void update(Unit oUnit){
+        if(!(oUnit instanceof  AmmoEnabledUnitClass unit)) return;
+        if(!startTimeTracker.containsKey(unit))startTimeTracker.put(unit, Time.time + (ammoDepletionOffset / 2f));
+
+        boolean works = operational(unit);
+        float multiplier =works ? penaltyMultiplier : 1f;
 
         if(miningDepletesAmmo && unit.mining()){
-            unit.ammo = unit.ammo - (ammoDepletionAmount * (multiplier ? penaltyMultiplier : 1f));
+            unit.ammo = unit.ammo - (ammoDepletionAmount * multiplier);
             if(unit.ammo <= deathThreshold){
                 unit.mineTile = null;
                 unit.ammo = deathThreshold * 1.5f;
@@ -135,7 +146,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
         }
 
         if(unit.isPlayer() && depleteOnInteraction && unit.ammo >= deathThreshold +0.05f ){
-            unit.ammo = unit.ammo - (ammoDepletionAmount * (multiplier ? penaltyMultiplier : 1f));
+            unit.ammo = unit.ammo - (ammoDepletionAmount * multiplier);
         }
 
         if (unit.ammo <= deathThreshold && killOnAmmoDepletion){
@@ -149,22 +160,13 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
         }
 
         super.update(unit);
-
-        if(lookForParent && !relationship.containsKey(unit) && parentTypes != null && parentTypes.size >= 1){
-            Unit cu = Units.closest(unit.team, unit.x, unit.y, 4000, uf -> !uf.dead && parentTypes.contains(uf.type));
-            if(cu != null){
-                relationship.put(unit, cu);
-            }
-            Log.err(unit + " = " + cu);
-
-        }
     }
 
     @Override
     public Unit create(Team team){
         Unit unit = super.create(team);
 
-        unit.ammo(ammoCapacity);
+        if(unit instanceof  AmmoEnabledUnitClass na) na.fillAmmo();
         startTimeTracker.put(unit, Time.time + ammoDepletionOffset);
         startPos = new Vec2(unit.x /8f, unit.y /8f);
         return unit;
@@ -181,7 +183,7 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
     }
 
     public boolean inRange(Unit unit){
-        if(unit.type instanceof AmmoEnabledUnitType ai && ai.relationship.containsKey(unit)) return unit.within(ai.relationship.get(unit), maxRange);
+        if(unit instanceof  AmmoEnabledUnitClass ai && ai.parent != null) return unit.within(ai.parent, maxRange);
         if(startPos == null || maxRange == -1) return true;
         return unit.within(startPos.x * 8, startPos.y * 8, maxRange);
     }
@@ -213,7 +215,8 @@ public class AmmoLifeTimeUnitType extends  AmmoEnabledUnitType {
 
     @Override
     public float partAmmo(Unit unit){
-        return (unit.ammo - deathThreshold ) / (ammoCapacity - deathThreshold);
+        if(!( unit instanceof  AmmoEnabledUnitClass na)) return 0;
+        return (na.currentAmmo() - deathThreshold ) / (na.ammoCapacity() - deathThreshold);
     }
 
 }
