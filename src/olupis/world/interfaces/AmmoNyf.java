@@ -18,6 +18,8 @@ public interface AmmoNyf extends Entityc{
 
     public boolean ammoBounded();
 
+    public String ammoType();
+
     public boolean shouldRetreat();
 
     public @Nullable Teamc parent();

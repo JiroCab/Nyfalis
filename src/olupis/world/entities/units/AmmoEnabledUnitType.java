@@ -41,6 +41,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     public float minRetreatAmmo = 0.25f;
     public int ammoCapacity = 150;
     public boolean setRetreat = false;
+    public String ammoType = NyfUnitTeamMapper.ammoCarrier;
 
     public AmmoEnabledUnitType(String name){
         super(name);

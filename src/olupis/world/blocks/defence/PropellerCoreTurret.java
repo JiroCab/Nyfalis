@@ -224,6 +224,11 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
             return Mathf.clamp(reloadCounter / reload);
         }
 
+
+        public float reloadF(){
+            return Mathf.clamp(reloadCounter / reload);
+        }
+
         @Override
         public float warmup(){
             return shootWarmup;

@@ -23,6 +23,7 @@ import olupis.input.ui.*;
 import olupis.world.*;
 import olupis.world.ai.*;
 import olupis.world.blocks.unit.*;
+import olupis.world.entities.abilities.*;
 import olupis.world.logic.*;
 import olupis.world.planets.*;
 
@@ -174,6 +175,9 @@ public class NyfalisMain extends Mod{
                 if(c.minfo != null && c.minfo.mod != null && Objects.equals(c.minfo.mod.name, "olupis")){
                     if(c instanceof  Planet) return;
                     if( c instanceof UnlockableContent uc && !uc.fullIcon.found()) uc.uiIcon = uc.fullIcon = Core.atlas.find(Mathf.randomBoolean(0.5f) ? "alphaaaa" :  "ranai");
+                }
+                if(c instanceof UnitType u){
+                    for(int i = 0; i < u.abilities.size; i++) if(u.abilities.get(i) instanceof CarrierResupplyAbility cra) cra.loadRegions();
                 }
             });
         });

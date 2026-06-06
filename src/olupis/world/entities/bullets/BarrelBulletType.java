@@ -1,6 +1,10 @@
 package olupis.world.entities.bullets;
 
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -17,6 +21,11 @@ public class BarrelBulletType extends RollBulletType{
     HashMap<Integer, Boolean> justBounced = new HashMap<>();
     public float bounceDelay = 20;
     public boolean bounceOnWalls = true, bounceOnEnemyWalls = false, hitFires = false, hitProjectiles = true;
+    public  String teamSprite = "";
+    public  String liquidSprite = "";
+    public TextureRegion teamRegion;
+    public TextureRegion liquidRegion;
+    public @Nullable Color liquidColour;
 
     public BarrelBulletType(float speed, float damage, String bulletSprite){
         super(speed, damage);
@@ -30,6 +39,8 @@ public class BarrelBulletType extends RollBulletType{
     public BarrelBulletType(float speed, float damage){
         this(speed, damage, "olupis-barrel");
         backSprite = "olupis-barrel-back";
+        teamSprite  = "olupis-barrel-team";
+        liquidSprite  = "olupis-barrel-liquid";
     }
 
     public void update(Bullet b){
@@ -128,5 +139,35 @@ public class BarrelBulletType extends RollBulletType{
                 justBounced.replace(b.id,false);
             }
         }
+    }
+
+    @Override
+    public void load(){
+        super.load();
+        liquidRegion = Core.atlas.find(liquidSprite);
+        teamRegion  = Core.atlas.find(teamSprite);
+    }
+
+    @Override
+    public void draw(Bullet b){
+        super.draw(b);
+
+        float shrink = shrinkInterp.apply(b.fout());
+        float height = this.height * ((1f - shrinkY) + shrinkY * shrink);
+        float width = this.width * ((1f - shrinkX) + shrinkX * shrink);
+        float offset = -90 + (spin != 0 ? Mathf.randomSeed(b.id, 360f) + b.time * spin : 0f) + rotationOffset;
+
+        if(liquidRegion.found() && liquidColour != null){
+            Draw.color(liquidColour);
+            Draw.rect(liquidRegion, b.x, b.y, width, height, b.rotation() + offset);
+        }
+
+        if(teamRegion.found()){
+            Draw.color(b.team.color);
+            Draw.rect(teamRegion, b.x, b.y, width, height, b.rotation() + offset);
+        }
+
+        Draw.reset();
+
     }
 }

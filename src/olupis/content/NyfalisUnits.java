@@ -910,7 +910,7 @@ public class NyfalisUnits {
             constructor = AmmoEnabledUnitClass::create;
             aiController = WaveAiHandler::new;
             lowAltitude = flying = canGuardUnits = waveHunts = canRetreat=  true;
-            defaultCommand = NyfalisUnitCommands.nyfalisGuardCommand;
+            retreatStatus = NyfalisStatusEffects.retreating;
             weapons.add(new Weapon("olupis-zoner-weapon"){{
                 top = alternate = false;
                 y = -1f;
@@ -2742,7 +2742,7 @@ public class NyfalisUnits {
             passiveAmmoDepletion = 0.1f;
             ammoDepletionAmount = 0.15f;
 
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             timedOutSound = Sounds.explosionDull;
             controller = u -> new NyfalisMiningAi();
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = inoperableDepletes = true;
@@ -2800,7 +2800,7 @@ public class NyfalisUnits {
 
             );
 
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             aiController = UnitHealerAi::new;
             defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
             setEnginesMirror(new UnitEngine(8 / 4f, -21 / 4f, 2.1f, 245));
@@ -2868,7 +2868,7 @@ public class NyfalisUnits {
                 }
             });
 
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             aiController = BuilderAI::new;
             defaultCommand = UnitCommand.rebuildCommand;
             setEnginesMirror(new UnitEngine(8 / 4f, -21 / 4f, 2.1f, 245));
@@ -2889,7 +2889,7 @@ public class NyfalisUnits {
 
             flying = alwaysShootWhenMoving = drawAmmo = lookForParent = true;
             playerControllable = useUnitCap = false;
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             controller = u -> new AgressiveFlyingAi(true, true);
 
 
@@ -2925,7 +2925,7 @@ public class NyfalisUnits {
             ammoDepletionAmount = 0.15f;
 
             aiController = RepairAI::new    ;
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             timedOutSound = Sounds.explosionDull;
             flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = cantMove =  customMineAi = inoperableDepletes  = true;
             isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;

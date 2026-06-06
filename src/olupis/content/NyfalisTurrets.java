@@ -64,6 +64,7 @@ public class NyfalisTurrets {
                     frontColor =  rustyBullet;
 
                     intervalBullet = this.copy();
+                    buildingDamageMultiplier = 0.4f;
                     intervalRandomSpread = 10f;
                     intervalSpread = 5f;
                     bulletInterval = 1f;
@@ -80,6 +81,7 @@ public class NyfalisTurrets {
                     rangeChange = 30f;
                     ammoMultiplier = 1.5f;
                     knockback = 0.3f;
+                    buildingDamageMultiplier = 0.4f;
                     sprite = "mine-bullet";
 
                     hitEffect = despawnEffect = Fx.hitBulletColor;
@@ -96,6 +98,7 @@ public class NyfalisTurrets {
                     knockback = 0.3f;
                     ammoMultiplier = 1.5f;
                     pierceCap = 2;
+                    buildingDamageMultiplier = 0.4f;
 
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = alcoBulletBack;
@@ -121,6 +124,7 @@ public class NyfalisTurrets {
                     hitEffect = despawnEffect = Fx.hitBulletColor;
                     hitColor = backColor = trailColor = alcoBulletBack;
                     frontColor = alcoBullet;
+                    buildingDamageMultiplier = 0.4f;
                 }}
             );
 
@@ -209,6 +213,7 @@ public class NyfalisTurrets {
                     status = StatusEffects.shocked;
                     groundDamageMultiplier = 10f;
                     groundDamageSplashMultiplier = splashPenalty;
+                    buildingDamageMultiplier = 0.4f;
                 }},
                 lead, new EffectivenessMissileType(4.8f, 60f){{
                     width = 6f;
@@ -230,6 +235,7 @@ public class NyfalisTurrets {
                     status = NyfalisStatusEffects.drained;
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
+                    buildingDamageMultiplier = 0.4f;
                 }},
                 iron, new EffectivenessMissileType(5.2f, 80f){{
                     width = 6f;
@@ -251,6 +257,7 @@ public class NyfalisTurrets {
                     status = StatusEffects.slow;
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
+                    buildingDamageMultiplier = 0.4f;
                 }},
                 graphite, new EffectivenessMissileType(6f, 110f){{
                     width = 7f;
@@ -270,6 +277,7 @@ public class NyfalisTurrets {
                     hitEffect = Fx.hitBulletSmall;
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
+                    buildingDamageMultiplier = 0.4f;
                 }},
                 cobalt, new EffectivenessMissileType(4.8f, 20f){{
                     width = 6f;
@@ -291,6 +299,7 @@ public class NyfalisTurrets {
                     status = NyfalisStatusEffects.corupt;
                     groundDamageMultiplier = groundPenalty;
                     groundDamageSplashMultiplier = splashPenalty;
+                    buildingDamageMultiplier = 0.4f;
                 }}
             );
             lightColor = floodLightColor;
@@ -348,6 +357,7 @@ public class NyfalisTurrets {
                 fragBullets = 8;
                 fragSpread = 360;
                 fragRandomSpread = 0;
+                buildingDamageMultiplier = 0.8f;
                 fragBullet = new BulletType(){{
                     speed = 3;
                     damage = 0;
@@ -358,6 +368,7 @@ public class NyfalisTurrets {
                     hitEffect =  Fx.hitFlameSmall;
                     collidesAir = false;
                     hitSound = NyfalisSounds.sawCollision;
+                    buildingDamageMultiplier = 0.8f;
                 }};
             }};
             drawer = new DrawTurret("iron-"){{
@@ -1194,57 +1205,57 @@ public class NyfalisTurrets {
                             heatColor = Pal.techBlue;
                             mirror = false;
                             under = true;
-                            children.addAll(new RegionPart("-barrel") {{
-                                progress = PartProgress.reload.curve(Interp.pow2In);
+                            children.addAll(
+                                new RegionPart("-barrel") {{
+                                    progress = PartProgress.reload.curve(Interp.pow2In);
 
-                                colorTo = new Color(1f, 1f, 1f, 0f);
-                                color = Color.white;
-                                mixColorTo = Pal.accent;
-                                mixColor = new Color(1f, 1f, 1f, 0f);
-                                outline = false;
-                                under = true;
-                                y = 2;
+                                    colorTo = new Color(1f, 1f, 1f, 0f);
+                                    color = Color.white;
+                                    mixColorTo = Pal.accent;
+                                    mixColor = new Color(1f, 1f, 1f, 0f);
+                                    outline = false;
+                                    under = true;
+                                    y = 2;
 
+                                    layerOffset = -0.2f;
 
-
-                                layerOffset = -0.2f;
-
-                                moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
-                            }}, new RegionPart("-front-r"){{
-                                mirror = false;
-                                under = true;
-                                layerOffset = -0.1f;
-                                progress = PartProgress.recoil;
-                                moveX = 1;
-                                moveY = 1;
-                                moveRot = 5;
-                            }}, new RegionPart("-back-r"){{
-                                mirror = false;
-                                under = true;
-                                layerOffset = -0.1f;
-                                progress = PartProgress.smoothReload;
-                                y = -0.5f;
-                                moveX = 4;
-                                moveY = 4;
-                                moves.add(new PartMove(PartProgress.recoil, -4f, -4f, -10));
-                            }}, new RegionPart("-front-l"){{
-                                mirror = false;
-                                under = true;
-                                layerOffset = -0.1f;
-                                progress = PartProgress.recoil;
-                                moveX = -1;
-                                moveY = 1;
-                                moveRot = -5;
-                            }}, new RegionPart("-back-l"){{
-                                mirror = false;
-                                under = true;
-                                layerOffset = -0.1f;
-                                progress = PartProgress.smoothReload;
-                                y = -0.5f;
-                                moveX = -4;
-                                moveY = 4;
-                                moves.add(new PartMove(PartProgress.recoil, 4f, -4f, 10));
-                            }});
+                                    moves.add(new PartMove(PartProgress.warmup.inv(), 0f, -4f, 0f));
+                                }}, new RegionPart("-front-r"){{
+                                    mirror = false;
+                                    under = true;
+                                    layerOffset = -0.1f;
+                                    progress = PartProgress.recoil;
+                                    moveX = 1;
+                                    moveY = 1;
+                                    moveRot = 5;
+                                }}, new RegionPart("-back-r"){{
+                                    mirror = false;
+                                    under = true;
+                                    layerOffset = -0.1f;
+                                    progress = PartProgress.smoothReload;
+                                    y = -0.5f;
+                                    moveX = 4;
+                                    moveY = 4;
+                                    moves.add(new PartMove(PartProgress.recoil, -4f, -4f, -10));
+                                }}, new RegionPart("-front-l"){{
+                                    mirror = false;
+                                    under = true;
+                                    layerOffset = -0.1f;
+                                    progress = PartProgress.recoil;
+                                    moveX = -1;
+                                    moveY = 1;
+                                    moveRot = -5;
+                                }}, new RegionPart("-back-l"){{
+                                    mirror = false;
+                                    under = true;
+                                    layerOffset = -0.1f;
+                                    progress = PartProgress.smoothReload;
+                                    y = -0.5f;
+                                    moveX = -4;
+                                    moveY = 4;
+                                    moves.add(new PartMove(PartProgress.recoil, 4f, -4f, 10));
+                                }}
+                            );
                         }}
                 );
             }};
@@ -1268,6 +1279,7 @@ public class NyfalisTurrets {
                     shootEffect = smokeEffect = Fx.none;
                     frontColor = new Color().set(Pal.bulletYellowBack).lerp(steam.color, 0.3f).a(1);
                     backColor = new Color().set(Pal.bulletYellow).lerp(steam.color, 0.3f).a(1);
+                    liquidColour = steam.color;
                     fragBullets = 1;
                     fragBullet = new FirePuddleBulletType(50,30, true){{
                         knockback = 2f;
@@ -1298,6 +1310,7 @@ public class NyfalisTurrets {
                     shootEffect = smokeEffect = Fx.none;
                     frontColor = new Color().set(Pal.bulletYellowBack).lerp(heavyOil.color, 0.3f).a(1);
                     backColor = new Color().set(Pal.bulletYellow).lerp(heavyOil.color, 0.3f).a(1);
+                    liquidColour = heavyOil.color;
                     fragBullets = 1;
                     fragBullet = new FirePuddleBulletType(50,30){{
                         splashDelay = 10;
@@ -1323,6 +1336,7 @@ public class NyfalisTurrets {
                     shootEffect = smokeEffect = Fx.none;
                     frontColor = new Color().set(Pal.bulletYellowBack).lerp(lubricant.color, 0.3f).a(1);
                     backColor = new Color().set(Pal.bulletYellow).lerp(lubricant.color, 0.3f).a(1);
+                    liquidColour = lubricant.color;
                     fragBullets = 1;
                     fragBullet = new FirePuddleBulletType(50,60){{
                         splashDelay = 5;

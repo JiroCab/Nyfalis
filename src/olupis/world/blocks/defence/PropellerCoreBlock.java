@@ -25,6 +25,7 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.world.*;
+import olupis.world.blocks.defence.PropellerCoreTurret.*;
 
 import static mindustry.Vars.*;
 
@@ -77,7 +78,12 @@ public class PropellerCoreBlock extends CoreBlock  {
     @Override
     public void setBars() {
         super.setBars();
-        addBar("bar.progress", (PropellerCoreBuild entity) -> entity.currentMode().stats[0] ? new Bar("bar.progress", Pal.ammo,() -> entity.unitProg / unitTimer) : null);
+        addBar("bar.progress", (PropellerCoreBuild entity) ->
+            entity.currentMode().stats[0] ? new Bar("bar.progress", Pal.ammo,() -> entity.unitProg / unitTimer) :
+            entity.currentMode().stats[1] && entity instanceof PropellerCoreTurretBuild tur ? new Bar("stat.reload", Pal.ammo,() -> tur.reloadF() ) :
+            //entity.currentMode().stats[3] ? new Bar("bar.progress", Pal.ammo,() -> entity.unitProg / unitTimer) :
+
+            null);
     }
 
 

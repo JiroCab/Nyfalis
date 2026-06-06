@@ -11,7 +11,7 @@ public class AmmoEnabledUnitClass extends UnitEntity implements AmmoNyf{
 
     @Override
     public int classId(){
-        return NyfUnitTeamMapper.ammoEnbaled;
+        return NyfUnitTeamMapper.ammoEnabled;
     }
 
 
@@ -86,6 +86,11 @@ public class AmmoEnabledUnitClass extends UnitEntity implements AmmoNyf{
     @Override
     public boolean ammoBounded(){
         return type instanceof AmmoLifeTimeUnitType na && na.killOnAmmoDepletion;
+    }
+
+    @Override
+    public String ammoType() {
+        return type instanceof AmmoEnabledUnitType na ? na.ammoType : "";
     }
 
     @Override
