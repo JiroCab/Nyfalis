@@ -231,8 +231,7 @@ public class NyfWorldFuckingHelper{
         float bs = (block.size * 8) / 2.0F;
         float brcx = build.x + (bs * xm) + ( 8f * (multiplier /2 * -xm));
         float brcy = build.y + (bs * ym) + ( 8f * (multiplier /2* -ym));
-        float scale = scaleIn * ((Vars.mobile || testMobile) ? 0.8f : 1f);
-
+        float scale = scaleIn * (  turretConfigScale != 0 ? turretConfigScale * 0.05f : (Vars.mobile || testMobile) ? 0.6f : 0.85f);
 
         Draw.z(71.0F);
         Draw.color(Color.white);

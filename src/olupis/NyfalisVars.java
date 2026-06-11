@@ -35,7 +35,7 @@ public class NyfalisVars{
     //Settings vars
     public static boolean shownWarning = false, incompatible = false, nyfalianPlanet = false;
     public static boolean musicModPresent = false;
-    public static float pdlStatusGiverTrans, pdlStatusGiverRange, treeTransgenderRange;
+    public static float pdlStatusGiverTrans, pdlStatusGiverRange, treeTransgenderRange, turretConfigScale;
     public static boolean pdlStatusGiverAnyTeam, pdlStatusGiverSimple;
     public static int turretConfigIndicator;
 

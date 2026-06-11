@@ -1,6 +1,7 @@
 package olupis.world.planets;
 
 import arc.*;
+import arc.math.*;
 import arc.scene.ui.layout.*;
 import mindustry.*;
 import mindustry.gen.*;
@@ -32,7 +33,8 @@ public class NyfalisSectorPresent extends SectorPreset{
                 //I cant figure out pan for both so no
                 ui.planet.viewPlanet(this.planet, false);
                 ui.planet.lookAt(this.sector);
-            }).width(175f)).growX();
+                ui.planet.selectSector(this.sector);
+            }).width(175f)).growX().pad(5);
         }
     }
 }

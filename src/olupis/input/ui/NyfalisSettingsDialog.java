@@ -42,6 +42,7 @@ public class NyfalisSettingsDialog {
         pdlStatusGiverSimple = Core.settings.getBool("nyfalis-pdl-status-simple");
         treeTransgenderRange = settings.getInt("nyfalis-tree-trans-range") * tilesize;
         turretConfigIndicator = settings.getInt("nyfalis-turret-config-indicator");
+        turretConfigScale = settings.getInt("nyfalis-turret-config-scale");
     }
 
     public void BuildDialog(){
@@ -67,6 +68,7 @@ public class NyfalisSettingsDialog {
             check(table, "nyfalis-pdl-status-simple", false);
             slider(table, "nyfalis-tree-trans-range",5, 0, 51, 1, i -> i == 0 ? "@off" : i == 51 ? "@yes" : i + " " + Core.bundle.get("unit.blocks"));
             slider(table, "nyfalis-turret-config-indicator",0, 0, 9, 1, i -> i == 0 ? "@off": Core.bundle.get("turret-indicator-side" + i)) ;
+            slider(table, "nyfalis-turret-config-scale",0, 0, 100, 1, i -> i == 0 ? "@yes" + " (" +((Vars.mobile || testMobile)  ? "idk yet" : 100) +"%)":  i + "%") ;
 
             table.pref(new CollapserSetting("div-gameplay", 6));
             table.checkPref("nyfalis-sandbox-super-weapon-cap", false);
