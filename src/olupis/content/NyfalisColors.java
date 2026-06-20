@@ -7,6 +7,8 @@ import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 
+import java.util.*;
+
 public class NyfalisColors{
     public static Color
         contentOutline = Color.valueOf("371404"),
@@ -32,7 +34,8 @@ public class NyfalisColors{
         acidRainColour = Color.valueOf("50766A").a(0.7f),
         altStatColour = Color.valueOf("63553B"),
 
-        supportGreen = Color.valueOf("5c9f62")
+        supportGreen = Color.valueOf("3ED09A"),
+        supportGreenDarker = Color.valueOf("37946E")
     ;
 
     public  static  Color[]
@@ -42,5 +45,12 @@ public class NyfalisColors{
 
     public static void load(){
         if(Core.settings.getBool("nyfalis-debug")) Log.info("nyf colours loaded idk");
+    }
+
+    public static Color ammoColour(String in){
+        if(in == null || in.isEmpty()) return Pal.ammo;
+        else if(Objects.equals(in, NyfUnitTeamMapper.ammoCarrier)) return rustyBulletBack;
+        else if(Objects.equals(in, NyfUnitTeamMapper.ammoSupport)) return rustyBulletBack;
+        return Pal.ammo;
     }
 }

@@ -911,6 +911,7 @@ public class NyfalisUnits {
             aiController = WaveAiHandler::new;
             lowAltitude = flying = canGuardUnits = waveHunts = canRetreat=  true;
             retreatStatus = NyfalisStatusEffects.retreating;
+            defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
             weapons.add(new Weapon("olupis-zoner-weapon"){{
                 top = alternate = false;
                 y = -1f;
@@ -957,8 +958,9 @@ public class NyfalisUnits {
             constructor = AmmoEnabledUnitClass::create;
             aiController = WaveAiHandler::new;
             lowAltitude = flying = waveHunts =attackRotationLock = circleTarget = altResupply = drawAmmo = canRetreat =  true;
-            retreatStatus = NyfalisStatusEffects.retreating;
             omniMovement = false;
+            retreatStatus = NyfalisStatusEffects.retreating;
+            defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
 
             weapons.add(new NyfalisWeapon("olupis-regioner-weapon"){{
                 top  = alternate = false;
@@ -1034,6 +1036,7 @@ public class NyfalisUnits {
             aiController = WaveAiHandler::new;
             
             retreatStatus = NyfalisStatusEffects.retreating;
+            defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
             faceTarget = false;
             lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
 
@@ -1169,6 +1172,7 @@ public class NyfalisUnits {
             parts.add(new AmmoColouredPart("-pew", 0.8f));
         }};
 
+        //territory -> Shoot'em up ship, 3 forward mg, 2 wing cannons, aa missile launcher (unli)
         //endregion
         //region Ground - Snek
         venom = new SnekUnitType("venom"){{
@@ -1799,7 +1803,7 @@ public class NyfalisUnits {
             constructor = UnitWaterMove::create;
 
             abilities.addAll(
-                new CarrierResupplyAbility(1),
+                new CarrierResupplyAbility(1, 13 * tilesize, new float[][]{{0, -5}} ),
                 new UnitRallySpawnAblity(zoner, 60f * 15f, 0, 4.5f){{
                     moveRot = 1800;
                 }}
@@ -1819,7 +1823,7 @@ public class NyfalisUnits {
             rotateMoveFirst = canDeploy = true;
             constructor = UnitWaterMove::create;
             abilities.addAll(
-                new CarrierResupplyAbility(2),
+                new CarrierResupplyAbility(2, 15f * tilesize, new float[][]{{0, -5}}),
                 new UnitRallySpawnAblity(regioner, 60f * 15f, 0, 10, 0, 8f),
                 new PointDefenceIndicatorAbility(160, 1)
             );
@@ -1885,7 +1889,7 @@ public class NyfalisUnits {
                 }};
             }});
             abilities.addAll(
-                new CarrierResupplyAbility(3),
+                new CarrierResupplyAbility(3, 10 * tilesize,  new float[][]{{10, -10}, {-10, -10}}),
                 new PointDefenceIndicatorAbility(320, 2),
                 new UnitRallySpawnAblity(district, 60f * 30f, 6f, 0,0, 15f, true){{
                     displayBars = false;
@@ -2025,8 +2029,8 @@ public class NyfalisUnits {
                 }})
             ;
             abilities.addAll(
-                new CarrierResupplyAbility(4),
-            new PointDefenceIndicatorAbility(350, 2),
+                new CarrierResupplyAbility(4, 10 * tilesize,  new float[][]{{10, -10}, {-10, -10}}),
+                new PointDefenceIndicatorAbility(350, 2),
                 new ShieldArcAbility(){{
                     radius = 36f;
                     angle = 82f;

@@ -1,5 +1,6 @@
 package olupis.world.entities.entities;
 
+import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -70,7 +71,7 @@ public class AmmoEnabledUnitClass extends UnitEntity implements AmmoNyf{
     }
 
     public float ammof(){
-        return  currentAmmo() / ammoCapacity();
+        return Mathf.clamp(currentAmmo() / ammoCapacity());
     }
 
     @Override

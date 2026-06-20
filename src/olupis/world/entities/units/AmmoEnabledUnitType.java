@@ -23,6 +23,7 @@ import mindustry.world.*;
 import olupis.content.*;
 import olupis.input.*;
 import olupis.world.ai.*;
+import olupis.world.entities.entities.*;
 import olupis.world.interfaces.*;
 
 import java.util.*;
@@ -151,7 +152,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
         bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
         bars.row();
 
-        //bars.add(new Bar(ammoType.icon() + " " + Core.bundle.get("stat.ammo"), ammoType.barColor(), () -> (unit.ammo ) / (ammoCapacity) ));
+        bars.add(new Bar(NyfUnitTeamMapper.ammoIcon(ammoType) + " "+ (Core.settings.getBool("nyfalis-debug") && (unit instanceof AmmoEnabledUnitClass ae) ? ae.ammo + "/" + ammoCapacity :  Core.bundle.get("stat.ammo")  ), NyfalisColors.ammoColour(ammoType), () -> ( unit instanceof AmmoEnabledUnitClass ae ? ae.ammof() : 0)));
         bars.row();
 
         for(Ability ability : unit.abilities){

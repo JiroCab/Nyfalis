@@ -45,7 +45,7 @@ public  class NyfalisWeapon extends Weapon {
     ;
     /*Margin where when a weapon can fire while transition from ground to air*/
     public  float boostedEvaluation = 0.95f, groundedEvaluation = 0.05f;
-    public float ammoPerShot = -1;
+    public float ammoPerShot = 1;
     public boolean weaponIconUseFullString = false;
     public String weaponIconString = "";
 
@@ -205,7 +205,7 @@ public  class NyfalisWeapon extends Weapon {
         if((mount.shoot || partialControl && unit.isShooting && !controllable) && //must be shooting
                 can && //must be able to shoot
                 !(bullet.killShooter &&mount.totalShots >0)&& //if the bullet kills the shooter, you should only ever be able to shoot once
-                (!(unit instanceof AmmoNyf an) || an.currentAmmo() > 0f) &&
+                (ignoreAmmo || (!(unit instanceof AmmoNyf an) || an.currentAmmo() >= ammoPerShot)) &&
                 (!alternate ||wasFlipped ==flipSprite)&&
                 mount.warmup >=minWarmup && //must be warmed up
                 unit.vel.len()>=minShootVelocity && //check velocity requirements
@@ -216,7 +216,7 @@ public  class NyfalisWeapon extends Weapon {
 
             mount.reload = reload;
 
-            if(unit instanceof AmmoNyf an)an.setAmmo(Math.min(an.currentAmmo() - ammoPerShot, 0));
+            if(unit instanceof AmmoNyf an)an.setAmmo(Math.max(an.currentAmmo() - ammoPerShot, 0));
         }
     }
 

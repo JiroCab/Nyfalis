@@ -9,9 +9,12 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import olupis.world.blocks.calyx.ineternal.*;
 import olupis.world.entities.entities.*;
+
+import java.util.*;
 
 public class  NyfUnitTeamMapper{
     public static Team verdentTeam, calyxTeam;
@@ -26,10 +29,11 @@ public class  NyfUnitTeamMapper{
         ammoLegged
     ;
 
-    //AmmoTypes
+    //AmmoTypes, labelled for bar colour and resupply Logic
     public static String
         ammoCarrier = "nyf-carrier",
-        ammoSpawned = "nyf-spawned" //May not be actually matched with anything but might as well label them
+        ammoSpawned = "nyf-spawned",
+        ammoSupport = "nyf-support"
     ;
 
 
@@ -105,5 +109,13 @@ public class  NyfUnitTeamMapper{
 
 
         return team;
+    }
+
+    public static String ammoIcon(String in){
+        if(in == null || in.isEmpty()) return "";
+        else if(Objects.equals(in, NyfUnitTeamMapper.ammoCarrier)) return Iconc.export + "";
+        else if(Objects.equals(in, NyfUnitTeamMapper.ammoSupport)) return Iconc.add + "";
+        else if(Objects.equals(in, NyfUnitTeamMapper.ammoSpawned)) return Iconc.modeAttack + "";
+        return "";
     }
 }

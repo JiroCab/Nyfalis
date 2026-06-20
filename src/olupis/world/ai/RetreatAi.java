@@ -21,9 +21,6 @@ public class RetreatAi extends ArmDefenderAi{
             return;
         }
 
-        if(unit.controller() instanceof CommandAI ai){
-            ai.defaultBehavior();
-        }
         if(unit.isCommandable()){
             boolean hold = false;
             if(!unit.command().hasStance(UnitStance.pursueTarget)){
@@ -32,6 +29,11 @@ public class RetreatAi extends ArmDefenderAi{
             }
 
             unit.command().setStance(UnitStance.holdFire, hold);
+        }
+
+
+        if(unit.controller() instanceof CommandAI ai){
+            ai.defaultBehavior();
         }
     }
 
@@ -45,7 +47,7 @@ public class RetreatAi extends ArmDefenderAi{
     @Override
     public Teamc findFollow(float x, float y, float range){
         if(unit instanceof AmmoEnabledUnitClass){
-            return  Units.closest(unit.team, x, y, Float.MAX_VALUE, u -> !u.dead() && u.type != unit.type && u.type.abilities.contains(a -> a instanceof CarrierResupplyAbility),
+            return  Units.closest(unit.team, x, y, Float.MAX_VALUE, u -> !u.dead() && u.type != unit.type && u.type.abilities.contains(a -> a instanceof CarrierResupplyAbility ra /*&& ra.hasEmptyPort()*/),
             (u, tx, ty) -> -u.maxHealth + Mathf.dst2(u.x, u.y, tx, ty) / 6400f);
         }
         return super.findFollow(x, y, range);
