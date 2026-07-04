@@ -13,7 +13,6 @@ import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.*;
 import olupis.content.*;
 import olupis.input.*;
@@ -131,7 +130,8 @@ public class CarrierResupplyAbility extends Ability{
                 if(ae instanceof Hitboxc hu) hb = hu.hitSize();
                 if(pe.within(Tmp.v2, range + hb)){
                     resupplyEffect.at(unit.x, unit.y, 15f , Pal.ammo, ae);
-                    ae.setAmmo(Math.min(ae.currentAmmo() + (resupply * ae.ammoCapacity()), ae.ammoCapacity()));
+                    ae.resupply(Math.round(resupply * ae.ammoCapacity()));
+
 
                     if(ae instanceof Statusc se){
                         se.apply(StatusEffects.disarmed, Time.toSeconds + resupplyDelay);
@@ -181,7 +181,7 @@ public class CarrierResupplyAbility extends Ability{
 
     public boolean validUnit(Unit other){
         return
-            other instanceof AmmoEnabledUnitClass ae
+            other instanceof AmmoNyf ae
             && Objects.equals(ae.ammoType(), NyfUnitTeamMapper.ammoCarrier)
             && ae.ammof() <= 0.8f
             && ( //Unit Ai check, so it ignores anything that isn't trying to resupply 1st, (aka stop beaming moving empty units via beam)

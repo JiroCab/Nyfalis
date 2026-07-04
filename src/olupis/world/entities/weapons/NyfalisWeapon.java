@@ -216,7 +216,7 @@ public  class NyfalisWeapon extends Weapon {
 
             mount.reload = reload;
 
-            if(unit instanceof AmmoNyf an)an.setAmmo(Math.max(an.currentAmmo() - ammoPerShot, 0));
+            if(unit instanceof AmmoNyf an)an.setAmmo(Math.round(Math.max(an.currentAmmo() - ammoPerShot, 0)));
         }
     }
 

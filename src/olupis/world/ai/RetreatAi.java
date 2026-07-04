@@ -46,7 +46,7 @@ public class RetreatAi extends ArmDefenderAi{
 
     @Override
     public Teamc findFollow(float x, float y, float range){
-        if(unit instanceof AmmoEnabledUnitClass){
+        if(unit instanceof AmmoNyf){
             return  Units.closest(unit.team, x, y, Float.MAX_VALUE, u -> !u.dead() && u.type != unit.type && u.type.abilities.contains(a -> a instanceof CarrierResupplyAbility ra /*&& ra.hasEmptyPort()*/),
             (u, tx, ty) -> -u.maxHealth + Mathf.dst2(u.x, u.y, tx, ty) / 6400f);
         }

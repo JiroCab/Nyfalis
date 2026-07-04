@@ -4,11 +4,15 @@ import arc.util.*;
 import mindustry.gen.*;
 
 public interface AmmoNyf extends Entityc{
-    public float currentAmmo();
+    public int currentAmmo();
 
-    public float ammoCapacity();
+    public int ammoCapacity();
 
-    public void setAmmo(float ammo);
+    public void setAmmo(int ammo);
+
+    public void resupply(int mult);
+
+    public void resupplyAdd(int add);
 
     public void fillAmmo();
 
@@ -25,5 +29,15 @@ public interface AmmoNyf extends Entityc{
     public @Nullable Teamc parent();
 
     public void setParent(Teamc parent);
+
+    public Unit unit();
+
+    public void callTimeOut();
+
+    public void setAmmoTime(int time);
+
+    public int ammoTime();
+
+    public int ammoTimeOffset();
 
 }

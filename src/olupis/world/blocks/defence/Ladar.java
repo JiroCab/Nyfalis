@@ -1,16 +1,12 @@
 package olupis.world.blocks.defence;
 
-import arc.func.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
-import mindustry.core.*;
 import mindustry.entities.*;
-import mindustry.entities.Units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -19,7 +15,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.meta.*;
-import olupis.world.entities.units.*;
+import olupis.world.*;
 
 import static mindustry.Vars.*;
 import static olupis.world.NyfWorldFuckingHelper.bestEnemyFog;
@@ -154,7 +150,7 @@ public class Ladar extends Radar {
 
         @Override
         public void onRemoved(){
-            if(slave != null) AmmoLifeTimeUnitType.callTimeOut(slave);
+            if(slave != null) NyfWorldFuckingHelper.callTimeOut(slave);
             super.onRemoved();
         }
 

@@ -20,9 +20,9 @@ import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
+import olupis.world.*;
 import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.entities.*;
-import olupis.world.entities.units.*;
 import olupis.world.interfaces.*;
 
 import static mindustry.Vars.*;
@@ -199,7 +199,7 @@ public class MechPad extends Block {
 
         @Override
         public void onRemoved(){
-            if(slave != null) AmmoLifeTimeUnitType.callTimeOut(unit());
+            if(slave != null) NyfWorldFuckingHelper.callTimeOut(unit());
             super.onRemoved();
         }
 

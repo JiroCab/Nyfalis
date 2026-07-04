@@ -5,11 +5,13 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.ai.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
@@ -22,6 +24,7 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import olupis.content.*;
 import olupis.input.*;
+import olupis.input.NyfalisUnitCommands.*;
 import olupis.world.ai.*;
 import olupis.world.entities.entities.*;
 import olupis.world.interfaces.*;
@@ -39,9 +42,8 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     //used by relationship for recreating it on load for unit to unit gayness
     public @Nullable Seq<MappableContent> parentTypes = null;
     public StatusEffect retreatStatus = StatusEffects.none;
-    public float minRetreatAmmo = 0.25f;
-    public int ammoCapacity = 150;
-    public boolean setRetreat = false;
+    public int minRetreatAmmo = 10;
+    public int ammoCapacity = 500;
     public String ammoType = NyfUnitTeamMapper.ammoCarrier;
 
     public AmmoEnabledUnitType(String name){
@@ -152,7 +154,10 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
         bars.add(new Bar("stat.health", Pal.health, unit::healthf).blink(Color.white));
         bars.row();
 
-        bars.add(new Bar(NyfUnitTeamMapper.ammoIcon(ammoType) + " "+ (Core.settings.getBool("nyfalis-debug") && (unit instanceof AmmoEnabledUnitClass ae) ? ae.ammo + "/" + ammoCapacity :  Core.bundle.get("stat.ammo")  ), NyfalisColors.ammoColour(ammoType), () -> ( unit instanceof AmmoEnabledUnitClass ae ? ae.ammof() : 0)));
+        bars.add(new Bar(
+            () -> NyfUnitTeamMapper.ammoIcon(ammoType) + " "+ (Core.settings.getBool("nyfalis-debug") && (unit instanceof AmmoNyf ae) ? Strings.autoFixed(ae.currentAmmo(), 0) + "/" + ammoCapacity :  Core.bundle.get("stat.ammo")  ),
+            () ->NyfalisColors.ammoColour(ammoType),
+            () -> ( unit instanceof AmmoNyf ae ? ae.ammof() : 0)));
         bars.row();
 
         for(Ability ability : unit.abilities){
@@ -178,7 +183,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
         super.update(unit);
 
         if(canRetreat && retreatStatus != null && unit instanceof AmmoNyf an){
-            int min = Math.round(setRetreat ? minRetreatAmmo : an.ammoCapacity() * minRetreatAmmo);
+            int min =  minRetreatAmmo;
             if(min <= an.currentAmmo() && unit.isCommandable() && unit.command().command == NyfalisUnitCommands.nyfalisRetreatCommand) unit.apply(retreatStatus, Time.toSeconds);
         }
     }
@@ -187,8 +192,20 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     public Unit create(Team team){
         Unit unit =  super.create(team);
 
-        if(unit instanceof  AmmoNyf ae) ae.fillAmmo();
+        if(unit instanceof  AmmoNyf ae){
+            ae.fillAmmo();
+            ae.setAmmoTime(ae.ammoTimeOffset());
+        }
         return unit;
+    }
+
+    @Override
+    public Unit spawn(Position pos){
+        return super.spawn(pos);
+    }
+
+    public boolean shouldRetreat(int ammo){
+        return   minRetreatAmmo >= ammo;
     }
 }
 

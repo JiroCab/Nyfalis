@@ -4,6 +4,7 @@ import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.io.*;
 import mindustry.net.*;
+import olupis.world.*;
 import olupis.world.entities.units.*;
 
 public class NyfalisUnitTimedOutPacket extends Packet {
@@ -29,7 +30,6 @@ public class NyfalisUnitTimedOutPacket extends Packet {
 
     public void handleClient() {
         if(this.unit == null)return;
-        if(this.unit.type instanceof AmmoLifeTimeUnitType u) u.timedOut(this.unit);
-        else AmmoLifeTimeUnitType.timedOut(unit);
+        NyfWorldFuckingHelper.timedOut(unit);
     }
 }

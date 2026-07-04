@@ -5,6 +5,8 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.ai.*;
+import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
@@ -13,6 +15,7 @@ import mindustry.world.*;
 import olupis.content.*;
 import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
+import olupis.world.interfaces.*;
 
 import static mindustry.Vars.*;
 
@@ -45,6 +48,14 @@ public class NyfalisMiningAi extends AIController {
     }
 
     @Override
+    public void stanceChanged(){
+        if(targetItem != null && unit.controller() instanceof CommandAI ai && !ai.hasStance(UnitStance.mineAuto) && !ai.hasStance(ItemUnitStance.getByItem(targetItem))){
+            mining = false;
+            targetItem = null;
+        }
+    }
+
+    @Override
     public void updateMovement(){
         Building core = unit.closestCore();
 
@@ -52,7 +63,7 @@ public class NyfalisMiningAi extends AIController {
 
         if(dynamicItems)updateMineItems(core);
 
-        /*if(unit.type instanceof AmmoLifeTimeUnitType al && al.deathThreshold * 2f >= unit.ammo){
+        if(unit instanceof AmmoNyf al && al.shouldRetreat()){
             if(unit.stack.amount > 0 ){
                 unit.mineTile = ore = null;
                 mineType = 1;
@@ -66,10 +77,9 @@ public class NyfalisMiningAi extends AIController {
                 }
                 return;
             }else{
-                al.callTimeOut(unit);
+                al.callTimeOut();
             }
         }
-*/
         if(unit.mineTile != null && !unit.mineTile.within(unit, unit.type.mineRange)){
             unit.mineTile(null);
         }
@@ -89,7 +99,7 @@ public class NyfalisMiningAi extends AIController {
                 return;
             }
 
-            if(unit instanceof AmmoEnabledUnitClass al && al.shouldRetreat()){
+            if(unit instanceof AmmoNyf al && al.shouldRetreat()){
                 mining = false;
                 unit.mineTile(null);
                 ore = null;

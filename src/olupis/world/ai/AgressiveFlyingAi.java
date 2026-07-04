@@ -8,6 +8,7 @@ import mindustry.type.*;
 import mindustry.type.weapons.RepairBeamWeapon.*;
 import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
+import olupis.world.interfaces.*;
 
 import static mindustry.Vars.state;
 
@@ -42,7 +43,7 @@ public class AgressiveFlyingAi extends FlyingAI {
     public void updateMovement(){
         unloadPayloads();
         Unit parent = null;
-        if(unit instanceof  AmmoEnabledUnitClass em && em.parent() != null && em.parent() instanceof  Unit up) parent = up;
+        if(unit instanceof  AmmoNyf em && em.parent() != null && em.parent() instanceof  Unit up) parent = up;
 
         //Allways follow parent regardless
         if(parent != null && !parent.dead() && unit.isAdded()) {
@@ -70,7 +71,7 @@ public class AgressiveFlyingAi extends FlyingAI {
 
         }else{
             Unit parent = null;
-            if(unit instanceof AmmoEnabledUnitClass ae && ae.parent() != null && ae.parent() instanceof  Unit up) parent = up;
+            if(unit instanceof AmmoNyf ae && ae.parent() != null && ae.parent() instanceof  Unit up) parent = up;
             if(parent != null && !parent.dead){
 
                 Vec2 aimVec = Predict.intercept(vec , new Vec2(parent.aimX, parent.aimY), unit.type.weapons.first().bullet.speed);
@@ -106,7 +107,7 @@ public class AgressiveFlyingAi extends FlyingAI {
 
     @Override
     public boolean useFallback(){ /*allowed to be used in waves*/
-        boolean hasParent = unit instanceof  AmmoEnabledUnitClass em && em.parent() != null&& em.parent() instanceof  Unit;
+        boolean hasParent = unit instanceof  AmmoNyf em && em.parent() != null&& em.parent() instanceof  Unit;
         return hasParent && (unit.team.isAI() || unit.team == state.rules.waveTeam);
     }
 

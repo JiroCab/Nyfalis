@@ -25,6 +25,7 @@ import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
 import olupis.input.*;
+import olupis.input.NyfalisUnitCommands.*;
 import olupis.world.*;
 import olupis.world.ai.*;
 import olupis.world.blocks.defence.*;
@@ -345,5 +346,25 @@ public float secondaryLightRadius = lightRadius  * 2, deathRegrowChance = 0.1f;
 
     public void updatePayload(Unit unit){
 
+    }
+
+
+    @Override
+    public void getUnitStances(Unit unit, Seq<UnitStance> out){
+        if(!(unit.controller() instanceof CommandAI ai)) return;
+
+        var current = ai.currentCommand();
+        if(current == NyfalisUnitCommands.nyfalisMineCommand){
+            out.add(UnitStance.mineAuto);
+            for(Item item : indexer.getAllPresentOres()){
+                if(unit.canMine(item) && ((mineFloor && indexer.hasOre(item)) || (mineWalls && indexer.hasWallOre(item)))){
+                    var itemStance = ItemUnitStance.getByItem(item);
+                    if(itemStance != null){
+                        out.add(itemStance);
+                    }
+                }
+            }
+        }
+        else super.getUnitStances(unit, out);
     }
 }

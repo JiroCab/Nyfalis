@@ -11,6 +11,7 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.input.Binding;
+import mindustry.type.*;
 import olupis.content.*;
 import olupis.world.ai.*;
 import olupis.world.entities.units.*;
@@ -45,6 +46,10 @@ public class NyfalisUnitCommands {
                 @Override
                 public String localized(){
                     return mineCommand.localized();
+                }
+
+                {
+                    refreshOnSelect =  true;
                 }
             };
             nyfalisGuardCommand = new NyfUnitCommand("nyfalis-guard", "units", u -> new ArmDefenderAi());
@@ -104,6 +109,11 @@ public class NyfalisUnitCommands {
                 drawTarget = true;
                 switchToMove = resetTarget = false;
             }};
+
+            for(Item item : NyfalisItemsLiquid.nyfalisOnlyItems){
+                new ItemUnitStance(item);
+            }
+
         }
 
 

@@ -907,11 +907,14 @@ public class NyfalisUnits {
             strafePenalty = 0.35f;
             engineOffset = 4.6f;
 
-            constructor = AmmoEnabledUnitClass::create;
             aiController = WaveAiHandler::new;
             lowAltitude = flying = canGuardUnits = waveHunts = canRetreat=  true;
+
+            constructor = AmmoEnabledUnitClass::create;
+            ammoType = NyfUnitTeamMapper.ammoCarrier;
             retreatStatus = NyfalisStatusEffects.retreating;
             defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
+
             weapons.add(new Weapon("olupis-zoner-weapon"){{
                 top = alternate = false;
                 y = -1f;
@@ -954,11 +957,12 @@ public class NyfalisUnits {
             hitSize = 9f;
             circleTargetRadius = 10f;
 
-
-            constructor = AmmoEnabledUnitClass::create;
-            aiController = WaveAiHandler::new;
             lowAltitude = flying = waveHunts =attackRotationLock = circleTarget = altResupply = drawAmmo = canRetreat =  true;
             omniMovement = false;
+
+            constructor = AmmoEnabledUnitClass::create;
+            ammoType = NyfUnitTeamMapper.ammoCarrier;
+            aiController = WaveAiHandler::new;
             retreatStatus = NyfalisStatusEffects.retreating;
             defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
 
@@ -1032,13 +1036,14 @@ public class NyfalisUnits {
             ammoZ = Layer.flyingUnitLow;
             range = 115f;
 
-            constructor = AmmoEnabledUnitClass::create;
-            aiController = WaveAiHandler::new;
-            
-            retreatStatus = NyfalisStatusEffects.retreating;
-            defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
             faceTarget = false;
             lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
+
+            constructor = AmmoEnabledUnitClass::create;
+            ammoType = NyfUnitTeamMapper.ammoCarrier;
+            aiController = WaveAiHandler::new;
+            retreatStatus = NyfalisStatusEffects.retreating;
+            defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
 
             weapons.addAll(
                 new NyfalisWeapon("olupis-district pew"){{
@@ -2538,8 +2543,11 @@ public class NyfalisUnits {
 
             targetGround = targetAir = drawAmmo = true;
             playerControllable  = logicControllable = useUnitCap  = false;
+
+            ammoType = NyfUnitTeamMapper.ammoSpawned;
             constructor = LegsUnit::create;
             controller = u -> new SearchAndDestroyFlyingAi();
+
             weapons.add(new NyfalisWeapon(){{
                 y = x = 0f;
                 reload = 35f;
@@ -2583,11 +2591,14 @@ public class NyfalisUnits {
 
             flying = targetGround = targetAir = drawAmmo = altResupply = true;
             playerControllable  = logicControllable = useUnitCap = false;
+
             constructor = AmmoEnabledUnitClass::create;
+            ammoType = NyfUnitTeamMapper.ammoSpawned;
             targetFlags = new BlockFlag[]{BlockFlag.factory, null};
             controller = u -> new SearchAndDestroyFlyingAi(true){{
                 targetFlames = true;
             }};
+
             weapons.addAll(
                 new NyfalisWeapon(){{
                     y = x = 0f;
@@ -2654,8 +2665,11 @@ public class NyfalisUnits {
 
             flying = targetGround = targetAir = drawAmmo = true;
             playerControllable  = logicControllable = useUnitCap =  false;
+
+            ammoType = NyfUnitTeamMapper.ammoSpawned;
             constructor = AmmoEnabledUnitClass::create;
             controller = u -> new SearchAndDestroyFlyingAi(true);
+
             weapons.add(new NyfalisWeapon(){{
                 y = x = 0f;
                 reload = 10f;
@@ -2702,8 +2716,11 @@ public class NyfalisUnits {
 
             flying = targetGround = targetAir = drawAmmo  = true;
             playerControllable  = logicControllable = useUnitCap  = false;
+
+            ammoType = NyfUnitTeamMapper.ammoSpawned;
             constructor = AmmoEnabledUnitClass::create;
             controller = u -> new SearchAndDestroyFlyingAi(true);
+
             weapons.add(new NyfalisWeapon(){{
                 reload = 24f;
                 x = shootY = 0f;
@@ -2743,14 +2760,16 @@ public class NyfalisUnits {
             fogRadius =0;
             mineSpeed = 3.5f;
             itemCapacity = 20;
-            passiveAmmoDepletion = 0.1f;
-            ammoDepletionAmount = 0.15f;
+            passiveAmmoDepletion = 1;
+            ammoDepletionAmount = 1;
+
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = inoperableDepletes = true;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
 
             constructor = AmmoEnabledUnitClass::create;
             timedOutSound = Sounds.explosionDull;
             controller = u -> new NyfalisMiningAi();
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = inoperableDepletes = true;
-            isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
+            ammoType = NyfUnitTeamMapper.ammoSupport;
         }};
 
         phantom = new AmmoLifeTimeUnitType("phantom"){{
@@ -2804,12 +2823,15 @@ public class NyfalisUnits {
 
             );
 
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = false;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = drawAmmo  = true;
+
             constructor = AmmoEnabledUnitClass::create;
             aiController = UnitHealerAi::new;
             defaultCommand = NyfalisUnitCommands.nyfalisMendCommand;
+            ammoType = NyfUnitTeamMapper.ammoSupport;
+
             setEnginesMirror(new UnitEngine(8 / 4f, -21 / 4f, 2.1f, 245));
-            isEnemy = ammoDepletesOverTime = depleteOnInteraction = false;
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = canMend = canHealUnits =  targetAir = targetGround = singleTarget  = drawAmmo  = true;
         }};
 
         banshee = new LeggedWaterUnit("banshee"){{
@@ -2827,12 +2849,14 @@ public class NyfalisUnits {
             legBaseOffset = -2f;
             legMoveSpace = 1.4f;
 
+            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = lockLegsOnLiquid= drawAmmo = customShadow = inoperableDepletes = true;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = false;
+
             groundLayer = Layer.legUnit;
             constructor = LegsUnit::create;
             timedOutSound = Sounds.explosionDull;
             controller = u -> new NyfalisMiningAi();
-            hovering = miningDepletesAmmo = depleteOnInteractionUsesPassive = showLegsOnLiquid = lockLegsOnLiquid= drawAmmo = customShadow = inoperableDepletes = true;
-            isEnemy = ammoDepletesOverTime = depleteOnInteraction = canDrown = false;
+            ammoType = NyfUnitTeamMapper.ammoSupport;
         }};
 
         revenant = new AmmoLifeTimeUnitType("revenant"){{
@@ -2872,12 +2896,15 @@ public class NyfalisUnits {
                 }
             });
 
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive =  targetAir = targetGround = singleTarget  = drawAmmo  = true;
+
             constructor = AmmoEnabledUnitClass::create;
             aiController = BuilderAI::new;
             defaultCommand = UnitCommand.rebuildCommand;
+            ammoType = NyfUnitTeamMapper.ammoSupport;
+
             setEnginesMirror(new UnitEngine(8 / 4f, -21 / 4f, 2.1f, 245));
-            isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive =  targetAir = targetGround = singleTarget  = drawAmmo  = true;
         }};
 
         //endregion
@@ -2893,9 +2920,10 @@ public class NyfalisUnits {
 
             flying = alwaysShootWhenMoving = drawAmmo = lookForParent = true;
             playerControllable = useUnitCap = false;
+
             constructor = AmmoEnabledUnitClass::create;
             controller = u -> new AgressiveFlyingAi(true, true);
-
+            ammoType = NyfUnitTeamMapper.ammoSpawned;
 
             weapons.add(new LimitedRepairBeamWeapon(""){{
                 shootCone = 20f;
@@ -2925,14 +2953,16 @@ public class NyfalisUnits {
             fogRadius = 0;
             mineSpeed = 3.5f;
             itemCapacity = 10;
-            passiveAmmoDepletion = 0.07f;
-            ammoDepletionAmount = 0.15f;
+            passiveAmmoDepletion = 1;
+            ammoDepletionAmount = 1;
+
+            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = cantMove =  customMineAi = inoperableDepletes  = true;
+            isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
 
             aiController = RepairAI::new    ;
             constructor = AmmoEnabledUnitClass::create;
             timedOutSound = Sounds.explosionDull;
-            flying = miningDepletesAmmo = depleteOnInteractionUsesPassive = constructHideDefault = drawAmmo = cantMove =  customMineAi = inoperableDepletes  = true;
-            isEnemy = ammoDepletesOverTime = depleteOnInteraction = ammoDepletesInRange = false;
+            ammoType = NyfUnitTeamMapper.ammoSupport;
 
             weapons.add(new NyfalisWeapon(){{
                 top = mirror = alternate = false;

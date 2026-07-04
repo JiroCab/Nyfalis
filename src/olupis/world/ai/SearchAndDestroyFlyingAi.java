@@ -11,6 +11,8 @@
  import mindustry.logic.*;
  import mindustry.type.*;
  import mindustry.world.meta.*;
+ import olupis.world.blocks.defence.*;
+ import olupis.world.blocks.defence.ItemUnitTurret.*;
  import olupis.world.entities.entities.*;
  import olupis.world.entities.units.*;
  import olupis.world.interfaces.*;
@@ -57,8 +59,11 @@ public class SearchAndDestroyFlyingAi extends FlyingAI  implements InoperableAi{
         }
         Teamc parent = null;
         if(unit instanceof  AmmoEnabledUnitClass ae){
-            parent= ae.parent;
+            parent= ae.parent();
             if(parent != null){
+                if(parent instanceof ItemUnitTurretBuild itu){
+                    circle(parent, itu.resupplyRange());
+                }
                 if( (parent instanceof Ranged pr && (!unit.within(pr, pr.range()) || (target == null || !target.within(pr, pr.range()))) )){
                     justMove(parent);
                     target = null;

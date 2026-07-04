@@ -26,6 +26,8 @@ import olupis.content.*;
 import olupis.world.EnvUpdater.*;
 import olupis.world.blocks.calyx.*;
 import olupis.world.blocks.environment.*;
+import olupis.world.entities.packets.*;
+import olupis.world.entities.units.*;
 
 import static arc.Core.camera;
 import static mindustry.Vars.*;
@@ -257,6 +259,25 @@ public class NyfWorldFuckingHelper{
 
     public static void renderConfigIndicator(Building build, float scl, TextureRegion tex){
         renderConfigIndicator(build, scl, Seq.with(tex));
+    }
+
+
+    public static void callTimeOut(Unit unit){
+        if (!net.active() || Vars.net.server()) {
+            NyfalisUnitTimedOutPacket packet = new NyfalisUnitTimedOutPacket();
+            packet.unit = unit;
+            Vars.net.send(packet, true);
+            timedOut(unit);
+        }
+
+    }
+
+    public static void timedOut(Unit unit){
+        if(unit.type instanceof  AmmoLifeTimeUnitType a) a.timedOutTyped(unit);
+        else {
+            NyfalisFxs.explosionUnitDepleted.at(unit.x, unit.y, unit.rotation, unit);
+            unit.remove();
+        }
     }
 
     //endregion

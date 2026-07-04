@@ -33,11 +33,11 @@ import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
+import olupis.world.*;
 import olupis.world.blocks.defence.Articulator.*;
 import olupis.world.blocks.turret.*;
 import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
-import olupis.world.entities.entities.*;
 import olupis.world.entities.packets.*;
 import olupis.world.entities.units.*;
 import olupis.world.interfaces.*;
@@ -61,20 +61,30 @@ public class ItemUnitTurret extends NyfalisItemTurret{
     public Effect failedMakeFx = NyfalisFxs.explosionFailedMake;
     public TextureRegion bottomRegion, rotatorRegion, radarRegion;
     /*Hovering Shows the unit creation*/
-    public boolean hoverShowsSpawn = true, payloadExitShow = true, drawOnTarget = false, arrowShootPos = true, unitFactory = false;
-    /*Aim at the rally point*/
-    public boolean rallyAim = true;
-    /*Aim for closest liquid*/
-    public boolean liquidAim = false;
-    public boolean setDynamicConsumer = true;
-    //Module pareameters
+    public boolean
+        hoverShowsSpawn = true,
+        payloadExitShow = true,
+        arrowShootPos = true,
+        setDynamicConsumer = true,
+        /*Aim for closest liquid*/
+        liquidAim = false,
+        /*Aim at the rally point*/
+        rallyAim = true,
+        drawOnTarget = false,
+        unitFactory = false,
+        //Module parameters
+        hasAlternate = true,
+        boosterAlternate = false;
     public Block statArticulator;
-    public boolean hasAlternate = true, boosterAlternate = false;
     public int minAltTier = Integer.MIN_VALUE, maxAltTier = 1;
     public @Nullable String boosterDesc;
 
     //For Shooting whatever is in payload as a bullet
-    public float payloadSpeed = 0.7f, payloadRotateSpeed = 5f;
+    public float
+        payloadSpeed = 0.7f,
+        payloadRotateSpeed = 5f,
+        resupplyRange = Math.max(range * 0.2f, 200f)
+    ;
 
     /*Todo:  tier/unit switch when a component block is attached (t4/5 erekir) */
 
@@ -432,20 +442,22 @@ public class ItemUnitTurret extends NyfalisItemTurret{
                 child = Groups.unit.getByID(readUnitId);
 
                 if(child != null && !net.client()){
-                    if(child instanceof AmmoEnabledUnitClass ae && ae.parent == null) ae.setParent(this);
+                    if(child instanceof AmmoNyf ae && ae.parent() == null) ae.setParent(this);
                     readUnitId = -1;
                 }
             }
 
             if(child != null && child.dead){
-                if(child instanceof AmmoEnabledUnitClass ae && ae.parent == null) ae.setParent(null);
+                if(child instanceof AmmoNyf ae && ae.parent() == null) ae.setParent(null);
                 child = null;
-
             }
-        }
 
-        public void resupplied(){
-
+            if(!unitFactory && child != null && !child.dead()){
+                if(child instanceof  AmmoNyf ae && child.within(this, resupplyRange) && ae.ammof() <= 0.8f){
+                    ae.resupply(1);
+                    child.apply(StatusEffects.disarmed, Time.toSeconds);
+                }
+            }
         }
 
         public UnitType checkUnit(Item item){
@@ -489,7 +501,7 @@ public class ItemUnitTurret extends NyfalisItemTurret{
 
         @Override
         protected void updateShooting(){
-            if(!isUnitFactory() && child != null) return;
+            if(!isUnitFactory() && child != null && !child.dead()) return; //Always have a idle child since we keep one
             if(reloadCounter >= reload && !charging() && shootWarmup >= minWarmup){
                 BulletType type = peekAmmo();
                 if(useAlternate && type instanceof SpawnHelperBulletType spw && spw.alternateType != null) type = spw.alternateType;
@@ -943,7 +955,7 @@ public class ItemUnitTurret extends NyfalisItemTurret{
 
         @Override
         public void onRemoved(){
-            if(child != null) AmmoLifeTimeUnitType.callTimeOut(child);
+            if(child != null) NyfWorldFuckingHelper.callTimeOut(child);
             super.onRemoved();
         }
         @Override
@@ -983,6 +995,10 @@ public class ItemUnitTurret extends NyfalisItemTurret{
             return ammo.size == 0 ? null :
                 (hasAlternate && useAlternate)  && ammo.peek().type() instanceof SpawnHelperBulletType s ? s.alternateType
                 : ammo.peek().type();
+        }
+
+        public float resupplyRange(){
+            return resupplyRange;
         }
     }
 

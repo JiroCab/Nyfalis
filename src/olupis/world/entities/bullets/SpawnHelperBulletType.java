@@ -11,11 +11,10 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.*;
-import olupis.world.ai.*;
 import olupis.world.blocks.defence.*;
 import olupis.world.blocks.defence.ItemUnitTurret.*;
-import olupis.world.entities.entities.*;
 import olupis.world.entities.units.*;
+import olupis.world.interfaces.*;
 
 import static mindustry.Vars.*;
 
@@ -31,7 +30,7 @@ public class SpawnHelperBulletType extends BasicBulletType {
         if (spawnUnit != null) {
             //don't spawn units clientside!
             if (!net.client()) {
-                Unit spawned =  spawnUnit instanceof AmmoLifeTimeUnitType al ? al.create(team, unitRange, x, y) : spawnUnit.create(team);
+                Unit spawned =  spawnUnit.create(team);
                 spawned.set(x, y);
                 spawned.rotation = angle;
 
@@ -59,7 +58,7 @@ public class SpawnHelperBulletType extends BasicBulletType {
                 }
                 if(hasParent){
                     if(shooter instanceof ItemUnitTurretBuild b) b.child = spawned;
-                    if(spawned instanceof AmmoEnabledUnitClass b && shooter instanceof Teamc unit){
+                    if(spawned instanceof AmmoNyf b && shooter instanceof Teamc unit){
                         if (shooter instanceof ControlBlock control) b.setParent(control.unit());
                         else b.setParent(unit);
                     }
