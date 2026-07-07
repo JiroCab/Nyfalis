@@ -129,7 +129,7 @@ tasks.register('deploy', Jar){
     def projectName = project.name
     dependsOn jarAndroid
     dependsOn jar
-    archiveFileName = "${projectName}.jar"
+    archiveFileName = "Olupis-but-a-jar.jar"
 
     from{ [zipTree("build/libs/${projectName}Desktop.jar"), zipTree("build/libs/${projectName}Android.jar")] }
 
