@@ -403,13 +403,12 @@ public class NyfWorldFuckingHelper{
     }
 
     public static void initLevelMap(){
-        Seq<Block> keys = spreadLevels.keys().toArray();
-        keys.each(b -> {
+        Seq<Block> keys = spreadLevels.keys().toSeq();
+        for(Block b : keys){
             if(b instanceof SpreadingOverlay overlay){
                 keys.add(overlay.ores.first());
             }
-        });
-
+        }
         for(int i = 0; i < keys.size; i++){
             if(keys.get(i) instanceof SpreadingOverlay entity){
                 Block current = entity;

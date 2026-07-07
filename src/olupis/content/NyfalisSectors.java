@@ -161,7 +161,7 @@ public class NyfalisSectors {
         else r.dropZoneRadius = dzRadius;
         r.enemyCoreBuildRadius = 650f;
         r.env = nyfalis.defaultEnv;
-        r.showSpawns = true;
+        r.hideSpawns = true;
         r.waveSpacing = 3.5f * Time.toMinutes;
 
         if(startItems.length >= 1)r.loadout.set(startItems);

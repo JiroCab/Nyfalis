@@ -122,7 +122,7 @@ public class NyfalisPlanets {
             r.waveTeam = NyfUnitTeamMapper.verdentTeam;
 
             r.placeRangeCheck = r.disableOutsideArea = r.staticFog = r.blockWhitelist = false;
-            r.waves = r.showSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = r.hideBannedBlocks = true;
+            r.waves = r.hideSpawns = r.unitPayloadUpdate = r.coreDestroyClear = r.coreIncinerates = r.fog = r.hideBannedBlocks = true;
 
             r.env =  Env.oxygen | NyfalisAttributeWeather.nyfalian;
         };
@@ -132,7 +132,7 @@ public class NyfalisPlanets {
         planet.campaignRules = new NyfCampaignRules();
         
         planet.campaignRuleDefaults.fog = true;
-        planet.campaignRuleDefaults.showSpawns= true;
+        planet.campaignRuleDefaults.hideSpawns= true;
         planet.showRtsAIRule = true;
         planet.campaignRuleDefaults.legacyLaunchPads = true;
 
@@ -194,7 +194,7 @@ public class NyfalisPlanets {
 
             NyfCampaignRules owo = new NyfCampaignRules();
             owo.fog = campaignRules.fog;
-            owo.showSpawns = campaignRules.showSpawns;
+            owo.hideSpawns = campaignRules.hideSpawns;
             owo.sectorInvasion = campaignRules.sectorInvasion;
             owo.randomWaveAI = campaignRules.randomWaveAI;
             owo.legacyLaunchPads = campaignRules.legacyLaunchPads;
