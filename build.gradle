@@ -8,7 +8,7 @@ plugins {
 version '1.0'
 
 java{
-    targetCompatibility = 8
+    targetCompatibility = JavaVersion.VERSION_17
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
@@ -54,8 +54,7 @@ repositories{
 
 ext{
     //the build number that this mod is made for
-    mindustryVersion = 'v158.1'
-    jabelVersion = "93fde537c7"
+    mindustryVersion = 'v159'
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
@@ -75,13 +74,8 @@ allprojects{
 }
 
 dependencies{
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-//    compileOnly "com.github.anuken.mindustryjitpack:core:$mindustryVersion"
+    compileOnly mindustryVersion == "be" ? "Anuken:MindustryBuilds:latest" : "Anuken:Mindustry:$mindustryVersion"
 
-    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
-    compileOnly(toxopid.dependencies.mindustryCore)
-    compileOnly(toxopid.dependencies.arcCore)
     compileOnly 'com.github.EB-wilson:TooManyItems:2.5.1'
 }
 
@@ -117,7 +111,7 @@ task jarAndroid{
 }
 
 jar{
-    archiveFileName = "${project.archivesBaseName}Desktop.jar"
+    archiveFileName = "${project.name}Desktop.jar"
 
     from{
         configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it) }
