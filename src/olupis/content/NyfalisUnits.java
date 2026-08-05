@@ -1307,8 +1307,17 @@ public class NyfalisUnits {
                            mirror = false;
                            under = true;
                            progress = PartProgress.warmup;
-                           moves.add(new PartMove(PartProgress.reload.sustain(0,10,60), 0, 0, 360f));
-                       }}
+                       }
+                           @Override
+                           public void draw(PartParams params){
+
+                               if(!Vars.state.isPaused()){
+                                   this.rotation += 10 * progress.get(params);
+                               }
+
+                               super.draw(params);
+                           }
+                       }
                    );
                }},
                 new SnekPointDefence("cleroi-point-defense"){{

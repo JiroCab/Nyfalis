@@ -394,8 +394,17 @@ public class NyfalisTurrets {
                             progress = PartProgress.warmup;
                             y = 6;
                             moveY = 8;
-                            moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
-                        }}
+                        }
+                            @Override
+                            public void draw(PartParams params){
+
+                                if(!Vars.state.isPaused()){
+                                    this.rotation += 10 * progress.get(params);
+                                }
+
+                                super.draw(params);
+                            }
+                        }
                 );
             }};
             shootSound = Sounds.none;
@@ -1125,8 +1134,17 @@ public class NyfalisTurrets {
                     y = 6.5f;
                     moveY = 13.5f;
                     layer = Layer.legUnit + 0.1f;
-                    moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
-                }},
+                }
+                    @Override
+                    public void draw(PartParams params){
+
+                        if(!Vars.state.isPaused()){
+                            this.rotation += 10 * progress.get(params);
+                        }
+
+                        super.draw(params);
+                    }
+                },
                 new RegionPart("-buzzsaw"){{
                     mirror = false;
                     under = true;
@@ -1135,8 +1153,17 @@ public class NyfalisTurrets {
                     y = 8;
                     moveY = 13;
                     layer = Layer.legUnit + 0.1f;
-                    moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
-                }},
+                }
+                    @Override
+                    public void draw(PartParams params){
+
+                        if(!Vars.state.isPaused()){
+                            this.rotation += 10 * progress.get(params);
+                        }
+
+                        super.draw(params);
+                    }
+                },
                 new RegionPart("-buzzsaw"){{
                     mirror = false;
                     under = true;
@@ -1146,8 +1173,17 @@ public class NyfalisTurrets {
                     y = 6.5f;
                     moveY = 13.5f;
                     layer = Layer.legUnit + 0.1f;
-                    moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0, 0, 360f));
-                }}
+                }
+                    @Override
+                    public void draw(PartParams params){
+
+                        if(!Vars.state.isPaused()){
+                            this.rotation += 10 * progress.get(params);
+                        }
+
+                        super.draw(params);
+                    }
+                }
 
                 );
             }};

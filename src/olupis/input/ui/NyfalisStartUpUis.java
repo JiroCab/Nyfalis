@@ -20,6 +20,8 @@ import mindustry.game.*;
 import mindustry.game.Rules.*;
 import mindustry.gen.*;
 import mindustry.input.*;
+import mindustry.mod.Mod;
+import mindustry.mod.Mods;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
@@ -96,9 +98,11 @@ public class NyfalisStartUpUis {
                     a.add(funny).center().growX().row();
                 }).maxSize(700).margin(14).pad(3).center().row();
             } else {
-                /*Very convoluted way to load the mod icon, because I'm not bright to think of any other way*/
-                @Nullable TextureRegion icon = new TextureRegion(mods.list().find(a -> Objects.equals(a.name, "olupis")).iconTexture);
-                t.table(a -> a.image(icon).scaling(Scaling.bounded).row()).tooltip("Art By RushieWashie").maxSize(700).margin(14).pad(3).center().row();
+                Mods.LoadedMod olupisMod = mods.list().find(a -> Objects.equals(a.name, "olupis"));
+                if(olupisMod != null && olupisMod.iconTexture != null){
+                    TextureRegion icon = new TextureRegion(olupisMod.iconTexture);
+                    t.table(a -> a.image(icon).scaling(Scaling.bounded).row()).tooltip("Art By RushieWashie").maxSize(700).margin(14).pad(3).center().row();
+                }
             }
             t.add(body).row();
 
