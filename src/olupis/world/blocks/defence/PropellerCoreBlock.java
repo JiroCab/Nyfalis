@@ -21,6 +21,7 @@ import mindustry.graphics.*;
 import mindustry.io.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.meta.*;
 import olupis.content.*;
@@ -426,6 +427,34 @@ public class PropellerCoreBlock extends CoreBlock  {
             out.add(icons[currentMode].getRegion());
             out.add(currentMode().stats[0] ? command != null ? command.getIcon().getRegion() : spawns.defaultCommand.getIcon().getRegion() :  Core.atlas.find("error"));
             NyfWorldFuckingHelper.renderConfigIndicator(this, out);
+        }
+
+        @Override
+        public void handleStack(Item item, int amount, Teamc source){
+            boolean incinerate = NyfalisItemsLiquid.nyfalisCompentItems.contains(item);
+            int realAmount = incinerate ? 0 : Math.min(amount, storageCapacity - items.get(item));
+
+            if(incinerate){
+                Log.err("asidjoasjd");
+                if(wasVisible)Fx.fuelburn.at(x, y);
+                this.noSleep();
+                return;
+            }
+
+            super.handleStack(item, realAmount, source);
+        }
+
+        @Override
+        public void handleItem(Building source, Item item){
+            boolean incinerate = NyfalisItemsLiquid.nyfalisCompentItems.contains(item);
+
+            if(!noEffect && incinerate){
+                incinerateEffect(this, source);
+                noEffect = false;
+                return;
+            }
+
+            super.handleItem(source, item);
         }
     }
 }

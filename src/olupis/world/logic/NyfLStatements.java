@@ -108,9 +108,8 @@ public class NyfLStatements{
             table.button(b -> {
                 b.label(() -> fetch.name());
                 b.clicked(() -> showSelect(b, CalyxFetches.all, fetch, o -> fetch = o));
-            }, Styles.logict, () -> {}).size(80f, 40f).pad(4f).color(table.color);
+            }, Styles.logict, () -> {}).size(80f, 40f).pad(4f).color(table.color).row();
 
-            row(table);
             fields(table, x, str -> x = str);
             table.add(", ");
             fields(table, y, str -> y = str);

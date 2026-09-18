@@ -131,6 +131,29 @@ public class NyfWorldFuckingHelper{
         }
 
     }
+
+
+    public static @Nullable Fire closestFire(float tx, float ty, float range, Team team){
+        return closestFire( (int)tx / tilesize, (int)ty / tilesize, range, team.id);
+    }
+    public static @Nullable Fire closestFire(int tx, int ty, float range, int team){
+        @Nullable Fire result = null;
+        float mindst = 0f;
+        int tr = (int)(range / tilesize);
+        for(int x = -tr; x <= tr; x++){
+            for(int y = -tr; y <= tr; y++){
+                Tile other = world.tile(x + tx, y + ty);
+                var fire = Fires.get(x + tx, y + ty);
+                float dst = fire == null ? 0 : Mathf.dst2(fire.x, fire.y, x, y);
+                //do not extinguish fires on other team blocks
+                if(other != null && fire != null && Fires.has(other.x, other.y) && dst <= range * range && (result == null || dst < mindst) && (other.build == null || other.team().id == team)){
+                    result = fire;
+                    mindst = dst;
+                }
+            }
+        }
+        return result;
+    }
     //endregion
     // region == Weather helpers
 

@@ -1,6 +1,7 @@
 package olupis.world.entities.entities;
 
 import arc.*;
+import arc.audio.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -218,6 +219,15 @@ public class LeggedPayloadUnitClass extends LegsUnit implements Payloadc{
         }
 
         Events.fire(new EventType.PickupEvent(this, unit));
+    }
+
+    @Override
+    public void playPayloadDropSound(Payload payload){
+        Sound dropSound =
+        payload.size() <= 12f ? Sounds.payloadDrop1 :
+        payload.size() <= 20f ? Sounds.payloadDrop2 :
+        Sounds.payloadDrop3;
+        dropSound.at(self(), Mathf.random(0.9f, 1.1f));
     }
 
     @Override

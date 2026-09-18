@@ -356,7 +356,7 @@ public class NyfalisSettingsDialog {
         dialog.hide();
         Core.settings.put("lastmod", mod);
         ui.mods.show();//haha so we don't need to manually restart and im too lazy to find out how
-        ui.mods.githubImportMod(mod, true, null);
+        ui.mods.githubImportMod(mod, true, true);
     }
 
     //Same as the normal ones but also calls updateSettings()

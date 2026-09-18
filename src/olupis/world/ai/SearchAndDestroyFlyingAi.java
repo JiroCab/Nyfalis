@@ -11,6 +11,7 @@
  import mindustry.logic.*;
  import mindustry.type.*;
  import mindustry.world.meta.*;
+ import olupis.world.*;
  import olupis.world.blocks.defence.*;
  import olupis.world.blocks.defence.ItemUnitTurret.*;
  import olupis.world.entities.entities.*;
@@ -108,9 +109,8 @@ public class SearchAndDestroyFlyingAi extends FlyingAI  implements InoperableAi{
                 justMove(target);
             }
 
-        }else if(target == null && targetFlames && !Groups.fire.isEmpty()){
-            Seq<Fire> ff = Groups.fire.copy().sort(f -> f.dst(unit));
-            tarFire = ff.find(f -> f.within(unit, 650f ));
+        }else if(target == null && targetFlames){
+            tarFire = NyfWorldFuckingHelper.closestFire(unit.x, unit.y, range, unit.team);
             if(tarFire != null){
                 idleAfter = Time.time + delay;
                 unit.isShooting = targetOverriden = unit.within(tarFire, unit.range() * 1.05f);

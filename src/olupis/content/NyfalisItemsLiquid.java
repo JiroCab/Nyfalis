@@ -23,7 +23,7 @@ public class NyfalisItemsLiquid {
         //internal
         powerAmmoItem;
 
-    public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>();
+    public static final Seq<Item> nyfalisOnlyItems = new Seq<>(), nyfalisItems = new Seq<>(), nyfalisCompentItems = new Seq<>();
     public static Liquid heavyOil, lightOil, steam, lubricant, emulsiveSlop;
 
     public static  void LoadItems(){
@@ -126,13 +126,20 @@ public class NyfalisItemsLiquid {
 
 
         //endregion
-
-        nyfalisOnlyItems.addAll(
-            rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum,
+        nyfalisCompentItems.addAll(
             ironFrame, copperWire, crudeBattery, basicRotor, ironPlate, graphiteFrame, siliconCircuit, ceramicPlating, graphiteCell, electricMotor
         );
+
+        nyfalisOnlyItems.addAll(
+            rustyIron,iron,condensedBiomatter,cobalt, quartz, alcoAlloy, aluminum
+        );
+        nyfalisOnlyItems.addAll(nyfalisCompentItems);
+
         nyfalisItems.add(nyfalisOnlyItems);
         nyfalisItems.addAll(copper, lead, silicon, graphite, sand, scrap);
+
+
+
     }
 
     public static void LoadLiquids(){

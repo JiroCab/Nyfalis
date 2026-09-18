@@ -421,7 +421,7 @@ public class ItemUnitTurret extends NyfalisItemTurret{
             checkTier();
 
             if(target == null && peekAmmoAlt() != null && peekAmmoAlt() instanceof  SpawnHelperBulletType s && s.targetsFlames ){
-                @Nullable Fire t = Groups.fire.find( f -> f.within(this, range));
+                @Nullable Fire t = NyfWorldFuckingHelper.closestFire(x,y, range, team);
                 if(t == null) return;
 
                 targetPos.set(t);
