@@ -2145,7 +2145,7 @@ public class NyfalisBlocks {
                         },
                         new DrawBubbles(){{spread = 9f;}},
                         new DrawDefault(),
-                        new DrawBlurSpin("-rotator", 0.45f * 9f){{blurThresh =  0.01f;}}
+                        new DrawBlurSpinDerlictStopped("-rotator", 0.45f * 9f){{blurThresh =  0.01f;}}
                 );
             }
             @Override
@@ -2172,7 +2172,7 @@ public class NyfalisBlocks {
             ambientSound = Sounds.loopHum;
             researchCost = with(iron, 1500, silicon, 1000, lead, 3000, cobalt, 1000);
             requirements(Category.power, with(iron, 50, silicon, 50, lead, 100, cobalt, 50));
-            drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 0.6f * 9f){{
+            drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpinDerlictStopped("-rotator", 0.6f * 9f){{
                 blurThresh = 0.01f;
             }});
         }};

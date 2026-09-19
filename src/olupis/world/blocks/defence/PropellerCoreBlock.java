@@ -16,6 +16,7 @@ import mindustry.ai.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.io.*;
@@ -303,6 +304,22 @@ public class PropellerCoreBlock extends CoreBlock  {
             }
 
             super.updateTile();
+            block.configurable = true; //pains i cant be bothered copy pasting 2 lines
+        }
+
+
+        @Override
+        public boolean shouldHideConfigure(Player player){
+            return false; //modes
+        }
+
+        @Override
+        public void created(){
+            super.created();
+            //removed the configurable
+
+            //todo look into if changing teams need to be added in
+            Events.fire(new CoreChangeEvent(this));
         }
 
         @Override
@@ -352,7 +369,13 @@ public class PropellerCoreBlock extends CoreBlock  {
                             }
                         }
                     });
-                },() -> currentMode().stats[0]);
+                },() -> currentMode().stats[0]).row();
+
+                par.table(t ->{
+                    t.defaults().center().growX().pad(5);
+                    super.buildConfiguration(t);
+                });
+
             });
         }
 

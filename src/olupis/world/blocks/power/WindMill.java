@@ -8,6 +8,9 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
+import mindustry.game.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.consumers.*;
@@ -36,7 +39,7 @@ public class WindMill extends PowerGenerator {
             new VariantableDrawRegion(2, "-bottom"),
             new DrawLiquidTile(){{alpha = 0.85f; padding = 2f;}},
             new VariantableDrawRegion(5),
-            new DrawBlurSpin("-rotator", 0.6f * 9f){{blurThresh =  0.01f;}
+            new DrawBlurSpinDerlictStopped("-rotator", 0.6f * 9f){{blurThresh =  0.01f;}
 
                 @Override
                 public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list){
