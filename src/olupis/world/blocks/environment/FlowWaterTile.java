@@ -11,6 +11,7 @@ import mindustry.content.*;
 import mindustry.editor.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import olupis.content.*;
@@ -80,7 +81,7 @@ public class FlowWaterTile extends Floor{
                 b.add(ic).update(a -> {
                     int ui = lastConfig instanceof Integer ii ? ii : 0;
                     a.setRotation(ui);
-                });
+                }).color(Pal.accent);
 
                 b.add(" | ").pad(5f);
 

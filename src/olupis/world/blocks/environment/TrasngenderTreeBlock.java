@@ -104,7 +104,7 @@ public class TrasngenderTreeBlock extends TreeBlock{
         Draw.alpha(alpha);
 
         TextureRegion reg = variants == 0 ? region : variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))];
-        if(!flavours.isEmpty()) Draw.color(new Color().set(Draw.getColor()).lerp(flavours.get((int)Mathf.randomSeedRange(tile.pos(), flavours.size)), Mathf.randomSeedRange(tile.pos(), 1f)), alpha);
+        if(!flavours.isEmpty()) Draw.color(treeFlavor(tile), alpha);
         Draw.z(Layer.power + 1);
         Draw.rectv(reg, x, y, w, h, rot, vec -> vec.add(
         Mathf.sin(vec.y*3 + Time.time, scl, mag) + Mathf.sin(vec.x*3 - Time.time, 70, 0.8f),
@@ -127,5 +127,9 @@ public class TrasngenderTreeBlock extends TreeBlock{
         Draw.reset();
     }
 
+    public Color treeFlavor(Tile tile){
+        if(flavours.isEmpty()) return Color.white;
+        return new Color().set(Draw.getColor()).lerp(flavours.get((int)Mathf.randomSeedRange(tile.pos(), flavours.size)), Mathf.randomSeedRange(tile.pos(), 1f));
+    }
 
 }

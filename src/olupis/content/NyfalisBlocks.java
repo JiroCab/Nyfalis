@@ -2932,6 +2932,10 @@ public class NyfalisBlocks {
             if(b instanceof  FactoryPlan) factoryPlans.add(b);
             if(b instanceof  Articulator) alternateModules.add(b);
 
+            if(b instanceof FlowWaterTile f && f.parent != null){
+                f.mapColor = f.parent.mapColor;
+            }
+
             if(b.name.startsWith("olupis-")){
                 if(b.isVisible() || b.buildVisibility == BuildVisibility.fogOnly) nyfalisBuildBlockSet.add(b);
                 if(b instanceof SteamVent) vents.add(b);
@@ -2980,5 +2984,6 @@ public class NyfalisBlocks {
         mossyDirt.mapColor = new Color().set(mossyStone.mapColor).lerp(dirt.mapColor, 0.5f);
         frozenDirt.mapColor = new Color().set(ice.mapColor).lerp(dirt.mapColor, 0.5f);
         coralReef.mapColor = deepwater.mapColor;
+        mossyVent.mapColor = mossyStone.mapColor;
     }
 }

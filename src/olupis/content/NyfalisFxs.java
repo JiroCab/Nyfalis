@@ -99,11 +99,11 @@ public class NyfalisFxs extends Fx {
             //stolen from: https://github.com/ItsKirby69/MineDusty/blob/master/src/minedusty/content/DustyEffects.java#L263
             if(Vars.world.tileWorld(e.x, e.y).block() instanceof TrasngenderTreeBlock trans){
                 Tile tile = Vars.world.tileWorld(e.x, e.y);
-                if(!trans.flavours.isEmpty()) color(new Color().set(e.color).lerp(trans.flavours.get((int)Mathf.randomSeedRange(tile.pos(), trans.flavours.size)), Mathf.randomSeedRange(tile.pos(), 1f)), e.fslope());
-            }else  color(e.color, e.fslope());
+                if(!trans.flavours.isEmpty()) color(trans.treeFlavor(tile), e.fslope());
+            }else return; //dont bother
             alpha(e.fslope() * 3f);
 
-            float drift = -20f * e.fin() * 4f;
+            float drift = -20f * e.fin() * 2f;
             randLenVectors(e.id, 3, 30f + e.finpow() * 40f, (x, y) -> {
                 rect(Core.atlas.find("olupis-tree-prop3"), e.x + x + drift, e.y + y + drift, 16f, 16f, e.fin() * 360f);
             });
