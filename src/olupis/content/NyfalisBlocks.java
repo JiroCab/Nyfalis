@@ -880,7 +880,7 @@ public class NyfalisBlocks {
             flavours = Seq.with(Color.valueOf("E1F3C1"), Color.valueOf("c0cfc6"));
         }};
         mossTree = new TrasngenderTreeBlock("moss-tree"){{
-            variants = 2;
+            branchVariants = variants = 2;
             flavours = Seq.with(Color.valueOf("C6E4CA"), Color.valueOf("C4F99B"), Color.valueOf("9CBE92"))
         }};
         pinkTree = new TrasngenderTreeBlock("pink-tree"){{
