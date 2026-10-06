@@ -45,7 +45,7 @@ public class NyfalisFxs extends Fx {
         intervalGnatBullCharge = new Effect(80f, 100f, e -> {
             color(Pal.heal, e.fout());
             stroke(e.fin() * 2f);
-            randLenVectors(e.id, 2 ,  3, 30f * e.fin(), (x, y) -> {
+            randLenVectors(e.id, 2 ,  10, 30f * e.fin(), (x, y) -> {
                 Fill.circle(e.x + x, e.y + y, e.fout()  + (1.4f * e.fout()));
                 Drawf.light(e.x + x, e.y + y, e.fout() * 3f, Pal.heal, 0.15f );
             });
