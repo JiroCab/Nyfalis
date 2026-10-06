@@ -6,7 +6,7 @@ With slight lean on RTS Elements and providing pain from the base game has to of
 ### [Consider getting the music companion mod here!](https://github.com/JiroCab/Nyfalis-Music)
 (Alpha version / not in releases) This Mod has [TMI support](https://github.com/eb-wilson/toomanyitems)!
 
-[Releases](https://github.com/JiroCab/Olupis/releases) for all release versions automatically created from commits to `main`. 
+[Releases](https://github.com/JiroCab/Olupis/releases) for all release versions automatically created from commits to `main`.
 otherwise use [GitHub Actions](https://github.com/JiroCab/Olupis/actions) for ready to download jars per commit on any branch.
 See [change logs here](https://github.com/JiroCab/Olupis/blob/main/changelog.txt).
 
@@ -36,7 +36,7 @@ And refer to the [Experimental branch changelog.txt](https://github.com/JiroCab/
 * https://freesound.org/
 
 
- # Mindusty v7 / Nyfalis v1.7.x Migration guide
+# Mindusty v7 / Nyfalis v1.7.x Migration guide
 With the migration to v8 and the rework of content needed, bundles names are now its internal name (ex: porter -> sentry)
 Thus the following content will no longer load properly, migration will require you to replace the following, as they will be removed on update
 
@@ -50,6 +50,6 @@ Thus the following content will no longer load properly, migration will require 
 - Broiler (Liquifier)
 
 
-## Changes with equivalents / no effort required 
+## Changes with equivalents / no effort required
 The following content was removed and on load will be replaced
 TODO
