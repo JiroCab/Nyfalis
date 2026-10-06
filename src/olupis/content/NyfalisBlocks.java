@@ -176,7 +176,8 @@ public class NyfalisBlocks {
             emitLight = true;
             needsSurface = false;
             variants = 1;
-            lightRadius = 10f;
+            lightColor = NyfalisColors.glowPlantLightSofter;
+            lightRadius = 15f;
             //is sad that BlockRenderer.java does not render light from overlays, but ill keep it incase TnT
         }};
 
@@ -875,10 +876,12 @@ public class NyfalisBlocks {
         //endregion
         //region Trees
         nyfalisTree = new TrasngenderTreeBlock("olupis-tree"){{
-            variants = 2;
+            branchVariants = variants = 2;
+            flavours = Seq.with(Color.valueOf("E1F3C1"), Color.valueOf("c0cfc6"));
         }};
         mossTree = new TrasngenderTreeBlock("moss-tree"){{
             variants = 2;
+            flavours = Seq.with(Color.valueOf("C6E4CA"), Color.valueOf("C4F99B"), Color.valueOf("9CBE92"))
         }};
         pinkTree = new TrasngenderTreeBlock("pink-tree"){{
             variants = 2;

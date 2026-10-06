@@ -364,8 +364,8 @@ public class NyfWorldFuckingHelper{
 
         Tile tree = trees.random();
         if(tree != null){
-            if(Mathf.randomBoolean()) NyfalisFxs.envTransgenderTreeLeafEffect.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
-            else NyfalisFxs.envTransgenderTreeLeafEffectUnder.at(tree.x * tilesize, tree.y * tilesize, tree.block().mapColor);
+            if(Mathf.randomBoolean()) NyfalisFxs.envTransgenderTreeLeafEffect.at(tree.x * tilesize, tree.y * tilesize, 0, tree.block().mapColor, tree.block());
+            else NyfalisFxs.envTransgenderTreeLeafEffectUnder.at(tree.x * tilesize, tree.y * tilesize, 0, tree.block().mapColor, tree.block());
         }
     }
 

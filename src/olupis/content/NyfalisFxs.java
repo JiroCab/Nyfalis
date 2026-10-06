@@ -97,10 +97,13 @@ public class NyfalisFxs extends Fx {
 
         envTransgenderTreeLeafEffect =  new Effect(450f, e ->{
             //stolen from: https://github.com/ItsKirby69/MineDusty/blob/master/src/minedusty/content/DustyEffects.java#L263
-            if(Vars.world.tileWorld(e.x, e.y).block() instanceof TrasngenderTreeBlock trans){
-                Tile tile = Vars.world.tileWorld(e.x, e.y);
-                if(!trans.flavours.isEmpty()) color(trans.treeFlavor(tile), e.fslope());
+
+            if(e.data  instanceof Tile t && t.block() instanceof  TrasngenderTreeBlock trans){
+                Tmp.c1.set(trans.mapColor);
+                if(!trans.flavours.isEmpty()) Tmp.c1.lerp(trans.treeFlavor(t), Mathf.randomSeed(t.pos(), 0.1f, 0.6f));
+                color(Tmp.c1, e.fslope());
             }else return; //dont bother
+
             alpha(e.fslope() * 3f);
 
             float drift = -20f * e.fin() * 2f;

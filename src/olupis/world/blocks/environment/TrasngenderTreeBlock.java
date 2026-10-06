@@ -19,15 +19,24 @@ import static olupis.NyfalisVars.treeTransgenderRange;
 
 public class TrasngenderTreeBlock extends TreeBlock{
     public TextureRegion log;
-    public TextureRegion[] featureRegions, calyxiedRegions, calyxiestRegions;
+    public TextureRegion[] featureRegions, branchRegions, calyxiedRegions, calyxiestRegions;
     public boolean leaf = true , infestable = true;
-    public Seq<Color> flavours = Seq.with(Color.valueOf("d9f54e"));
-    public int featureVariants = -1, calyxiedVariants =1, calyxiestVariants = -1;
+    public Seq<Color> flavours = Seq.with();
+    public int featureVariants = -1, calyxiedVariants =1, calyxiestVariants = -1, branchVariants = -1;
     public @Nullable Block parent;
 
     public TrasngenderTreeBlock(String name){
         super(name);
     }
+
+/*      quick tldr on how this layers work, top to bottom
+            - feature
+            - calyxiestRegions / calyxiedRegions
+            - region / variantRegions (coloured)
+            - branchRegions regions
+            - log
+            - shadow
+*/
 
     @Override
     public void load(){
@@ -58,14 +67,27 @@ public class TrasngenderTreeBlock extends TreeBlock{
 
             for(int i = 0; i < featureVariants; i++) featureRegions[i] = Core.atlas.find(name + "-feature" + (i + 1));
         }
+
+        if(branchVariants >= 1){
+            branchRegions = new TextureRegion[branchVariants];
+
+            for(int i = 0; i < branchVariants; i++) branchRegions[i] = Core.atlas.find(name + "-branches" + (i + 1));
+        }
     }
 
     @Override
     public void createIcons(MultiPacker packer){
         super.createIcons(packer);
 
-        Pixmap base = Core.atlas.getPixmap(region).crop();
+        Pixmap base;
+
+        if(branchRegions != null){
+            base = Core.atlas.getPixmap(branchRegions[0]).crop();
+            base.draw(Core.atlas.getPixmap(region), true);
+        } else base =  Core.atlas.getPixmap(region).crop();
+
         if(featureRegions != null)base.draw(Core.atlas.getPixmap(featureRegions[0]), true);
+
         packer.add(PageType.main, "block-" + name + "-full", base);
         base.dispose();
     }
@@ -89,35 +111,32 @@ public class TrasngenderTreeBlock extends TreeBlock{
         w = region.width * region.scl(), h = region.height * region.scl(),
         scl = 30f, mag = 0.2f;
 
-        TextureRegion shad = variants == 0 ? customShadowRegion : variantShadowRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantShadowRegions.length - 1))];
-
-
-
-        if(shad.found()){
+        TextureRegion reg = variants == 0 ? customShadowRegion : variantShadowRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantShadowRegions.length - 1))];
+        if(reg.found()){
             Draw.z(Layer.power - 1);
-            Draw.rect(shad, tile.worldx() + shadowOffset, tile.worldy() + shadowOffset, rot);
+            Draw.rect(reg, tile.worldx() + shadowOffset, tile.worldy() + shadowOffset, rot);
         }
 
-        if(log.found()){
-            Draw.rect(log, tile.worldx(), tile.worldy(), rot);
-        }
+        if(log.found()) Draw.rect(log, tile.worldx(), tile.worldy(), rot);
+
         Draw.alpha(alpha);
-
-        TextureRegion reg = variants == 0 ? region : variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))];
-        if(!flavours.isEmpty()) Draw.color(treeFlavor(tile), alpha);
         Draw.z(Layer.power + 1);
-        Draw.rectv(reg, x, y, w, h, rot, vec -> vec.add(
-        Mathf.sin(vec.y*3 + Time.time, scl, mag) + Mathf.sin(vec.x*3 - Time.time, 70, 0.8f),
-        Mathf.cos(vec.x*3 + Time.time + 8, scl + 6f, mag * 1.1f) + Mathf.sin(vec.y*3 - Time.time, 50, 0.2f)
-        ));
+
+        if(branchRegions != null &&  branchRegions.length >= 1){
+            reg = branchRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, branchRegions.length - 1))];
+            commonRectV(reg, x , y, w, h, rot, scl, mag);
+        }
+
+        reg = variants == 0 ? region : variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))];
+        if(!flavours.isEmpty()) Draw.color(treeFlavor(tile), alpha);
+
+        commonRectV(reg, x , y, w, h, rot, scl, mag);
+
         if( featureRegions != null && featureRegions.length >= 1){
             Draw.color();
             Draw.alpha(alpha);
-            TextureRegion fet = featureRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, featureRegions.length - 1))];
-            Draw.rectv(fet, x, y, w, h, rot, vec -> vec.add(
-                Mathf.sin(vec.y*3 + Time.time, scl, mag) + Mathf.sin(vec.x*3 - Time.time, 70, 0.8f),
-                Mathf.cos(vec.x*3 + Time.time + 8, scl + 6f, mag * 1.1f) + Mathf.sin(vec.y*3 - Time.time, 50, 0.2f)
-            ));
+            reg = featureRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, featureRegions.length - 1))];
+            commonRectV(reg, x , y, w, h, rot, scl, mag);
         }
 
 
@@ -127,9 +146,16 @@ public class TrasngenderTreeBlock extends TreeBlock{
         Draw.reset();
     }
 
+    void commonRectV(TextureRegion fet, float x, float y, float w, float h, float rot, float scl, float mag){
+        Draw.rectv(fet, x, y, w, h, rot, vec -> vec.add(
+        Mathf.sin(vec.y*3 + Time.time, scl, mag) + Mathf.sin(vec.x*3 - Time.time, 70, 0.8f),
+        Mathf.cos(vec.x*3 + Time.time + 8, scl + 6f, mag * 1.1f) + Mathf.sin(vec.y*3 - Time.time, 50, 0.2f)
+        ));
+    }
+
     public Color treeFlavor(Tile tile){
         if(flavours.isEmpty()) return Color.white;
-        return new Color().set(Draw.getColor()).lerp(flavours.get((int)Mathf.randomSeedRange(tile.pos(), flavours.size)), Mathf.randomSeedRange(tile.pos(), 1f));
+        return new Color().set(Draw.getColor()).lerp(flavours.get(Mathf.randomSeed(tile.pos(), 0, flavours.size -1)), Mathf.randomSeedRange(tile.pos(), 1f));
     }
 
 }
