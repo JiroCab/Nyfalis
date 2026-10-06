@@ -10,14 +10,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    #Don't make a release if someone just has to update the readme and/or GitHub Actions
+    if: contains(github.event.head_commit.message, '!release!')
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
+      - uses: actions/checkout@v7.0.1
       - name: Set up PATH
         run: echo "${ANDROID_HOME}/build-tools/34.0.0" >> $GITHUB_PATH
+
+      - name: Set up JDK 18
+        uses: actions/setup-java@v5
+        with:
+          java-version: 18
+          distribution: temurin
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Setup Hjson
         run: npm install hjson -g
@@ -29,27 +37,35 @@ jobs:
         with:
           path: 'mod.json'
           prop_path: 'version'
+      - name: Get & shorten SHA
+        uses: benjlevesque/short-sha@v4.0
+        id: short-sha
+
+      - name: Override Subtitle w/ Version + Commit
+        uses: jossef/action-set-json-field@v2.2
+        with:
+          file: mod.json
+          field: subtitle
+          value: " \"${{steps.version.outputs.prop}}-${{steps.short-sha.outputs.sha}}, Yet another planet mod\" "
+
 
       - name: Convert mod.json back to mod.hjson
         run: hjson mod.json > mod.hjson
 
-      - name: Change wrapper permissions
-        run: chmod +x ./gradlew
-      - name: Build mod jar
+      - name: Build with Gradle
         run: ./gradlew deploy
 
       - name: Release rename
         run:
-          mv build/libs/Olupis-but-a-jar.jar build/libs/${{ github.event.repository.name }}-${{ steps.version.outputs.prop }}.jar
+          mv build/libs/Olupis-but-a-jar.jar build/libs/${{ github.event.repository.name }}.jar
 
       - name: Upload built jar file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
-          name: ${{ github.event.repository.name }}-${{ steps.version.outputs.prop }}
-          path: build/libs/${{ github.event.repository.name }}-${{ steps.version.outputs.prop }}.jar
-
+          name: ${{ github.event.repository.name }}
+          path: build/libs/${{ github.event.repository.name }}.jar
       - name: Create release
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/libs/${{ github.event.repository.name }}-${{ steps.version.outputs.prop }}.jar
