@@ -96,7 +96,7 @@ val jarAndroid = tasks.register("jarAndroid"){
 
 tasks.register<Jar>("deploy"){
     dependsOn(jarAndroid, tasks.jar)
-    archiveFileName.set("$projectName-but-a-jar.jar")
+    archiveFileName.set("Olupis-but-a-jar.jar")
 
     val libs = layout.buildDirectory.dir("libs")
     from(provider{
