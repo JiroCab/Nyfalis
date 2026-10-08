@@ -11,7 +11,7 @@ sourceSets.main{
 val mindustryVersion = "v160.6" //don't forget the one in settings.gradle.kts
 val isWindows = System.getProperty("os.name").lowercase().contains("windows")
 val sdkRoot: String? = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
-val projectName = project.name
+val projectName ="olupis"
 
 val tmiVersion = "3.3"
 
@@ -96,7 +96,7 @@ val jarAndroid = tasks.register("jarAndroid"){
 
 tasks.register<Jar>("deploy"){
     dependsOn(jarAndroid, tasks.jar)
-    archiveFileName.set("$projectName.jar")
+    archiveFileName.set("$projectName-but-a-jar.jar")
 
     val libs = layout.buildDirectory.dir("libs")
     from(provider{
