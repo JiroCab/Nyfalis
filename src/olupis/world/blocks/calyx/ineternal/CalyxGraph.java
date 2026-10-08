@@ -3,6 +3,7 @@ package olupis.world.blocks.calyx.ineternal;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
+import olupis.world.*;
 import olupis.world.blocks.calyx.GrowingVein.*;
 import olupis.world.blocks.calyx.GrowingHeart.*;
 
@@ -20,7 +21,7 @@ public class CalyxGraph{
     private final @Nullable CalyxGraphUpdater entity;
     private final int graphID;
     private static int lastGraphID;
-    public int species;
+    @Nullable public String species;
 
     public CalyxGraph(){
         entity =  CalyxGraphUpdater.create();
@@ -29,6 +30,14 @@ public class CalyxGraph{
     }
 
     public CalyxGraph(int sp){
+        entity =  CalyxGraphUpdater.create();
+        entity.graph = this;
+        graphID = lastGraphID++;
+        this.species = EnvUpdater.calyxSpeciesNames.get(sp);
+    }
+
+
+    public CalyxGraph(String sp){
         entity =  CalyxGraphUpdater.create();
         entity.graph = this;
         graphID = lastGraphID++;
@@ -46,7 +55,7 @@ public class CalyxGraph{
 
 
     public void update(){
-        if(getHeart() == null) species = 0;
+        if(getHeart() == null) species = EnvUpdater.calyxSpeciesNames.get(0);
     }
 
     public void addGraph(CalyxGraph graph){

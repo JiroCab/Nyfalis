@@ -479,7 +479,7 @@ public class NyfWorldFuckingHelper{
     }
 
     public static Color calyxSpeciesColors(int i){
-        return   Seq.with(Color.green, Color.pink, Pal.graphiteAmmoBack).get(i);
+        return  Seq.with(Color.green, Color.pink, Pal.graphiteAmmoBack, Color.gray).get((Mathf.clamp(i, 0, EnvUpdater.calyxSpeciesNames.size + 1)));
     }
 
     public static TextureRegionDrawable calyxSpeciesICon(int i){

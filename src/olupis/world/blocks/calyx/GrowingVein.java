@@ -55,7 +55,7 @@ public class GrowingVein extends Block{
                 if(heartedRegion.found()) Draw.rect(heartedRegion, this.x, this.y, this.drawrot());
                 if(!heartlessBlends) Draw.reset();
             } else {
-                Draw.color(NyfWorldFuckingHelper.calyxSpeciesColors(calyxModule.graph.species));
+                Draw.color(calyxModule.getColour());
             }
             super.draw();
             Draw.reset();

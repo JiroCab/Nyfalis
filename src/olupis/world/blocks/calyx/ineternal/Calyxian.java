@@ -85,8 +85,7 @@ public interface Calyxian{
         }
     }
 
-    default void changeSpecies (int species){
-        int in  = Mathf.clamp(species ,0,  NyfalisVars.calyxSpecies);
+    default void changeSpecies (String in){
         CalyxGraph tmp =  new CalyxGraph();
 
         Seq<Building> prev = module().graph.all.copy();
@@ -131,18 +130,18 @@ public interface Calyxian{
                 group.setMinCheckCount(0);
                 int i = 0;
                 t.row();
-                for(int j = 0; j < NyfalisVars.calyxSpecies; j++){
+                for(int j = 0; j < EnvUpdater.calyxSpeciesNames.size; j++){
                     int finalJ = j;
                     ImageButton button = t.button(NyfWorldFuckingHelper.calyxSpeciesICon(j), Styles.clearNoneTogglei, 45f, () -> {
-                        calyxSpeciesConfig(finalJ);
+                        calyxSpeciesConfig(EnvUpdater.calyxSpeciesNames.get(finalJ));
 
                         if(module() != null){
-                            changeSpecies(finalJ);
+                            changeSpecies(EnvUpdater.calyxSpeciesNames.get(finalJ));
                         }
                         build().deselect();
                     }).group(group).color(NyfWorldFuckingHelper.calyxSpeciesColors(finalJ)).get();
                     button.update(() -> {
-                        button.setChecked(finalJ == calyxSpeciesConfig());
+                        button.setChecked(finalJ == EnvUpdater.calyxSpeciesNames.indexOf(calyxSpeciesConfig()));
                         button.setColor(NyfWorldFuckingHelper.calyxSpeciesColors(finalJ));
                     });
 
@@ -151,11 +150,11 @@ public interface Calyxian{
         });
     }
 
-    default int calyxSpeciesConfig(){return 0;}
-    default void calyxSpeciesConfig(int species){}
+    default String calyxSpeciesConfig(){return "";}
+    default void calyxSpeciesConfig(String species){}
 
     default Color colourState(){
-        return isAlive() ? NyfWorldFuckingHelper.calyxSpeciesColors(module().graph.species) : Color.black;
+        return isAlive() ? NyfWorldFuckingHelper.calyxSpeciesColors(EnvUpdater.calyxSpeciesNames.indexOf((module().graph.species))) : Color.black;
     }
 
 

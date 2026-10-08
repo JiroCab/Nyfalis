@@ -10,15 +10,15 @@ import mindustry.*;
 import mindustry.ai.*;
 import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.world.*;
 import olupis.content.*;
-import olupis.world.blocks.calyx.GrowingHeart.*;
 import olupis.world.blocks.calyx.ineternal.*;
 import olupis.world.blocks.defence.*;
 
+import java.util.*;
+
 import static olupis.NyfalisVars.nyfRule;
-import static olupis.world.EnvUpdater.queue;
+import static olupis.world.EnvUpdater.*;
 
 public class GrowingCore extends PropellerCoreTurret{
     public double rootChance = 0.010 / 60f;
@@ -31,32 +31,31 @@ public class GrowingCore extends PropellerCoreTurret{
     @Override
     public void configs(){
             consumePowerDynamic((GrowingCoreBuild b) -> b.producingUnits() ? unitPowerCost : 0);
-            config(IntSeq.class, (GrowingCoreBuild build, IntSeq s) -> {
+            config(String.class, (GrowingCoreBuild build, String s) -> {
                 if(!configurable) return;
-                if(s.size > 2 || s.size == 0) return;
+                if(s == null || s.isEmpty()) {
+                    Log.err("(nyfalis) " + build.toString() + " string is null wtf how");
 
-                int mI =  s.get(0);
-                if(build.currentMode != mI){
-                    build.currentMode = mI < 0 || mI > modes.size ? 0 : mI;
+                }else {
+                    if(modes.contains(m -> Objects.equals(m.name, s))){
+                        build.currentMode = modes.find(m -> Objects.equals(m.name, s));
+                    } else if (calyxSpeciesNames.contains( m -> Objects.equals(m, s))){
+                        @Nullable  String calyx = calyxSpeciesNames.find( m -> Objects.equals(m, s));
+                        if(calyx != null)build.calyxSpecies = build.module().species = build.module().graph.species = calyx;
+                    }
                 }
 
-                int sI = s.get(1);
-                build.calyxSpecies = sI;
-                if (build.module() != null){
-                    build.module().species = sI;
-                    build.module().graph.species = sI;
-                }
             });
 
             config(UnitCommand.class, (GrowingCoreBuild build, UnitCommand command) -> build.command = command);
 
-            configClear((GrowingCoreBuild build) -> build.currentMode = 0);
+            configClear((GrowingCoreBuild build) -> build.currentMode = modes.get(0));
         }
 
     public class GrowingCoreBuild extends PropellerCoreTurretBuild implements Calyxian{
         @Nullable
         public CalyxModule calyxModule;
-        public int calyxSpecies = 0;
+        public String calyxSpecies = "";
 
         public int laziness = 0;
 
@@ -149,19 +148,18 @@ public class GrowingCore extends PropellerCoreTurret{
         }
 
         @Override
-        public int calyxSpeciesConfig(){
+        public String calyxSpeciesConfig(){
             return calyxSpecies;
-        }
-        @Override
-        public void calyxSpeciesConfig(int species){
-            configure(IntSeq.with(currentMode, species));
-            this.calyxSpecies = species;
         }
 
         @Override
-        public void configMode(int mode){
-            currentMode = mode;
-            configure(IntSeq.with(mode, calyxSpecies));
+        public void calyxSpeciesConfig(String species){
+            configure(species);
+        }
+
+        @Override
+        public void configMode(CoreMode mode){
+            configure(mode);
         }
 
         @Override
@@ -199,21 +197,20 @@ public class GrowingCore extends PropellerCoreTurret{
 
         @Override
         public byte version(){
-            return 3;
+            return 4;
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
-            write.i(calyxSpecies);
+            write.str(calyxSpecies);
         }
 
         @Override
         public void read(Reads read, byte revision) {
             super.read(read, revision);
-            if(revision >= 3){
-                calyxSpecies = read.i();
-            }
+            if(revision >= 4) calyxSpecies = read.str();
+            if(revision <= 3) calyxSpecies = calyxSpeciesNames.get(read.i());
         }
     }
 

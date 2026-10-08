@@ -18,7 +18,7 @@ public class PropellerCoreRecipes extends RecipeParser<PropellerCoreBlock>{
     @Override
     public Seq<Recipe> parse(@NotNull PropellerCoreBlock factory){
         if(factory.spawns == null) return new Seq<>();
-        Recipe recipe = new Recipe(RecipeType.factory, getWrap(factory), factory.unitTimer);
+        Recipe recipe = new Recipe(RecipeType.getFactory(), getWrap(factory), factory.unitTimer);
         recipe.addProductionInteger(getWrap(factory.spawns), factory.size);
         recipe.addMaterialFloat(PowerMark.INSTANCE, factory.unitPowerCost * 60);
 

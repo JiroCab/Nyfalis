@@ -18,7 +18,7 @@ import java.util.*;
 
 public class  NyfUnitTeamMapper{
     public static Team verdentTeam, calyxTeam;
-    public static final Team[] nyfTeams = new Team[2];
+    public static final Team[] nyfTeams = new Team[2], nyfAndBaseTeam = new Team[nyfTeams.length + Team.baseTeams.length];
     public static int
         LeggedPayload,
         OnePayloadUnit,
@@ -58,6 +58,10 @@ public class  NyfUnitTeamMapper{
 
         nyfTeams[0] = verdentTeam;
         nyfTeams[1] = calyxTeam;
+
+        for(int i = 0; i < Team.baseTeams.length; i++) nyfAndBaseTeam[i] = Team.baseTeams[i];
+        for(int i = 0; i < nyfTeams.length; i++) nyfAndBaseTeam[Team.baseTeams.length + i] = nyfTeams[i];
+
     }
 
     private static Team newTeam(int id, String name) {

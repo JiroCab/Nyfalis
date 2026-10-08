@@ -29,7 +29,10 @@ import olupis.content.*;
 import olupis.world.*;
 import olupis.world.blocks.defence.PropellerCoreTurret.*;
 
+import java.util.*;
+
 import static mindustry.Vars.*;
+import static olupis.content.NyfUnitTeamMapper.nyfAndBaseTeam;
 
 public class PropellerCoreBlock extends CoreBlock  {
     public TextureRegion blur;
@@ -50,8 +53,8 @@ public class PropellerCoreBlock extends CoreBlock  {
         clearOnDoubleTap = true;
 
         modes = Seq.with(
-            new CoreMode(false, false, true ),
-            new CoreMode(true, false, true )
+            new CoreMode("mode-storage" ,false, false, true ),
+            new CoreMode("mode-factory", true, false, true )
         );
 
         configs();
@@ -59,15 +62,17 @@ public class PropellerCoreBlock extends CoreBlock  {
 
     public void configs(){
         consumePowerDynamic((PropellerCoreBuild b) -> b.producingUnits() ? unitPowerCost : 0);
-        config(Integer.class, (PropellerCoreBuild build, Integer i) -> {
+        config(CoreMode.class, (PropellerCoreBuild build, CoreMode i) -> {
             if(!configurable) return;
 
+
             if(build.currentMode == i) return;
-            build.currentMode = i < 0 || i > modes.size ? 0 : i;
+            if(!modes.contains(i))return;
+            build.currentMode = i;
         });
         config(UnitCommand.class, (PropellerCoreBuild build, UnitCommand command) -> build.command = command);
 
-        configClear((PropellerCoreBuild build) -> build.currentMode = 0);
+        configClear((PropellerCoreBuild build) -> build.currentMode = modes.get(0));
     }
 
     @Override
@@ -81,8 +86,8 @@ public class PropellerCoreBlock extends CoreBlock  {
     public void setBars() {
         super.setBars();
         addBar("bar.progress", (PropellerCoreBuild entity) ->
-            entity.currentMode().stats[0] ? new Bar("bar.progress", Pal.ammo,() -> entity.unitProg / unitTimer) :
-            entity.currentMode().stats[1] && entity instanceof PropellerCoreTurretBuild tur ? new Bar("stat.reload", Pal.ammo,() -> tur.reloadF() ) :
+            entity.currentMode.stats[0] ? new Bar("bar.progress", Pal.ammo,() -> entity.unitProg / unitTimer) :
+            entity.currentMode.stats[1] && entity instanceof PropellerCoreTurretBuild tur ? new Bar("stat.reload", Pal.ammo,() -> tur.reloadF() ) :
             //entity.currentMode().stats[3] ? new Bar("bar.progress", Pal.ammo,() -> entity.unitProg / unitTimer) :
 
             null);
@@ -139,20 +144,26 @@ public class PropellerCoreBlock extends CoreBlock  {
     public static class CoreMode{
         //Produce units, enable weapon, accept items
         public boolean[] stats = {false, false, true};
+        public String name = "";
 
-        public CoreMode( boolean units, boolean weapon, boolean items){
+        public CoreMode(String name, boolean units, boolean weapon, boolean items){
+            this.name = name;
             this.stats = new boolean[]{units, weapon, items};
         }
         
         public boolean[]stats(){
             return stats;
         }
+        public String String(){
+            return name;
+        }
+
         CoreMode(){}
     }
 
     public class PropellerCoreBuild extends CoreBuild {
         public @Nullable UnitCommand command;
-        public int currentMode = 0;
+        public @Nullable CoreMode currentMode;
         public float unitProg = 0;
 
         @Override
@@ -261,43 +272,41 @@ public class PropellerCoreBlock extends CoreBlock  {
 
         @Override
         public int getMaximumAccepted(Item item) {
-            if(!currentMode().stats[2]) return 0;
+            if(!currentMode.stats[2]) return 0;
             return super.getMaximumAccepted(item);
         }
         @Override
         public void updateTile() {
-            if (!configurable) {
-                currentMode = 0;
-            }
+            block.configurable = true;
 
-            if (currentMode < 0 || currentMode > modes.size) {
-                currentMode = -1;
-            }
+            if (currentMode == null || !configurable) {
+                if(!modes.isEmpty()) currentMode = modes.get(0);
+            } else {
+                if(currentMode.stats[0]) unitProg = 0;
+                    //only check for ban, shades are always accessible regardless of research
+                else if(!unitType.isBanned()){
+                    unitProg += edelta() * Vars.state.rules.unitBuildSpeed(team);
+                    if(unitProg >= unitTimer) {
+                        unitProg %= unitTimer;
+                        float rot = (360f/unitAmount);
 
-            if(!currentMode().stats[0]) unitProg = 0;
-            //only check for ban, shades are always accessible regardless of research
-            else if(!unitType.isBanned()){
-                unitProg += edelta() * Vars.state.rules.unitBuildSpeed(team);
-                if(unitProg >= unitTimer) {
-                    unitProg %= unitTimer;
-                    float rot = (360f/unitAmount);
+                        for (int i = 1; i < (unitAmount + 1); i++) {
+                            float fx = x, fy = y;
 
-                    for (int i = 1; i < (unitAmount + 1); i++) {
-                        float fx = x, fy = y;
+                            if(unitAmount >1){
+                                Tmp.v1.trns(rot * i, tilesize * size);
+                                fx +=Tmp.v1.x;
+                                fy += Tmp.v1.y;
+                            }
 
-                        if(unitAmount >1){
-                            Tmp.v1.trns(rot * i, tilesize * size);
-                            fx +=Tmp.v1.x;
-                            fy += Tmp.v1.y;
-                        }
-
-                        if(Units.canCreate(team, spawns) && !net.client()){
-                            Unit unit = spawns.spawn(team, fx, fy);
-                            unit.rotation = Angles.angle(fx, fy, x, y);
-                            if(unit.isCommandable())unit.command().command(command == null && unit.type.defaultCommand != null ? unit.type.defaultCommand : command);
-                            Fx.spawn.at(unit);
-                            consume();
-                            Events.fire(new EventType.UnitCreateEvent(unit, this));
+                            if(Units.canCreate(team, spawns) && !net.client()){
+                                Unit unit = spawns.spawn(team, fx, fy);
+                                unit.rotation = Angles.angle(fx, fy, x, y);
+                                if(unit.isCommandable())unit.command().command(command == null && unit.type.defaultCommand != null ? unit.type.defaultCommand : command);
+                                Fx.spawn.at(unit);
+                                consume();
+                                Events.fire(new EventType.UnitCreateEvent(unit, this));
+                            }
                         }
                     }
                 }
@@ -316,14 +325,14 @@ public class PropellerCoreBlock extends CoreBlock  {
         @Override
         public void created(){
             super.created();
-            //removed the configurable
-
-            //todo look into if changing teams need to be added in
+            configurable = true;
             Events.fire(new CoreChangeEvent(this));
         }
 
         @Override
         public void buildConfiguration(Table table){
+            block.configurable = true;
+            Log.err("saudigasidgasg");
             table.table(par -> {
                 par.table(t -> {
                     t.background(Styles.black6);
@@ -333,11 +342,11 @@ public class PropellerCoreBlock extends CoreBlock  {
                     t.row();
                     for(var item : modes){
                         ImageButton button = t.button(icons[modes.indexOf(item)], Styles.clearNoneTogglei, 45f, () -> {
-                            configMode(modes.indexOf(item));
+                            configMode(item);
                             deselect();
                         }).group(group).get();
 
-                        button.update(() -> button.setChecked(item == currentMode()));
+                        button.update(() -> button.setChecked(item == currentMode));
 
                         if(++i % columns == 0){
                             t.row();
@@ -347,7 +356,7 @@ public class PropellerCoreBlock extends CoreBlock  {
                 par.table(t -> {
                     t.defaults().center();
                     t.image().color(team.color.cpy().lerp(Color.black, 0.25f).a(0.55f)).height(2f).center().growX().row();
-                }).visible(() -> currentMode().stats[0]).growX().row();
+                }).visible(() -> currentMode.stats[0]).growX().row();
                 par.collapser(ta -> {
                     ta.table( t ->{
                         ta.background(Styles.black6);
@@ -369,32 +378,59 @@ public class PropellerCoreBlock extends CoreBlock  {
                             }
                         }
                     });
-                },() -> currentMode().stats[0]).row();
+                },() -> currentMode.stats[0]).row();
 
                 par.table(t ->{
-                    t.defaults().center().growX().pad(5);
-                    super.buildConfiguration(t);
-                });
+                    if(state.rules.coreBuildAndConfig && (team != state.rules.defaultTeam || team.cores().size != 1)){
+                        //no longer calls super bc it has deselect() >n>
+                        t.defaults().center().growX().pad(5);
+                        ButtonGroup<ImageButton> group = new ButtonGroup<>();
+                        group.setMinCheckCount(0);
+                        Table cont = new Table();
+                        cont.defaults().size(32f);
+
+                        int i = 0;
+                        for(Team team : nyfAndBaseTeam){
+                            ImageButton button = cont.button(Tex.whiteui, Styles.clearTogglei, 24f, () -> {
+                            }).group(group).get();
+                            button.changed(() -> {
+                                if(button.isChecked()){
+                                    configure(team.id);
+                                }
+                            });
+                            button.getStyle().imageUpColor = team.color;
+                            button.update(() -> button.setChecked(this.team == team));
+
+                            if(i++ % 3 == 2){
+                                cont.row();
+                            }
+                        }
+
+                        ScrollPane pane = new ScrollPane(cont, Styles.smallPane);
+                        pane.setScrollingDisabled(false, false);
+                        pane.setOverscroll(false, false);
+                        t.add(pane).maxHeight(Scl.scl(40f * 3f)).left();
+                        t.row();
+                    }
+                }).growX();
 
             });
         }
 
         /*Config calls are now a functions. as game confuse if two configs with ints crashie
         * This allows for Growing core to have configs for species and mode*/
-        public void configMode(int mode) {
+        public void configMode(CoreMode mode) {
             currentMode = mode;
             configure(mode);
         }
 
-        public CoreMode currentMode(){
-            return modes.get(currentMode);
-        }
         
         public boolean producingUnits(){
-            return currentMode().stats[0];
+            if(currentMode == null) return false;
+            return currentMode.stats[0];
         }
         
-        void buildIcon(Table table, int conf, Drawable icon){
+        void buildIcon(Table table, CoreMode conf, Drawable icon){
             table.button(icon, Styles.clearNoneTogglei, 40f, () -> {
                 currentMode = conf;
                 configure(conf);
@@ -404,13 +440,14 @@ public class PropellerCoreBlock extends CoreBlock  {
 
         @Override
         public byte version() {
-            return 2;
+            return 3;
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
-            write.i(currentMode);
+            if(currentMode == null) currentMode = modes.get(0);
+            write.str(currentMode.name);
             write.f(unitProg);
             TypeIO.writeCommand(write, command);
         }
@@ -419,7 +456,11 @@ public class PropellerCoreBlock extends CoreBlock  {
         public void read(Reads read, byte revision){
             super.read(read, revision);
             if(revision >= 1){
-                currentMode = read.i();
+                if(revision >= 3 ){
+                    currentMode = modes.find( m -> Objects.equals(m.name, read.str()));
+
+                } else currentMode = modes.get(read.i());
+
                 unitProg = read.f();
             }
             if(revision >=2){
@@ -436,7 +477,7 @@ public class PropellerCoreBlock extends CoreBlock  {
         @Override
         public BlockStatus status(){
             if (!this.enabled) return BlockStatus.logicDisable;
-            else if (!currentMode().stats[0] &&! currentMode().stats[1] && currentMode().stats[2]) return BlockStatus.active;
+            else if (!currentMode.stats[0] &&! currentMode.stats[1] && currentMode.stats[2]) return BlockStatus.active;
             else if (!this.shouldConsume()) return BlockStatus.noOutput;
             else if (!(this.efficiency <= 0.0F) && this.productionValid()) return Vars.state.tick / (double)30.0F % (double)1.0F < (double)this.efficiency ? BlockStatus.active : BlockStatus.noInput;
             else return BlockStatus.noInput;
@@ -447,8 +488,8 @@ public class PropellerCoreBlock extends CoreBlock  {
             super.draw();
 
             Seq<TextureRegion> out = new Seq<>();
-            out.add(icons[currentMode].getRegion());
-            out.add(currentMode().stats[0] ? command != null ? command.getIcon().getRegion() : spawns.defaultCommand.getIcon().getRegion() :  Core.atlas.find("error"));
+            out.add(icons[modes.indexOf(currentMode)].getRegion());
+            out.add(currentMode.stats[0] ? command != null ? command.getIcon().getRegion() : spawns.defaultCommand.getIcon().getRegion() :  Core.atlas.find("error"));
             NyfWorldFuckingHelper.renderConfigIndicator(this, out);
         }
 

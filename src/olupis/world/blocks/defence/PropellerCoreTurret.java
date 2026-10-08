@@ -64,9 +64,9 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
     public PropellerCoreTurret(String name){
         super(name);
         modes = Seq.with(
-                new CoreMode(false, false, true ),
-                new CoreMode( true, false, true ),
-                new CoreMode(false, true, false )
+                new CoreMode("mode-storage" ,false, false, true ),
+                new CoreMode("mode-factory", true, false, true ),
+                new CoreMode("mode-turret",false, true, false )
         );
     }
 
@@ -297,7 +297,7 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
                 return;
             }
 
-            unit.ammo(unit.type().ammoCapacity);
+            unit.ammo(1);
             if (!validateTarget()) target = null;
 
             float warmupTarget = (isShooting() && canConsume()) || charging() ? 1f : 0f;
@@ -477,7 +477,7 @@ public class PropellerCoreTurret extends PropellerCoreBlock {
 
         protected void updateShooting() {
 
-            if (reloadCounter >= reload && !charging() && shootWarmup >= minWarmup && currentMode().stats[1]) {
+            if (reloadCounter >= reload && !charging() && shootWarmup >= minWarmup && currentMode.stats[1]) {
                 BulletType type = peekAmmo();
 
                 shoot(type);

@@ -13,7 +13,7 @@ import olupis.content.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 import static olupis.NyfalisVars.nyfRule;
-import static olupis.world.EnvUpdater.queue;
+import static olupis.world.EnvUpdater.*;
 
 public class GrowingHeart extends Block{
     public double rootChance = 0.010 / 60f;
@@ -23,7 +23,7 @@ public class GrowingHeart extends Block{
         super(name);
         update = solid = destructible = configurable = true;
 
-        config(Integer.class, (GrowingHeartBuilding build, Integer i) -> {
+        config(String.class, (GrowingHeartBuilding build, String i) -> {
             if(!configurable) return;
             build.calyxSpecies = i;
             if (build.module() != null){
@@ -51,7 +51,7 @@ public class GrowingHeart extends Block{
 
         @Nullable
         public CalyxModule calyxModule;
-        public int calyxSpecies;
+        public String calyxSpecies;
 
         @Override
         public CalyxModule module(){
@@ -130,11 +130,11 @@ public class GrowingHeart extends Block{
         }
 
         @Override
-        public int calyxSpeciesConfig(){
+        public String calyxSpeciesConfig(){
             return calyxSpecies;
         }
         @Override
-        public void calyxSpeciesConfig(int species){
+        public void calyxSpeciesConfig(String species){
             this.calyxSpecies = species;
         }
 
@@ -150,22 +150,22 @@ public class GrowingHeart extends Block{
 
         @Override
         public byte version(){
-            return 1;
+            return 2;
         }
 
         @Override
         public void write(Writes write){
             super.write(write);
-            write.i(calyxSpecies);
+            write.str(calyxSpecies);
         }
 
         @Override
         public void read(Reads read, byte revision) {
             super.read(read, revision);
-            if(revision >= 1){
-                calyxSpecies = read.i();
-            }
+            if(revision >= 2) calyxSpecies = read.str();
+            if(revision <= 1) calyxSpecies = calyxSpeciesNames.get(read.i());
         }
+
 
         @Override
         public void placed(){

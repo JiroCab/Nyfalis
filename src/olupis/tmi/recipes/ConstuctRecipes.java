@@ -34,7 +34,7 @@ public class ConstuctRecipes extends RecipeParser<ItemUnitTurret>{
             }
 
             if(factory.hasAlternate && s.alternateType != null) alts.put(a.key, s.alternateType);
-            Recipe recipe = new Recipe(RecipeType.factory, getWrap(factory), factory.reload *  a.value.reloadMultiplier);
+            Recipe recipe = new Recipe(RecipeType.getFactory(), getWrap(factory), factory.reload *  a.value.reloadMultiplier);
 
             for(ItemStack st :  factory.requiredItems ) recipe.addMaterialInteger(getWrap(st.item), st.amount);
             recipe.addProductionInteger(getWrap(s.spawnUnit), 1);
@@ -48,7 +48,7 @@ public class ConstuctRecipes extends RecipeParser<ItemUnitTurret>{
                 Log.err(a.value+ "is not a spawn bullet!");
                 continue;
             }
-            Recipe recipe = new Recipe(RecipeType.factory, getWrap(factory), factory.reload *  a.value.reloadMultiplier);
+            Recipe recipe = new Recipe(RecipeType.getFactory(), getWrap(factory), factory.reload *  a.value.reloadMultiplier);
 
             for(ItemStack st :  factory.requiredAlternate ) recipe.addMaterialInteger(getWrap(st.item), st.amount);
             recipe.addProductionInteger(getWrap(s.spawnUnit), 1);

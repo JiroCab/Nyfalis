@@ -33,7 +33,7 @@ public class HeadAcheRecipes extends RecipeParser<HeadacheCrafter>{
     public Seq<Recipe> parse(HeadacheCrafter factory){
         Seq<Recipe> out = new Seq<>();
         for(FactoryPlan plan : factory.plans){
-            Recipe recipe = new Recipe(RecipeType.factory, getWrap(factory), plan.time);
+            Recipe recipe = new Recipe(RecipeType.getFactory(), getWrap(factory), plan.time);
 
             if(plan.input != null)for(ItemStack st :  plan.input ) recipe.addMaterialInteger(getWrap(st.item), st.amount);
             if(plan.inputLiquid != null)for(LiquidStack st :  plan.inputLiquid ) recipe.addMaterialFloat(getWrap(st.liquid), st.amount);

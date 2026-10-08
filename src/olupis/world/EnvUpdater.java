@@ -55,6 +55,8 @@ public class EnvUpdater implements AsyncProcess{
     public static Seq<Tile> spearQueue;
     //Lazy way of checking infested blocks
 
+    public static final Seq<String> calyxSpeciesNames = Seq.with("calyx-brittle-leaf", "calyx-temp1", "calyx-temp2");
+
 
 
     public static void load(){
@@ -359,7 +361,7 @@ public class EnvUpdater implements AsyncProcess{
         for(float dx = Math.max(x - radius, 0); dx <= Math.min(x + radius, wwidth); dx += tilesize){
             for(float dy = Math.max(y - radius, 0); dy <= Math.min(y + radius, wheight); dy += tilesize){
                 Tile ret = world.tileWorld(dx, dy);
-                if(ret != null && ret.within(x, y, radius) && (offset <= 0f || !ret.within(x, y, offset)) && instances[ret.array()].infested) run.get(ret);
+                   if(ret != null && ret.within(x, y, radius) && (offset <= 0f || !ret.within(x, y, offset)) && instances[ret.array()].infested) run.get(ret);
             }
         }
     }

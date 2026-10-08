@@ -32,7 +32,7 @@ public class UnitFabricatorRecipes extends RecipeParser<Fabricator>{
 
         Seq<Recipe> res = new Seq<>();
         for (UnitType[] upgrade : content.upgrades) {
-            Recipe recipe = new Recipe(RecipeType.factory, getWrap(content), content.constructTime);
+            Recipe recipe = new Recipe(RecipeType.getFactory(), getWrap(content), content.constructTime);
 
             recipe.addMaterialInteger(getWrap(upgrade[0]), 1);
             recipe.addProductionInteger(getWrap(upgrade[1]), 1);
