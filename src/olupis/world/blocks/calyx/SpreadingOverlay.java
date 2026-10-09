@@ -193,8 +193,11 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
     @Override
     public void lazyEnv(Tile tile){
-        Building heart = Units.closestBuilding(nyfRule.calyxTeam, tile.drawx(), tile.drawy(), connectionRange, b -> !b.dead && b instanceof Calyxian c && c.isAlive());
-        aliveOverlays.set(tile.array(), heart != null);
+        boolean[] any = {false};
+        Units.nearbyBuildings(tile.worldx(), tile.worldy(), connectionRange, b ->{
+            if(!any[0] && !b.dead && b instanceof Calyxian c && c.isAlive()) any[0] = true;
+        });
+        aliveOverlays.set(tile.array(), any[0]);
     }
 
     @Override
@@ -275,7 +278,15 @@ public class SpreadingOverlay extends OverlayFloor implements UpdatingEnvironmen
 
                     if(spreadSound != null) tasks.post(() -> Call.soundAt(spreadSound, tile.worldx(), tile.worldy(), spreadVolume, 1f));
                     tasks.post(() -> lazyEnv(tile));
-                    tile.setBlock(out.random(), nyfRule.calyxTeam, 0);
+                    IntSeq teams = new IntSeq();
+                    for(int j = 0; j <= 3; j++){
+                        if(tile.nearbyBuild(j) == null) continue;
+                        if(tile.nearbyBuild(j) instanceof Calyxian cal && cal.isAlive()) teams.add(tile.nearbyBuild(j).team.id);
+                    }
+                    if(teams.size <= 0) teams = IntSeq.with(nyfRule.calyxTeam.id);
+
+                    tile.setNet(out.random(), Team.get(teams.random()), 0);
+                    if(tile.block() != null && tile.block() instanceof  Calyxian cal) cal.newSprout();
                 }
             }
         }

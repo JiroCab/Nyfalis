@@ -157,12 +157,17 @@ public class GrowingVein extends Block{
         public void placed(){
             super.placed();
 
+            newSprout();
+        }
+
+        @Override
+        public void newSprout(){
             //randomized which one it adds itself too
             Seq<Building> pro = proximity.copy();
             pro.sort( i -> Mathf.randomSeed(pos()));
             for(Building building : pro){
                 if(!(building instanceof  Calyxian b)) continue;
-                b.module().graph.add(this);
+                if(building.team == this.team) b.module().graph.add(this);
 
             }
         }

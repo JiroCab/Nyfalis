@@ -18,12 +18,14 @@ import mindustry.io.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
+import olupis.*;
 import olupis.world.blocks.calyx.ineternal.*;
 
 import java.io.*;
 import java.util.*;
 
 import static mindustry.Vars.*;
+import static olupis.NyfalisVars.*;
 import static olupis.NyfalisVars.nyfRule;
 
 /** Yes, this class has race conditions and possibly memory leaks, cry about it */
@@ -119,6 +121,9 @@ public class EnvUpdater implements AsyncProcess{
         instances = new EnvStruct[wsize];
         props = new short[content.blocks().size];
 
+        aliveFloors = new Bits(EnvUpdater.wsize);
+        aliveOverlays = new Bits(EnvUpdater.wsize);
+
         spearTiles = new short[wsize];
         spearTimer = Integer.MAX_VALUE;
 
@@ -132,7 +137,6 @@ public class EnvUpdater implements AsyncProcess{
 
     @Override
     public void process(){
-        if(Core.input.keyDown(Binding.control)) return;
         boolean
             full = state.tick - lastTick > lazyTickPeriod,
             reCalc = spearTimer >= 120
@@ -144,9 +148,9 @@ public class EnvUpdater implements AsyncProcess{
         }
         if(nyfRule.calyxSpreading){
             for(int i = 0; i < wsize; i++){
+
                 Tile lookup = world.tiles.geti(i);
                 EnvStruct instance = instances[i];
-
                 boolean state = false;
                 if(lookup.floor() instanceof UpdatingEnvironment e){
                     e.updateEnv(lookup, instance);
@@ -162,7 +166,6 @@ public class EnvUpdater implements AsyncProcess{
                     e.updateEnv(lookup, instance);
                     state = true;
                 }
-
                 instance.infested = state;
             }
 
@@ -187,20 +190,32 @@ public class EnvUpdater implements AsyncProcess{
         if(spearQueue == null || spearQueue.size < 2) return;
 
         Seq<Tile> qmq = new Seq<>(), omo;
-        Tile in = spearQueue.pop(), out = spearQueue.pop();
+        Tile in = spearQueue.pop(), out = spearQueue.pop(), tRNG;
         omo = Astar.pathfind(in, out, t -> t.solid() ? 100 : 1, t -> !t.floor().isDeep());
+        int rng;
 
         for(Tile tile : omo){
 
-            spearTiles[tile.array()] += 400;
+            spearTiles[tile.array()] += 150;
+            //try to break up straight lines
+            tRNG = tile;
+            rng = Mathf.random(0, 5);
+            if(tRNG.nearby(rng) != null || rng == 5) spearTiles[tRNG.array()] += 250;
+
+
 
             qmq.clear();
 
             //TODO: is this actually in line for longish smanywall veins
             for(int iy = -spearSpread; iy < spearSpread; iy++){
                 for(int ix = -spearSpread; ix < spearSpread; ix++){
-                    Tile t = world.tiles.get(tile.x + ix, tile.y + iy);
-                    if(t != null) qmq.addUnique(t);
+                    tRNG = world.tiles.get(tile.x + ix, tile.y + iy);
+
+                    //try to break up straight lines
+                    rng = Mathf.random( 0, 5);
+                    if(rng >= 5 || tRNG.nearby(rng) != null) tRNG = tRNG.nearby(rng);
+
+                    if(tRNG != null) qmq.addUnique(tRNG);
                 }
             }
 
@@ -273,8 +288,6 @@ public class EnvUpdater implements AsyncProcess{
 
             }
         }
-        Log.err(spearQueue.toString());
-//            Log.err(debug.toString());
     }
 
     public static float getSpearChance(int tile){
@@ -361,7 +374,7 @@ public class EnvUpdater implements AsyncProcess{
         for(float dx = Math.max(x - radius, 0); dx <= Math.min(x + radius, wwidth); dx += tilesize){
             for(float dy = Math.max(y - radius, 0); dy <= Math.min(y + radius, wheight); dy += tilesize){
                 Tile ret = world.tileWorld(dx, dy);
-                   if(ret != null && ret.within(x, y, radius) && (offset <= 0f || !ret.within(x, y, offset)) && instances[ret.array()].infested) run.get(ret);
+                    if(ret != null && ret.within(x, y, radius) && (offset <= 0f || !ret.within(x, y, offset)) && instances[ret.array()].infested) run.get(ret);
             }
         }
     }

@@ -46,6 +46,7 @@ public class NyfalisVars{
     }
 
     public static void load(){
+        //even tho this set it to 0 bc wsize is still not made, this should prevent load fails
         aliveFloors = new Bits(EnvUpdater.wsize);
         aliveOverlays = new Bits(EnvUpdater.wsize);
 

@@ -332,7 +332,6 @@ public class PropellerCoreBlock extends CoreBlock  {
         @Override
         public void buildConfiguration(Table table){
             block.configurable = true;
-            Log.err("saudigasidgasg");
             table.table(par -> {
                 par.table(t -> {
                     t.background(Styles.black6);
@@ -499,7 +498,6 @@ public class PropellerCoreBlock extends CoreBlock  {
             int realAmount = incinerate ? 0 : Math.min(amount, storageCapacity - items.get(item));
 
             if(incinerate){
-                Log.err("asidjoasjd");
                 if(wasVisible)Fx.fuelburn.at(x, y);
                 this.noSleep();
                 return;

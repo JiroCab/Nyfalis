@@ -57,7 +57,10 @@ public class GrownFloor extends Floor implements UpdatingEnvironment{
 
     @Override
     public void lazyEnv(Tile tile){
-        Building heart = Units.closestBuilding(nyfRule.calyxTeam, tile.x * tilesize , tile.y * tilesize, connectionRange, b -> !b.dead && b instanceof Calyxian c && c.isAlive());
-        aliveFloors.set(tile.array(), heart != null);
+        boolean[] any = {false};
+        Units.nearbyBuildings(tile.worldx(), tile.worldy(), connectionRange, b ->{
+            if(!any[0] && !b.dead && b instanceof Calyxian c && c.isAlive()) any[0] = true;
+        });
+        aliveOverlays.set(tile.array(), any[0]);
     }
 }

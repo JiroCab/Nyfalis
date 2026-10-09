@@ -489,7 +489,8 @@ public class NyfWorldFuckingHelper{
     public static void updateCalyxTiles(){
         if(!(worldFuckeryTimer % 60 == 0))return;
         camera.bounds(Tmp.r1);
-        EnvUpdater.eachInfested(Tmp.r1.x,  Tmp.r1.y, Math.max(Tmp.r1.width, Tmp.r1.height), 0, t -> {
+
+        EnvUpdater.eachInfested(Tmp.r1.x,  Tmp.r1.y, Math.max(Tmp.r1.width, Tmp.r1.height) + 5, 0, t -> {
             if(t.floor() instanceof UpdatingEnvironment e) e.lazyEnv(t);
             if(t.block() instanceof UpdatingEnvironment e) e.lazyEnv(t);
             if(t.overlay() instanceof UpdatingEnvironment e) e.lazyEnv(t);

@@ -157,6 +157,7 @@ public interface Calyxian{
         return isAlive() ? NyfWorldFuckingHelper.calyxSpeciesColors(EnvUpdater.calyxSpeciesNames.indexOf((module().graph.species))) : Color.black;
     }
 
+    default void newSprout(){}
 
     //todo handle payload pick up & change team()
 }
