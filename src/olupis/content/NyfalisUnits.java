@@ -29,7 +29,7 @@ import mindustry.world.meta.*;
 import olupis.input.*;
 import olupis.world.*;
 import olupis.world.ai.*;
-import olupis.world.blocks.defence.ItemUnitTurret.*;
+import olupis.world.blocks.defence.Ladar.*;
 import olupis.world.entities.abilities.*;
 import olupis.world.entities.bullets.*;
 import olupis.world.entities.entities.*;
@@ -1634,6 +1634,7 @@ public class NyfalisUnits {
                 reload = 45;
                 shake = 0.2f;
                 recoil = 1f;
+                inaccuracy = 3f;
                 shootY = 0.5f;
                 shootCone = 55f;
                 rotateSpeed = 10f;
@@ -1641,7 +1642,7 @@ public class NyfalisUnits {
                 rotate = true;
                 mirror = top = false;
                 shootSound = Sounds.shootSpectre;
-                bullet = new BasicBulletType(2, 20){{
+                bullet = new BasicBulletType(2, 7){{
                     width = 5f;
                     height = 7f;
                     lifetime = 120;
@@ -1653,20 +1654,23 @@ public class NyfalisUnits {
                     shrinkY = -0.57f;
                     frontColor = ironBullet;
                     backColor = ironBulletBack;
-                    trailColor = rustyBulletBack;
-                    hitEffect = despawnEffect = Fx.flakExplosion;
+                    mixColorTo = rustyBullet;
+                    trailColor = alcoBulletBack;
+                    hitEffect = despawnEffect = Fx.none;
                     hitSound = Sounds.explosion;
+                    collidesAir = false;
 
                     fragBullets = 1;
-                    fragBullet = new DistanceScalingBulletType(30, 22){{
+                    fragBullet = new DistanceScalingBulletType(35, 22){{
                         trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                        despawnScaledEffect = hitScaledEffect = NyfalisFxs.hitScaledLuridiblatta;
                         maxDst = 30 * Vars.tilesize;
                         killShooter = collidesAir = false;
                         fragBullets = 8;
                         fragSpread = 360;
                         fragRandomSpread = 0;
-                        minDst = Vars.tilesize * 10;
-                        minDmgMul = 0.3f;
+                        minDst = Vars.tilesize * 15;
+                        minDmgMul = 0.15f;
                     }};
                 }};
             }});
@@ -1757,7 +1761,7 @@ public class NyfalisUnits {
             new NyfalisWeapon("olupis-obliterator", false, true){{
                 x = 20;
                 y = 3f;
-                reload = 200;
+                reload = 250;
                 shake = 0.76f;
                 recoil = 10f;
                 shootY = 10f;
@@ -1771,28 +1775,29 @@ public class NyfalisUnits {
                     width = 15f;
                     height = 20f;
                     lifetime = 150;
-                    trailWidth = 6f;
-                    trailLength = 10;
-                    weaveScale = 1;
-                    weaveMag = 1.5f;
+                    trailWidth = 1.5f;
+                    trailLength = 15;
+                    trailSinScl = 5f;
+                    trailSinMag = 1.5f;
                     shrinkX = -0.70f;
                     shrinkY = -0.57f;
-                    frontColor = ironBullet;
-                    backColor = ironBulletBack;
-                    mixColorTo = mixColorFrom = Color.darkGray;
-                    trailColor = rustyBulletBack;
-                    hitEffect = despawnEffect = Fx.flakExplosionBig;
+                    frontColor = alcoBullet;
+                    backColor = alcoBulletBack;
+                    mixColorTo = new Color().set(Pal.bulletYellowBack).a(1);
+                    trailColor = new Color().set(rustyBulletBack).a(0.5f);
+                    hitEffect = despawnEffect = Fx.none;
 
                     fragBullets = 1;
-                    fragBullet = new DistanceScalingBulletType(100, 70){{
+                    fragBullet = new DistanceScalingBulletType(100, 100){{
                         trailEffect = despawnEffect = smokeEffect = shootEffect = hitEffect =  Fx.none;
+                        despawnScaledEffect = hitScaledEffect = NyfalisFxs.hitScaledParcoblatta;
                         maxDst = 30 * Vars.tilesize;
                         killShooter = collidesAir = false;
                         fragBullets = 8;
                         fragSpread = 360;
                         fragRandomSpread = 0;
-                        minDst = Vars.tilesize * 10;
-                        minDmgMul = 0.3f;
+                        minDst = Vars.tilesize * 5;
+                        minDmgMul = 0.1f;
                     }};
                 }};
             }});
@@ -3483,9 +3488,16 @@ public class NyfalisUnits {
             hidden = flying = true;
             fogRadius = 10;
             engineSize = -1f;
-            constructor = UnitEntity::create;
+            constructor = AmmoEnabledUnitClass::create;
             controller =  u -> new AIController();
         }
+
+            @Override
+            public void update(Unit unit){
+                //note: ladar block also tp's to the target to reduce stuttering
+                if(unit instanceof AmmoEnabledUnitClass ae && ae.parent() != null && ae.parent instanceof LadarBuild r && r.target != null) ae.set(r.target);
+                super.update(unit);
+            }
 
             @Override
             public void draw(Unit unit){

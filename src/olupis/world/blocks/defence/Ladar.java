@@ -10,6 +10,7 @@ import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.logic.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -24,8 +25,27 @@ public class Ladar extends Radar {
     public @Nullable UnitType type = null;
 
     public  boolean spotlight = false;
-    public float spotRadius  = 100f, spotRange = fogRadius * 3, minProgress = 0.7f, spottedDuration = 4f, minEffReveal = 0.7f, noBuildDecayMul = 2f;
-    public int decayDelay = -1, minHealth = 1;
+    public float
+        /*How Big Light is made on the unit*/
+        spotRadius  = 100f,
+        /*Distance how far the tracking of a unit is*/
+        spotRange = fogRadius * 3,
+        /*Fog reveal progress required to spot units*/
+        minProgress = 0.7f,
+        /*Duration of status effect applied on a spotted unit*/
+        spottedDuration = 4f,
+        /*Minimum efficiency needed to start spotting*/
+        minEffReveal = 0.7f,
+        /*How long till we start decaing*/
+        noBuildDecayMul = 2f
+
+    ;
+    public int
+        decayDelay = -1,
+        minHealth = 1,
+        /*Time before we pick a new target*/
+        spotRetargeting = Math.round(Time.toSeconds * 2.5f)
+    ;
     public StatusEffect spotted = StatusEffects.none;
     public Ladar(String name){
         super(name);
@@ -52,19 +72,13 @@ public class Ladar extends Radar {
         Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, spotRange * tilesize, Color.lightGray);
     }
 
-    public class LadarBuild extends RadarBuild{
-        public @Nullable Vec2 tar = new Vec2();
-        public int readUnitId = -1, decayTimer, maxHp;
+    public class LadarBuild extends RadarBuild implements Ranged{
+        public @Nullable Posc target;
+        public int readUnitId = -1, decayTimer, maxHp, retarget = 0;
         public @Nullable Unit slave;
 
         @Override
         public void updateTile(){
-            Unit uf = bestEnemyFog(team, this.x, this.y, spotRange * tilesize, u -> !u.dead && (!u.hasEffect(spotted) || u.getDuration(spotted) <= spottedDuration * 0.5f), UnitSorts.strongest);
-            if(uf != null){
-                tar.set(uf.x, uf.y);
-                if(spotted != StatusEffects.none) uf.apply(spotted, spottedDuration);
-            }else tar.set(-1, -1);
-
             if(type != null){
                 //unit was lost/destroyed
                 if(slave != null && (slave.dead || !slave.isAdded())) slave = null;
@@ -86,13 +100,20 @@ public class Ladar extends Radar {
 
                 if(slave != null){
                     if(efficiency <= minEffReveal) slave.kill();
-                    else if(tar != null){
-                        if(tar.x != -1 && tar.y != -1) slave.set(tar);
-                        else if(tar.x == -1 && tar.y == -1) slave.set(x, y);
-                    }
+                    //note: ladar helper also tp's to the target to reduce stuttering
+                    else if(target != null) slave.set(target);
+                    else slave.set(x,y);
                 }
-
             }
+
+            retarget--;
+            if(target == null || retarget <= 0){
+                target = bestEnemyFog(team, this.x, this.y, spotRange * tilesize, u -> !u.dead && (!u.hasEffect(spotted) || u.getDuration(spotted) <= spottedDuration * 0.5f), UnitSorts.strongest);
+                retarget = spotRetargeting;
+            }
+
+            if(spotted != StatusEffects.none && target != null && target instanceof Statusc st) st.apply(spotted, spottedDuration);
+
 
             if(decayDelay > 0) {
                 if(decayTimer  <= 0 ) kill();
@@ -123,8 +144,8 @@ public class Ladar extends Radar {
         @Override
         public void drawLight(){
             if(emitLight) Drawf.light(x, y, Mathf.lerp(0, lightRadius, progress), lightColor, lightColor.a);
-            if(spotlight && tar != null && tar.x != -1 && tar.y != -1 && progress >= minProgress){
-                Drawf.light(tar.x, tar.y, Mathf.lerp(0, spotRadius, progress), team.color, 0.8f);
+            if(spotlight && target != null && progress >= minProgress){
+                Drawf.light(target.x(), target.y(), Mathf.lerp(0, spotRadius, progress), team.color, 0.8f);
                 super.drawLight();
             }
         }
@@ -132,7 +153,7 @@ public class Ladar extends Radar {
         @Override
         public void drawSelect(){
             if(efficiency > minEffReveal)Drawf.dashCircle(x, y, spotRange * tilesize, Color.lightGray);
-            if(tar != null && tar.x != -1 && tar.y != -1) Drawf.square(tar.x, tar.y, 3, 45,team.color);
+            if(target != null) Drawf.square(target.x(), target.y(), 3, 45,team.color);
             super.drawSelect();
         }
 
@@ -161,5 +182,12 @@ public class Ladar extends Radar {
             write.i(slave == null ? -1 : slave.id);
             write.i(decayDelay > 0 ? decayTimer : -1);
         }
+
+        @Override
+        public float range(){
+            return spotRange;
+        }
+
+
     }
 }

@@ -22,12 +22,12 @@ public class NyfalisColors{
         glowPlantLight =  Color.valueOf("A0A54D").a(0.4f),
         glowPlantLightSofter =  Color.valueOf("A0A54D").a(0.20f),
 
-        rustyBullet = Color.valueOf("#a3897d"),
-        rustyBulletBack = Color.valueOf("#9f6e46"),
-        ironBullet = new Color().set(Pal.metalGrayDark),
-        ironBulletBack = new Color().set(Pal.darkestMetal),
-        alcoBullet = Color.valueOf("#7e87a9"),
-        alcoBulletBack = Color.valueOf("#7d7a8e"),
+        rustyBullet = Color.valueOf("#a3897d").a(1),
+        rustyBulletBack = Color.valueOf("#9f6e46").a(1),
+        ironBullet = new Color().set(Pal.metalGrayDark).a(1),
+        ironBulletBack = new Color().set(Pal.darkestMetal).a(1),
+        alcoBullet = Color.valueOf("#7e87a9").a(1),
+        alcoBulletBack = Color.valueOf("#7d7a8e").a(1),
 
         floodLightColor = new Color().set(Color.white).a(0.2f),
         turretLightColor = new Color().set(Color.white).a(0.35f),

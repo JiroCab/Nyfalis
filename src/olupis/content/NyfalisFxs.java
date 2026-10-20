@@ -16,6 +16,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import olupis.world.blocks.environment.*;
+import olupis.world.effects.*;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Draw.rect;
@@ -27,6 +28,16 @@ public class NyfalisFxs extends Fx {
     BounceOut bounceOutTwo = new BounceOut(2);
 
     public static final Effect
+
+        //Debug Effects
+        debugEffect = new Effect(30, e -> {
+
+            if(e.data instanceof String i){
+                WorldLabel.drawAt(i, e.x, e.y, Layer.overlayUI, WorldLabel.flagOutline, 0.4f, Align.center, Align.center);
+            } else if (e.data instanceof Float i ) WorldLabel.drawAt(i + "", e.x, e.y, Layer.overlayUI, WorldLabel.flagOutline, 0.4f, Align.center, Align.center);
+
+        }),
+
         //Trail Effects
         trailStrataBulletMine = new Effect(13, e -> {
             color(Color.white, e.color, e.fin());
@@ -474,6 +485,7 @@ public class NyfalisFxs extends Fx {
             Drawf.light(e.x, e.y, 30f, Pal.sapBulletBack, 0.8f * e.fout());
         }),
 
+
         //Hits Effects
         hitSurgeZapped = new MultiEffect(hitBeam).wrap(Pal.surgeAmmoBack),
         hitSurgeZappedBig = new MultiEffect(hitBeam, hitLaserBlast).wrap(Pal.surgeAmmoBack),
@@ -568,13 +580,11 @@ public class NyfalisFxs extends Fx {
             square(e.x, e.y, 2f + e.finpow() * (Vars.tilesize * -2), 45);
         }),
 
-        //Debug Effects
-        debugEffect = new Effect(30, e -> {
-        if(!(e.data instanceof String i)) return;
-        WorldLabel.drawAt(i, e.x, e.y, Layer.overlayUI, WorldLabel.flagOutline, 0.4f, Align.center, Align.center);
-
-    })
+        hitScaledParcoblatta = new ScalingMultiEffect(Fx.hitBulletSmall, -0.5f, Fx.flakExplosion, -0.5f, flakExplosionBig, 0.5f, blastsmoke, 0.25f, blockExplosionSmoke, 0.75f, fastSquareSmokeCloud, 0.9f),
+        hitScaledLuridiblatta = new ScalingMultiEffect(Fx.hitBulletSmall, 0.5f, blastsmoke, 0.75f, hitHollowPointSmall, -0.5f, Fx.fireballsmoke, 0.25)
     ;
+
+
 
 }
 

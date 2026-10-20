@@ -102,7 +102,7 @@ public class NyfalisStats extends StatValues {
                                             if(t instanceof Item itm) title(bt, itm);
                                             sepLeft(bt, (mb.mine.localizedName));
                                             if(Core.bundle.getOrNull(parent + "." +t.name) == null){
-                                                sepLeftWrap(bt, (mb.mine.description));
+                                                sepLeftWrapFit(bt, (mb.mine.description));
                                             }else {
                                                 sepLeftWrap(bt, (Core.bundle.get(parent + "." +t.name)));
 
@@ -474,6 +474,12 @@ public class NyfalisStats extends StatValues {
     private static void sepLeftWrap(Table table, String text){
         table.table(te -> {
             te.labelWrap(text).growX().left();
+        }).growX().row();
+    }
+
+    private static void sepLeftWrapFit(Table table, String text){
+        table.table(te -> {
+            te.labelWrap(text).fillX().left();
         }).growX().row();
     }
 

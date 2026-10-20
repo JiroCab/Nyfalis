@@ -1,9 +1,9 @@
 package olupis.world.blocks.turret;
 
-import arc.graphics.g2d.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
@@ -11,16 +11,19 @@ import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 import olupis.world.*;
+import olupis.world.interfaces.*;
 
 import static olupis.world.NyfWorldFuckingHelper.renderConfigIndicator;
 
-public class LineOfSightItemTurret extends  NyfalisItemTurret{
+public class LineOfSightItemTurret extends  NyfalisItemTurret implements TurretModeable{
     public boolean angleCheck = false;
     public LineOfSightItemTurret(String name){
         super(name);
         configurable = copyConfig = saveConfig = clearOnDoubleTap =  true;
         config(Boolean.class, (LineOfSightTurretBuild build, Boolean b )-> build.ignoreLOS = b);
         configClear((LineOfSightTurretBuild build) -> build.ignoreLOS = false);
+
+        setModes(Seq.with(TurretModes.modeLineOfSight, TurretModes.modeNormal));
     }
 
 
@@ -79,7 +82,7 @@ public class LineOfSightItemTurret extends  NyfalisItemTurret{
 
         @Override
         public byte version(){
-            return 3;
+            return 4;
         }
 
         @Override
@@ -91,7 +94,9 @@ public class LineOfSightItemTurret extends  NyfalisItemTurret{
         @Override
         public void read(Reads read, byte revision){
             super.read(read, revision);
-            if(revision >= 3) ignoreLOS = read.bool();
+            if(revision <= 3){
+                ignoreLOS = read.bool();
+            }
         }
 
         @Override

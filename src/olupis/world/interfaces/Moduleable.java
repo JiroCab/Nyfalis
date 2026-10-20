@@ -16,7 +16,7 @@ public interface Moduleable{
         if(build.tier() >= minTier() && build.tier() <= maxTier()) getModules().addUnique(build);
     }
 
-   default void removeModule(Articulator.ArticulatorBuild build){
+    default void removeModule(Articulator.ArticulatorBuild build){
         getModules().remove(build);
     }
 
