@@ -8,7 +8,7 @@ sourceSets.main{
     java.setSrcDirs(listOf("src"))
 }
 
-val mindustryVersion = "v160.6" //don't forget the one in settings.gradle.kts
+val mindustryVersion = gradle.extra["mindustryVer"] as String //in settings.gradle.kts, bc reasons
 val isWindows = System.getProperty("os.name").lowercase().contains("windows")
 val sdkRoot: String? = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 val projectName ="olupis"

@@ -28,6 +28,7 @@ import mindustry.type.weapons.*;
 import mindustry.world.meta.*;
 import olupis.input.*;
 import olupis.world.*;
+import olupis.world.NyfPartParms.*;
 import olupis.world.ai.*;
 import olupis.world.blocks.defence.Ladar.*;
 import olupis.world.entities.abilities.*;
@@ -902,23 +903,24 @@ public class NyfalisUnits {
             health = 200f;
             fogRadius = 10f;
             itemCapacity = 5;
-            engineSize = 1.6f;
+            engineSize = 0f;
             rotateSpeed = 19f;
             strafePenalty = 0.35f;
             engineOffset = 4.6f;
+            ammoCapacity = 26;
 
             aiController = WaveAiHandler::new;
-            lowAltitude = flying = canGuardUnits = waveHunts = canRetreat=  true;
+            lowAltitude = flying = canGuardUnits = waveHunts = canRetreat = drawAmmo =  true;
 
             constructor = AmmoEnabledUnitClass::create;
             ammoType = NyfUnitTeamMapper.ammoCarrier;
             retreatStatus = NyfalisStatusEffects.retreating;
             defaultCommand = NyfalisUnitCommands.nyfalisRetreatCommand;
 
-            weapons.add(new Weapon("olupis-zoner-weapon"){{
+            weapons.add(new NyfalisWeapon("olupis-zoner-weapon"){{
                 top = alternate = false;
                 y = -1f;
-                x = -1.8f;
+                x = -2.75f;//-1.8f;
                 inaccuracy = 5f;
                 reload = shootCone = 15f;
                 ejectEffect = Fx.casing1;
@@ -928,11 +930,11 @@ public class NyfalisUnits {
                 soundPitchMin = 1f;
                 showStatSprite = false;
                 bullet = new BasicBulletType(3.2f, 5, "olupis-triangle-bullet"){{
-                    width = 4;
-                    height = 6f;
+                    width = 3;
+                    height = 5;
                     lifetime = 40f;
                     homingPower = 0.05f;
-                    buildingDamageMultiplier = 0.5f;
+                    buildingDamageMultiplier = 0.25f;
                     shootEffect = Fx.none;
                     smokeEffect = Fx.shootSmallSmoke;
                     frontColor = rustyBullet;
@@ -940,6 +942,16 @@ public class NyfalisUnits {
                     backColor = rustyBulletBack;
                 }};
             }});
+
+            parts.addAll(
+                new BladeRegionPart("-blade"){{
+                        under = true;
+                        mirror = false;
+                        layerOffset = -5;
+                        minSpeed = 7f;
+                        progress = NyfPartParms.NyfPartProgress.speedP;
+                }}
+            );
         }};
 
         //re.gioner - Yak from cnc games burst fire, needs to resupply
@@ -956,6 +968,7 @@ public class NyfalisUnits {
             speed = 2.5f;
             hitSize = 9f;
             circleTargetRadius = 10f;
+            ammoCapacity = 2;
 
             lowAltitude = flying = waveHunts =attackRotationLock = circleTarget = altResupply = drawAmmo = canRetreat =  true;
             omniMovement = false;
@@ -1035,6 +1048,7 @@ public class NyfalisUnits {
             hitSize = 12f;
             ammoZ = Layer.flyingUnitLow;
             range = 115f;
+            ammoCapacity = 100;
 
             faceTarget = false;
             lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;
@@ -1133,6 +1147,7 @@ public class NyfalisUnits {
             ammoZ = Layer.flyingUnitLow;
             range = 125;
             trailLength = 7;
+            ammoCapacity = 15;
 
             omniMovement = circleTarget = false;
             lowAltitude = flying = canGuardUnits = waveHunts = altResupply = drawAmmo = canRetreat = true;

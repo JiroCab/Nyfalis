@@ -19,10 +19,11 @@ public class NyfalisPlanets {
     public static final Seq<Planet> planetList = new Seq<>();
 
     public  static void LoadPlanets(){
-        /*I Exist so Tech Tree's Item pool is shared among the 3 planets*/
+        /*I Exist so Tech Tree's Item pool is shared among the 3 planets
+        * Would have made the diffculity picker here, but its ignored and respective planet is used*/
         system = new NyfPlanet("system", Planets.sun, 0.4f){{
-            accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = false;
-            hideDetails = alwaysUnlocked = true;
+            accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = allowCampaignRules =false;
+            hideDetails = alwaysUnlocked  = true;
 
             clipRadius = 2f;
             minZoom = 0.7f;
@@ -39,7 +40,7 @@ public class NyfalisPlanets {
 
         nyfalis = new NyfPlanet("nyfalis", Planets.sun, 1.1f, 3){{
             allowSectorInvasion = allowLaunchLoadout = false;
-            allowWaves = enemyCoreSpawnReplace  = prebuildBase = hasAtmosphere = true;
+            allowWaves = enemyCoreSpawnReplace  = prebuildBase = hasAtmosphere = allowCampaignRules = true;
 
             totalRadius = 2.7f;
             atmosphereRadIn = 0.01f;
@@ -67,7 +68,7 @@ public class NyfalisPlanets {
 
         //1st moon
         seredris = new NyfPlanet("seredris", NyfalisPlanets.nyfalis, 1.1f, 1){{
-            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = true;
+            accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = allowCampaignRules = true;
 
             startSector = 2;
             lightDstTo = 0.8f;
@@ -113,8 +114,6 @@ public class NyfalisPlanets {
     }
 
     public static void  setDefRules(Planet planet, boolean full){
-        planet.allowCampaignRules = true;
-
         planet.ruleSetter = r ->{
             r.unitCrashDamageMultiplier = 0.25f;
 

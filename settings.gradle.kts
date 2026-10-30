@@ -1,5 +1,6 @@
-import org.gradle.kotlin.dsl.ivy
-val mindustryVersion = "v160.6"
+val mindustryVersion = "v160.7"
+
+gradle.extra["mindustryVer"] = mindustryVersion
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

@@ -100,7 +100,8 @@ public class BarrelBulletType extends RollBulletType{
         updateBulletInterval(b);
 
         if(hitProjectiles){
-            Groups.bullet.each(bb -> {
+            Groups.bullet.tree().intersect(b.x, b.y, b.hitSize * 1.1f, b.hitSize * 1.1f, ba -> {
+                if(!(ba instanceof Bullet bb)) return;
                 if (bb.team != b.team) {
                     float d = Mathf.dst(bb.x, bb.y, b.x, b.y);
                     if (d < b.hitSize*3) {

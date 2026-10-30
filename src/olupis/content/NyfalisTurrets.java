@@ -30,6 +30,7 @@ import olupis.world.blocks.turret.*;
 import olupis.world.consumer.*;
 import olupis.world.entities.*;
 import olupis.world.entities.bullets.*;
+import olupis.world.entities.parts.*;
 
 import static mindustry.content.Items.*;
 import static mindustry.type.ItemStack.with;
@@ -387,24 +388,14 @@ public class NyfalisTurrets {
                 coolantMultiplier = 3f;
 
                 parts.addAll(
-                        new RegionPart("-buzzsaw"){{
+                        new BladeRegionPart("-buzzsaw"){{
                             layer = Layer.legUnit + 0.1f;
                             mirror = false;
                             under = true;
                             progress = PartProgress.warmup;
                             y = 6;
                             moveY = 8;
-                        }
-                            @Override
-                            public void draw(PartParams params){
-
-                                if(!Vars.state.isPaused()){
-                                    this.rotation += 10 * progress.get(params);
-                                }
-
-                                super.draw(params);
-                            }
-                        }
+                        }}
                 );
             }};
             shootSound = Sounds.none;

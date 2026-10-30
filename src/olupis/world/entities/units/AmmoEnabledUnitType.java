@@ -102,14 +102,14 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
                 table.add("[lightgray](" + ai.controller.tileX() + ", " + ai.controller.tileY() + ")").growX().wrap().left();
             }
             table.row();
-            table.label(() -> Iconc.settings + " " + (long)unit.flag).color(Color.lightGray).growX().wrap().left();
+            table.label(() -> Iconc.settings + " " + (long)unit.flag + "").color(Color.lightGray).growX().wrap().left();
             if(net.active() && ai.controller != null && ai.controller.lastAccessed != null){
                 table.row();
-                table.add(Core.bundle.format("lastaccessed", ai.controller.lastAccessed)).growX().wrap().left();
+                table.add(Core.bundle.format("lastaccessed", ai.controller.lastAccessed)).width(260f).wrap().left();
             }
         }else if(net.active() && unit.lastCommanded != null){
             table.row();
-            table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
+            table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).width(260f).wrap().left();
         }
 
         if(unit.controller() instanceof  InoperableAi ioa){
@@ -143,7 +143,7 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
 
                 if(ioa.inoperable())i.add(Core.bundle.get("nyfalis-ai-inoperable"));
             });
-        };
+        }
 
         table.row();
     }
@@ -207,5 +207,6 @@ public class AmmoEnabledUnitType extends NyfalisUnitType{
     public boolean shouldRetreat(int ammo){
         return   minRetreatAmmo >= ammo;
     }
+
 }
 
