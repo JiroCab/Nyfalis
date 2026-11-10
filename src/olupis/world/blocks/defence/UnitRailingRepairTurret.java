@@ -23,6 +23,7 @@ public class UnitRailingRepairTurret extends RepairTurret {
     public Color heatColor = Pal.turretHeat;
     /** ticks to cool down the heat region */
     public float cooldownTime = 20f;
+    public float repairAddative = 0;
 
     public float reload = 100f, statusDuration = 60f * 6f, shootX = 0f, shootY = 0f;
     public Effect fireFx = NyfalisFxs.shootRepairPin, lineFx = NyfalisFxs.shootRepairPinBeam, hitFx = NyfalisFxs.hitRepairPinSpark;
@@ -107,7 +108,7 @@ public class UnitRailingRepairTurret extends RepairTurret {
         }
 
         public void shoot(){
-            target.heal(repairSpeed * edelta());
+            target.heal(((repairSpeed /100 * target.maxHealth) + repairAddative) * edelta());
             reloadTimer = 0f;
             heat = 1f;
 
@@ -115,11 +116,11 @@ public class UnitRailingRepairTurret extends RepairTurret {
                     yf = y + Angles.trnsy(rotation - 90, shootX, shootY);
             boolean onTop = !target.within(x, y, size);
 
-            if(onTop)fireFx.at(xf, yf, rotation, Pal.heal);
-            else fireFx.at(target.x, target.y, rotation, Pal.heal);
+            if(onTop)fireFx.at(xf, yf, rotation, team.color);
+            else fireFx.at(target.x, target.y, rotation, team.color);
 
-            if(lineFx != Fx.none && onTop) lineFx.at(xf, yf, rotation, Pal.heal, new Vec2().set(target));
-            if(hitFx != Fx.none) hitFx.at(target.x, target.y,  target.rotation, Pal.heal);
+            if(lineFx != Fx.none && onTop) lineFx.at(xf, yf, rotation, team.color, new Vec2().set(target));
+            if(hitFx != Fx.none) hitFx.at(target.x, target.y,  target.rotation, team.color);
 
             if(healStatus != StatusEffects.none) target.apply(healStatus, statusDuration);
         }

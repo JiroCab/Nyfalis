@@ -24,12 +24,11 @@ public class BladeRegionPart extends RegionPart{
 
     @Override
     public void draw(PartParams params){
+        super.draw(params);
 
         if(!Vars.state.isPaused()){
             this.rotation += (rotSpeed * progress.get(params)) + minSpeed;
         }
 
-        super.draw(params);
-
-}
+    }
 }

@@ -38,8 +38,6 @@ public  class NyfalisWeapon extends Weapon {
     /*Shoot even if the unit has no ammo*/
     ignoreAmmo = false,
     statusOnlyOnHit = false,
-    /*Determines if the weapon can shoot while Borrowed or not*/
-    borrowShoot = true, unBorrowShoot = true,
     /*Determines if this weapon can fire in active payload, overrides elevation logic*/
     activePayloadShoot = true
     ;

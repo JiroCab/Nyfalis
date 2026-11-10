@@ -28,9 +28,9 @@ public class NyfalisPowerTurret extends PowerTurret {
         }
 
         @Override
-        public void update(){
-            super.update();
+        public void draw(){
             NyfPartParms.nyfparams.set(this, targetPos != null ? dst(targetPos) / range : 0, this.totalAmmo);
+            super.draw();
         }
     }
 

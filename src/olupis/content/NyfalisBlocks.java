@@ -1905,10 +1905,12 @@ public class NyfalisBlocks {
             //Intrusive bottom thoughts won -Rushie
             size = 3;
             shootY = 0;
-            repairSpeed = 10f;
+            repairSpeed = 0.5f;
+            repairAddative = 100;
             repairRadius = 110;
             powerUse =100f / 60f;
             liquidCapacity = 40;
+            reload = 150;
 
             length = 100f;
             acceptCoolant = true;

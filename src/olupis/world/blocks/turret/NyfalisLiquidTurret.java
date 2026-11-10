@@ -43,6 +43,12 @@ public class NyfalisLiquidTurret  extends LiquidTurret {
             super.drawLight();
         }
 
+
+        @Override
+        public void draw(){
+            NyfPartParms.nyfparams.set(this, targetPos != null ? dst(targetPos) / range : 0, this.totalAmmo);
+            super.draw();
+        }
     }
 
 }

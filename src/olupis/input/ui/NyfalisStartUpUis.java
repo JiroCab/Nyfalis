@@ -1,42 +1,40 @@
-package olupis.input.ui;
+    package olupis.input.ui;
 
-import arc.*;
-import arc.audio.*;
-import arc.func.*;
-import arc.graphics.g2d.*;
-import arc.input.*;
-import arc.math.*;
-import arc.scene.*;
-import arc.scene.event.*;
-import arc.scene.ui.*;
-import arc.scene.ui.layout.*;
-import arc.struct.*;
-import arc.util.*;
-import mindustry.*;
-import mindustry.content.*;
-import mindustry.core.*;
-import mindustry.editor.*;
-import mindustry.game.*;
-import mindustry.game.Rules.*;
-import mindustry.gen.*;
-import mindustry.input.*;
-import mindustry.mod.Mod;
-import mindustry.mod.Mods;
-import mindustry.type.*;
-import mindustry.ui.*;
-import mindustry.ui.dialogs.*;
-import mindustry.ui.fragments.*;
-import olupis.*;
-import olupis.content.*;
-import olupis.input.*;
-import olupis.world.*;
-import olupis.world.entities.packets.*;
+    import arc.*;
+    import arc.func.*;
+    import arc.graphics.g2d.*;
+    import arc.input.*;
+    import arc.math.*;
+    import arc.scene.*;
+    import arc.scene.event.*;
+    import arc.scene.ui.*;
+    import arc.scene.ui.layout.*;
+    import arc.struct.*;
+    import arc.util.*;
+    import mindustry.*;
+    import mindustry.content.*;
+    import mindustry.core.*;
+    import mindustry.editor.*;
+    import mindustry.game.*;
+    import mindustry.game.Rules.*;
+    import mindustry.gen.*;
+    import mindustry.input.*;
+    import mindustry.mod.*;
+    import mindustry.type.*;
+    import mindustry.ui.*;
+    import mindustry.ui.dialogs.*;
+    import mindustry.ui.fragments.*;
+    import olupis.*;
+    import olupis.content.*;
+    import olupis.input.*;
+    import olupis.world.*;
+    import olupis.world.entities.packets.*;
 
-import java.util.*;
+    import java.util.*;
 
-import static mindustry.Vars.*;
+    import static mindustry.Vars.*;
 
-public class NyfalisStartUpUis {
+    public class NyfalisStartUpUis {
     public static Table debugTable = new Table();
 
     public static void  debugDialog(){

@@ -388,13 +388,14 @@ public class NyfalisTurrets {
                 coolantMultiplier = 3f;
 
                 parts.addAll(
-                        new BladeRegionPart("-buzzsaw"){{
+                        new RegionPart("-buzzsaw"){{
                             layer = Layer.legUnit + 0.1f;
                             mirror = false;
                             under = true;
                             progress = PartProgress.warmup;
                             y = 6;
                             moveY = 8;
+                            moves.add(new PartMove(PartProgress.warmup.sustain(0, 10, 20).loop(1f), 0,0, 360f));
                         }}
                 );
             }};

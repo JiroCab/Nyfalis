@@ -944,12 +944,12 @@ public class NyfalisUnits {
             }});
 
             parts.addAll(
-                new BladeRegionPart("-blade"){{
-                        under = true;
-                        mirror = false;
-                        layerOffset = -5;
-                        minSpeed = 7f;
-                        progress = NyfPartParms.NyfPartProgress.speedP;
+                new RegionPart("-blade"){{
+                    under = true;
+                    mirror = false;
+                    layerOffset = -5;
+                    progress = NyfPartParms.NyfPartProgress.speedP;
+                    moves.add(new PartMove(PartProgress.reload.sustain(0,10,20), 0,0, 360f));
                 }}
             );
         }};
@@ -2948,26 +2948,30 @@ public class NyfalisUnits {
             ammoDepletionOffset = 60*10;
 
             flying = alwaysShootWhenMoving = drawAmmo = lookForParent = true;
-            playerControllable = useUnitCap = false;
+            playerControllable = useUnitCap = healingIgnoresMines = false;
 
             constructor = AmmoEnabledUnitClass::create;
             controller = u -> new AgressiveFlyingAi(true, true);
             ammoType = NyfUnitTeamMapper.ammoSpawned;
 
-            weapons.add(new LimitedRepairBeamWeapon(""){{
-                shootCone = 20f;
+            weapons.add(new LimtedReparRailerWeapon(""){{
+                shootCone = 65;
+                reload = 35;
                 y = 3;
                 shootX = shootY = x = 0;
-                fractionRepairSpeed = 0.02f;
-                beamWidth = repairSpeed = 0.18f;
 
-                autoTarget = healingIgnoresMines = targetUnits= true;
+                autoTarget = targetUnits= true;
                 controllable = top = targetBuildings = mirror =  false;
-                bullet = new BulletType(){{
+                bullet = new RailBulletType(){{
                     aimDst = 0f;
+                    damage = 0;
                     maxRange = 100f;
-                    healPercent = 1f;
+                    healPercent = 0.025f;
+                    healAmount  = 80f;
                     hitUnder = true;
+                    shootEffect = NyfalisFxs.shootRepairPin;
+                    smokeEffect =  NyfalisFxs.shootRepairPinBeam;
+                    hitEffect = NyfalisFxs.hitRepairPinSpark;
                 }};
             }});
         }};

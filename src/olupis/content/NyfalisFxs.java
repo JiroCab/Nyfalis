@@ -227,7 +227,7 @@ public class NyfalisFxs extends Fx {
         }),
 
         shootRepairPin =  new Effect(10, e -> {
-            color(e.color);
+            color(Pal.heal, e.color, e.fin());
             float w = 1.2f + 7 * e.fout();
 
             Drawf.tri(e.x, e.y, w, 30f * e.fout(), e.rotation);
@@ -293,12 +293,12 @@ public class NyfalisFxs extends Fx {
 
         shootRepairPinBeam = new Effect(20f, e -> {
             if(!(e.data instanceof Vec2 v)) return;
-            color(e.color);
+            color(Pal.heal, e.color, e.finpow());
             stroke(e.fout() * 0.9f + 0.6f);
             Fx.rand.setSeed(e.id);
             for(int i = 0; i < 7; i++){
                 Fx.v.trns(e.rotation, Fx.rand.random(8f, v.dst(e.x, e.y) - 8f));
-                lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + e.finpow(), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
+                lineAngleCenter(e.x + Fx.v.x, e.y + Fx.v.y, e.rotation + Fx.rand.random(-2f, 2f), e.foutpowdown() * 20f * Fx.rand.random(0.5f, 1f) + 0.3f);
             }
             e.scaled(14f, b -> {
                 stroke(b.fout() * 1.5f);
@@ -545,15 +545,16 @@ public class NyfalisFxs extends Fx {
         }),
 
         hitRepairPinSpark = new Effect(40, e -> {
-            color(Pal.heal);
+            color(Pal.heal, e.color, e.finpow());
             stroke(e.fout() * 1.6f);
-
-            randLenVectors(e.id, 18, e.finpow() * 27f, e.rotation, 360f, (x, y) -> {
+            randLenVectors(e.id, 18,  e.finpow() * 5f, e.finpow() * 27f, (x, y) -> {
                 float ang = Mathf.angle(x, y);
-                Drawf.square(e.x + x, e.y + y, 0);
-                Drawf.square(e.x + x, e.y + y, 0);
-                lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
+                lineAngle(e.x + x, e.y + y, ang, e.fout() * rand.random(6,8) + 1f);
             });
+
+            float rot = e.rotation + rand.range(30f);
+            v.trns(rot, rand.random(e.finpow() * 27f));
+            Fill.poly(e.x + v.x, e.y + v.y, 4, e.fout() * 3.8f + 0.2f, rand.random(360f));
         }),
 
         hitAcidRain = new Effect(10, e -> {
