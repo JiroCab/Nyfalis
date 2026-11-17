@@ -21,7 +21,9 @@ public class NyfalisSectors {
         /*Nyfalis*/
         conservatorium,
         /*Vorgin*/
-         dormantCell, forestOfHope
+        dormantCell, forestOfHope,
+        /*System /Easter Egg */
+        hiddenEgg
     ;
 
      //region sec gen helpers
@@ -153,6 +155,17 @@ public class NyfalisSectors {
             rules = commonRules(captureWave);
         }};
         //endregion
+        //region System / Easter eggs
+        hiddenEgg = new NyfalisSectorPresent("hidden-egg", system, 2){{
+            alwaysUnlocked = overrideLaunchDefaults =  true;
+            addStartingItems = allowLaunchSchematics = false;
+
+            captureWave = 17;
+            difficulty = 1;
+            rules = commonRules(captureWave, ItemStack.with());
+        }};
+        // endregion
+
     }
 
     //moved it here, so players switching planets rule isn't affected & per map dropZonesRadius are possible

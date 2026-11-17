@@ -2,6 +2,8 @@ package olupis.content;
 
 import arc.*;
 import arc.graphics.*;
+import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
@@ -22,8 +24,8 @@ public class NyfalisPlanets {
         /*I Exist so Tech Tree's Item pool is shared among the 3 planets
         * Would have made the diffculity picker here, but its ignored and respective planet is used*/
         system = new NyfPlanet("system", Planets.sun, 0.4f){{
-            accessible = visible = unlocked = hasAtmosphere = updateLighting = drawOrbit = allowCampaignRules =false;
-            hideDetails = alwaysUnlocked  = true;
+            accessible = unlocked = hasAtmosphere = updateLighting = drawOrbit = allowCampaignRules =false;
+            hideDetails = visible =  alwaysUnlocked  = true;
 
             clipRadius = 2f;
             minZoom = 0.7f;
@@ -31,9 +33,20 @@ public class NyfalisPlanets {
             defaultEnv = Env.space;
             icon = "rename";
 
-            sectors.set(systemSector);
             generator = new AsteroidGenerator();
-            meshLoader = () -> new HexMesh(this, 3);
+            meshLoader = () -> {
+
+                Seq<GenericMesh> meshes = new Seq<>();
+                Rand rand = new Rand(id + 2);
+
+                meshes.add(new MatMesh(
+                    new NoiseMesh(this,  69, 1, 0.025f, 2, 0.6f, 0.65f, 20f,
+                    new Color().set(NyfalisBlocks.galenaFloor.mapColor).lerp(Color.black, 0.7f), NyfalisBlocks.mossierStone.mapColor, 3, 0.6f, 0.18f, 0.7f),
+                    new Mat3D().setToTranslation(Tmp.v31.setToRandomDirection(rand).setLength((rand.random(3.52f, 4.27f)))))
+                );
+
+                return new MultiMesh(meshes.toArray(GenericMesh.class));
+            };
             campaignRuleDefaults = new NyfCampaignRules();
             campaignRules = new NyfCampaignRules();
         }};
@@ -60,6 +73,7 @@ public class NyfalisPlanets {
             landCloudColor = new Color().set(Color.valueOf("C7E7F1").cpy().lerp(Color.valueOf("D7F5DC"), 0.55f));
             unlockedOnLand.addAll(NyfalisBlocks.coreRemnant, NyfalisItemsLiquid.rustyIron);
             meshLoader = () -> new HexMesh(this, 7);
+
             cloudMeshLoader = () -> new MultiMesh(
                 new HexSkyMesh(this, 11, 0.7f, 0.06f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.4f, 0.38f),
                 new HexSkyMesh(this, 1, 0.2f, 0.08f, 5, Pal.regen.cpy().lerp(Color.valueOf("D7F5DC"), 0.55f).a(0.55f), 2, 0.45f, 0.5f, 0.41f)
@@ -67,13 +81,16 @@ public class NyfalisPlanets {
         }};
 
         //1st moon
-        seredris = new NyfPlanet("seredris", NyfalisPlanets.nyfalis, 1.1f, 1){{
+        seredris = new NyfPlanet("seredris", NyfalisPlanets.nyfalis, 0.4f, 1){{
             accessible = alwaysUnlocked = clearSectorOnLose = allowSectorInvasion = updateLighting = allowLaunchSchematics = allowCampaignRules = true;
 
             startSector = 2;
             lightDstTo = 0.8f;
             lightDstFrom = 0f;
             enemyBuildSpeedMultiplier = 0.4f;
+            orbitRadius = 9f;
+            minZoom = 1.85f;
+            maxZoom = 3.5f;
             icon = "effect";
             setDefRules(this);
             systemSector.add(sectors);
@@ -81,15 +98,15 @@ public class NyfalisPlanets {
             generator = new SeredrisPlanetGenerator();
             defaultEnv = Env.oxygen | NyfalisAttributeWeather.nyfalian;
             iconColor = NyfalisItemsLiquid.condensedBiomatter.color;
-            meshLoader = () -> new HexMesh(this, 5);
-
+            meshLoader = () -> new HexMesh(this, 4);
+            lightColor = Color.white.cpy().a(0.5f);
             cloudMeshLoader = () -> new MultiMesh(
-                new HexSkyMesh(this, 11, 0.7f, 0.13f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.55f), 2, 0.45f, 0.9f, 0.38f),
-                new HexSkyMesh(this, 1, 0.2f, 0.16f, 5, Pal.regen.cpy().lerp(Color.valueOf("D7F5DC"), 0.55f).a(0.55f), 2, 0.45f, 1f, 0.41f)
+                new HexSkyMesh(this, 11, 0.7f, 0.13f, 5, new Color().set(Color.valueOf("C7E7F1")).mul(0.9f).a(0.35f), 2, 0.45f, 0.9f, 0.38f),
+                new HexSkyMesh(this, 1, 0.2f, 0.16f, 5, Pal.regen.cpy().lerp(Color.valueOf("D7F5DC"), 0.55f).a(0.25f), 2, 0.45f, 1f, 0.41f)
             );
         }};
 
-        vorgin = new NyfPlanet("vorgin", NyfalisPlanets.nyfalis, 0.9f, 2){{
+        vorgin = new NyfPlanet("vorgin", NyfalisPlanets.nyfalis, 0.37f, 2){{
             //TODO: planet gimmick: mostly attack sectors + you can place a core in any spot
             clearSectorOnLose = allowSectorInvasion = updateLighting = accessible = allowCampaignRules = true;
 
@@ -138,10 +155,15 @@ public class NyfalisPlanets {
     }
 
     public  static void PostLoadPlanet(){
-         Seq<Sector> finalSectors = new Seq<>();
-         finalSectors.add(systemSector.find(t -> t.preset == NyfalisSectors.sanctuary)); //prevents launching at sector 0 of nyfalis if you double tap while system is selected
-         systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
-         finalSectors.add(systemSector);
+        Seq<Sector> finalSectors = new Seq<>(), easterEggs = system.sectors.copy();
+        finalSectors.add(systemSector.find(t -> t.preset == NyfalisSectors.sanctuary)); //prevents launching at sector 0 of nyfalis if you double tap while system is selected
+        systemSector.remove(t -> t.preset == NyfalisSectors.sanctuary);
+
+        //randomise them t be funny
+        for(Sector e : easterEggs){
+            finalSectors.insert(finalSectors.size, e);
+        }
+
         system.sectors.set(finalSectors);
         planetList.add(nyfalis, seredris, vorgin, system);
     }
