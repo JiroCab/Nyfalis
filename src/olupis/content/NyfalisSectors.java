@@ -156,14 +156,15 @@ public class NyfalisSectors {
         }};
         //endregion
         //region System / Easter eggs
-        hiddenEgg = new NyfalisSectorPresent("hidden-egg", system, 2){{
-            alwaysUnlocked = overrideLaunchDefaults =  true;
-            addStartingItems = allowLaunchSchematics = false;
 
-            captureWave = 17;
-            difficulty = 1;
-            rules = commonRules(captureWave, ItemStack.with());
-        }};
+//        hiddenEgg = new NyfalisSectorPresent("hidden-egg", system, 2){{
+//            alwaysUnlocked = overrideLaunchDefaults =  true;
+//            addStartingItems = allowLaunchSchematics = false;
+
+//            captureWave = 17;
+//            difficulty = 1;
+  //          rules = commonRules(captureWave, ItemStack.with());
+//        }};
         // endregion
 
     }
